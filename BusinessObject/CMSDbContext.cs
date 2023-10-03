@@ -80,6 +80,18 @@ namespace BusinessObject
             modelBuilder.Entity<TimeAllocation>()
                .HasKey(ba => new { ba.CLO_id, ba.session_id });
 
+            modelBuilder.Entity<PreRequisite>()
+               .HasKey(ba => new { ba.subject_id, ba.pre_subject_id });
+
+            //
+            modelBuilder.Entity<GradingStruture>()
+                .Property(g => g.grading_weight)
+                .HasColumnType("decimal(18, 2)"); 
+
+            modelBuilder.Entity<Syllabus>()
+                .Property(s => s.min_GPA_to_pass)
+                .HasColumnType("decimal(18, 2)");
+
             //
             modelBuilder.Entity<Combo>()
                 .HasOne(x => x.Specialization)
@@ -104,6 +116,15 @@ namespace BusinessObject
                 .WithMany(y => y.TimeAllocation)
                 .HasForeignKey(x => x.session_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Subject>()
+                .HasMany(x => x.PreRequisite)
+                .WithOne(y => y.Subject)
+                .HasForeignKey(x => x.subject_id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+
             //create new Data in table
             modelBuilder.Entity<Role>().HasData(
                 new Role { role_id = 1, role_name = "Dispatcher" },

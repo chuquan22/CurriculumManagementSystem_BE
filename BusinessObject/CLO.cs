@@ -17,8 +17,8 @@ namespace BusinessObject
         public string CLO_name { get; set; }
         [ForeignKey("Syllabus")]
         public int syllabus_id { get; set; }
-        [AllowNull] 
-        public string? CLO_description { get; set; }  
+        [Required] 
+        public string CLO_description { get; set; }  
         
         public virtual Syllabus Syllabus { get; set; }
         
