@@ -16,7 +16,9 @@ namespace BusinessObject
         [Required, MaxLength(50)]
         public string user_name { get; set; }
         [Required]
-        public string user_email { get; set;}
+        public string user_password { get; set; }
+        [Required]
+        public string user_email { get; set; }
         [MaxLength(500), AllowNull]
         public string? user_address { get; set;}
         [Required, MaxLength(10)]
