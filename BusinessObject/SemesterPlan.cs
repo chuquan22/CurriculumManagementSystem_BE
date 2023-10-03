@@ -18,6 +18,8 @@ namespace BusinessObject
         public string semester_plan_code { get; set; }
         [Required]
         public string semester_plan_name { get; set; }
+        [Required]
+        public int term_no { get; set; }
 
         public virtual Curriculum Curriculum { get; set; }
         public virtual Semester Semester { get; set; }

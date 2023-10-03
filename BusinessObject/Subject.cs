@@ -25,8 +25,7 @@ namespace BusinessObject
         public int assessment_method_id { get;set; }
         [Required]
         public int credit { get; set; }
-        [ForeignKey("PreRequisite")]
-        public int pre_requisite_id { get; set; }
+        
         [Required]
         public string option { get; set; }
         [Required]
@@ -36,7 +35,7 @@ namespace BusinessObject
         public virtual ICollection<Syllabus> Syllabus { get; set;}
         public virtual LearningMethod LearningMethod { get; set; }
         public virtual AssessmentMethod AssessmentMethod { get; set; }
-        public virtual PreRequisite PreRequisite { get; set; }
+        public virtual ICollection<PreRequisite> PreRequisite { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
         public virtual ICollection<SpecializationSubject> SpecializationSubjects { get; set; }
         public virtual ICollection<ComboSubject> ComboSubjects { get; set; }    

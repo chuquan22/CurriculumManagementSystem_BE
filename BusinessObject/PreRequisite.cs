@@ -10,14 +10,18 @@ namespace BusinessObject
 {
     public class PreRequisite
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int pre_requisite_id { get; set; }
+        [ForeignKey("Subject")]
+        public int subject_id { get; set; }
+        [ForeignKey("PreSubject")]
+        public int pre_subject_id { get; set; }
         [Required]
         public string pre_requisite_name { get; set; }
+        
         [ForeignKey("PreRequisiteType")]
         public int pre_requisite_type_id { get; set; }
 
-        public virtual ICollection<Subject> subjects { get; set; }  
+        public virtual Subject Subject { get; set; }  
+        public virtual Subject PreSubject { get; set; }  
         public virtual PreRequisiteType PreRequisiteType { get; set; }
 
     }

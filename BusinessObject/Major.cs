@@ -14,7 +14,7 @@ namespace BusinessObject
         public int major_id { get; set;}
         [Required, MaxLength(10)]
         public string major_code { get; set;}
-        [Required, MaxLength(50)]
+        [Required, MaxLength(100)]
         public string major_name { get; set;}
         [Required]
         public string major_status { get; set;}
