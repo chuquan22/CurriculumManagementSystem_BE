@@ -50,6 +50,6 @@ namespace BusinessObject
         public virtual Syllabus Syllabus { get; set; }
         public virtual ClassSessionType ClassSessionType { get; set; }
         
-        public virtual ICollection<TimeAllocation> TimeAllocation { get; set; } 
+        public virtual ICollection<SessionCLO> SessionCLO { get; set; } 
     }
 }
