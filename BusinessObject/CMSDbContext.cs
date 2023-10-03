@@ -52,7 +52,7 @@ namespace BusinessObject
         public virtual DbSet<SpecializationSubject> SpecializationSubject { get; set; }
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<Syllabus> Syllabus { get; set; }
-        public virtual DbSet<TimeAllocation> TimeAllocation { get; set; }
+        public virtual DbSet<SessionCLO> SessionCLO { get; set; }
         public virtual DbSet<User> User { get; set; }
 
 
@@ -77,7 +77,7 @@ namespace BusinessObject
             modelBuilder.Entity<SpecializationSubject>()
                .HasKey(ba => new { ba.specialization_id, ba.subject_id });
 
-            modelBuilder.Entity<TimeAllocation>()
+            modelBuilder.Entity<SessionCLO>()
                .HasKey(ba => new { ba.CLO_id, ba.session_id });
 
             modelBuilder.Entity<PreRequisite>()
@@ -111,9 +111,9 @@ namespace BusinessObject
                 .HasForeignKey(x => x.grading_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            modelBuilder.Entity<TimeAllocation>()
+            modelBuilder.Entity<SessionCLO>()
                 .HasOne(x => x.Session)
-                .WithMany(y => y.TimeAllocation)
+                .WithMany(y => y.SessionCLO)
                 .HasForeignKey(x => x.session_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 

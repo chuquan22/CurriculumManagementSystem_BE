@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231003065844_InitialDB")]
+    [Migration("20231003090023_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -739,6 +739,21 @@ namespace BusinessObject.Migrations
                     b.ToTable("Session");
                 });
 
+            modelBuilder.Entity("BusinessObject.SessionCLO", b =>
+                {
+                    b.Property<int>("CLO_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("session_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("CLO_id", "session_id");
+
+                    b.HasIndex("session_id");
+
+                    b.ToTable("SessionCLO");
+                });
+
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
                     b.Property<int>("specialization_id")
@@ -882,21 +897,6 @@ namespace BusinessObject.Migrations
                     b.HasIndex("subject_id");
 
                     b.ToTable("Syllabus");
-                });
-
-            modelBuilder.Entity("BusinessObject.TimeAllocation", b =>
-                {
-                    b.Property<int>("CLO_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("session_id")
-                        .HasColumnType("int");
-
-                    b.HasKey("CLO_id", "session_id");
-
-                    b.HasIndex("session_id");
-
-                    b.ToTable("TimeAllocation");
                 });
 
             modelBuilder.Entity("BusinessObject.User", b =>
@@ -1224,6 +1224,24 @@ namespace BusinessObject.Migrations
                     b.Navigation("Syllabus");
                 });
 
+            modelBuilder.Entity("BusinessObject.SessionCLO", b =>
+                {
+                    b.HasOne("BusinessObject.CLO", "CLO")
+                        .WithMany("SessionCLO")
+                        .HasForeignKey("CLO_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.Session", "Session")
+                        .WithMany("SessionCLO")
+                        .HasForeignKey("session_id")
+                        .IsRequired();
+
+                    b.Navigation("CLO");
+
+                    b.Navigation("Session");
+                });
+
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
                     b.HasOne("BusinessObject.Major", "Major")
@@ -1284,24 +1302,6 @@ namespace BusinessObject.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("BusinessObject.TimeAllocation", b =>
-                {
-                    b.HasOne("BusinessObject.CLO", "CLO")
-                        .WithMany("TimeAllocations")
-                        .HasForeignKey("CLO_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessObject.Session", "Session")
-                        .WithMany("TimeAllocation")
-                        .HasForeignKey("session_id")
-                        .IsRequired();
-
-                    b.Navigation("CLO");
-
-                    b.Navigation("Session");
-                });
-
             modelBuilder.Entity("BusinessObject.User", b =>
                 {
                     b.HasOne("BusinessObject.Role", "Role")
@@ -1339,7 +1339,7 @@ namespace BusinessObject.Migrations
                 {
                     b.Navigation("GradingCLOs");
 
-                    b.Navigation("TimeAllocations");
+                    b.Navigation("SessionCLO");
                 });
 
             modelBuilder.Entity("BusinessObject.Combo", b =>
@@ -1405,7 +1405,7 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Session", b =>
                 {
-                    b.Navigation("TimeAllocation");
+                    b.Navigation("SessionCLO");
                 });
 
             modelBuilder.Entity("BusinessObject.Specialization", b =>

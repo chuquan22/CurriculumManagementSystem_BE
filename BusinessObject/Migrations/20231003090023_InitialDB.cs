@@ -699,7 +699,7 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TimeAllocation",
+                name: "SessionCLO",
                 columns: table => new
                 {
                     CLO_id = table.Column<int>(type: "int", nullable: false),
@@ -707,15 +707,15 @@ namespace BusinessObject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TimeAllocation", x => new { x.CLO_id, x.session_id });
+                    table.PrimaryKey("PK_SessionCLO", x => new { x.CLO_id, x.session_id });
                     table.ForeignKey(
-                        name: "FK_TimeAllocation_CLO_CLO_id",
+                        name: "FK_SessionCLO_CLO_CLO_id",
                         column: x => x.CLO_id,
                         principalTable: "CLO",
                         principalColumn: "CLO_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TimeAllocation_Session_session_id",
+                        name: "FK_SessionCLO_Session_session_id",
                         column: x => x.session_id,
                         principalTable: "Session",
                         principalColumn: "schedule_id");
@@ -852,6 +852,11 @@ namespace BusinessObject.Migrations
                 column: "syllabus_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SessionCLO_session_id",
+                table: "SessionCLO",
+                column: "session_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Specialization_major_id",
                 table: "Specialization",
                 column: "major_id");
@@ -875,11 +880,6 @@ namespace BusinessObject.Migrations
                 name: "IX_Syllabus_subject_id",
                 table: "Syllabus",
                 column: "subject_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TimeAllocation_session_id",
-                table: "TimeAllocation",
-                column: "session_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_role_id",
@@ -914,10 +914,10 @@ namespace BusinessObject.Migrations
                 name: "SemesterPlan");
 
             migrationBuilder.DropTable(
-                name: "SpecializationSubject");
+                name: "SessionCLO");
 
             migrationBuilder.DropTable(
-                name: "TimeAllocation");
+                name: "SpecializationSubject");
 
             migrationBuilder.DropTable(
                 name: "User");

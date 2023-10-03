@@ -22,7 +22,7 @@ namespace BusinessObject
         
         public virtual Syllabus Syllabus { get; set; }
         
-        public virtual ICollection<TimeAllocation> TimeAllocations { get; set; }
+        public virtual ICollection<SessionCLO> SessionCLO { get; set; }
         public virtual ICollection<GradingCLO> GradingCLOs { get; set; }    
 
     }
