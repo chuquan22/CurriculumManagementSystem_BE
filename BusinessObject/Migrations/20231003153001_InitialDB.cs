@@ -160,7 +160,7 @@ namespace BusinessObject.Migrations
                     specialization_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     specialization_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    specialization_description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    specialization_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     major_id = table.Column<int>(type: "int", nullable: false),
                     specialization_status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -183,7 +183,8 @@ namespace BusinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     user_email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    user_address = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    user_password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    user_address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     user_phone = table.Column<int>(type: "int", maxLength: 10, nullable: false),
                     full_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role_id = table.Column<int>(type: "int", nullable: false),
@@ -722,24 +723,34 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Role",
-                columns: new[] { "role_id", "role_name" },
-                values: new object[] { 1, "Dispatcher" });
+                table: "Batche",
+                columns: new[] { "batch_id", "batch_name" },
+                values: new object[,]
+                {
+                    { 1, "K19.3" },
+                    { 2, "K18" },
+                    { 3, "K17" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "role_id", "role_name" },
-                values: new object[] { 2, "Manager" });
-
-            migrationBuilder.InsertData(
-                table: "Role",
-                columns: new[] { "role_id", "role_name" },
-                values: new object[] { 3, "Admin" });
+                values: new object[,]
+                {
+                    { 1, "Dispatcher" },
+                    { 2, "Manager" },
+                    { 3, "Admin" }
+                });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "user_id", "full_name", "role_id", "user_address", "user_email", "user_name", "user_phone", "user_status" },
-                values: new object[] { 1, "Chu Quang Quan", 1, "Ha Nam", "chuquan2k1@gmail.com", "QuanCQ", 349457905, "Active" });
+                columns: new[] { "user_id", "full_name", "role_id", "user_address", "user_email", "user_name", "user_password", "user_phone", "user_status" },
+                values: new object[] { 1, "Chu Quang Quan", 1, "Ha Nam", "chuquan2k1@gmail.com", "QuanCQ", "12345", 349457905, "Active" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "user_id", "full_name", "role_id", "user_address", "user_email", "user_name", "user_password", "user_phone", "user_status" },
+                values: new object[] { 2, "Nguyen Thi Thu", 2, "Thai Binh", "nguyenthu120801@gmail.com", "ThuNT", "12345", 984739845, "Active" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentMethod_assessment_type_id",

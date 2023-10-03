@@ -86,7 +86,7 @@ namespace BusinessObject
             //
             modelBuilder.Entity<GradingStruture>()
                 .Property(g => g.grading_weight)
-                .HasColumnType("decimal(18, 2)"); 
+                .HasColumnType("decimal(18, 2)");
 
             modelBuilder.Entity<Syllabus>()
                 .Property(s => s.min_GPA_to_pass)
@@ -131,9 +131,32 @@ namespace BusinessObject
                 new Role { role_id = 2, role_name = "Manager" },
                 new Role { role_id = 3, role_name = "Admin" }
                 );
+
             modelBuilder.Entity<User>().HasData(
-                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com", user_name = "QuanCQ", user_phone = 0349457905, user_status = "Active" }
+                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com",user_password = "12345", user_name = "QuanCQ", user_phone = 0349457905, user_status = "Active" },
+                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_address = "Thai Binh", user_email = "nguyenthu120801@gmail.com", user_password = "12345", user_name = "ThuNT", user_phone = 0984739845, user_status = "Active" }
                 );
+
+            modelBuilder.Entity<Batch>().HasData(
+                new Batch { batch_id = 1, batch_name = "K19.3" },
+                new Batch { batch_id = 2, batch_name = "K18" },
+                new Batch { batch_id = 3, batch_name = "K17" }
+                );
+
+            //modelBuilder.Entity<Major>().HasData(
+            //    new Major { major_id = 1, major_code = "GD", major_name = "Graphic Design", major_status = "Active" },
+            //    new Major { major_id = 2, major_code = "SE", major_name = "Software Engineering", major_status = "Active" },
+            //    new Major { major_id = 3, major_code = "BA", major_name = "Business Administration", major_status = "Active" },
+            //    new Major { major_id = 3, major_code = "AE", major_name = "Automation Engineering", major_status = "Active" }
+
+            //    );
+
+            //modelBuilder.Entity<Specialization>().HasData(
+            //    new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
+            //    new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_status = "Active" },
+            //    new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" }
+            //    );
+
         }
     }
 }
