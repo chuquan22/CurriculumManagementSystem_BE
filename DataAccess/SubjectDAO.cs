@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace DataAccess
 {
-    internal class SubjectDAO
+    public class SubjectDAO
     {
+
     }
 }

@@ -76,6 +76,23 @@ namespace BusinessObject.Migrations
                     b.HasKey("batch_id");
 
                     b.ToTable("Batche");
+
+                    b.HasData(
+                        new
+                        {
+                            batch_id = 1,
+                            batch_name = "K19.3"
+                        },
+                        new
+                        {
+                            batch_id = 2,
+                            batch_name = "K18"
+                        },
+                        new
+                        {
+                            batch_id = 3,
+                            batch_name = "K17"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.ClassSessionType", b =>
@@ -763,7 +780,8 @@ namespace BusinessObject.Migrations
                     b.Property<int>("major_id")
                         .HasColumnType("int");
 
-                    b.Property<string>("specialization_description")
+                    b.Property<string>("specialization_code")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("specialization_name")
@@ -914,8 +932,7 @@ namespace BusinessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("user_address")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("user_email")
                         .IsRequired()
@@ -925,6 +942,10 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("user_password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("user_phone")
                         .HasMaxLength(10)
@@ -949,7 +970,20 @@ namespace BusinessObject.Migrations
                             user_address = "Ha Nam",
                             user_email = "chuquan2k1@gmail.com",
                             user_name = "QuanCQ",
+                            user_password = "12345",
                             user_phone = 349457905,
+                            user_status = "Active"
+                        },
+                        new
+                        {
+                            user_id = 2,
+                            full_name = "Nguyen Thi Thu",
+                            role_id = 2,
+                            user_address = "Thai Binh",
+                            user_email = "nguyenthu120801@gmail.com",
+                            user_name = "ThuNT",
+                            user_password = "12345",
+                            user_phone = 984739845,
                             user_status = "Active"
                         });
                 });
