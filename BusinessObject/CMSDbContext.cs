@@ -143,20 +143,46 @@ namespace BusinessObject
                 new Batch { batch_id = 3, batch_name = "K17" }
                 );
 
-            //modelBuilder.Entity<Major>().HasData(
-            //    new Major { major_id = 1, major_code = "GD", major_name = "Graphic Design", major_status = "Active" },
-            //    new Major { major_id = 2, major_code = "SE", major_name = "Software Engineering", major_status = "Active" },
-            //    new Major { major_id = 3, major_code = "BA", major_name = "Business Administration", major_status = "Active" },
-            //    new Major { major_id = 3, major_code = "AE", major_name = "Automation Engineering", major_status = "Active" }
+            modelBuilder.Entity<Major>().HasData(
+                new Major { major_id = 1, major_code = "GD", major_name = "Graphic Design", major_status = "Active" },
+                new Major { major_id = 2, major_code = "IT", major_name = "Information Technology", major_status = "Active" },
+                new Major { major_id = 3, major_code = "BA", major_name = "Business Administration", major_status = "Active" },
+                new Major { major_id = 4, major_code = "AE", major_name = "Automation Engineering", major_status = "Active" }
 
-            //    );
+                );
 
-            //modelBuilder.Entity<Specialization>().HasData(
-            //    new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
-            //    new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_status = "Active" },
-            //    new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" }
-            //    );
+            modelBuilder.Entity<Specialization>().HasData(
+                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
+                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_status = "Active" },
+                new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
+                new Specialization { specialization_id = 4, major_id = 2, specialization_code = "SE", specialization_name = "kĩ sư phần mềm", specialization_status = "Active" },
+                new Specialization { specialization_id = 5, major_id = 2, specialization_code = "WP", specialization_name = "lập trình web", specialization_status = "Active" },
+                new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_status = "Active" }
+                );
 
+           
+
+            modelBuilder.Entity<Curriculum>().HasData(
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1 , curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" },
+                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2,curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" }
+
+                );
+
+            modelBuilder.Entity<LearningMethod>().HasData(
+               new LearningMethod { learning_method_id = 1, learning_method_code = "OL", learning_method_name = "Online Learing", learning_method_description = ""}
+                );
+
+            modelBuilder.Entity<AssessmentType>().HasData(
+                new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" }
+                );
+
+            modelBuilder.Entity<AssessmentMethod>().HasData(
+                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 }
+                );
+
+            modelBuilder.Entity<Subject>().HasData(
+                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, option = "abc", subject_status = "Active" }
+                );
         }
     }
 }
