@@ -54,7 +54,7 @@ namespace BusinessObject
         public virtual DbSet<SpecializationSubject> SpecializationSubject { get; set; }
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<Syllabus> Syllabus { get; set; }
-        public virtual DbSet<TimeAllocation> TimeAllocation { get; set; }
+        public virtual DbSet<SessionCLO> SessionCLO { get; set; }
         public virtual DbSet<User> User { get; set; }
 
 
@@ -79,8 +79,20 @@ namespace BusinessObject
             modelBuilder.Entity<SpecializationSubject>()
                .HasKey(ba => new { ba.specialization_id, ba.subject_id });
 
-            modelBuilder.Entity<TimeAllocation>()
+            modelBuilder.Entity<SessionCLO>()
                .HasKey(ba => new { ba.CLO_id, ba.session_id });
+
+            modelBuilder.Entity<PreRequisite>()
+               .HasKey(ba => new { ba.subject_id, ba.pre_subject_id });
+
+            //
+            modelBuilder.Entity<GradingStruture>()
+                .Property(g => g.grading_weight)
+                .HasColumnType("decimal(18, 2)");
+
+            modelBuilder.Entity<Syllabus>()
+                .Property(s => s.min_GPA_to_pass)
+                .HasColumnType("decimal(18, 2)");
 
             //
             modelBuilder.Entity<Combo>()
@@ -101,23 +113,82 @@ namespace BusinessObject
                 .HasForeignKey(x => x.grading_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            modelBuilder.Entity<TimeAllocation>()
+            modelBuilder.Entity<SessionCLO>()
                 .HasOne(x => x.Session)
-                .WithMany(y => y.TimeAllocation)
+                .WithMany(y => y.SessionCLO)
                 .HasForeignKey(x => x.session_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Subject>()
+                .HasMany(x => x.PreRequisite)
+                .WithOne(y => y.Subject)
+                .HasForeignKey(x => x.subject_id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+
             //create new Data in table
             modelBuilder.Entity<Role>().HasData(
                 new Role { role_id = 1, role_name = "Dispatcher" },
                 new Role { role_id = 2, role_name = "Manager" },
                 new Role { role_id = 3, role_name = "Admin" }
                 );
+
             modelBuilder.Entity<User>().HasData(
+
      new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com", user_password = "12345", user_name = "QuanCQ", user_phone = 0349457905, user_status = "Active" },
      new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_address = "Thai Binh", user_email = "nguyenthu120801@gmail.com", user_password = "12345", user_name = "ThuNT", user_phone = 0984739845, user_status = "Active" }
      , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_address = "Nghe An", user_email = "haotest@gmail.com", user_password = "admin", user_name = "admin", user_phone = 0984739845, user_status = "Active" }
 
      );
+
+            modelBuilder.Entity<Batch>().HasData(
+                new Batch { batch_id = 1, batch_name = "K19.3" },
+                new Batch { batch_id = 2, batch_name = "K18" },
+                new Batch { batch_id = 3, batch_name = "K17" }
+                );
+
+            modelBuilder.Entity<Major>().HasData(
+                new Major { major_id = 1, major_code = "GD", major_name = "Graphic Design", major_status = "Active" },
+                new Major { major_id = 2, major_code = "IT", major_name = "Information Technology", major_status = "Active" },
+                new Major { major_id = 3, major_code = "BA", major_name = "Business Administration", major_status = "Active" },
+                new Major { major_id = 4, major_code = "AE", major_name = "Automation Engineering", major_status = "Active" }
+
+                );
+
+            modelBuilder.Entity<Specialization>().HasData(
+                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
+                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_status = "Active" },
+                new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_status = "Active" },
+                new Specialization { specialization_id = 4, major_id = 2, specialization_code = "SE", specialization_name = "kĩ sư phần mềm", specialization_status = "Active" },
+                new Specialization { specialization_id = 5, major_id = 2, specialization_code = "WP", specialization_name = "lập trình web", specialization_status = "Active" },
+                new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_status = "Active" }
+                );
+
+           
+
+            modelBuilder.Entity<Curriculum>().HasData(
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1 , curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" },
+                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2,curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" }
+
+                );
+
+            modelBuilder.Entity<LearningMethod>().HasData(
+               new LearningMethod { learning_method_id = 1, learning_method_code = "OL", learning_method_name = "Online Learing", learning_method_description = ""}
+                );
+
+            modelBuilder.Entity<AssessmentType>().HasData(
+                new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" }
+                );
+
+            modelBuilder.Entity<AssessmentMethod>().HasData(
+                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 }
+                );
+
+            modelBuilder.Entity<Subject>().HasData(
+                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, option = "abc", subject_status = "Active" }
+                );
+
         }
     }
 }

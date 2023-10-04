@@ -1,8 +1,13 @@
+
 ﻿using BusinessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
+
+using AutoMapper;
+
+using DataAccess.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -38,12 +43,17 @@ builder.Services.AddSession(options =>
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors();
 builder.Services.AddControllers();
 //MAPPER
 //var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new CurriculumManagementSystemWebAPI.Mappers.AutoMapper()); });
 //var mapper = mapperConfig.CreateMapper();
 //builder.Services.AddSingleton(mapper);
+
+builder.Services.AddDbContext<CMSDbContext>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

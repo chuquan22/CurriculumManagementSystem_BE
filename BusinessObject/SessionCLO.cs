@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject
 {
-    public class TimeAllocation
+    public class SessionCLO
     {
         [ForeignKey("CLO")]
         public int CLO_id { get; set; }

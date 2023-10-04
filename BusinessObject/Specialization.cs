@@ -15,8 +15,8 @@ namespace BusinessObject
         public int specialization_id { get; set; }
         [Required]
         public string specialization_name { get; set; }
-        [AllowNull]
-        public string? specialization_description { get; set; }
+        [Required]
+        public string specialization_code { get; set; }
         [ForeignKey("Major")]
         public int major_id { get; set; }
         [Required]

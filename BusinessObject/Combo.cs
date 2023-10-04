@@ -15,8 +15,8 @@ namespace BusinessObject
         public int combo_id { get; set; }
         [Required] 
         public string combo_name { get; set; }
-        [AllowNull]
-        public string? combo_description { get; set;}
+        [Required]
+        public string combo_description { get; set;}
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
         [ForeignKey("Curriculum")]

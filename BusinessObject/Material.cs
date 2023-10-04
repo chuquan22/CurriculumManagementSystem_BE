@@ -36,7 +36,7 @@ namespace BusinessObject
         [AllowNull]
         public string? material_edition { get; set;} 
 
-        public virtual Syllabus? Syllabus { get; set; }
-        public virtual LearningResource? LearningResource { get; set; }
+        public virtual Syllabus Syllabus { get; set; }
+        public virtual LearningResource LearningResource { get; set; }
     }
 }

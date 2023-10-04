@@ -14,23 +14,20 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int curriculum_id { get; set; }
         [Required]
+        [MaxLength(10)]
         public string curriculum_code { get; set; }
+        [Required]
+        public string curriculum_name { get; set; }
         [Required] 
         public string english_curriculum_name { get; set; }
         [AllowNull]
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
-        [Required]
-        public string vocational_code { get; set; }
-        [Required]
-        public string vocational_name { get;set; }
-        [Required]
-        public string english_vocational_name { get;set; }
         [ForeignKey("Batch")]
         public int batch_id { get; set;}
         [Required]
-        public int decision_No { get;set; }
+        public string decision_No { get;set; }
         [Required]
         public DateTime approved_date { get; set; }
         [Required]

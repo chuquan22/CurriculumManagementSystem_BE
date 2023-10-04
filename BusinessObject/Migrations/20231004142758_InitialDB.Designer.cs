@@ -4,6 +4,7 @@ using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    partial class CMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231004142758_InitialDB")]
+    partial class InitialDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +52,6 @@ namespace BusinessObject.Migrations
                             assessment_method_component = "ABC",
                             assessment_type_id = 1
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.AssessmentType", b =>
@@ -69,14 +70,12 @@ namespace BusinessObject.Migrations
 
                     b.ToTable("AssessmentType");
 
-
                     b.HasData(
                         new
                         {
                             assessment_type_id = 1,
                             assessment_type_name = "Online"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Batch", b =>
@@ -111,7 +110,6 @@ namespace BusinessObject.Migrations
                             batch_id = 3,
                             batch_name = "K17"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.ClassSessionType", b =>
@@ -141,7 +139,6 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("CLO_description")
                         .IsRequired()
-
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CLO_name")
@@ -227,7 +224,6 @@ namespace BusinessObject.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-
                     b.Property<string>("curriculum_description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -286,7 +282,6 @@ namespace BusinessObject.Migrations
                             english_curriculum_name = "Software Engineering",
                             specialization_id = 4
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.CurriculumSubject", b =>
@@ -402,7 +397,6 @@ namespace BusinessObject.Migrations
                             learning_method_description = "",
                             learning_method_name = "Online Learing"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.LearningResource", b =>
@@ -437,9 +431,8 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("major_name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("major_status")
                         .IsRequired()
@@ -478,7 +471,6 @@ namespace BusinessObject.Migrations
                             major_name = "Automation Engineering",
                             major_status = "Active"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Material", b =>
@@ -576,13 +568,11 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.PreRequisite", b =>
                 {
-
                     b.Property<int>("subject_id")
                         .HasColumnType("int");
 
                     b.Property<int>("pre_subject_id")
                         .HasColumnType("int");
-
 
                     b.Property<string>("pre_requisite_name")
                         .IsRequired()
@@ -590,7 +580,6 @@ namespace BusinessObject.Migrations
 
                     b.Property<int>("pre_requisite_type_id")
                         .HasColumnType("int");
-
 
                     b.HasKey("subject_id", "pre_subject_id");
 
@@ -763,7 +752,6 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-
                     b.Property<int>("term_no")
                         .HasColumnType("int");
 
@@ -850,7 +838,6 @@ namespace BusinessObject.Migrations
                     b.ToTable("Session");
                 });
 
-
             modelBuilder.Entity("BusinessObject.SessionCLO", b =>
                 {
                     b.Property<int>("CLO_id")
@@ -866,7 +853,6 @@ namespace BusinessObject.Migrations
                     b.ToTable("SessionCLO");
                 });
 
-
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
                     b.Property<int>("specialization_id")
@@ -877,7 +863,6 @@ namespace BusinessObject.Migrations
 
                     b.Property<int>("major_id")
                         .HasColumnType("int");
-
 
                     b.Property<string>("specialization_code")
                         .IsRequired()
@@ -946,7 +931,6 @@ namespace BusinessObject.Migrations
                             specialization_name = "lập trình game",
                             specialization_status = "Active"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.SpecializationSubject", b =>
@@ -1022,7 +1006,6 @@ namespace BusinessObject.Migrations
                             subject_name = "Đồ án",
                             subject_status = "Active"
                         });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Syllabus", b =>
@@ -1097,7 +1080,6 @@ namespace BusinessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("user_address")
-
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("user_email")
@@ -1151,19 +1133,6 @@ namespace BusinessObject.Migrations
                             user_password = "12345",
                             user_phone = 984739845,
                             user_status = "Active"
-                        },
-                        new
-                        {
-                            user_id = 3,
-                            full_name = "Nguyen Phong Hao",
-                            role_id = 1,
-                            user_address = "Nghe An",
-                            user_email = "haotest@gmail.com",
-                            user_name = "admin",
-                            user_password = "admin",
-                            user_phone = 984739845,
-                            user_status = "Active"
-
                         });
                 });
 
@@ -1357,7 +1326,6 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-
                     b.HasOne("BusinessObject.Subject", "PreSubject")
                         .WithMany()
                         .HasForeignKey("pre_subject_id")
@@ -1374,7 +1342,6 @@ namespace BusinessObject.Migrations
                     b.Navigation("PreSubject");
 
                     b.Navigation("Subject");
-
                 });
 
             modelBuilder.Entity("BusinessObject.Question", b =>
@@ -1437,7 +1404,6 @@ namespace BusinessObject.Migrations
                     b.Navigation("Syllabus");
                 });
 
-
             modelBuilder.Entity("BusinessObject.SessionCLO", b =>
                 {
                     b.HasOne("BusinessObject.CLO", "CLO")
@@ -1455,7 +1421,6 @@ namespace BusinessObject.Migrations
 
                     b.Navigation("Session");
                 });
-
 
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
@@ -1501,11 +1466,9 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-
                     b.Navigation("AssessmentMethod");
 
                     b.Navigation("LearningMethod");
-
                 });
 
             modelBuilder.Entity("BusinessObject.Syllabus", b =>
@@ -1556,9 +1519,7 @@ namespace BusinessObject.Migrations
                 {
                     b.Navigation("GradingCLOs");
 
-
                     b.Navigation("SessionCLO");
-
                 });
 
             modelBuilder.Entity("BusinessObject.Combo", b =>
@@ -1624,9 +1585,7 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Session", b =>
                 {
-
                     b.Navigation("SessionCLO");
-
                 });
 
             modelBuilder.Entity("BusinessObject.Specialization", b =>
@@ -1646,9 +1605,7 @@ namespace BusinessObject.Migrations
 
                     b.Navigation("PLOMappings");
 
-
                     b.Navigation("PreRequisite");
-
 
                     b.Navigation("Quizzes");
 
