@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231003153001_InitialDB")]
+    [Migration("20231004142758_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,14 @@ namespace BusinessObject.Migrations
                     b.HasIndex("assessment_type_id");
 
                     b.ToTable("AssessmentMethod");
+
+                    b.HasData(
+                        new
+                        {
+                            assessment_method_id = 1,
+                            assessment_method_component = "ABC",
+                            assessment_type_id = 1
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.AssessmentType", b =>
@@ -61,6 +69,13 @@ namespace BusinessObject.Migrations
                     b.HasKey("assessment_type_id");
 
                     b.ToTable("AssessmentType");
+
+                    b.HasData(
+                        new
+                        {
+                            assessment_type_id = 1,
+                            assessment_type_name = "Online"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Batch", b =>
@@ -239,6 +254,34 @@ namespace BusinessObject.Migrations
                     b.HasIndex("specialization_id");
 
                     b.ToTable("Curriculum");
+
+                    b.HasData(
+                        new
+                        {
+                            curriculum_id = 1,
+                            approved_date = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            batch_id = 1,
+                            curriculum_code = "GD",
+                            curriculum_description = "",
+                            curriculum_name = "Thiết kế đồ họa",
+                            curriculum_status = "Active",
+                            decision_No = "360/QĐ-CĐFPL",
+                            english_curriculum_name = "Graphic Design",
+                            specialization_id = 1
+                        },
+                        new
+                        {
+                            curriculum_id = 2,
+                            approved_date = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            batch_id = 2,
+                            curriculum_code = "SE",
+                            curriculum_description = "",
+                            curriculum_name = "kĩ sư phần mềm",
+                            curriculum_status = "Active",
+                            decision_No = "360/QĐ-CĐFPL",
+                            english_curriculum_name = "Software Engineering",
+                            specialization_id = 4
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.CurriculumSubject", b =>
@@ -345,6 +388,15 @@ namespace BusinessObject.Migrations
                     b.HasKey("learning_method_id");
 
                     b.ToTable("LearningMethod");
+
+                    b.HasData(
+                        new
+                        {
+                            learning_method_id = 1,
+                            learning_method_code = "OL",
+                            learning_method_description = "",
+                            learning_method_name = "Online Learing"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.LearningResource", b =>
@@ -389,6 +441,36 @@ namespace BusinessObject.Migrations
                     b.HasKey("major_id");
 
                     b.ToTable("Major");
+
+                    b.HasData(
+                        new
+                        {
+                            major_id = 1,
+                            major_code = "GD",
+                            major_name = "Graphic Design",
+                            major_status = "Active"
+                        },
+                        new
+                        {
+                            major_id = 2,
+                            major_code = "IT",
+                            major_name = "Information Technology",
+                            major_status = "Active"
+                        },
+                        new
+                        {
+                            major_id = 3,
+                            major_code = "BA",
+                            major_name = "Business Administration",
+                            major_status = "Active"
+                        },
+                        new
+                        {
+                            major_id = 4,
+                            major_code = "AE",
+                            major_name = "Automation Engineering",
+                            major_status = "Active"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Material", b =>
@@ -799,6 +881,56 @@ namespace BusinessObject.Migrations
                     b.HasIndex("major_id");
 
                     b.ToTable("Specialization");
+
+                    b.HasData(
+                        new
+                        {
+                            specialization_id = 1,
+                            major_id = 1,
+                            specialization_code = "IED",
+                            specialization_name = "Thiết kế nội và ngoại thất",
+                            specialization_status = "Active"
+                        },
+                        new
+                        {
+                            specialization_id = 2,
+                            major_id = 1,
+                            specialization_code = "FMA",
+                            specialization_name = "Dựng phim và quảng cáo",
+                            specialization_status = "Active"
+                        },
+                        new
+                        {
+                            specialization_id = 3,
+                            major_id = 1,
+                            specialization_code = "IED",
+                            specialization_name = "Thiết kế nội và ngoại thất",
+                            specialization_status = "Active"
+                        },
+                        new
+                        {
+                            specialization_id = 4,
+                            major_id = 2,
+                            specialization_code = "SE",
+                            specialization_name = "kĩ sư phần mềm",
+                            specialization_status = "Active"
+                        },
+                        new
+                        {
+                            specialization_id = 5,
+                            major_id = 2,
+                            specialization_code = "WP",
+                            specialization_name = "lập trình web",
+                            specialization_status = "Active"
+                        },
+                        new
+                        {
+                            specialization_id = 6,
+                            major_id = 2,
+                            specialization_code = "GP",
+                            specialization_name = "lập trình game",
+                            specialization_status = "Active"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.SpecializationSubject", b =>
@@ -860,6 +992,20 @@ namespace BusinessObject.Migrations
                     b.HasIndex("learning_method_id");
 
                     b.ToTable("Subject");
+
+                    b.HasData(
+                        new
+                        {
+                            subject_id = 1,
+                            assessment_method_id = 1,
+                            credit = 10,
+                            english_subject_name = "Project Capstone",
+                            learning_method_id = 1,
+                            option = "abc",
+                            subject_code = "SEP490",
+                            subject_name = "Đồ án",
+                            subject_status = "Active"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Syllabus", b =>

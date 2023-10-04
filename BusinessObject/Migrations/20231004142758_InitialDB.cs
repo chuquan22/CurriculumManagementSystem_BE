@@ -723,6 +723,11 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AssessmentType",
+                columns: new[] { "assessment_type_id", "assessment_type_name" },
+                values: new object[] { 1, "Online" });
+
+            migrationBuilder.InsertData(
                 table: "Batche",
                 columns: new[] { "batch_id", "batch_name" },
                 values: new object[,]
@@ -730,6 +735,22 @@ namespace BusinessObject.Migrations
                     { 1, "K19.3" },
                     { 2, "K18" },
                     { 3, "K17" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "LearningMethod",
+                columns: new[] { "learning_method_id", "learning_method_code", "learning_method_description", "learning_method_name" },
+                values: new object[] { 1, "OL", "", "Online Learing" });
+
+            migrationBuilder.InsertData(
+                table: "Major",
+                columns: new[] { "major_id", "major_code", "major_name", "major_status" },
+                values: new object[,]
+                {
+                    { 1, "GD", "Graphic Design", "Active" },
+                    { 2, "IT", "Information Technology", "Active" },
+                    { 3, "BA", "Business Administration", "Active" },
+                    { 4, "AE", "Automation Engineering", "Active" }
                 });
 
             migrationBuilder.InsertData(
@@ -743,14 +764,46 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "user_id", "full_name", "role_id", "user_address", "user_email", "user_name", "user_password", "user_phone", "user_status" },
-                values: new object[] { 1, "Chu Quang Quan", 1, "Ha Nam", "chuquan2k1@gmail.com", "QuanCQ", "12345", 349457905, "Active" });
+                table: "AssessmentMethod",
+                columns: new[] { "assessment_method_id", "assessment_method_component", "assessment_type_id" },
+                values: new object[] { 1, "ABC", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Specialization",
+                columns: new[] { "specialization_id", "major_id", "specialization_code", "specialization_name", "specialization_status" },
+                values: new object[,]
+                {
+                    { 1, 1, "IED", "Thiết kế nội và ngoại thất", "Active" },
+                    { 2, 1, "FMA", "Dựng phim và quảng cáo", "Active" },
+                    { 3, 1, "IED", "Thiết kế nội và ngoại thất", "Active" },
+                    { 4, 2, "SE", "kĩ sư phần mềm", "Active" },
+                    { 5, 2, "WP", "lập trình web", "Active" },
+                    { 6, 2, "GP", "lập trình game", "Active" }
+                });
 
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "user_id", "full_name", "role_id", "user_address", "user_email", "user_name", "user_password", "user_phone", "user_status" },
-                values: new object[] { 2, "Nguyen Thi Thu", 2, "Thai Binh", "nguyenthu120801@gmail.com", "ThuNT", "12345", 984739845, "Active" });
+                values: new object[,]
+                {
+                    { 1, "Chu Quang Quan", 1, "Ha Nam", "chuquan2k1@gmail.com", "QuanCQ", "12345", 349457905, "Active" },
+                    { 2, "Nguyen Thi Thu", 2, "Thai Binh", "nguyenthu120801@gmail.com", "ThuNT", "12345", 984739845, "Active" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Curriculum",
+                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
+                values: new object[] { 1, new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "Active", "360/QĐ-CĐFPL", "Graphic Design", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Curriculum",
+                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
+                values: new object[] { 2, new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ sư phần mềm", "Active", "360/QĐ-CĐFPL", "Software Engineering", 4 });
+
+            migrationBuilder.InsertData(
+                table: "Subject",
+                columns: new[] { "subject_id", "assessment_method_id", "credit", "english_subject_name", "learning_method_id", "option", "subject_code", "subject_name", "subject_status" },
+                values: new object[] { 1, 1, 10, "Project Capstone", 1, "abc", "SEP490", "Đồ án", "Active" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentMethod_assessment_type_id",
