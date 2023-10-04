@@ -16,11 +16,13 @@ namespace BusinessObject
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                                               .AddJsonFile("appsettings.json", true, true)
-                                               .Build();
-            string? con = connectionString.GetConnectionString("CMSDb");
-            optionsBuilder.UseSqlServer(con);
+            if (!optionsBuilder.IsConfigured)
+            {
+                var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                IConfiguration configuration = builder.Build();
+                optionsBuilder.UseSqlServer(configuration.GetConnectionString("CMSDb"));
+            }
         }
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }
@@ -133,9 +135,12 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<User>().HasData(
-                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com",user_password = "12345", user_name = "QuanCQ", user_phone = 0349457905, user_status = "Active" },
-                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_address = "Thai Binh", user_email = "nguyenthu120801@gmail.com", user_password = "12345", user_name = "ThuNT", user_phone = 0984739845, user_status = "Active" }
-                );
+
+     new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com", user_password = "12345", user_name = "QuanCQ", user_phone = 0349457905, user_status = "Active" },
+     new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_address = "Thai Binh", user_email = "nguyenthu120801@gmail.com", user_password = "12345", user_name = "ThuNT", user_phone = 0984739845, user_status = "Active" }
+     , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_address = "Nghe An", user_email = "haotest@gmail.com", user_password = "admin", user_name = "admin", user_phone = 0984739845, user_status = "Active" }
+
+     );
 
             modelBuilder.Entity<Batch>().HasData(
                 new Batch { batch_id = 1, batch_name = "K19.3" },
@@ -183,6 +188,7 @@ namespace BusinessObject
             modelBuilder.Entity<Subject>().HasData(
                 new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, option = "abc", subject_status = "Active" }
                 );
+
         }
     }
 }
