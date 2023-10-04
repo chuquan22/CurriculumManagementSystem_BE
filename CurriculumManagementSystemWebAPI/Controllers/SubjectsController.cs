@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject;
-using DataAccess.DTO;
 using AutoMapper;
+using DataAccess.Models.DTO.response;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -27,28 +27,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
         // GET: api/Subjects
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<SubjectDTO>>> GetSubject()
+        [HttpGet("GetAllSubject")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject()
         {
           if (_context.Subject == null)
           {
               return NotFound();
           }
-            var subject = await _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToListAsync();
-            var subjectDTO = _mapper.Map<List<SubjectDTO>>(subject);
+           
             return subjectDTO;
         }
 
         // GET: api/Subjects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SubjectDTO>> GetSubject(int id)
+        public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
         {
           if (_context.Subject == null)
           {
               return NotFound();
           }
             var subject = await _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).SingleOrDefaultAsync(x => x.subject_id == id);
-            var subjectDTO = _mapper.Map<SubjectDTO>(subject);
+            var subjectDTO = _mapper.Map<SubjectResponse>(subject);
             if (subject == null)
             {
                 return NotFound();
@@ -60,7 +59,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // PUT: api/Subjects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject(int id, [FromForm]SubjectDTO subject)
+        public async Task<IActionResult> PutSubject(int id, [FromForm]SubjectResponse subject)
         {
             if (id != subject.subject_id)
             {

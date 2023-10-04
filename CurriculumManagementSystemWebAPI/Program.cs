@@ -1,13 +1,12 @@
 
-﻿using BusinessObject;
+using BusinessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
 
 using AutoMapper;
-
-using DataAccess.DTO;
+using DataAccess.Models.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -53,7 +52,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-var app = builder.Build();
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
