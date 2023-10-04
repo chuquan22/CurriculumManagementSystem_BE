@@ -4,6 +4,7 @@ using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    partial class CMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231004151858_InitialDB")]
+    partial class InitialDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,15 +44,6 @@ namespace BusinessObject.Migrations
                     b.HasIndex("assessment_type_id");
 
                     b.ToTable("AssessmentMethod");
-
-                    b.HasData(
-                        new
-                        {
-                            assessment_method_id = 1,
-                            assessment_method_component = "ABC",
-                            assessment_type_id = 1
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.AssessmentType", b =>
@@ -68,15 +61,6 @@ namespace BusinessObject.Migrations
                     b.HasKey("assessment_type_id");
 
                     b.ToTable("AssessmentType");
-
-
-                    b.HasData(
-                        new
-                        {
-                            assessment_type_id = 1,
-                            assessment_type_name = "Online"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Batch", b =>
@@ -94,24 +78,6 @@ namespace BusinessObject.Migrations
                     b.HasKey("batch_id");
 
                     b.ToTable("Batche");
-
-                    b.HasData(
-                        new
-                        {
-                            batch_id = 1,
-                            batch_name = "K19.3"
-                        },
-                        new
-                        {
-                            batch_id = 2,
-                            batch_name = "K18"
-                        },
-                        new
-                        {
-                            batch_id = 3,
-                            batch_name = "K17"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.ClassSessionType", b =>
@@ -140,8 +106,6 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CLO_id"), 1L, 1);
 
                     b.Property<string>("CLO_description")
-                        .IsRequired()
-
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CLO_name")
@@ -167,7 +131,6 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("combo_id"), 1L, 1);
 
                     b.Property<string>("combo_description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("combo_name")
@@ -224,15 +187,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("curriculum_code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-
-                    b.Property<string>("curriculum_description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("curriculum_name")
+                    b.Property<string>("curriculum_description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -240,16 +197,27 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("decision_No")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("decision_No")
+                        .HasColumnType("int");
 
                     b.Property<string>("english_curriculum_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("english_vocational_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("specialization_id")
                         .HasColumnType("int");
+
+                    b.Property<string>("vocational_code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("vocational_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("curriculum_id");
 
@@ -258,35 +226,6 @@ namespace BusinessObject.Migrations
                     b.HasIndex("specialization_id");
 
                     b.ToTable("Curriculum");
-
-                    b.HasData(
-                        new
-                        {
-                            curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            batch_id = 1,
-                            curriculum_code = "GD",
-                            curriculum_description = "",
-                            curriculum_name = "Thiết kế đồ họa",
-                            curriculum_status = "Active",
-                            decision_No = "360/QĐ-CĐFPL",
-                            english_curriculum_name = "Graphic Design",
-                            specialization_id = 1
-                        },
-                        new
-                        {
-                            curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 4, 0, 0, 0, 0, DateTimeKind.Local),
-                            batch_id = 2,
-                            curriculum_code = "SE",
-                            curriculum_description = "",
-                            curriculum_name = "kĩ sư phần mềm",
-                            curriculum_status = "Active",
-                            decision_No = "360/QĐ-CĐFPL",
-                            english_curriculum_name = "Software Engineering",
-                            specialization_id = 4
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.CurriculumSubject", b =>
@@ -379,11 +318,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("learning_method_code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("learning_method_description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("learning_method_name")
@@ -393,16 +330,6 @@ namespace BusinessObject.Migrations
                     b.HasKey("learning_method_id");
 
                     b.ToTable("LearningMethod");
-
-                    b.HasData(
-                        new
-                        {
-                            learning_method_id = 1,
-                            learning_method_code = "OL",
-                            learning_method_description = "",
-                            learning_method_name = "Online Learing"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.LearningResource", b =>
@@ -440,7 +367,6 @@ namespace BusinessObject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-
                     b.Property<string>("major_status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -448,37 +374,6 @@ namespace BusinessObject.Migrations
                     b.HasKey("major_id");
 
                     b.ToTable("Major");
-
-                    b.HasData(
-                        new
-                        {
-                            major_id = 1,
-                            major_code = "GD",
-                            major_name = "Graphic Design",
-                            major_status = "Active"
-                        },
-                        new
-                        {
-                            major_id = 2,
-                            major_code = "IT",
-                            major_name = "Information Technology",
-                            major_status = "Active"
-                        },
-                        new
-                        {
-                            major_id = 3,
-                            major_code = "BA",
-                            major_name = "Business Administration",
-                            major_status = "Active"
-                        },
-                        new
-                        {
-                            major_id = 4,
-                            major_code = "AE",
-                            major_name = "Automation Engineering",
-                            major_status = "Active"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Material", b =>
@@ -576,13 +471,11 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.PreRequisite", b =>
                 {
-
-                    b.Property<int>("subject_id")
+                    b.Property<int>("pre_requisite_id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("pre_subject_id")
-                        .HasColumnType("int");
-
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("pre_requisite_id"), 1L, 1);
 
                     b.Property<string>("pre_requisite_name")
                         .IsRequired()
@@ -591,12 +484,9 @@ namespace BusinessObject.Migrations
                     b.Property<int>("pre_requisite_type_id")
                         .HasColumnType("int");
 
-
-                    b.HasKey("subject_id", "pre_subject_id");
+                    b.HasKey("pre_requisite_id");
 
                     b.HasIndex("pre_requisite_type_id");
-
-                    b.HasIndex("pre_subject_id");
 
                     b.ToTable("PreRequisite");
                 });
@@ -763,10 +653,6 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-
-                    b.Property<int>("term_no")
-                        .HasColumnType("int");
-
                     b.HasKey("semester_id", "curriculum_id");
 
                     b.HasIndex("curriculum_id");
@@ -850,23 +736,6 @@ namespace BusinessObject.Migrations
                     b.ToTable("Session");
                 });
 
-
-            modelBuilder.Entity("BusinessObject.SessionCLO", b =>
-                {
-                    b.Property<int>("CLO_id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("session_id")
-                        .HasColumnType("int");
-
-                    b.HasKey("CLO_id", "session_id");
-
-                    b.HasIndex("session_id");
-
-                    b.ToTable("SessionCLO");
-                });
-
-
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
                     b.Property<int>("specialization_id")
@@ -878,9 +747,7 @@ namespace BusinessObject.Migrations
                     b.Property<int>("major_id")
                         .HasColumnType("int");
 
-
-                    b.Property<string>("specialization_code")
-                        .IsRequired()
+                    b.Property<string>("specialization_description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("specialization_name")
@@ -896,57 +763,6 @@ namespace BusinessObject.Migrations
                     b.HasIndex("major_id");
 
                     b.ToTable("Specialization");
-
-                    b.HasData(
-                        new
-                        {
-                            specialization_id = 1,
-                            major_id = 1,
-                            specialization_code = "IED",
-                            specialization_name = "Thiết kế nội và ngoại thất",
-                            specialization_status = "Active"
-                        },
-                        new
-                        {
-                            specialization_id = 2,
-                            major_id = 1,
-                            specialization_code = "FMA",
-                            specialization_name = "Dựng phim và quảng cáo",
-                            specialization_status = "Active"
-                        },
-                        new
-                        {
-                            specialization_id = 3,
-                            major_id = 1,
-                            specialization_code = "IED",
-                            specialization_name = "Thiết kế nội và ngoại thất",
-                            specialization_status = "Active"
-                        },
-                        new
-                        {
-                            specialization_id = 4,
-                            major_id = 2,
-                            specialization_code = "SE",
-                            specialization_name = "kĩ sư phần mềm",
-                            specialization_status = "Active"
-                        },
-                        new
-                        {
-                            specialization_id = 5,
-                            major_id = 2,
-                            specialization_code = "WP",
-                            specialization_name = "lập trình web",
-                            specialization_status = "Active"
-                        },
-                        new
-                        {
-                            specialization_id = 6,
-                            major_id = 2,
-                            specialization_code = "GP",
-                            specialization_name = "lập trình game",
-                            specialization_status = "Active"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.SpecializationSubject", b =>
@@ -989,6 +805,9 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("pre_requisite_id")
+                        .HasColumnType("int");
+
                     b.Property<string>("subject_code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1007,22 +826,9 @@ namespace BusinessObject.Migrations
 
                     b.HasIndex("learning_method_id");
 
+                    b.HasIndex("pre_requisite_id");
+
                     b.ToTable("Subject");
-
-                    b.HasData(
-                        new
-                        {
-                            subject_id = 1,
-                            assessment_method_id = 1,
-                            credit = 10,
-                            english_subject_name = "Project Capstone",
-                            learning_method_id = 1,
-                            option = "abc",
-                            subject_code = "SEP490",
-                            subject_name = "Đồ án",
-                            subject_status = "Active"
-                        });
-
                 });
 
             modelBuilder.Entity("BusinessObject.Syllabus", b =>
@@ -1080,6 +886,21 @@ namespace BusinessObject.Migrations
                     b.ToTable("Syllabus");
                 });
 
+            modelBuilder.Entity("BusinessObject.TimeAllocation", b =>
+                {
+                    b.Property<int>("CLO_id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("session_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("CLO_id", "session_id");
+
+                    b.HasIndex("session_id");
+
+                    b.ToTable("TimeAllocation");
+                });
+
             modelBuilder.Entity("BusinessObject.User", b =>
                 {
                     b.Property<int>("user_id")
@@ -1097,8 +918,8 @@ namespace BusinessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("user_address")
-
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("user_email")
                         .IsRequired()
@@ -1163,7 +984,6 @@ namespace BusinessObject.Migrations
                             user_password = "admin",
                             user_phone = 984739845,
                             user_status = "Active"
-
                         });
                 });
 
@@ -1357,24 +1177,7 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-
-                    b.HasOne("BusinessObject.Subject", "PreSubject")
-                        .WithMany()
-                        .HasForeignKey("pre_subject_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessObject.Subject", "Subject")
-                        .WithMany("PreRequisite")
-                        .HasForeignKey("subject_id")
-                        .IsRequired();
-
                     b.Navigation("PreRequisiteType");
-
-                    b.Navigation("PreSubject");
-
-                    b.Navigation("Subject");
-
                 });
 
             modelBuilder.Entity("BusinessObject.Question", b =>
@@ -1437,26 +1240,6 @@ namespace BusinessObject.Migrations
                     b.Navigation("Syllabus");
                 });
 
-
-            modelBuilder.Entity("BusinessObject.SessionCLO", b =>
-                {
-                    b.HasOne("BusinessObject.CLO", "CLO")
-                        .WithMany("SessionCLO")
-                        .HasForeignKey("CLO_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessObject.Session", "Session")
-                        .WithMany("SessionCLO")
-                        .HasForeignKey("session_id")
-                        .IsRequired();
-
-                    b.Navigation("CLO");
-
-                    b.Navigation("Session");
-                });
-
-
             modelBuilder.Entity("BusinessObject.Specialization", b =>
                 {
                     b.HasOne("BusinessObject.Major", "Major")
@@ -1501,11 +1284,17 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BusinessObject.PreRequisite", "PreRequisite")
+                        .WithMany("subjects")
+                        .HasForeignKey("pre_requisite_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AssessmentMethod");
 
                     b.Navigation("LearningMethod");
 
+                    b.Navigation("PreRequisite");
                 });
 
             modelBuilder.Entity("BusinessObject.Syllabus", b =>
@@ -1517,6 +1306,24 @@ namespace BusinessObject.Migrations
                         .IsRequired();
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("BusinessObject.TimeAllocation", b =>
+                {
+                    b.HasOne("BusinessObject.CLO", "CLO")
+                        .WithMany("TimeAllocations")
+                        .HasForeignKey("CLO_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.Session", "Session")
+                        .WithMany("TimeAllocation")
+                        .HasForeignKey("session_id")
+                        .IsRequired();
+
+                    b.Navigation("CLO");
+
+                    b.Navigation("Session");
                 });
 
             modelBuilder.Entity("BusinessObject.User", b =>
@@ -1556,9 +1363,7 @@ namespace BusinessObject.Migrations
                 {
                     b.Navigation("GradingCLOs");
 
-
-                    b.Navigation("SessionCLO");
-
+                    b.Navigation("TimeAllocations");
                 });
 
             modelBuilder.Entity("BusinessObject.Combo", b =>
@@ -1602,6 +1407,11 @@ namespace BusinessObject.Migrations
                     b.Navigation("PLOMappings");
                 });
 
+            modelBuilder.Entity("BusinessObject.PreRequisite", b =>
+                {
+                    b.Navigation("subjects");
+                });
+
             modelBuilder.Entity("BusinessObject.PreRequisiteType", b =>
                 {
                     b.Navigation("PreRequisites");
@@ -1624,9 +1434,7 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Session", b =>
                 {
-
-                    b.Navigation("SessionCLO");
-
+                    b.Navigation("TimeAllocation");
                 });
 
             modelBuilder.Entity("BusinessObject.Specialization", b =>
@@ -1645,10 +1453,6 @@ namespace BusinessObject.Migrations
                     b.Navigation("CurriculumSubjects");
 
                     b.Navigation("PLOMappings");
-
-
-                    b.Navigation("PreRequisite");
-
 
                     b.Navigation("Quizzes");
 
