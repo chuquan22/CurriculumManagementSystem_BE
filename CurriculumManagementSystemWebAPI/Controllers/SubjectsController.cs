@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject;
+using DataAccess.DTO;
 using AutoMapper;
-using DataAccess.Models.DTO.response;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -27,27 +27,28 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
         // GET: api/Subjects
-        [HttpGet("GetAllSubject")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SubjectDTO>>> GetSubject()
         {
           if (_context.Subject == null)
           {
               return NotFound();
           }
-           
+            var subject = await _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToListAsync();
+            var subjectDTO = _mapper.Map<List<SubjectDTO>>(subject);
             return subjectDTO;
         }
 
         // GET: api/Subjects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
+        public async Task<ActionResult<SubjectDTO>> GetSubject(int id)
         {
           if (_context.Subject == null)
           {
               return NotFound();
           }
-            var subject = await _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).SingleOrDefaultAsync(x => x.subject_id == id);
-            var subjectDTO = _mapper.Map<SubjectResponse>(subject);
+            var subject =  _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.subject_id == id).FirstOrDefault();
+            var subjectDTO = _mapper.Map<SubjectDTO>(subject);
             if (subject == null)
             {
                 return NotFound();
@@ -59,7 +60,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // PUT: api/Subjects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject(int id, [FromForm]SubjectResponse subject)
+        public async Task<IActionResult> PutSubject(int id, Subject subject)
         {
             if (id != subject.subject_id)
             {
@@ -90,16 +91,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // POST: api/Subjects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Subject>> PostSubject([FromForm] SubjectCreateDTO subject)
+        public async Task<ActionResult<Subject>> PostSubject(Subject subject)
         {
           if (_context.Subject == null)
           {
               return Problem("Entity set 'CMSDbContext.Subject'  is null.");
           }
-            //_context.Subject.Add(subject);
+            _context.Subject.Add(subject);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSubject", subject);
+            return CreatedAtAction("GetSubject", new { id = subject.subject_id }, subject);
         }
 
         // DELETE: api/Subjects/5
