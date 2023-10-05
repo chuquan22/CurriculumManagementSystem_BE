@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.DTO
+namespace CurriculumManagementSystemWebAPI.Models.DTO.request
 {
-    public class SubjectDTO
+    public class SubjectRequest
     {
-        public int subject_id { get; set; }
         [Required]
         public string subject_code { get; set; }
         [Required]
@@ -18,9 +16,9 @@ namespace DataAccess.DTO
         [Required]
         public string english_subject_name { get; set; }
         [Required]
-        public string learning_method_name { get; set; }
+        public int learning_method_id { get; set; }
         [Required]
-        public string assessment_method_name { get; set; }
+        public int assessment_method_id { get; set; }
         [Required]
         public int credit { get; set; }
 

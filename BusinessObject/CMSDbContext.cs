@@ -16,13 +16,11 @@ namespace BusinessObject
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                IConfiguration configuration = builder.Build();
-                optionsBuilder.UseSqlServer(configuration.GetConnectionString("CMSDb"));
-            }
+            var connectionString = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                                               .AddJsonFile("appsettings.json", true, true)
+                                               .Build();
+            string? con = connectionString.GetConnectionString("CMSDb");
+            optionsBuilder.UseSqlServer(con);
         }
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }
@@ -165,16 +163,16 @@ namespace BusinessObject
                 new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_status = "Active" }
                 );
 
-           
+
 
             modelBuilder.Entity<Curriculum>().HasData(
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1 , curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" },
-                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2,curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" },
+                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, curriculum_status = "Active", decision_No = "360/QĐ-CĐFPL" }
 
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
-               new LearningMethod { learning_method_id = 1, learning_method_code = "OL", learning_method_name = "Online Learing", learning_method_description = ""}
+               new LearningMethod { learning_method_id = 1, learning_method_code = "OL", learning_method_name = "Online Learing", learning_method_description = "" }
                 );
 
             modelBuilder.Entity<AssessmentType>().HasData(

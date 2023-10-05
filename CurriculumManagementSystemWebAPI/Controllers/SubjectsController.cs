@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject;
-using DataAccess.DTO;
 using AutoMapper;
+using Repositories.Subjects;
+using CurriculumManagementSystemWebAPI.Models.DTO.response;
+using CurriculumManagementSystemWebAPI.Models.DTO.request;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -17,6 +19,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
 
         public SubjectsController(CMSDbContext context, IMapper mapper)
         {
@@ -25,107 +28,126 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
-
         // GET: api/Subjects
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<SubjectDTO>>> GetSubject()
+        [HttpGet("GetAllSubject")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject()
         {
-          if (_context.Subject == null)
-          {
-              return NotFound();
-          }
-            var subject = await _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToListAsync();
-            var subjectDTO = _mapper.Map<List<SubjectDTO>>(subject);
-            return subjectDTO;
-        }
-
-        // GET: api/Subjects/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<SubjectDTO>> GetSubject(int id)
-        {
-          if (_context.Subject == null)
-          {
-              return NotFound();
-          }
-            var subject =  _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.subject_id == id).FirstOrDefault();
-            var subjectDTO = _mapper.Map<SubjectDTO>(subject);
-            if (subject == null)
+            if (_context.Subject == null)
             {
                 return NotFound();
             }
-
-            return subjectDTO;
+            var subject = _subjectRepository.GetAllSubject();
+            if (subject == null)
+            {
+                return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
+            }
+            var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectRespone));
         }
+
+        // GET: api/Subjects/5
+        [HttpGet("GetSubjectById/{id}")]
+        public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
+        {
+            if (_context.Subject == null)
+            {
+                return NotFound();
+            }
+            var subject = _subjectRepository.GetSubjectById(id);
+
+            if (subject == null)
+            {
+                return NotFound(new BaseResponse(true, "Can't Found this subject"));
+            }
+            var subjectResponse = _mapper.Map<SubjectResponse>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectResponse));
+        }
+
+
+        // GET: api/Subjects/abc
+        [HttpGet("SearchSubjectByName/{subjectName}")]
+        public async Task<ActionResult<SubjectResponse>> SearchSubject(string subjectName)
+        {
+            if (_context.Subject == null)
+            {
+                return NotFound();
+            }
+            var subject = _subjectRepository.GetSubjectByName(subjectName);
+
+            if (subject == null)
+            {
+                return NotFound(new BaseResponse(true, "Can't Found this subject"));
+            }
+            var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectResponse));
+        }
+
 
         // PUT: api/Subjects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubject(int id, Subject subject)
+        [HttpPut("UpdateSubject/{id}")]
+        public async Task<IActionResult> PutSubject(int id, [FromForm] SubjectRequest subjectRespone)
         {
-            if (id != subject.subject_id)
+            if (!CheckIdExist(id))
             {
-                return BadRequest();
+                return BadRequest(new BaseResponse(true, "Subject Not Found. Can't Update"));
+            }
+            var subject = _subjectRepository.GetSubjectById(id);
+            _mapper.Map(subject, subjectRespone);
+
+            string updateResult = _subjectRepository.UpdateSubject(subject);
+            if (!updateResult.Equals("OK"))
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
             }
 
-            _context.Entry(subject).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SubjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(new BaseResponse(false, "update subject successfull!", subjectRespone));
         }
 
         // POST: api/Subjects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Subject>> PostSubject(Subject subject)
+        [HttpPost("CreateSubject")]
+        public async Task<ActionResult<Subject>> PostSubject([FromForm] SubjectRequest subjectRequest)
         {
-          if (_context.Subject == null)
-          {
-              return Problem("Entity set 'CMSDbContext.Subject'  is null.");
-          }
-            _context.Subject.Add(subject);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSubject", new { id = subject.subject_id }, subject);
+            if (_context.Subject == null)
+            {
+                return Problem("Entity set 'CMSDbContext.Subject'  is null.");
+            }
+            var subject = _mapper.Map<Subject>(subjectRequest);
+            string createResult = _subjectRepository.CreateNewSubject(subject);
+            if (!createResult.Equals("OK"))
+            {
+                return BadRequest(new BaseResponse(true, createResult));
+            }
+            return Ok(new BaseResponse(false, "create new subject successfull!", subjectRequest));
         }
 
         // DELETE: api/Subjects/5
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteSubject/{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {
             if (_context.Subject == null)
             {
                 return NotFound();
             }
-            var subject = await _context.Subject.FindAsync(id);
+            var subject = _subjectRepository.GetSubjectById(id);
             if (subject == null)
             {
-                return NotFound();
+                return NotFound(new BaseResponse(true, "Subject you want delete Not Found!"));
+            }
+            string deleteResult = _subjectRepository.DeleteSubject(subject);
+            if (!deleteResult.Equals("OK"))
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
             }
 
-            _context.Subject.Remove(subject);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(new BaseResponse(false, "Delete successfull!", id));
         }
-
-        private bool SubjectExists(int id)
+        [NonAction]
+        public bool CheckIdExist(int id)
         {
-            return (_context.Subject?.Any(e => e.subject_id == id)).GetValueOrDefault();
+            if (_context.Subject.Find(id) == null) return false;
+            return true;
         }
     }
 }

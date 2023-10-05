@@ -1,4 +1,7 @@
-﻿using BusinessObject;
+﻿
+using BusinessObject;
+using DataAccess.Models.DTO.request;
+using DataAccess.Models.DTO.response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,21 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess
+namespace DataAccess.DAO
 {
     public class SubjectDAO
     {
-        public readonly CMSDbContext CMSDbContext;
-
-        public SubjectDAO(CMSDbContext cMSDbContext)
-        {
-            CMSDbContext = cMSDbContext;
-        }
+        public readonly CMSDbContext CMSDbContext = new CMSDbContext();
+        
 
         public List<Subject> GetAllSubjects()
         {
-            List<Subject> list = new List<Subject>();
-            list = CMSDbContext.Subject.ToList();
+            var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
             return list;
         }
 
@@ -28,8 +26,7 @@ namespace DataAccess
         {
             try
             {
-                Subject subject = new Subject();
-                subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == id);
+                var subject = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).SingleOrDefault(x => x.subject_id == id);
                 return subject;
             }
             catch (Exception ex)
@@ -42,8 +39,8 @@ namespace DataAccess
         {
             try
             {
-                var listSubject = CMSDbContext.Subject.Where(x => x.subject_name.Contains(name)).ToList();
-                return listSubject;
+                var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
+                return list;
             }
             catch (Exception ex)
             {
@@ -58,7 +55,8 @@ namespace DataAccess
                 CMSDbContext.Subject.Add(subject);
                 CMSDbContext.SaveChanges();
                 return "OK";
-            }catch (DbUpdateConcurrencyException ex)
+            }
+            catch (DbUpdateConcurrencyException ex)
             {
                 return ex.Message;
             }
