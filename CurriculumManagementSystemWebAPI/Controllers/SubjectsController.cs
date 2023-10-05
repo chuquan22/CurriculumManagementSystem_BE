@@ -47,7 +47,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
           {
               return NotFound();
           }
-            var subject = await _context.SubjectInclude(x => x.AssessmentMethod).Include(x => x.LearningMethod).FindAsync(id);
+            var subject =  _context.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.subject_id == id).FirstOrDefault();
             var subjectDTO = _mapper.Map<SubjectDTO>(subject);
             if (subject == null)
             {
