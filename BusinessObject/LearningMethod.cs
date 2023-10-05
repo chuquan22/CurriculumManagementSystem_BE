@@ -14,9 +14,6 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int learning_method_id { get; set; }
         [Required]
-        [MaxLength(10)]
-        public string learning_method_code { get; set; }
-        [Required]
         public string learning_method_name { get; set; }
         [Required]
         public string learning_method_description { get; set; }

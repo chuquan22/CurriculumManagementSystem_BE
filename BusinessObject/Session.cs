@@ -31,7 +31,7 @@ namespace BusinessObject
         public int class_session_type_id { get; set; }
         //check
         [Required]
-        public bool remote_learning  { get; set; }
+        public int remote_learning  { get; set; }
         [Required]
         public bool ass_defense { get; set; }
         [Required]

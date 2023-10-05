@@ -20,6 +20,13 @@ namespace DataAccess.Models.DTO
                .ReverseMap();
 
             CreateMap<Subject, SubjectRequest>().ReverseMap();
+
+            CreateMap<Curriculum, CurriculumResponse>()
+              .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
+              .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+              .ReverseMap();
+
+            CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
         }
     }
 }

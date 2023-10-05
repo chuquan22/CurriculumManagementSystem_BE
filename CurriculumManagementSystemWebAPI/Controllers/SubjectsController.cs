@@ -45,6 +45,29 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", subjectRespone));
         }
 
+        [HttpGet("pagination/{index}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationSubject(int index, int pageSize)
+        {
+            if (_context.Subject == null)
+            {
+                return NotFound();
+            }
+            var subject = _context.Subject.Skip((index -1) * pageSize).Take(pageSize).ToList();
+            if (subject == null)
+            {
+                return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
+            }
+            var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectRespone));
+        }
+
+        [HttpGet("GetTotalSubject")]
+        public BaseResponse GetSubjectCount()
+        {
+            int total = _context.Subject.Count();
+            return new BaseResponse(false, "total subject", total);
+        }
+
         // GET: api/Subjects/5
         [HttpGet("GetSubjectById/{id}")]
         public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
@@ -93,7 +116,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject Not Found. Can't Update"));
             }
             var subject = _subjectRepository.GetSubjectById(id);
-            _mapper.Map(subject, subjectRespone);
+            _mapper.Map(subjectRespone, subject);
 
             string updateResult = _subjectRepository.UpdateSubject(subject);
             if (!updateResult.Equals("OK"))
