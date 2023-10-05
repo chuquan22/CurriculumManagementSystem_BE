@@ -22,7 +22,7 @@ namespace BusinessObject
         [ForeignKey("Curriculum")]
         public int curriculum_id { get; set; }
         [Required]
-        public string combo_status { get; set; }
+        public bool is_active { get; set; }
 
         public virtual Specialization Specialization { get; set; }
         public virtual Curriculum Curriculum { get; set; }

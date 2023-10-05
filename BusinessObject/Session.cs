@@ -33,19 +33,19 @@ namespace BusinessObject
         [Required]
         public int remote_learning  { get; set; }
         [Required]
-        public bool ass_defense { get; set; }
+        public int ass_defense { get; set; }
         [Required]
-        public bool eos_exam { get; set; }
+        public int eos_exam { get; set; }
         [Required]
-        public bool video_learning { get; set; }
+        public int video_learning { get; set; }
         [Required]
-        public bool IVQ { get; set; }
+        public int IVQ { get; set; }
         [Required]
-        public bool online_lab { get; set; }
+        public int online_lab { get; set; }
         [Required]
-        public bool online_test { get; set; }
+        public int online_test { get; set; }
         [Required]
-        public bool assigment { get; set; }
+        public int assigment { get; set; }
 
         public virtual Syllabus Syllabus { get; set; }
         public virtual ClassSessionType ClassSessionType { get; set; }

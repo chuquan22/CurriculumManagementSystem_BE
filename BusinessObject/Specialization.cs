@@ -14,13 +14,15 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int specialization_id { get; set; }
         [Required]
+        public string specialization_code { get; set; }
+        [Required]
         public string specialization_name { get; set; }
         [Required]
-        public string specialization_code { get; set; }
+        public string specialization_english_name { get; set; }
         [ForeignKey("Major")]
         public int major_id { get; set; }
         [Required]
-        public string specialization_status { get; set; }
+        public bool is_active { get; set; }
 
         public virtual Major Major { get; set; }
 

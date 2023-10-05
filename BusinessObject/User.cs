@@ -28,7 +28,7 @@ namespace BusinessObject
         [ForeignKey("Role")]
         public int role_id { get; set; }
         [Required]
-        public string user_status { get; set; }
+        public bool is_active { get; set; }
 
         public virtual Role Role { get; set; }  
     }
