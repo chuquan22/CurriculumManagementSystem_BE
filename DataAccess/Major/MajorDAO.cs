@@ -23,5 +23,15 @@ namespace DataAccess.Major
             db.SaveChanges();
             return major;
         }
+
+        public BusinessObject.Major EditMajor(BusinessObject.Major major)
+        {
+            var editMajor = db.Major.FirstOrDefault(x => x.major_id == major.major_id);
+            editMajor.major_name = major.major_name;
+            editMajor.major_status = major.major_status;
+            editMajor.major_code = major.major_code;
+            db.SaveChanges();
+            return major;
+        }
     }
 }

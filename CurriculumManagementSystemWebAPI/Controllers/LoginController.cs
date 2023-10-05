@@ -29,11 +29,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
        
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login(string username, string password)
+        public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
         {
-            UserLoginRequest userLoginRequest = new UserLoginRequest();
-            userLoginRequest.username = username;
-            userLoginRequest.password = password;
             User user = AuthenticateUser(userLoginRequest);
             if (user != null)
             {
@@ -53,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private User AuthenticateUser(UserLoginRequest request)
         {
-            User userLogged = repo.Login(request.username, request.password);
+            User userLogged = repo.Login(request.email, request.password);
             if (userLogged == null)
             {
                 return null;

@@ -13,7 +13,7 @@ namespace Repositories.Major
 
         public BusinessObject.Major AddMajor(BusinessObject.Major major)
         {
-            throw new NotImplementedException();
+            return db.AddMajor(major);
         }
 
         public List<BusinessObject.Major> GetAllMajor()
