@@ -5,9 +5,10 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using CurriculumManagementSystemWebAPI.Models.DTO.request;
-using CurriculumManagementSystemWebAPI.Models.DTO.response;
+using DataAccess.Models.DTO.request;
+using DataAccess.Models.DTO.response;
 using Repositories.Users;
+using AutoMapper;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -17,10 +18,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private IConfiguration config;
         private IUsersRepository repo;
-        public LoginController(IConfiguration configuration)
+        private readonly IMapper _mapper;
+
+        public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
             repo = new UsersRepository();
+            _mapper = mapper;  
         }
        
         [AllowAnonymous]
@@ -30,13 +34,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             UserLoginRequest userLoginRequest = new UserLoginRequest();
             userLoginRequest.username = username;
             userLoginRequest.password = password;
-            var user = AuthenticateUser(userLoginRequest);
+            User user = AuthenticateUser(userLoginRequest);
             if (user != null)
             {
+                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
                 var token = GenerateToken(user);
-                return Ok(new BaseResponse(false, "Login Successful", token));
+                var data = new[]
+                {
+                   new {
+                       Token = token,
+                       UserData = userResponse
+                       },
+                 };
+                return Ok(new BaseResponse(false, "Login Successful", data));
             }
-            return Unauthorized();
+            return Unauthorized(new BaseResponse(false, "Login False", null));
         }
 
         private User AuthenticateUser(UserLoginRequest request)
@@ -71,7 +83,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("get-current-user")]
-        public BaseResponse GetCurrentUser()
+        public UserLoginResponse GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
@@ -88,9 +100,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
                     user_status = identity.FindFirst(ClaimTypes.IsPersistent)?.Value,
                 };
-                return new BaseResponse(false, "Successful", data);
+                return data;
             }
-            return new BaseResponse(true, "false");
+            return null;
         }
     }
 }
