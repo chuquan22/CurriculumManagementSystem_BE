@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObject;
-using DataAccess.Models.DTO.response;
+using CurriculumManagementSystemWebAPI.Models.DTO.request;
+using CurriculumManagementSystemWebAPI.Models.DTO.response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
+
+            CreateMap<Subject, SubjectRequest>().ReverseMap();
         }
     }
 }

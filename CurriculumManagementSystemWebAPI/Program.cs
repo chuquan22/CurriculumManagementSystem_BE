@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
-
-using AutoMapper;
 using DataAccess.Models.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +51,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Configure the HTTP request pipeline.
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

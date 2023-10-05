@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
@@ -14,22 +14,20 @@ namespace DataAccess.DAO
     public class SubjectDAO
     {
         public readonly CMSDbContext CMSDbContext = new CMSDbContext();
-        public readonly IMapper mapper;
+        
 
-        public List<SubjectResponse> GetAllSubjects()
+        public List<Subject> GetAllSubjects()
         {
             var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
-            var listSubjectRespone = mapper.Map<List<SubjectResponse>>(list);
-            return listSubjectRespone;
+            return list;
         }
 
-        public SubjectResponse GetSubjectById(int id)
+        public Subject GetSubjectById(int id)
         {
             try
             {
                 var subject = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).SingleOrDefault(x => x.subject_id == id);
-                var subjectRespone = mapper.Map<SubjectResponse>(subject);
-                return subjectRespone;
+                return subject;
             }
             catch (Exception ex)
             {
@@ -37,13 +35,12 @@ namespace DataAccess.DAO
             }
         }
 
-        public List<SubjectResponse> GetSubjectByName(string name)
+        public List<Subject> GetSubjectByName(string name)
         {
             try
             {
                 var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
-                var listSubjectRespone = mapper.Map<List<SubjectResponse>>(list);
-                return listSubjectRespone;
+                return list;
             }
             catch (Exception ex)
             {
@@ -51,11 +48,10 @@ namespace DataAccess.DAO
             }
         }
 
-        public string CreateSubject(SubjectRequest subjectRequest)
+        public string CreateSubject(Subject subject)
         {
             try
             {
-                var subject = mapper.Map<Subject>(subjectRequest);
                 CMSDbContext.Subject.Add(subject);
                 CMSDbContext.SaveChanges();
                 return "OK";
@@ -66,11 +62,10 @@ namespace DataAccess.DAO
             }
         }
 
-        public string UpdateSubject(SubjectRequest subjectRequest)
+        public string UpdateSubject(Subject subject)
         {
             try
             {
-                var subject = mapper.Map<Subject>(subjectRequest);
                 CMSDbContext.Subject.Update(subject);
                 CMSDbContext.SaveChanges();
                 return "OK";

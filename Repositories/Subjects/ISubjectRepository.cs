@@ -11,11 +11,11 @@ namespace Repositories.Subjects
 {
     public interface ISubjectRepository
     {
-        List<SubjectResponse> GetAllSubject();
-        SubjectResponse GetSubjectById(int id);
-        List<SubjectResponse> GetSubjectByName(string name);
-        string CreateNewSubject(SubjectRequest subject);
-        string UpdateSubject(SubjectRequest subject);
+        List<Subject> GetAllSubject();
+        Subject GetSubjectById(int id);
+        List<Subject> GetSubjectByName(string name);
+        string CreateNewSubject(Subject subject);
+        string UpdateSubject(Subject subject);
         string DeleteSubject(Subject subject);
     }
 }
