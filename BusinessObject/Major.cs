@@ -14,12 +14,12 @@ namespace BusinessObject
         public int major_id { get; set;}
         [Required, MaxLength(10)]
         public string major_code { get; set;}
-        [Required, MaxLength(100)]
+        [Required]
         public string major_name { get; set;}
         [Required, MaxLength(100)]
         public string major_english_name { get; set; }
         [Required]
-        public string major_status { get; set;}
+        public bool is_active { get; set;}
 
         public virtual ICollection<Specialization> Specialization { get; set; }
     }
