@@ -14,6 +14,7 @@ namespace BusinessObject
         [ForeignKey("CLO")]
         public int CLO_id { get; set;}
 
+
         public virtual GradingStruture GradingStruture { get; set; }
         public virtual CLO CLO { get; set;}
     }
