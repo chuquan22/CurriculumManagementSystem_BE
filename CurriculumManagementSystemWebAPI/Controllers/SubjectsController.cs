@@ -45,20 +45,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", subjectRespone));
         }
 
-        [HttpGet("pagination/{index}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationSubject(int index, int pageSize)
+        [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationSubject(int page, int limit, string txtSearch)
         {
             if (_context.Subject == null)
             {
                 return NotFound();
             }
-            var subject = _context.Subject.Skip((index -1) * pageSize).Take(pageSize).ToList();
+
+            var subject = _context.Subject.Where(x => x.subject_code.Contains(txtSearch) || x.subject_name.Contains(txtSearch) || x.english_subject_name.Contains(txtSearch))
+                .Skip((page - 1) * limit).Take(limit)
+                .Include(x => x.AssessmentMethod)
+                .Include(x => x.LearningMethod)
+                .ToList();
+
             if (subject == null)
             {
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
             }
             var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
-            return Ok(new BaseResponse(false, "Success!", subjectRespone));
+            return Ok(new BaseListResponse(page, limit, subjectRespone));
         }
 
         [HttpGet("GetTotalSubject")]
@@ -136,7 +142,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Problem("Entity set 'CMSDbContext.Subject'  is null.");
             }
+            subjectRequest.is_active = true;
             var subject = _mapper.Map<Subject>(subjectRequest);
+
             string createResult = _subjectRepository.CreateNewSubject(subject);
             if (!createResult.Equals("OK"))
             {
