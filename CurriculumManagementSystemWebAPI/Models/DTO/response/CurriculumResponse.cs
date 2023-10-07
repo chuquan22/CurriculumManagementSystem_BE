@@ -15,5 +15,6 @@ namespace CurriculumManagementSystemWebAPI.Models.DTO.response
         public string decision_No { get; set; }
         public DateTime approved_date { get; set; }
         public string curriculum_status { get; set; }
+        public bool is_active { get; set; }
     }
 }

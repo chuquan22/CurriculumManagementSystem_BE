@@ -27,7 +27,7 @@ namespace CurriculumManagementSystemWebAPI.Models.DTO.response
         [Required]
         public string option { get; set; }
         [Required]
-        public string subject_status { get; set; }
+        public bool is_active { get; set; }
     }
 
 
