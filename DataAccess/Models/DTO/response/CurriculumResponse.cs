@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.response
+namespace DataAccess.Models.DTO.response
 {
     public class CurriculumResponse
     {

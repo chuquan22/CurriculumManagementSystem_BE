@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.request
+namespace DataAccess.Models.DTO.request
 {
     public class CurriculumSubjectRequest
     {

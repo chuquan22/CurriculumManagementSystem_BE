@@ -9,8 +9,8 @@ using BusinessObject;
 using AutoMapper;
 using Repositories.Subjects;
 using Repositories.Curriculums;
-using CurriculumManagementSystemWebAPI.Models.DTO.response;
-using CurriculumManagementSystemWebAPI.Models.DTO.request;
+using DataAccess.Models.DTO.response;
+using DataAccess.Models.DTO.request;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -42,7 +42,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
             }
             var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return listCurriculumRespone;
+            return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
         }
 
         [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]

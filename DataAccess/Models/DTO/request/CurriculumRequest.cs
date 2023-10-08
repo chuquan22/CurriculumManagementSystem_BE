@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.request
+namespace DataAccess.Models.DTO.request
 {
     public class CurriculumRequest
     {

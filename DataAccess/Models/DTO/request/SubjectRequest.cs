@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.request
+namespace DataAccess.Models.DTO.request
 {
     public class SubjectRequest
     {
