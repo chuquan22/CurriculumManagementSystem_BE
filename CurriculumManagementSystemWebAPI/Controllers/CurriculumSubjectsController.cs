@@ -68,6 +68,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
+
         // GET: api/CurriculumSubjects/5
         [HttpGet("GetSubjectByCurriculum/{curriculumId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectByCurriculum(int curriculumId)
@@ -87,57 +88,64 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
-        // PUT: api/CurriculumSubjects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
-        public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
-        {
-            if(!CurriculumSubjectExists(curriculumId, subjectId))
-            {
-                return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
-            }
-            var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriculumId, subjectId);
-            _mapper.Map(curriculumSubjectRequest, curriculumSubject);
-            string updateResult = _curriculumSubjectRepository.UpdateCurriculumSubject(curriculumSubject);
-            if(!updateResult.Equals(Result.updateSuccessfull.ToString()))
-            {
-                return BadRequest(new BaseResponse(true, updateResult));
-            }
-            return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
-        }
+        
+
+        //[HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
+        //public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
+        //{
+        //    if(!CurriculumSubjectExists(curriculumId, subjectId))
+        //    {
+        //        return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
+        //    }
+        //    var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriculumId, subjectId);
+        //    _mapper.Map(curriculumSubjectRequest, curriculumSubject);
+        //    string updateResult = _curriculumSubjectRepository.UpdateCurriculumSubject(curriculumSubject);
+        //    if(!updateResult.Equals(Result.updateSuccessfull.ToString()))
+        //    {
+        //        return BadRequest(new BaseResponse(true, updateResult));
+        //    }
+        //    return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
+        //}
 
         // POST: api/CurriculumSubjects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject(CurriculumSubject curriculumSubject)
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromForm] CurriculumSubjectRequest curriculumSubjectRequest)
         {
             if (_context.CurriculumSubject == null)
             {
                 return Problem("Entity set 'CMSDbContext.CurriculumSubject'  is null.");
             }
-            
+            var curriculumSubject = _mapper.Map<CurriculumSubject>(curriculumSubjectRequest);
+            string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
+            if(createResult != Result.createSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, createResult));
+            }
 
-            return CreatedAtAction("GetCurriculumSubject", new { id = curriculumSubject.curriculum_id }, curriculumSubject);
+            return Ok(new BaseResponse(false, "Create success!", curriculumSubjectRequest));
         }
 
         // DELETE: api/CurriculumSubjects/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCurriculumSubject(int id)
+        public async Task<IActionResult> DeleteCurriculumSubject(int curriId, int subId)
         {
             if (_context.CurriculumSubject == null)
             {
                 return NotFound();
             }
-            var curriculumSubject = await _context.CurriculumSubject.FindAsync(id);
-            if (curriculumSubject == null)
+            if(!CurriculumSubjectExists(curriId, subId))
             {
-                return NotFound();
+                return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
+            }
+            var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
+            string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
+            if(deleteResult != Result.deleteSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
             }
 
-            _context.CurriculumSubject.Remove(curriculumSubject);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(new BaseResponse(false, "delete successfull!", curriculumSubject));
         }
 
         private bool CurriculumSubjectExists(int curriId, int subId)

@@ -45,17 +45,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return listCurriculumRespone;
         }
 
-        // Pagination Curriculum page
-        [HttpGet("pagination/{index}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<CurriculumResponse>>> CurriculumPagination(int index, int pageSize)
+        [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch)
         {
-            if (_context.Curriculum == null)
+            if (_context.Subject == null)
             {
                 return NotFound();
             }
-            var listCurriculum = _context.Curriculum.Skip((index - 1) * pageSize).Take(pageSize).ToList();
-            var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return listCurriculumRespone;
+
+            var subject = _context.Curriculum.Where(x => x.curriculum_code.Equals(txtSearch) || x.curriculum_name.Equals(txtSearch))
+                .Skip((page - 1) * limit).Take(limit)
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization)
+                .ToList();
+
+            if (subject == null)
+            {
+                return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
+            }
+            var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseListResponse(page, limit, subjectRespone));
         }
 
         // Get List Curriculum Have Status Can Remove
