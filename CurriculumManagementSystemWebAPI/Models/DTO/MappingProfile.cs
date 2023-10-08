@@ -19,6 +19,11 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
 
+            CreateMap<Subject, SubjectExeclResponse>()
+               .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
+               .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
+               .ReverseMap();
+
             CreateMap<Subject, SubjectRequest>().ReverseMap();
 
             CreateMap<Curriculum, CurriculumResponse>()

@@ -27,6 +27,7 @@ namespace BusinessObject
         public string full_name { get; set; }
         [ForeignKey("Role")]
         public int role_id { get; set; }
+
         [Required]
         public bool is_active { get; set; }
 

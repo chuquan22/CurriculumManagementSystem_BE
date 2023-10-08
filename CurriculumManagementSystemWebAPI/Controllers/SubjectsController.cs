@@ -10,6 +10,8 @@ using AutoMapper;
 using Repositories.Subjects;
 using CurriculumManagementSystemWebAPI.Models.DTO.response;
 using CurriculumManagementSystemWebAPI.Models.DTO.request;
+using MiniExcelLibs;
+using Newtonsoft.Json.Linq;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -65,13 +67,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
             return Ok(new BaseListResponse(page, limit, subjectRespone));
-        }
-
-        [HttpGet("GetTotalSubject")]
-        public BaseResponse GetSubjectCount()
-        {
-            int total = _context.Subject.Count();
-            return new BaseResponse(false, "total subject", total);
         }
 
         // GET: api/Subjects/5
@@ -174,6 +169,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Delete successfull!", id));
         }
+
+
+        // GET: Export Execl Subject
+        [HttpGet("ExportSubjectToExecl")]
+        public async Task<ActionResult<SubjectExeclResponse>> ExportExeclSubject()
+        {
+            var subject = _subjectRepository.GetAllSubject();
+            var reader = _mapper.Map<List<SubjectExeclResponse>>(subject);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ms.SaveAs(reader);
+                ms.Seek(0, SeekOrigin.Begin);
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Subjects");
+            }
+        }
+
         [NonAction]
         public bool CheckIdExist(int id)
         {
