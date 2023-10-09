@@ -16,6 +16,16 @@ namespace Repositories.Major
             return db.AddMajor(major);
         }
 
+        public void DeleteMajor(int id)
+        {
+            db.DeleteMajor(id);
+        }
+
+        public BusinessObject.Major EditMajor(BusinessObject.Major major)
+        {
+            return db.EditMajor(major);
+        }
+
         public List<BusinessObject.Major> GetAllMajor()
         {
             return db.GetAllMajor();

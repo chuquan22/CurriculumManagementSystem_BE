@@ -21,6 +21,6 @@ namespace BusinessObject
         [Required]
         public bool is_active { get; set;}
 
-        public virtual ICollection<Specialization> Specialization { get; set; }
+        public virtual ICollection<Specialization>? Specialization { get; set; }
     }
 }

@@ -33,5 +33,17 @@ namespace DataAccess.Major
             db.SaveChanges();
             return major;
         }
+
+        public void DeleteMajor(int id)
+        {
+            BusinessObject.Major major = db.Major.Where(x => x.major_id == id).FirstOrDefault();
+            db.Major.Remove(major);
+            db.SaveChanges();
+        }
+
+        public BusinessObject.Major FindMajorById(int id)
+        {
+            return null;
+        }
     }
 }

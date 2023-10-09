@@ -12,5 +12,9 @@ namespace Repositories.Major
         public List<BusinessObject.Major> GetAllMajor();
 
         public BusinessObject.Major AddMajor(BusinessObject.Major major);
+
+        public BusinessObject.Major EditMajor(BusinessObject.Major major);
+        public void DeleteMajor(int id);
+
     }
 }

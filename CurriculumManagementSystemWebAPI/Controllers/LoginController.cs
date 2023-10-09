@@ -72,7 +72,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.MobilePhone,user.user_phone.ToString()),
                 new Claim(ClaimTypes.Surname,user.full_name),
                 new Claim(ClaimTypes.Role,user.role_id.ToString()),
-                //new Claim(ClaimTypes.Boolean,user.is_active)
+                //new Claim(ClaimTypes.R,user.is_active)
             };
 
             var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(5), signingCredentials: credentials);
