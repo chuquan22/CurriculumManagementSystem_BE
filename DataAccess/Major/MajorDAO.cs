@@ -43,7 +43,8 @@ namespace DataAccess.Major
 
         public BusinessObject.Major FindMajorById(int id)
         {
-            return null;
+            BusinessObject.Major major = db.Major.Where(x => x.major_id == id).FirstOrDefault();
+            return major;
         }
     }
 }

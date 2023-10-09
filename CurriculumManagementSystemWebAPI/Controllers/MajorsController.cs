@@ -77,8 +77,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Major rs = new Major();
             try
             {
+                var major = repo.FindMajorById(id);
+                if(major != null)
+                {
+                    Ok(new BaseResponse(false, "Không tìm thấy id trong hệ thống", null));
+                }
                 repo.DeleteMajor(id);
-                return Ok(new BaseResponse(false, "Delete Sucessfully", null));
+                return Ok(new BaseResponse(false, "Delete Sucessfully", major));
             }
             catch (Exception)
             {

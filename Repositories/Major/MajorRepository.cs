@@ -26,6 +26,11 @@ namespace Repositories.Major
             return db.EditMajor(major);
         }
 
+        public BusinessObject.Major FindMajorById(int majorId)
+        {
+            return db.FindMajorById(majorId);
+        }
+
         public List<BusinessObject.Major> GetAllMajor()
         {
             return db.GetAllMajor();

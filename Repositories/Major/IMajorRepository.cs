@@ -16,5 +16,7 @@ namespace Repositories.Major
         public BusinessObject.Major EditMajor(BusinessObject.Major major);
         public void DeleteMajor(int id);
 
+        public BusinessObject.Major FindMajorById(int majorId);
+
     }
 }
