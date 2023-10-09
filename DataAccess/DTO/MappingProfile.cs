@@ -41,6 +41,8 @@ namespace DataAccess.Models.DTO
               .ReverseMap();
 
             CreateMap<User, UserLoginResponse>();
+            CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
+            CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
         }
     }
 }
