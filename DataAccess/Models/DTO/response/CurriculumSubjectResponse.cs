@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.response
+namespace DataAccess.Models.DTO.response
 {
     public class CurriculumSubjectResponse
     {

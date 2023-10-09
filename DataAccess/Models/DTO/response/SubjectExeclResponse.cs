@@ -1,6 +1,6 @@
 ﻿using MiniExcelLibs.Attributes;
 
-namespace CurriculumManagementSystemWebAPI.Models.DTO.response
+namespace DataAccess.Models.DTO.response
 {
     public class SubjectExeclResponse
     {

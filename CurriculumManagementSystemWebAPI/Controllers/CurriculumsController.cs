@@ -9,8 +9,8 @@ using BusinessObject;
 using AutoMapper;
 using Repositories.Subjects;
 using Repositories.Curriculums;
-using CurriculumManagementSystemWebAPI.Models.DTO.response;
-using CurriculumManagementSystemWebAPI.Models.DTO.request;
+using DataAccess.Models.DTO.response;
+using DataAccess.Models.DTO.request;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -42,8 +42,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
             }
             var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return listCurriculumRespone;
+            return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
         }
+
+
 
         [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch)
@@ -97,6 +99,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
             return curriculumResponse;
         }
+
+        // GET: api/Curriculums/5
+        [HttpGet("GetCurriculumBySpecialization/{id}")]
+        public async Task<ActionResult<CurriculumResponse>> GetCurriculumBySpecialization(int id)
+        {
+            if (_context.Curriculum == null)
+            {
+                return NotFound();
+            }
+            var curriculum = _curriculumRepository.GetCurriculumById(id);
+
+            if (curriculum == null)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
+            }
+            var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            return curriculumResponse;
+        }
+
 
         [HttpGet("GetTotalCurriculum")]
         public BaseResponse GetCurriculumCount()

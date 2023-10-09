@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObject;
 using AutoMapper;
 using Repositories.Subjects;
-using CurriculumManagementSystemWebAPI.Models.DTO.response;
-using CurriculumManagementSystemWebAPI.Models.DTO.request;
+using DataAccess.Models.DTO.response;
+using DataAccess.Models.DTO.request;
 using MiniExcelLibs;
 using Newtonsoft.Json.Linq;
 
