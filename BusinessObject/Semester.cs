@@ -22,5 +22,6 @@ namespace BusinessObject
         public int school_year { get; set; }
 
         public virtual ICollection<SemesterPlan> semesters { get; set; }
+        public virtual ICollection<Major> Majors { get; set; }
     }
 }

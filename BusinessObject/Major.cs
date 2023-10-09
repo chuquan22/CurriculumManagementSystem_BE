@@ -18,9 +18,12 @@ namespace BusinessObject
         public string major_name { get; set;}
         [Required, MaxLength(100)]
         public string major_english_name { get; set; }
+        [ForeignKey("Semester")]
+        public int semester_id { get; set;}
         [Required]
         public bool is_active { get; set;}
 
         public virtual ICollection<Specialization> Specialization { get; set; }
+        public virtual Semester Semester { get; set; }
     }
 }

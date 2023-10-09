@@ -123,6 +123,11 @@ namespace BusinessObject
                 .HasForeignKey(x => x.subject_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<SemesterPlan>()
+                .HasOne(x => x.Semester)
+                .WithMany(y => y.semesters)
+                .HasForeignKey(x => x.semester_id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
 
             //create new Data in table
@@ -134,9 +139,9 @@ namespace BusinessObject
 
             modelBuilder.Entity<User>().HasData(
 
-                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_address = "Ha Nam", user_email = "chuquan2k1@gmail.com", user_password = "12345", user_name = "QuanCQ", user_phone = 0349457905, is_active = true },
-                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_address = "Thai Binh", user_email = "nguyenthu120801@gmail.com", user_password = "12345", user_name = "ThuNT", user_phone = 0984739845, is_active = true }
-                , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_address = "Nghe An", user_email = "haotest@gmail.com", user_password = "admin", user_name = "admin", user_phone = 0984739845, is_active = true }
+                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_email = "chuquan2k1@gmail.com",  user_name = "QuanCQ",  is_active = true },
+                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_name = "ThuNT", is_active = true }
+                , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_name = "admin", is_active = true }
 
                 );
 
@@ -146,11 +151,15 @@ namespace BusinessObject
                 new Batch { batch_id = 3, batch_name = "K17" }
                 );
 
+            modelBuilder.Entity<Semester>().HasData(
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("05/09/2023"),semester_end_date = DateTime.Now , school_year = 2023 }
+                );
+
             modelBuilder.Entity<Major>().HasData(
-                new Major { major_id = 1, major_code = "GD", major_name = "Thiết kế đồ họa", major_english_name = "Graphic Design", is_active = true },
-                new Major { major_id = 2, major_code = "IT", major_name = "Công nghệ thông tin", major_english_name = "Information technology",  is_active = true },
-                new Major { major_id = 3, major_code = "BA", major_name = "Quản trị kinh doanh", major_english_name = "Business Administration", is_active = true },
-                new Major { major_id = 4, major_code = "AE", major_name = "Kỹ thuật tự động hóa", major_english_name = "Automation Engineering", is_active = true }
+                new Major { major_id = 1, major_code = "GD", major_name = "Thiết kế đồ họa", major_english_name = "Graphic Design", semester_id = 1,is_active = true },
+                new Major { major_id = 2, major_code = "IT", major_name = "Công nghệ thông tin", major_english_name = "Information technology", semester_id = 1, is_active = true },
+                new Major { major_id = 3, major_code = "BA", major_name = "Quản trị kinh doanh", major_english_name = "Business Administration", semester_id = 1, is_active = true },
+                new Major { major_id = 4, major_code = "AE", major_name = "Kỹ thuật tự động hóa", major_english_name = "Automation Engineering", semester_id = 1, is_active = true }
 
                 );
 
@@ -166,8 +175,8 @@ namespace BusinessObject
 
 
             modelBuilder.Entity<Curriculum>().HasData(  
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, is_active = true, decision_No = "360/QĐ-CĐFPL", curriculum_status = 1},
-                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, is_active = true, decision_No = "360/QĐ-CĐFPL", curriculum_status = 0 }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", curriculum_status = 1},
+                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", curriculum_status = 0 }
 
                 );
 

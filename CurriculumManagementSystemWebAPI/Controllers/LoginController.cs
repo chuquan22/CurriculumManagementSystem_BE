@@ -68,8 +68,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.NameIdentifier,user.user_id.ToString()),
                 new Claim(ClaimTypes.Name,user.full_name),
                 new Claim(ClaimTypes.Email,user.user_email),
-                new Claim(ClaimTypes.StreetAddress,user.user_address),
-                new Claim(ClaimTypes.MobilePhone,user.user_phone.ToString()),
                 new Claim(ClaimTypes.Surname,user.full_name),
                 new Claim(ClaimTypes.Role,user.role_id.ToString()),
                
@@ -91,8 +89,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     user_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value),
                     user_name = identity.FindFirst(ClaimTypes.Name)?.Value,
                     user_email = identity.FindFirst(ClaimTypes.Email)?.Value,
-                    user_address = identity.FindFirst(ClaimTypes.StreetAddress)?.Value,
-                    user_phone = Convert.ToInt32(identity.FindFirst(ClaimTypes.MobilePhone)?.Value),
                     full_name = identity.FindFirst(ClaimTypes.Surname)?.Value,
                     role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
                 };
