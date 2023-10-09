@@ -45,6 +45,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
         }
 
+
+
         [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch)
         {
@@ -97,6 +99,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
             return curriculumResponse;
         }
+
+        // GET: api/Curriculums/5
+        [HttpGet("GetCurriculumBySpecialization/{id}")]
+        public async Task<ActionResult<CurriculumResponse>> GetCurriculumBySpecialization(int id)
+        {
+            if (_context.Curriculum == null)
+            {
+                return NotFound();
+            }
+            var curriculum = _curriculumRepository.GetCurriculumById(id);
+
+            if (curriculum == null)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
+            }
+            var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            return curriculumResponse;
+        }
+
 
         [HttpGet("GetTotalCurriculum")]
         public BaseResponse GetCurriculumCount()

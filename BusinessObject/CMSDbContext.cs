@@ -184,7 +184,7 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Subject>().HasData(
-                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, option = "abc", is_active = true }
+                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, option = "abc", total_time = 70, total_time_class = 40, exam_total = 3 ,is_active = true }
                 );
 
         }
