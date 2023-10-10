@@ -9,7 +9,7 @@ namespace Repositories.Combos
 {
     public interface IComboRepository
     {
-        public List<Combo> GetListCombo(int specId, int currId);
+        public List<Combo> GetListCombo(int specId);
 
         public Combo CreateCombo(Combo combo);
         public Combo UpdateCombo(Combo combo);

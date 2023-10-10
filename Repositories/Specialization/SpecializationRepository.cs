@@ -28,7 +28,7 @@ namespace Repositories.Specialization
 
         public List<BusinessObject.Specialization> GetSpecByMajorId(int majorId)
         {
-            throw new NotImplementedException();
+            return db.GetListSpecialzationByMajorID(majorId);
         }
 
         public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification)
