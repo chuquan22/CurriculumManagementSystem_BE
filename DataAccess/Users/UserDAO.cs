@@ -21,6 +21,7 @@ namespace DataAccess.Users
             try
             {
                 response = db.User.Where(u => u.user_name.Equals(email)).FirstOrDefault();
+
             }
             catch (Exception)
             {
