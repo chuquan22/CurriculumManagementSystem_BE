@@ -21,6 +21,7 @@ namespace BusinessObject
         [Required]
         public int school_year { get; set; }
 
-        public virtual ICollection<SemesterPlan> semesters { get; set; }
+        public virtual ICollection<SemesterPlan> Semesters { get; set; }
+        public virtual ICollection<Specialization> Specializations { get; set; }
     }
 }

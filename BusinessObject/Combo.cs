@@ -14,9 +14,15 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int combo_id { get; set; }
         [Required] 
-        public string combo_name { get; set; }
+        public string combo_code { get; set; }
         [Required]
-        public string combo_description { get; set;}
+        public string combo_name { get; set;}
+        [Required]
+        public string combo_english_name { get; set;}
+        [Required]
+        public int combo_no { get; set; }
+        [Required]
+        public string combo_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
         [ForeignKey("Curriculum")]

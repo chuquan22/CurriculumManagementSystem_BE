@@ -9,5 +9,6 @@ namespace DataAccess.Models.DTO.response
         public string curriculum_code { get; set; }
         public string curriculum_name { get; set; }
         public int term_no { get; set; }
+        public bool option { get; set; }
     }
 }

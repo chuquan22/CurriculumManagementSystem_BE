@@ -22,5 +22,6 @@ namespace BusinessObject
         public bool is_active { get; set;}
 
         public virtual ICollection<Specialization>? Specialization { get; set; }
+
     }
 }
