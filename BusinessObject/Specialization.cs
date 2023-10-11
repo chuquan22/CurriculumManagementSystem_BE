@@ -21,6 +21,8 @@ namespace BusinessObject
         public string specialization_english_name { get; set; }
         [ForeignKey("Major")]
         public int major_id { get; set; }
+        [ForeignKey("Semester")]
+        public int semester_id { get; set; }
         [Required]
         public bool is_active { get; set; }
 
@@ -30,6 +32,7 @@ namespace BusinessObject
 
         public virtual ICollection<Curriculum> Curriculums { get; set; }
         public virtual ICollection<SpecializationSubject> SpecializationSubjects { get; set; }
+        public virtual Semester Semester { get; set; }
 
     }
 }

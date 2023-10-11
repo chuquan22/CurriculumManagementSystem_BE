@@ -27,7 +27,6 @@ namespace DataAccess.Models.DTO.request
         public DateTime approved_date { get; set; }
         [Required]
         public string curriculum_status { get; set; }
-        [Required]
-        public bool is_active { get; set; }
+        
     }
 }

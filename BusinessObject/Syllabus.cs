@@ -37,8 +37,6 @@ namespace BusinessObject
         public DateTime approved_date { get; set; }
         [Required]
         public int syllabus_status { get; set; }
-        [Required]
-        public bool is_active { get; set; }
 
         public virtual ICollection<CLO> CLOs { get; set; }
         public virtual ICollection<GradingStruture> Gradings { get; set; }

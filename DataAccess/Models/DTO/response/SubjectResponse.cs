@@ -23,9 +23,6 @@ namespace DataAccess.Models.DTO.response
         public string assessment_method_name { get; set; }
         [Required]
         public int credit { get; set; }
-
-        [Required]
-        public string option { get; set; }
         [Required]
         public int total_time { get; set; }
         [Required]
