@@ -66,7 +66,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
             }
             var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
-            return Ok(new BaseListResponse(page, limit, subjectRespone));
+            return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, subjectRespone)));
         }
 
         // Get List Curriculum Have Status Can Remove

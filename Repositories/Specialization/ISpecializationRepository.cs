@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace Repositories.Specialization
 {
-    internal class ISpecializationRepository
+    public interface ISpecializationRepository
     {
+        public List<BusinessObject.Specialization> GetSpecByMajorId(int majorId);
+
+        public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization specification);
+
+        public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification);
+
+        public BusinessObject.Specialization DeleteSpecialization(BusinessObject.Specialization specification);
+
+        public BusinessObject.Specialization FindSpeById(int speId);
+
     }
 }

@@ -70,7 +70,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Email,user.user_email),
                 new Claim(ClaimTypes.Surname,user.full_name),
                 new Claim(ClaimTypes.Role,user.role_id.ToString()),
-               
             };
 
             var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(5), signingCredentials: credentials);
