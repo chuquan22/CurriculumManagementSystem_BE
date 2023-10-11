@@ -39,5 +39,6 @@ namespace BusinessObject
         public virtual ICollection<PLOs> PLOs { get; set; }
         public virtual ICollection<SemesterPlan> Semesters { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
+        public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }
     }
 }

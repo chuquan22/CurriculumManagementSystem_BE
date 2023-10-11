@@ -29,6 +29,7 @@ namespace BusinessObject
         public virtual DbSet<ClassSessionType> ClassSessionType { get; set; }
         public virtual DbSet<CLO> CLO { get; set; }
         public virtual DbSet<Combo> Combo { get; set; }
+        public virtual DbSet<ComboCurriculum> ComboCurriculum { get; set; }
         public virtual DbSet<ComboSubject> ComboSubject { get; set; }
         public virtual DbSet<Curriculum> Curriculum { get; set; }
         public virtual DbSet<CurriculumSubject> CurriculumSubject { get; set; }
@@ -83,6 +84,9 @@ namespace BusinessObject
             modelBuilder.Entity<PreRequisite>()
                .HasKey(ba => new { ba.subject_id, ba.pre_subject_id });
 
+            modelBuilder.Entity<ComboCurriculum>()
+              .HasKey(ba => new { ba.combo_id, ba.curriculum_id });
+
             //
             modelBuilder.Entity<GradingStruture>()
                 .Property(g => g.grading_weight)
@@ -133,6 +137,12 @@ namespace BusinessObject
                 .HasOne(x => x.Semester)
                 .WithMany(y => y.Semesters)
                 .HasForeignKey(x => x.semester_id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<ComboCurriculum>()
+                .HasOne(x => x.Curriculum)
+                .WithMany(y => y.ComboCurriculum)
+                .HasForeignKey(x => x.curriculum_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
 
