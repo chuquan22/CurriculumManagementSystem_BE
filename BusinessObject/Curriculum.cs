@@ -32,7 +32,6 @@ namespace BusinessObject
         public DateTime approved_date { get; set; }
         [Required]
         public int curriculum_status { get; set; }
-        
 
         public virtual Batch Batch { get; set; }
         public virtual Specialization Specialization { get; set; }

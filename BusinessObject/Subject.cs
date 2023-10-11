@@ -27,7 +27,7 @@ namespace BusinessObject
         public int credit { get; set; }
         
         [Required]
-        public string option { get; set; }
+        public bool option { get; set; }
         [Required]
         public int total_time { get; set; }
         [Required]

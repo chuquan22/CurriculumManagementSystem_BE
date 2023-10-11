@@ -16,6 +16,8 @@ namespace BusinessObject
         public int curriculum_id { get; set; }
         [Required]
         public int term_no { get; set; }
+        [Required]
+        public bool option { get; set; }
 
         public virtual Curriculum Curriculum { get; set; }
         public virtual Subject Subject { get; set; }
