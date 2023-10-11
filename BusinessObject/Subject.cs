@@ -25,9 +25,6 @@ namespace BusinessObject
         public int assessment_method_id { get;set; }
         [Required]
         public int credit { get; set; }
-        
-        [Required]
-        public bool option { get; set; }
         [Required]
         public int total_time { get; set; }
         [Required]
