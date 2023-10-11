@@ -43,6 +43,15 @@ namespace DataAccess.Models.DTO
             CreateMap<User, UserLoginResponse>();
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
+
+            CreateMap<PreRequisite, PreRequisiteResponse>()
+                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
+                .ForMember(dest => dest.pre_subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
+                .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
+                .ReverseMap();
+
+            CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
         }
     }
 }
