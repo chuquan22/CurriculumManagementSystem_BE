@@ -33,5 +33,6 @@ namespace BusinessObject
         public virtual Specialization Specialization { get; set; }
         public virtual Curriculum Curriculum { get; set; }
         public virtual ICollection<ComboSubject> comboSubjects { get; set; }   
+        public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }   
     }
 }
