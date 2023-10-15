@@ -45,8 +45,15 @@ namespace DataAccess.DAO
             try
             {
                 _cmsDbContext.PreRequisite.Add(preRequisite);
-                _cmsDbContext.SaveChanges();
-                return Result.createSuccessfull.ToString();
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return Result.createSuccessfull.ToString();
+                }
+                else
+                {
+                    return "Create PreRequisite Fail";
+                }
             }
             catch (Exception ex)
             {
@@ -59,8 +66,15 @@ namespace DataAccess.DAO
             try
             {
                 _cmsDbContext.PreRequisite.Update(preRequisite);
-                _cmsDbContext.SaveChanges();
-                return Result.updateSuccessfull.ToString();
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return Result.updateSuccessfull.ToString();
+                }
+                else
+                {
+                    return "Update PreRequisite Fail";
+                }
             }
             catch (Exception ex)
             {
@@ -73,8 +87,15 @@ namespace DataAccess.DAO
             try
             {
                 _cmsDbContext.PreRequisite.Remove(preRequisite);
-                _cmsDbContext.SaveChanges();
-                return Result.deleteSuccessfull.ToString();
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return Result.deleteSuccessfull.ToString();
+                }
+                else
+                {
+                    return "Delete PreRequisite Fail";
+                }
             }
             catch (Exception ex)
             {

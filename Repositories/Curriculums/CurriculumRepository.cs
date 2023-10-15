@@ -15,7 +15,9 @@ namespace Repositories.Curriculums
        
 
         public List<Curriculum> GetAllCurriculum() => curriculumDAO.GetAllCurriculum();
-        
+
+        public Curriculum GetCurriculum(string code, int batchId) => curriculumDAO.GetCurriculum(code, batchId);
+       
 
         public Curriculum GetCurriculumById(int id) => curriculumDAO.GetCurriculumById(id);
 

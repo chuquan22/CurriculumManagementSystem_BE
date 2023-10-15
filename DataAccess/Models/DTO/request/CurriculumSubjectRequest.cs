@@ -11,5 +11,7 @@ namespace DataAccess.Models.DTO.request
         public int curriculum_id { get; set; }
         [Required]
         public int term_no { get; set; }
+        [Required]
+        public bool option { get; set; }
     }
 }

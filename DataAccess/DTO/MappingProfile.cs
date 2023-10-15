@@ -45,13 +45,23 @@ namespace DataAccess.Models.DTO
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
 
             CreateMap<PreRequisite, PreRequisiteResponse>()
-                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
-                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
-                .ForMember(dest => dest.pre_subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
+                //.ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
+                //.ForMember(dest => dest.pre_subject_code, opt => opt.MapFrom(src => src.PreSubject.subject_code))
                 .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
                 .ReverseMap();
 
             CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
+
+            CreateMap<ComboCurriculum, CurriculumComboDTOResponse>()
+                .ForMember(dest => dest.combo_name, opt => opt.MapFrom(src => src.Combo.combo_code + ": " + src.Combo.combo_name))
+                .ReverseMap();
+
+            CreateMap<ComboSubject, CurriculumComboSubjectDTOResponse>()
+                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_code + ": " + src.Subject.subject_name))
+                .ReverseMap();
+
+            CreateMap<ComboSubject, CurriculumComboSubjectDTORequest>().ReverseMap();
+
         }
     }
 }
