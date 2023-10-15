@@ -8,7 +8,7 @@ namespace DataAccess.Models.DTO.request
     public class CurriculumRequest
     {
         [Required]
-        [StringLength(10, MinimumLength = 3, ErrorMessage = "Enter Code between 3 to 10 character")]
+        [StringLength(10, MinimumLength = 2, ErrorMessage = "Enter Code between 2 to 10 character")]
         public string curriculum_code { get; set; }
         [Required]
         public string curriculum_name { get; set; }
@@ -26,7 +26,7 @@ namespace DataAccess.Models.DTO.request
         [DataType(DataType.Date)]
         public DateTime approved_date { get; set; }
         [Required]
-        public string curriculum_status { get; set; }
+        public int curriculum_status { get; set; }
         
     }
 }

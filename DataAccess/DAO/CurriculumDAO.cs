@@ -14,8 +14,13 @@ namespace DataAccess.DAO
 
         public List<Curriculum> GetAllCurriculum()
         {
-            var listCurriculum = _cmsDbContext.Curriculum.Include(x => x.Batch).Include(x => x.Specialization).ToList();
-            return listCurriculum;
+            var curriculumList = _cmsDbContext.Curriculum
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization)
+                .AsEnumerable()
+                .DistinctBy(x => x.curriculum_code)
+                .ToList();
+            return curriculumList;
         }
 
         public Curriculum GetCurriculumById(int id)
@@ -24,14 +29,33 @@ namespace DataAccess.DAO
             return curriculum;
         }
 
+        public Curriculum GetCurriculum(string code, int batchId)
+        {
+            var curriculum = _cmsDbContext.Curriculum
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization)
+                .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
+                
+            return curriculum;
+        }
+
         public string CreateCurriculum(Curriculum curriculum)
         {
             try
             {
                 _cmsDbContext.Curriculum.Add(curriculum);
-                _cmsDbContext.SaveChanges();
-                return "OK";
-            }catch (Exception ex)
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return "OK";
+                }
+                else
+                {
+                    return "Fail";
+                }
+                
+            }
+            catch (Exception ex)
             {
                 return ex.Message;
             }
@@ -43,7 +67,15 @@ namespace DataAccess.DAO
             {
                 _cmsDbContext.Curriculum.Update(curriculum);
                 _cmsDbContext.SaveChanges();
-                return "OK";
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return "OK";
+                }
+                else
+                {
+                    return "Fail";
+                }
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -56,8 +88,15 @@ namespace DataAccess.DAO
             try
             {
                 _cmsDbContext.Curriculum.Remove(curriculum);
-                _cmsDbContext.SaveChanges();
-                return "OK";
+                int number = _cmsDbContext.SaveChanges();
+                if (number > 0)
+                {
+                    return "OK";
+                }
+                else
+                {
+                    return "Fail";
+                }
             }
             catch (DbUpdateConcurrencyException ex)
             {

@@ -29,34 +29,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
         }
 
-
-
-        // GET: api/CurriculumSubjects
-        [HttpGet("GetAllCurriculumSubject")]
-        public async Task<ActionResult<IEnumerable<CurriculumSubjectResponse>>> GetCurriculumSubject()
+        // GET: api/CurriculumSubjects/GetCurriculumSubjectByTermNo/3
+        [HttpGet("GetCurriculumSubjectByTermNo/{termNo}")]
+        public async Task<ActionResult<IEnumerable<CurriculumSubjectResponse>>> GetCurriculumSubjectByTermNo(int termNo)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
-            var curriculumSubject = _curriculumSubjectRepository.GetAllCurriculumSubject();
+            
+            var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectByTermNo(termNo);
 
             if(curriculumSubject == null)
             {
-                return BadRequest(new BaseResponse(true, "List Curriculum Subject is empty. Please Create Curriculum Subject"));
+                return BadRequest(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
             }
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
             return Ok(new BaseResponse(false, "success!", curriculumSubjectResponse));
         }
 
-        // GET: api/CurriculumSubjects/5
+        // GET: api/CurriculumSubjects/GetCurriculumBySubject/5
         [HttpGet("GetCurriculumBySubject/{subjectId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetCurriculumBySubject(int subjectId)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
+            
             var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumBySubject(subjectId);
 
             if (curriculumSubject == null)
@@ -69,14 +61,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
-        // GET: api/CurriculumSubjects/5
+        // GET: api/CurriculumSubjects/GetSubjectByCurriculum/5
         [HttpGet("GetSubjectByCurriculum/{curriculumId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectByCurriculum(int curriculumId)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
+            
             var curriculumSubject = _curriculumSubjectRepository.GetListSubjectByCurriculum(curriculumId);
 
             if (curriculumSubject == null)
@@ -87,8 +76,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
-
-        
 
         //[HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
         //public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
@@ -107,10 +94,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         //    return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
         //}
 
-        // POST: api/CurriculumSubjects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/CurriculumSubjects/CreateCurriculumSubject
         [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromForm] CurriculumSubjectRequest curriculumSubjectRequest)
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
         {
             if (_context.CurriculumSubject == null)
             {
@@ -126,8 +112,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Create success!", curriculumSubjectRequest));
         }
 
-        // DELETE: api/CurriculumSubjects/5
-        [HttpDelete("{id}")]
+        // Delete: api/CurriculumSubjects/DeleteCurriculum/1/2
+        [HttpDelete("DeleteCurriculum/{curriId}/{subId}")]
         public async Task<IActionResult> DeleteCurriculumSubject(int curriId, int subId)
         {
             if (_context.CurriculumSubject == null)
@@ -152,5 +138,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id==subId)).GetValueOrDefault();
         }
+
+        
     }
 }

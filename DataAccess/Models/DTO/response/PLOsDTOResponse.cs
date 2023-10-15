@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -8,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.response
 {
-    public class PreRequisiteResponse
+    public class PLOsDTOResponse
     {
-        public int subject_id { get; set; }
-        public int pre_subject_id { get; set; }
-        public string? pre_requisite_name { get; set; }
-        public string pre_requisite_type_name { get; set; }
+        public int PLO_id { get; set; }
+        public string PLO_name { get; set; }
+        public string PLO_description { get; set; }
     }
 }

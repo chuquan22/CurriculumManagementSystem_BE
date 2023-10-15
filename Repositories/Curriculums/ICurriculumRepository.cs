@@ -10,6 +10,7 @@ namespace Repositories.Curriculums
     public interface ICurriculumRepository
     {
         List<Curriculum> GetAllCurriculum();
+        Curriculum GetCurriculum(string code, int batchId);
         Curriculum GetCurriculumById(int id);
         string CreateCurriculum(Curriculum curriculum);
         string UpdateCurriculum(Curriculum curriculum);

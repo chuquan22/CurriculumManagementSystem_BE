@@ -9,10 +9,10 @@ namespace Repositories.CurriculumSubjects
 {
     public interface ICurriculumSubjectRepository
     {
-        List<CurriculumSubject> GetAllCurriculumSubject();
         CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId);
         List<CurriculumSubject> GetListCurriculumBySubject(int subjectId);
         List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId);
+        List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no);
         string CreateCurriculumSubject(CurriculumSubject curriculumSubject);
         string UpdateCurriculumSubject(CurriculumSubject curriculumSubject);
         string DeleteCurriculumSubject(CurriculumSubject curriculumSubject);

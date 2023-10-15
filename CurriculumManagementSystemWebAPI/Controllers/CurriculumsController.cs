@@ -11,6 +11,7 @@ using Repositories.Subjects;
 using Repositories.Curriculums;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -47,15 +48,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
 
-        [HttpGet("Pagination/{page}/{limit}/{txtSearch}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch)
+        [HttpGet("Pagination/{page}/{limit}/{txtSearch}/{specializationId}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch, int specializationId)
         {
             if (_context.Subject == null)
             {
                 return NotFound();
             }
 
-            var subject = _context.Curriculum.Where(x => x.curriculum_code.Equals(txtSearch) || x.curriculum_name.Equals(txtSearch))
+            var subject = _context.Curriculum.Where(x => x.curriculum_code.Equals(txtSearch) || x.curriculum_name.Equals(txtSearch) && x.specialization_id == specializationId)
                 .Skip((page - 1) * limit).Take(limit)
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
@@ -66,7 +67,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
             }
             var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
-            return Ok(new BaseListResponse(page, limit, subjectRespone));
+            return Ok(new BaseResponse(false, "success",  new BaseListResponse(page, limit, subjectRespone)));
         }
 
         // Get List Curriculum Have Status Can Remove
@@ -83,14 +84,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         // GET: api/Curriculums/5
-        [HttpGet("GetCurriculumById/{id}")]
-        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(int id)
+        [HttpGet("GetCurriculum/{code}")]
+        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(string code, int? batchId)
         {
-            if (_context.Curriculum == null)
+            if (batchId == null)
             {
-                return NotFound();
+                batchId = 1;
             }
-            var curriculum = _curriculumRepository.GetCurriculumById(id);
+            var curriculum = _curriculumRepository.GetCurriculum(code, (int)batchId);
 
             if (curriculum == null)
             {
@@ -98,32 +99,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
             return curriculumResponse;
-        }
-
-        // GET: api/Curriculums/5
-        [HttpGet("GetCurriculumBySpecialization/{id}")]
-        public async Task<ActionResult<CurriculumResponse>> GetCurriculumBySpecialization(int id)
-        {
-            if (_context.Curriculum == null)
-            {
-                return NotFound();
-            }
-            var curriculum = _curriculumRepository.GetCurriculumById(id);
-
-            if (curriculum == null)
-            {
-                return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
-            }
-            var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
-            return curriculumResponse;
-        }
-
-
-        [HttpGet("GetTotalCurriculum")]
-        public BaseResponse GetCurriculumCount()
-        {
-            int total = _context.Curriculum.Count();
-            return new BaseResponse(false, "total curriculum", total);
         }
 
         // PUT: api/Curriculums/5
@@ -152,9 +127,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculum")]
         public async Task<ActionResult<Curriculum>> PostCurriculum([FromForm]CurriculumRequest curriculumRequest)
         {
-            if (_context.Curriculum == null)
+            if (CheckCurriculumExists(curriculumRequest.curriculum_code, curriculumRequest.batch_id))
             {
-                return Problem("Entity set 'CMSDbContext.Curriculum'  is null.");
+                return BadRequest(new BaseResponse(true, "Curriculum Existed. Please Create other curriculum!"));
             }
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
             string createResult = _curriculumRepository.CreateCurriculum(curriculum);
@@ -187,9 +162,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Curriculum Successfull!"));
         }
 
+
+
         private bool CurriculumExists(int id)
         {
             return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
+
+        private bool CheckCurriculumExists(string code, int batchId)
+        {
+            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code) && e.batch_id == batchId)).GetValueOrDefault();
+        }    
     }
 }
