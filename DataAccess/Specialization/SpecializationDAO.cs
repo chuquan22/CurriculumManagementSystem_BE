@@ -11,12 +11,12 @@ namespace DataAccess.Specialization
     {
         public CMSDbContext db = new CMSDbContext();
 
-        public List<BusinessObject.Specialization> GetListSpecialzationByMajorID(int majorId)
+        public List<BusinessObject.Specialization> GetSpec()
         {
             List<BusinessObject.Specialization> list = new List<BusinessObject.Specialization>();
             try
             {
-               list = db.Specialization.Where(sp => sp.major_id == majorId).ToList();              
+               list = db.Specialization.ToList();              
             }
             catch (Exception)
             {

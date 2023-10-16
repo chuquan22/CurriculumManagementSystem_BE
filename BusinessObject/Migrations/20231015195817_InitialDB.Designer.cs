@@ -4,6 +4,7 @@ using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    partial class CMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231015195817_InitialDB")]
+    partial class InitialDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,7 +92,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("batch_id");
 
-                    b.ToTable("Batch");
+                    b.ToTable("Batche");
 
                     b.HasData(
                         new
@@ -107,11 +109,6 @@ namespace BusinessObject.Migrations
                         {
                             batch_id = 3,
                             batch_name = "K17"
-                        },
-                        new
-                        {
-                            batch_id = 4,
-                            batch_name = "K20"
                         });
                 });
 
@@ -226,7 +223,7 @@ namespace BusinessObject.Migrations
                     b.Property<int>("subject_id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("semester_no")
+                    b.Property<int>("semester_no")
                         .HasColumnType("int");
 
                     b.HasKey("combo_id", "subject_id");
@@ -266,10 +263,6 @@ namespace BusinessObject.Migrations
                     b.Property<int>("curriculum_status")
                         .HasColumnType("int");
 
-                    b.Property<string>("decision_Link")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("decision_No")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -299,7 +292,6 @@ namespace BusinessObject.Migrations
                             curriculum_description = "",
                             curriculum_name = "Thiết kế đồ họa",
                             curriculum_status = 1,
-                            decision_Link = "abc.com",
                             decision_No = "360/QĐ-CĐFPL",
                             english_curriculum_name = "Graphic Design",
                             specialization_id = 1
@@ -308,42 +300,11 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
-
-                            batch_id = 4,
-                            curriculum_code = "GD",
-                            curriculum_description = "",
-                            curriculum_name = "Thiết kế đồ họa",
-                            curriculum_status = 1,
-                            decision_Link = "abc.com",
-                            decision_No = "360/QĐ-CĐFPL",
-                            english_curriculum_name = "Graphic Design",
-                            specialization_id = 1
-                        },
-                        new
-                        {
-                            curriculum_id = 3,
-                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
-                            batch_id = 3,
-                            curriculum_code = "SE",
-                            curriculum_description = "",
-                            curriculum_name = "kĩ sư phần mềm",
-                            curriculum_status = 0,
-                            decision_Link = "bcd.com",
-                            decision_No = "360/QĐ-CĐFPL",
-                            english_curriculum_name = "Software Engineering",
-                            specialization_id = 4
-                        },
-                        new
-                        {
-                            curriculum_id = 4,
-                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
-
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ sư phần mềm",
                             curriculum_status = 0,
-                            decision_Link = "bcd.com",
                             decision_No = "360/QĐ-CĐFPL",
                             english_curriculum_name = "Software Engineering",
                             specialization_id = 4
@@ -818,9 +779,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-
-                            semester_end_date = new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498),
-
+                            semester_end_date = new DateTime(2023, 10, 16, 2, 58, 16, 870, DateTimeKind.Local).AddTicks(8084),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },

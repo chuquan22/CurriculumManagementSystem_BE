@@ -38,10 +38,10 @@ namespace BusinessObject
         [Required]
         public int syllabus_status { get; set; }
 
-        public virtual ICollection<CLO> CLOs { get; set; }
-        public virtual ICollection<GradingStruture> Gradings { get; set; }
-        public virtual ICollection<Material> Materials { get; set; }
-        public virtual Subject Subject { get; set; }
-        public virtual ICollection<Session> Sessions { get; set; }
+        public virtual ICollection<CLO>? CLOs { get; set; }
+        public virtual ICollection<GradingStruture>? Gradings { get; set; }
+        public virtual ICollection<Material>? Materials { get; set; }
+        public virtual Subject? Subject { get; set; }
+        public virtual ICollection<Session>? Sessions { get; set; }
     }
 }

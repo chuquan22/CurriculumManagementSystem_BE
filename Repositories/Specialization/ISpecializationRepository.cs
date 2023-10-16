@@ -8,7 +8,7 @@ namespace Repositories.Specialization
 {
     public interface ISpecializationRepository
     {
-        public List<BusinessObject.Specialization> GetSpecByMajorId(int majorId);
+        public List<BusinessObject.Specialization> GetSpec();
 
         public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization specification);
 

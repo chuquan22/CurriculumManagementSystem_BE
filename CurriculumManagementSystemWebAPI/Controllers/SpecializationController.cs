@@ -23,12 +23,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         
         [HttpGet]
-        public ActionResult GetListSpecialization(int specId)
+        public ActionResult GetListSpecialization()
         {
             List<Specialization> rs = new List<Specialization>();
             try
             {
-                rs = repo.GetSpecByMajorId(specId);
+                rs = repo.GetSpec();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
