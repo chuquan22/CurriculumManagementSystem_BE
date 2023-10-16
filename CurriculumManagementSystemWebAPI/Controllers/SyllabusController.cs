@@ -43,7 +43,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 numPs = repo.GetTotalSyllabus(txtSearch);
                 numperPage = limit;
                 numpage = numPs / numperPage + (numPs % numperPage == 0 ? 0 : 1);
-                start = ((page - 1) * numperPage) + 1;
+                start = ((page - 1) * numperPage);
                 if (page * numperPage > numPs)
                 {
                     end = numPs;
@@ -54,7 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 List<Syllabus> list = repo.GetListSyllabus(start, end, txtSearch);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(numPs,page, result)));
+                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,numPs, result)));
             }
             catch (Exception)
             {
@@ -66,20 +66,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult SyllabusDetails(int syllabus_id)
         {
-            SyllabusDetailsResponse result = new SyllabusDetailsResponse();
-            //Com
-            Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
-            Material mat1 = repo2.GetMaterial(syllabus_id);
-            CLO cLO = repo3.GetCLOsById(syllabus_id);
-            Session s1 = repo4.GetSession(syllabus_id);
-            GradingStruture gr = repo5.GetGradingStruture(syllabus_id);
-            //
-            result.session_details = s1;
-            result.syllabus_details = rs1;
-            result.material_details = mat1;
-            result.CLO_details = cLO;
-            result.gradingStruture_details = gr;
-            return Ok(new BaseResponse(true, "False", result));
+            Syllabus rs1 = repo.GetSyllabusById(syllabus_id);           
+ 
+            return Ok(new BaseResponse(true, "False", rs1));
         }
 
     }

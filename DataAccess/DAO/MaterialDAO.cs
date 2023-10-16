@@ -13,7 +13,7 @@ namespace DataAccess.DAO
 
         public Material GetMaterial(int id)
         {
-            var mt = _context.Material.Where(x => x.syllabus_id == id).FirstOrDefault();
+            Material mt = _context.Material.Where(x => x.syllabus_id == id).FirstOrDefault();
             return mt;
         }
     }

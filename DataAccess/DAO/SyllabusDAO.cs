@@ -53,7 +53,7 @@ namespace DataAccess.DAO
             Syllabus rs = new Syllabus();
             using (var context = new CMSDbContext())
             {
-                rs = context.Syllabus.Where(s => s.subject_id == id).FirstOrDefault();
+                rs = context.Syllabus.Where(s => s.syllabus_id == id).FirstOrDefault();
             }
             return rs;
         }
