@@ -35,5 +35,55 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+
+        [HttpPost]
+        public ActionResult CreateMaterial(Material material)
+        {
+            Material rs = new Material();
+            try
+            {
+                rs = repo.CreateMaterial(material);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+                return BadRequest(new BaseResponse(true, "False", null));
+
+                
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+        [HttpPut]
+        public ActionResult EditMaterial(Material material)
+        {
+            Material rs = new Material();
+            try
+            {
+                rs = repo.EditMaterial(material);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "False", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpDelete]
+        public ActionResult DeleteMaterial(int id)
+        {
+            Material rs = new Material();
+            try
+            {
+                rs = repo.DeleteMaterial(id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+                return BadRequest(new BaseResponse(true, "False", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
     }
 }

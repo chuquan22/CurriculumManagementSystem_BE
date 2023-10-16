@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.Models.DTO.response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ namespace DataAccess.DAO
 {
     public class SyllabusDAO
     {
-        public List<Syllabus> GetListSyllabus(int start, int end, string txtSearch)
+        public List<Syllabus> GetListSyllabus(int page, int limit, string txtSearch)
         {
             List<Syllabus> rs = new List<Syllabus>();
             using (var context = new CMSDbContext())
             {
                 rs = context.Syllabus
                                    .Include(s => s.Subject)
+                                   .Include(s => s.Subject.LearningMethod)
                                    .Where(s => s.syllabus_status == 0)
                                    .ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
@@ -28,7 +30,21 @@ namespace DataAccess.DAO
                     ).ToList();                
                 }
                 rs = rs
-                .Skip(start).Take(end).ToList();
+                .Skip((page - 1)* limit).Take(limit).ToList();
+            }
+            return rs;
+        }
+
+        public List<PreRequisite> GetListPre(int id)
+        {
+            List<PreRequisite> rs = new List<PreRequisite>();
+            using (var context = new CMSDbContext())
+            {
+                rs = context.PreRequisite
+                    .Include(x => x.Subject)
+                    .Include(x => x.PreRequisiteType)
+                    .Where(x => x.subject_id == id )
+                    .ToList();  
             }
             return rs;
         }
@@ -38,7 +54,10 @@ namespace DataAccess.DAO
             int rs = 0;
             using (var context = new CMSDbContext())
             {
-                rs = context.Syllabus.ToList().Count();
+                rs = context.Syllabus.Include(s => s.Subject)
+                                   .Include(s => s.Subject.LearningMethod)
+                                   .ToList()
+                                   .Count();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
                     rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_name.Contains(txtSearch)
@@ -55,7 +74,10 @@ namespace DataAccess.DAO
             Syllabus rs = new Syllabus();
             using (var context = new CMSDbContext())
             {
-                rs = context.Syllabus.Where(s => s.syllabus_id == id).FirstOrDefault();
+                rs = context.Syllabus.Include(s => s.Subject)
+                                   .Include(s => s.Subject.LearningMethod)
+                                   .Where(s => s.syllabus_id == id)
+                                   .FirstOrDefault();
             }
             return rs;
         }

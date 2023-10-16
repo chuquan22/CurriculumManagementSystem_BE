@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObject;
+using DataAccess.Models.DTO.response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +12,7 @@ namespace Repositories.Syllabus
     {
          public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch);
          public int GetTotalSyllabus(string txtSearch);
-
+        public List<PreRequisite> GetPre(int id);
         public BusinessObject.Syllabus GetSyllabusById(int id);    
 
     }

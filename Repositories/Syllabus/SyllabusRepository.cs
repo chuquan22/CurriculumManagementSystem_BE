@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BusinessObject;
 using DataAccess.DAO;
+using DataAccess.Models.DTO.response;
 
 namespace Repositories.Syllabus
 {
@@ -15,6 +16,11 @@ namespace Repositories.Syllabus
         public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch)
         {
             return db.GetListSyllabus(start, end, txtSearch);
+        }
+
+        public List<PreRequisite> GetPre(int id)
+        {
+           return db.GetListPre(id);
         }
 
         public BusinessObject.Syllabus GetSyllabusById(int id)

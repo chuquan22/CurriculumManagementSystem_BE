@@ -17,10 +17,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private ISyllabusRepository repo;
-        private MaterialRepository repo2;
-        private CLORepository repo3;
-        private SessionRepository repo4;
-        private GradingStrutureRepository repo5;
 
 
         public SyllabusController(IMapper mapper)
@@ -33,28 +29,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
-            {
-                if (page <= 0)
-                {
-                    page = 1;
-                }
-                //Code phan trang
-                int numPs, numperPage, numpage, start, end;
-                numPs = repo.GetTotalSyllabus(txtSearch);
-                numperPage = limit;
-                numpage = numPs / numperPage + (numPs % numperPage == 0 ? 0 : 1);
-                start = ((page - 1) * numperPage);
-                if (page * numperPage > numPs)
-                {
-                    end = numPs;
-                }
-                else
-                {
-                    end = page * numperPage;
-                }
-                List<Syllabus> list = repo.GetListSyllabus(start, end, txtSearch);
+            {             
+                int limit2 = repo.GetTotalSyllabus(txtSearch);
+                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,numPs, result)));
+                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,limit2, result)));
             }
             catch (Exception)
             {
@@ -66,9 +45,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult SyllabusDetails(int syllabus_id)
         {
-            Syllabus rs1 = repo.GetSyllabusById(syllabus_id);           
- 
-            return Ok(new BaseResponse(true, "False", rs1));
+            Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
+            var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
+            List<PreRequisite> pre = repo.GetPre(rs1.subject_id);
+            List<PreRequisiteResponse2> preRes = new List<PreRequisiteResponse2>();
+            foreach (PreRequisite item in pre)
+            {
+                PreRequisiteResponse2 p = new PreRequisiteResponse2();
+                p.prequisite_subject_name = item.Subject.subject_name;
+                p.prequisite_name = item.PreRequisiteType.pre_requisite_type_name;
+                preRes.Add(p);
+            }
+            result.pre_required = preRes;
+            return Ok(new BaseResponse(true, "False", result));
         }
 
     }
