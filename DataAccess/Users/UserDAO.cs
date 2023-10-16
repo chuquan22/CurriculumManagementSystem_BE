@@ -20,7 +20,7 @@ namespace DataAccess.Users
             User response = new User();
             try
             {
-                response = db.User.Where(u => u.user_name.Equals(email)).FirstOrDefault();
+                response = db.User.Where(u => u.user_name.Equals(email) && u.user_password.Equals(password)).FirstOrDefault();
 
             }
             catch (Exception)
