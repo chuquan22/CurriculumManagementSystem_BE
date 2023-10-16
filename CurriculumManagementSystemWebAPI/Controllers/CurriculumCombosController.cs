@@ -28,11 +28,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<ActionResult<IEnumerable<ComboCurriculum>>> GetCurriculumCombo(int curriculumId)
         {
             var curriculumCombo = _curriculumRepository.GetListComboByCurriculum(curriculumId);
-            if(curriculumCombo == null)
+            if(curriculumCombo.Count == 0)
             {
-                return NotFound(new BaseResponse(true, "Curriculum Hasn't combo!"));
+                return Ok(new BaseResponse(true, "Curriculum Hasn't combo!"));
             }
-            var curriculumComboResponse = _mapper.Map<CurriculumComboDTOResponse>(curriculumCombo);
+            var curriculumComboResponse = _mapper.Map<List<CurriculumComboDTOResponse>>(curriculumCombo);
             return Ok(new BaseResponse(false, "List Combo", curriculumComboResponse));
         }
 

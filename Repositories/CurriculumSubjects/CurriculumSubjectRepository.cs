@@ -36,6 +36,11 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.GetCurriculumBySubject(subjectId);
         }
 
+        public List<Subject> GetListSubject(int curriculumId)
+        {
+           return curriculumDAO.GetListSubject(curriculumId);
+        }
+
         public List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId)
         {
             return curriculumDAO.GetListSubjectByCurriculum(curriculumId);

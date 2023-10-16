@@ -72,26 +72,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-
-            //var curriculumSubjectMapper = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
 
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
-                // Kiểm tra xem semester_no đã tồn tại trong danh sách CurriculumSubjectDTO chưa
+
                 var existingCurriculumSubjectDTO = curriculumSubjectResponse
                     .FirstOrDefault(dto => dto.semester_no == curriSubject.term_no.ToString());
 
                 if (existingCurriculumSubjectDTO != null)
                 {
-                    // Nếu semester_no đã tồn tại, thêm CurriculumComboDTOResponse vào list của semester_no đó
-                     
                     existingCurriculumSubjectDTO.list.Add(curriculumSubjectMapper);
                 }
                 else
                 {
-                    // Nếu semester_no chưa tồn tại, tạo một CurriculumSubjectDTO mới và thêm vào list
                     var newCurriculumSubjectDTO = new CurriculumSubjectDTO
                     {
                         semester_no = curriSubject.term_no.ToString(),
@@ -105,10 +100,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
-        
+        // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
+        [HttpGet("GetSubjectNotExsitCurriculum/{curriculumId}")]
+        public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectNotExistCurriculum(int curriculumId)
+        {
+            var subject = _curriculumSubjectRepository.GetListSubject(curriculumId);
+            if(subject.Count == 0)
+            {
+                return Ok(new BaseResponse(true, "Not Found Subject!"));
+            }
+            var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseResponse(false, "List Subject", subjectResponse));
+        }
 
-        // POST: api/CurriculumSubjects/CreateCurriculumSubject
-        [HttpPost("CreateCurriculumSubject")]
+            // POST: api/CurriculumSubjects/CreateCurriculumSubject
+            [HttpPost("CreateCurriculumSubject")]
         public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] CurriculumSubjectRequest curriculumSubjectRequest)
         {
             if (_context.CurriculumSubject == null)
