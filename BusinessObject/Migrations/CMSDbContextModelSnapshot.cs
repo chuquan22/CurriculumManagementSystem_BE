@@ -49,6 +49,12 @@ namespace BusinessObject.Migrations
                             assessment_method_id = 1,
                             assessment_method_component = "ABC",
                             assessment_type_id = 1
+                        },
+                        new
+                        {
+                            assessment_method_id = 2,
+                            assessment_method_component = "TEST",
+                            assessment_type_id = 2
                         });
                 });
 
@@ -73,6 +79,11 @@ namespace BusinessObject.Migrations
                         {
                             assessment_type_id = 1,
                             assessment_type_name = "Online"
+                        },
+                        new
+                        {
+                            assessment_type_id = 2,
+                            assessment_type_name = "ORIT"
                         });
                 });
 
@@ -466,6 +477,12 @@ namespace BusinessObject.Migrations
                             learning_method_id = 1,
                             learning_method_description = "",
                             learning_method_name = "Online Learing"
+                        },
+                        new
+                        {
+                            learning_method_id = 2,
+                            learning_method_description = "",
+                            learning_method_name = "Balence"
                         });
                 });
 
@@ -816,7 +833,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498),
+                            semester_end_date = new DateTime(2023, 10, 16, 20, 56, 31, 132, DateTimeKind.Local).AddTicks(9530),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -1116,13 +1133,41 @@ namespace BusinessObject.Migrations
                         {
                             subject_id = 1,
                             assessment_method_id = 1,
-                            credit = 10,
+                            credit = 3,
                             english_subject_name = "Project Capstone",
                             exam_total = 3,
                             is_active = true,
                             learning_method_id = 1,
                             subject_code = "SEP490",
                             subject_name = "Đồ án",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 2,
+                            assessment_method_id = 2,
+                            credit = 3,
+                            english_subject_name = "Mac-Lenin philosophy",
+                            exam_total = 5,
+                            is_active = true,
+                            learning_method_id = 1,
+                            subject_code = "MLN131",
+                            subject_name = "Triết học Mac-Lenin",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 3,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Soft Skill Group",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "SSG104",
+                            subject_name = "Kĩ năng trong làm việc nhóm",
                             total_time = 70,
                             total_time_class = 40
                         });
@@ -1210,6 +1255,13 @@ namespace BusinessObject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("user_password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("user_phone")
+                        .HasColumnType("int");
+
                     b.HasKey("user_id");
 
                     b.HasIndex("role_id");
@@ -1224,7 +1276,8 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 1,
                             user_email = "chuquan2k1@gmail.com",
-                            user_name = "QuanCQ"
+                            user_name = "QuanCQ",
+                            user_password = "quan123"
                         },
                         new
                         {
@@ -1233,7 +1286,8 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 2,
                             user_email = "nguyenthu120801@gmail.com",
-                            user_name = "ThuNT"
+                            user_name = "ThuNT",
+                            user_password = "quan123"
                         },
                         new
                         {
@@ -1242,7 +1296,8 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 1,
                             user_email = "haotest@gmail.com",
-                            user_name = "admin"
+                            user_name = "admin",
+                            user_password = "quan123"
                         });
                 });
 

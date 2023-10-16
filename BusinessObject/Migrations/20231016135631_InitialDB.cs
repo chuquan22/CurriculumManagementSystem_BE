@@ -161,6 +161,8 @@ namespace BusinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     user_email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    user_password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    user_phone = table.Column<int>(type: "int", nullable: true),
                     full_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role_id = table.Column<int>(type: "int", nullable: false),
                     is_active = table.Column<bool>(type: "bit", nullable: false)
@@ -759,7 +761,11 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "AssessmentType",
                 columns: new[] { "assessment_type_id", "assessment_type_name" },
-                values: new object[] { 1, "Online" });
+                values: new object[,]
+                {
+                    { 1, "Online" },
+                    { 2, "ORIT" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Batch",
@@ -775,7 +781,11 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "LearningMethod",
                 columns: new[] { "learning_method_id", "learning_method_description", "learning_method_name" },
-                values: new object[] { 1, "", "Online Learing" });
+                values: new object[,]
+                {
+                    { 1, "", "Online Learing" },
+                    { 2, "", "Balence" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Major",
@@ -803,14 +813,18 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 16, 20, 56, 31, 132, DateTimeKind.Local).AddTicks(9530), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
                 table: "AssessmentMethod",
                 columns: new[] { "assessment_method_id", "assessment_method_component", "assessment_type_id" },
-                values: new object[] { 1, "ABC", 1 });
+                values: new object[,]
+                {
+                    { 1, "ABC", 1 },
+                    { 2, "TEST", 2 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Specialization",
@@ -827,12 +841,12 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "user_id", "full_name", "is_active", "role_id", "user_email", "user_name" },
+                columns: new[] { "user_id", "full_name", "is_active", "role_id", "user_email", "user_name", "user_password", "user_phone" },
                 values: new object[,]
                 {
-                    { 1, "Chu Quang Quan", true, 1, "chuquan2k1@gmail.com", "QuanCQ" },
-                    { 2, "Nguyen Thi Thu", true, 2, "nguyenthu120801@gmail.com", "ThuNT" },
-                    { 3, "Nguyen Phong Hao", true, 1, "haotest@gmail.com", "admin" }
+                    { 1, "Chu Quang Quan", true, 1, "chuquan2k1@gmail.com", "QuanCQ", "quan123", null },
+                    { 2, "Nguyen Thi Thu", true, 2, "nguyenthu120801@gmail.com", "ThuNT", "quan123", null },
+                    { 3, "Nguyen Phong Hao", true, 1, "haotest@gmail.com", "admin", "quan123", null }
                 });
 
             migrationBuilder.InsertData(
@@ -849,7 +863,12 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "Subject",
                 columns: new[] { "subject_id", "assessment_method_id", "credit", "english_subject_name", "exam_total", "is_active", "learning_method_id", "subject_code", "subject_name", "total_time", "total_time_class" },
-                values: new object[] { 1, 1, 10, "Project Capstone", 3, true, 1, "SEP490", "Đồ án", 70, 40 });
+                values: new object[,]
+                {
+                    { 1, 1, 3, "Project Capstone", 3, true, 1, "SEP490", "Đồ án", 70, 40 },
+                    { 2, 2, 3, "Mac-Lenin philosophy", 5, true, 1, "MLN131", "Triết học Mac-Lenin", 70, 40 },
+                    { 3, 1, 3, "Soft Skill Group", 4, true, 2, "SSG104", "Kĩ năng trong làm việc nhóm", 70, 40 }
+                });
 
             migrationBuilder.InsertData(
                 table: "CurriculumSubject",
