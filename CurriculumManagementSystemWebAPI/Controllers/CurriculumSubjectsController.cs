@@ -73,7 +73,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound();
             }
 
-            var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+            //var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+            var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
+            //foreach(var curriSubject in curriculumSubject)
+            //{
+            //    curriculumSubjectResponse.Add(new CurriculumSubjectDTO()
+            //    {
+            //        semester_no = curriSubject
+            //    })
+            //}
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }

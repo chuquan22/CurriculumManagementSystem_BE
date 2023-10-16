@@ -4,7 +4,7 @@
     {
         public int page { get; set; }
         public int limit { get; set; }
-        public int total { get; set; }
+        public int totalElement { get; set; }
         public object data { get; set; }
 
         public BaseListResponse()
@@ -15,7 +15,7 @@
         {
             this.page = page;
             this.limit = limit;
-            this.total = total;
+            this.totalElement = total;
             this.data = data;
         }
     }

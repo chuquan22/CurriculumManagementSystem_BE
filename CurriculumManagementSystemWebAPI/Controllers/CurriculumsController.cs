@@ -32,22 +32,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/Curriculums/GetAllCurriculum
-        [HttpGet("GetAllCurriculum")]
-        public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculum()
-        {
-            if (_context.Curriculum == null)
-            {
-                return NotFound();
-            }
-            var listCurriculum = _curriculumRepository.GetAllCurriculum();
-            if (listCurriculum.Count == 0)
-            {
-                return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
-            }
-            var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
-        }
+        //// GET: api/Curriculums/GetAllCurriculum
+        //[HttpGet("GetAllCurriculum")]
+        //public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculum()
+        //{
+        //    if (_context.Curriculum == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var listCurriculum = _curriculumRepository.GetAllCurriculum();
+        //    if (listCurriculum.Count == 0)
+        //    {
+        //        return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
+        //    }
+        //    var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+        //    return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
+        //}
 
         // GET: api/Curriculums/GetListBatchByCurriculumCode/code
         [HttpGet("GetListBatchByCurriculumCode/{curriculumCode}")]
@@ -72,9 +72,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             
             if (listCurriculum.Count == 0)
             {
-                return BadRequest(new BaseResponse(true, "Not Found Subject"));
+                return Ok(new BaseResponse(true, "Not Found Subject"));
             }
-            var totalpage = (int)Math.Ceiling((double)_curriculumRepository.GetAllCurriculum().Count / limit);
+            var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, specializationId).Count();
 
             var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             
@@ -84,7 +84,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
             }
 
-            return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalpage, subjectRespone)));
+            return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, subjectRespone)));
 
         }
 

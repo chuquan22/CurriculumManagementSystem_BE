@@ -12,14 +12,26 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public List<Curriculum> GetAllCurriculum()
+        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? specializationId)
         {
-            var curriculumList = _cmsDbContext.Curriculum
+            IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
-                .Include(x => x.Specialization)
-                .AsEnumerable()
+                .Include(x => x.Specialization);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
+            }
+
+            if (specializationId.HasValue)
+            {
+                query = query.Where(x => x.specialization_id == specializationId);
+            }
+
+            var curriculumList = query
                 .GroupBy(x => x.curriculum_code)
                 .Select(group => group.OrderByDescending(x => x.Batch.batch_name).First())
+                .AsEnumerable()
                 .ToList();
             return curriculumList;
         }
@@ -50,6 +62,9 @@ namespace DataAccess.DAO
 
             return curriculumList;
         }
+
+
+      
 
         public int GetTotalCredit(int curriculumId)
         {
