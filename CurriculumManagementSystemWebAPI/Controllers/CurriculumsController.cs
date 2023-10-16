@@ -13,6 +13,7 @@ using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using System.Diagnostics.CodeAnalysis;
 using DataAccess.Models.Enums;
+using Repositories.CurriculumSubjects;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -23,6 +24,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
+        private readonly ICurriculumSubjectRepository _curriculumsubjectRepository = new CurriculumSubjectRepository();
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
@@ -75,6 +77,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var totalpage = (int)Math.Ceiling((double)_curriculumRepository.GetAllCurriculum().Count / limit);
 
             var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            
+
+            foreach (var curriculum in subjectRespone)
+            {
+               curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
+            }
 
             return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalpage, subjectRespone)));
 
