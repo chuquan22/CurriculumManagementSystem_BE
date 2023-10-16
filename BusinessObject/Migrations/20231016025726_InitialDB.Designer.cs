@@ -4,6 +4,7 @@ using BusinessObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    partial class CMSDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231016025726_InitialDB")]
+    partial class InitialDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,7 +310,6 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
-
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -337,7 +338,6 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 4,
                             approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
-
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -818,9 +818,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-
                             semester_end_date = new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498),
-
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },

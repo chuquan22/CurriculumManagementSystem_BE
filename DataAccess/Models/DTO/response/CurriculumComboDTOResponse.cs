@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
     {
         public int combo_id { get; set; }
         public string combo_name { get; set; }
+        public int curriculum_id { get; set; }
         public bool is_active { get; set; }
     }
 }

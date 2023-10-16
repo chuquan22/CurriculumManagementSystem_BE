@@ -29,6 +29,8 @@ namespace BusinessObject
         [Required]
         public string decision_No { get;set; }
         [Required]
+        public string decision_Link { get; set; }
+        [Required]
         public DateTime approved_date { get; set; }
         [Required]
         public int curriculum_status { get; set; }

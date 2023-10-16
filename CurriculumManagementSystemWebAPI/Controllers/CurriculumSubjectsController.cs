@@ -72,31 +72,44 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+
+            //var curriculumSubjectMapper = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+            var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
+
+            foreach (var curriSubject in curriculumSubject)
+            {
+                var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
+                // Kiểm tra xem semester_no đã tồn tại trong danh sách CurriculumSubjectDTO chưa
+                var existingCurriculumSubjectDTO = curriculumSubjectResponse
+                    .FirstOrDefault(dto => dto.semester_no == curriSubject.term_no.ToString());
+
+                if (existingCurriculumSubjectDTO != null)
+                {
+                    // Nếu semester_no đã tồn tại, thêm CurriculumComboDTOResponse vào list của semester_no đó
+                     
+                    existingCurriculumSubjectDTO.list.Add(curriculumSubjectMapper);
+                }
+                else
+                {
+                    // Nếu semester_no chưa tồn tại, tạo một CurriculumSubjectDTO mới và thêm vào list
+                    var newCurriculumSubjectDTO = new CurriculumSubjectDTO
+                    {
+                        semester_no = curriSubject.term_no.ToString(),
+
+                        list = new List<CurriculumSubjectResponse> { curriculumSubjectMapper }
+                    };
+                    curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
+                }
+            }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
-        //[HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
-        //public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
-        //{
-        //    if(!CurriculumSubjectExists(curriculumId, subjectId))
-        //    {
-        //        return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
-        //    }
-        //    var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriculumId, subjectId);
-        //    _mapper.Map(curriculumSubjectRequest, curriculumSubject);
-        //    string updateResult = _curriculumSubjectRepository.UpdateCurriculumSubject(curriculumSubject);
-        //    if(!updateResult.Equals(Result.updateSuccessfull.ToString()))
-        //    {
-        //        return BadRequest(new BaseResponse(true, updateResult));
-        //    }
-        //    return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
-        //}
+        
 
         // POST: api/CurriculumSubjects/CreateCurriculumSubject
         [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] CurriculumSubjectRequest curriculumSubjectRequest)
         {
             if (_context.CurriculumSubject == null)
             {

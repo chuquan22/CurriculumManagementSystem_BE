@@ -177,28 +177,36 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteSubject/{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
+            
             var subject = _subjectRepository.GetSubjectById(id);
+            // if subject not exsit
             if (subject == null)
             {
                 return NotFound(new BaseResponse(true, "Subject you want delete Not Found!"));
             }
-            string deleteResult = _subjectRepository.DeleteSubject(subject);
-            if (!deleteResult.Equals("OK"))
-            {
-                return BadRequest(new BaseResponse(true, deleteResult));
-            }
+
+            // Delete foreign key of subject
             var preRequisite = _preRequisiteRepository.GetPreRequisitesBySubject(id);
             if (preRequisite != null)
             {
                 foreach (var prere in preRequisite)
                 {
-                    _preRequisiteRepository.DeletePreRequisite(prere);
+                    string deletePreRequisiteResult = _preRequisiteRepository.DeletePreRequisite(prere);
+                    // if delete foreign key fail
+                    if (deletePreRequisiteResult != Result.deleteSuccessfull.ToString())
+                    {
+                        return BadRequest(new BaseResponse(true, deletePreRequisiteResult));
+                    }
                 }
             }
+            
+            // delete subject
+            string deleteResult = _subjectRepository.DeleteSubject(subject);
+            if (!deleteResult.Equals("OK"))
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
+            }
+            
 
             return Ok(new BaseResponse(false, "Delete successfull!", id));
         }
