@@ -77,26 +77,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
-        //[HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
-        //public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
-        //{
-        //    if(!CurriculumSubjectExists(curriculumId, subjectId))
-        //    {
-        //        return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
-        //    }
-        //    var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriculumId, subjectId);
-        //    _mapper.Map(curriculumSubjectRequest, curriculumSubject);
-        //    string updateResult = _curriculumSubjectRepository.UpdateCurriculumSubject(curriculumSubject);
-        //    if(!updateResult.Equals(Result.updateSuccessfull.ToString()))
-        //    {
-        //        return BadRequest(new BaseResponse(true, updateResult));
-        //    }
-        //    return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
-        //}
+        
 
         // POST: api/CurriculumSubjects/CreateCurriculumSubject
         [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] CurriculumSubjectRequest curriculumSubjectRequest)
         {
             if (_context.CurriculumSubject == null)
             {

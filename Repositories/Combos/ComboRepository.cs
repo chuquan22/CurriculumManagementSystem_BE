@@ -27,7 +27,7 @@ namespace Repositories.Combos
             throw new NotImplementedException();
         }
 
-        public List<Combo> GetListCombo(int specId, int currId)
+        public List<Combo> GetListCombo(int specId)
         {
             throw new NotImplementedException();
         }

@@ -12,6 +12,7 @@ using Repositories.Curriculums;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using System.Diagnostics.CodeAnalysis;
+using DataAccess.Models.Enums;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -29,7 +30,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET All Curriculum
+        // GET: api/Curriculums/GetAllCurriculum
         [HttpGet("GetAllCurriculum")]
         public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculum()
         {
@@ -38,7 +39,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound();
             }
             var listCurriculum = _curriculumRepository.GetAllCurriculum();
-            if (listCurriculum == null)
+            if (listCurriculum.Count == 0)
             {
                 return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
             }
@@ -46,32 +47,42 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
         }
 
+        // GET: api/Curriculums/GetListBatchByCurriculumCode/code
+        [HttpGet("GetListBatchByCurriculumCode/{curriculumCode}")]
+        public async Task<ActionResult<IEnumerable<BatchDTOResponse>>> GetListBatch(string curriculumCode)
+        {
+           
+            var listBatch = _curriculumRepository.GetBatchByCurriculumCode(curriculumCode);
+            if (listBatch.Count == 0)
+            {
+                return BadRequest(new BaseResponse(true, "Cannot Found Batch By this curriculum"));
+            }
+            var listBatchResponse = _mapper.Map<List<BatchDTOResponse>>(listBatch);
+            return Ok(new BaseResponse(false, "list Batch", listBatchResponse));
+        }
 
 
+        // GET: api/Curriculums/Pagination/5/6/search/1
         [HttpGet("Pagination/{page}/{limit}/{txtSearch}/{specializationId}")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch, int specializationId)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
-
-            var subject = _context.Curriculum.Where(x => x.curriculum_code.Equals(txtSearch) || x.curriculum_name.Equals(txtSearch) && x.specialization_id == specializationId)
+            var subject = _context.Curriculum.Where(x => (x.curriculum_code.Contains(txtSearch) || x.curriculum_name.Contains(txtSearch)) && x.specialization_id == specializationId)
                 .Skip((page - 1) * limit).Take(limit)
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
                 .ToList();
 
-            if (subject == null)
+            if (subject.Count == 0)
             {
-                return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
+                return BadRequest(new BaseResponse(true, "Not Found Subject"));
             }
-            var subjectRespone = _mapper.Map<List<SubjectResponse>>(subject);
+            var subjectRespone = _mapper.Map<List<CurriculumResponse>>(subject);
 
             return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, subjectRespone)));
 
         }
 
+        // GET: api/Curriculums/GetListCurriculumCanDelete
         // Get List Curriculum Have Status Can Remove
         [HttpGet("GetListCurriculumCanDelete")]
         public async Task<ActionResult<IEnumerable<CurriculumResponse>>> Curriculum()
@@ -80,20 +91,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var listCurriculum = _context.Curriculum.Where(x => x.curriculum_status.Equals("Active") == null).ToList();
+            var listCurriculum = _context.Curriculum.Where(x => x.curriculum_status == (int)Status.approved).ToList();
             var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             return listCurriculumRespone;
         }
 
-        // GET: api/Curriculums/5
-        [HttpGet("GetCurriculum/{code}")]
-        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(string code, int? batchId)
+        // GET: api/Curriculums/GetCurriculum/GD/5
+        [HttpGet("GetCurriculum/{code}/{batchId}")]
+        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(string code, int batchId)
         {
-            if (batchId == null)
-            {
-                batchId = 1;
-            }
-            var curriculum = _curriculumRepository.GetCurriculum(code, (int)batchId);
+            var curriculum = _curriculumRepository.GetCurriculum(code, batchId);
 
             if (curriculum == null)
             {
@@ -103,10 +110,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return curriculumResponse;
         }
 
-        // PUT: api/Curriculums/5
+        // PUT: api/Curriculums/UpdateCurriculum/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("UpdateCurriculum/{id}")]
-        public async Task<IActionResult> PutCurriculum(int id, [FromForm]CurriculumRequest curriculumRequest)
+        public async Task<IActionResult> PutCurriculum(int id, [FromBody]CurriculumRequest curriculumRequest)
         {
             if (!CurriculumExists(id))
             {
@@ -124,10 +131,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Update Curriculum Success!", curriculumRequest));
         }
 
-        // POST: api/Curriculums
+        // POST: api/Curriculums/CreateCurriculum
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("CreateCurriculum")]
-        public async Task<ActionResult<Curriculum>> PostCurriculum([FromForm]CurriculumRequest curriculumRequest)
+        public async Task<ActionResult<Curriculum>> PostCurriculum([FromBody]CurriculumRequest curriculumRequest)
         {
             if (CheckCurriculumExists(curriculumRequest.curriculum_code, curriculumRequest.batch_id))
             {
@@ -143,7 +150,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Create Curriculum Success!", curriculumRequest));
         }
 
-        // DELETE: api/Curriculums/5
+        // DELETE: api/Curriculums/DeleteCurriculum/5
         [HttpDelete("DeleteCurriculum/{id}")]
         public async Task<IActionResult> DeleteCurriculum(int id)
         {
@@ -163,7 +170,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(false, "Delete Curriculum Successfull!"));
         }
-
 
 
         private bool CurriculumExists(int id)

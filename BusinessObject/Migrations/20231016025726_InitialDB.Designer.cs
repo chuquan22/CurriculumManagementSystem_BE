@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231011161034_InitialDB")]
+    [Migration("20231016025726_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,7 +92,7 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("batch_id");
 
-                    b.ToTable("Batche");
+                    b.ToTable("Batch");
 
                     b.HasData(
                         new
@@ -109,6 +109,11 @@ namespace BusinessObject.Migrations
                         {
                             batch_id = 3,
                             batch_name = "K17"
+                        },
+                        new
+                        {
+                            batch_id = 4,
+                            batch_name = "K20"
                         });
                 });
 
@@ -223,7 +228,7 @@ namespace BusinessObject.Migrations
                     b.Property<int>("subject_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("semester_no")
+                    b.Property<int?>("semester_no")
                         .HasColumnType("int");
 
                     b.HasKey("combo_id", "subject_id");
@@ -263,6 +268,10 @@ namespace BusinessObject.Migrations
                     b.Property<int>("curriculum_status")
                         .HasColumnType("int");
 
+                    b.Property<string>("decision_Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("decision_No")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -286,12 +295,13 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế đồ họa",
                             curriculum_status = 1,
+                            decision_Link = "abc.com",
                             decision_No = "360/QĐ-CĐFPL",
                             english_curriculum_name = "Graphic Design",
                             specialization_id = 1
@@ -299,12 +309,41 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
+                            batch_id = 4,
+                            curriculum_code = "GD",
+                            curriculum_description = "",
+                            curriculum_name = "Thiết kế đồ họa",
+                            curriculum_status = 1,
+                            decision_Link = "abc.com",
+                            decision_No = "360/QĐ-CĐFPL",
+                            english_curriculum_name = "Graphic Design",
+                            specialization_id = 1
+                        },
+                        new
+                        {
+                            curriculum_id = 3,
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
+                            batch_id = 3,
+                            curriculum_code = "SE",
+                            curriculum_description = "",
+                            curriculum_name = "kĩ sư phần mềm",
+                            curriculum_status = 0,
+                            decision_Link = "bcd.com",
+                            decision_No = "360/QĐ-CĐFPL",
+                            english_curriculum_name = "Software Engineering",
+                            specialization_id = 4
+                        },
+                        new
+                        {
+                            curriculum_id = 4,
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ sư phần mềm",
                             curriculum_status = 0,
+                            decision_Link = "bcd.com",
                             decision_No = "360/QĐ-CĐFPL",
                             english_curriculum_name = "Software Engineering",
                             specialization_id = 4
@@ -779,7 +818,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 11, 23, 10, 34, 352, DateTimeKind.Local).AddTicks(3374),
+                            semester_end_date = new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
