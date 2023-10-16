@@ -23,7 +23,7 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Batche",
+                name: "Batch",
                 columns: table => new
                 {
                     batch_id = table.Column<int>(type: "int", nullable: false)
@@ -32,7 +32,7 @@ namespace BusinessObject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Batche", x => x.batch_id);
+                    table.PrimaryKey("PK_Batch", x => x.batch_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,6 +252,7 @@ namespace BusinessObject.Migrations
                     specialization_id = table.Column<int>(type: "int", nullable: false),
                     batch_id = table.Column<int>(type: "int", nullable: false),
                     decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    decision_Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     curriculum_status = table.Column<int>(type: "int", nullable: false)
                 },
@@ -259,9 +260,9 @@ namespace BusinessObject.Migrations
                 {
                     table.PrimaryKey("PK_Curriculum", x => x.curriculum_id);
                     table.ForeignKey(
-                        name: "FK_Curriculum_Batche_batch_id",
+                        name: "FK_Curriculum_Batch_batch_id",
                         column: x => x.batch_id,
-                        principalTable: "Batche",
+                        principalTable: "Batch",
                         principalColumn: "batch_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -666,7 +667,7 @@ namespace BusinessObject.Migrations
                 {
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     combo_id = table.Column<int>(type: "int", nullable: false),
-                    semester_no = table.Column<int>(type: "int", nullable: false)
+                    semester_no = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -761,13 +762,14 @@ namespace BusinessObject.Migrations
                 values: new object[] { 1, "Online" });
 
             migrationBuilder.InsertData(
-                table: "Batche",
+                table: "Batch",
                 columns: new[] { "batch_id", "batch_name" },
                 values: new object[,]
                 {
                     { 1, "K19.3" },
                     { 2, "K18" },
-                    { 3, "K17" }
+                    { 3, "K17" },
+                    { 4, "K20" }
                 });
 
             migrationBuilder.InsertData(
@@ -801,7 +803,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 11, 23, 10, 34, 352, DateTimeKind.Local).AddTicks(3374), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 16, 9, 57, 26, 557, DateTimeKind.Local).AddTicks(3498), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -835,13 +837,14 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Curriculum",
-                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
-                values: new object[] { 1, new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", 1, "360/QĐ-CĐFPL", "Graphic Design", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Curriculum",
-                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
-                values: new object[] { 2, new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ sư phần mềm", 0, "360/QĐ-CĐFPL", "Software Engineering", 4 });
+                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_Link", "decision_No", "english_curriculum_name", "specialization_id" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", 1, "abc.com", "360/QĐ-CĐFPL", "Graphic Design", 1 },
+                    { 2, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế đồ họa", 1, "abc.com", "360/QĐ-CĐFPL", "Graphic Design", 1 },
+                    { 3, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", 0, "bcd.com", "360/QĐ-CĐFPL", "Software Engineering", 4 },
+                    { 4, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ sư phần mềm", 0, "bcd.com", "360/QĐ-CĐFPL", "Software Engineering", 4 }
+                });
 
             migrationBuilder.InsertData(
                 table: "Subject",
@@ -1084,7 +1087,7 @@ namespace BusinessObject.Migrations
                 name: "Syllabus");
 
             migrationBuilder.DropTable(
-                name: "Batche");
+                name: "Batch");
 
             migrationBuilder.DropTable(
                 name: "Specialization");

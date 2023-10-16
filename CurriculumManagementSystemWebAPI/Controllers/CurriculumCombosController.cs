@@ -48,11 +48,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Subject", curriculumComboResponse));
         }
 
+
+
+        [HttpPost("CreateCurriculumComboSubject")]
+        public async Task<ActionResult<Curriculum>> PostCurriculumComboSubject([FromForm] CurriculumComboSubjectDTORequest curriculumComboSubjectRequest)
+        {
+            
+
+            return Ok(new BaseResponse(false, "Create Curriculum Success!", curriculumComboSubjectRequest));
+        }
+
+
         [HttpPut("UpdateCurriculumComboSubject/{id}")]
         public async Task<IActionResult> UpdateCurriculumComboSubject(int id, [FromForm] CurriculumComboSubjectDTORequest curriculumComboSubjectRequest)
         {
             return Ok("Chờ update");
         }
+
+        //Create, Remove
 
     }
 }

@@ -12,6 +12,7 @@ namespace Repositories.Curriculums
         List<Curriculum> GetAllCurriculum();
         Curriculum GetCurriculum(string code, int batchId);
         Curriculum GetCurriculumById(int id);
+        List<Batch> GetBatchByCurriculumCode(string curriculumCode);
         string CreateCurriculum(Curriculum curriculum);
         string UpdateCurriculum(Curriculum curriculum);
         string RemoveCurriculum(Curriculum curriculum);

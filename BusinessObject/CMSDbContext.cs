@@ -25,7 +25,7 @@ namespace BusinessObject
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }
         public virtual DbSet<AssessmentType> AssessmentType { get; set; }
-        public virtual DbSet<Batch> Batche { get; set; }
+        public virtual DbSet<Batch> Batch { get; set; }
         public virtual DbSet<ClassSessionType> ClassSessionType { get; set; }
         public virtual DbSet<CLO> CLO { get; set; }
         public virtual DbSet<Combo> Combo { get; set; }
@@ -164,7 +164,8 @@ namespace BusinessObject
             modelBuilder.Entity<Batch>().HasData(
                 new Batch { batch_id = 1, batch_name = "K19.3" },
                 new Batch { batch_id = 2, batch_name = "K18" },
-                new Batch { batch_id = 3, batch_name = "K17" }
+                new Batch { batch_id = 3, batch_name = "K17" },
+                new Batch { batch_id = 4, batch_name = "K20" }
                 );
 
             modelBuilder.Entity<Semester>().HasData(
@@ -192,25 +193,32 @@ namespace BusinessObject
 
 
             modelBuilder.Entity<Curriculum>().HasData(  
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", curriculum_status = 1},
-                new Curriculum { curriculum_id = 2, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", curriculum_status = 0 }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "abc.com",curriculum_status = 1},
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "abc.com",curriculum_status = 1},
+                new Curriculum { curriculum_id = 3, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 },
+                new Curriculum { curriculum_id = 4, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 }
 
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
-               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing", learning_method_description = "" }
+               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing", learning_method_description = "" },
+               new LearningMethod { learning_method_id = 2, learning_method_name = "Balence", learning_method_description = "" }
                 );
 
             modelBuilder.Entity<AssessmentType>().HasData(
-                new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" }
+                new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" },
+                new AssessmentType { assessment_type_id = 2, assessment_type_name = "ORIT" }
                 );
 
             modelBuilder.Entity<AssessmentMethod>().HasData(
-                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 }
+                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 }
                 );
 
             modelBuilder.Entity<Subject>().HasData(
-                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 10, total_time = 70, total_time_class = 40, exam_total = 3 ,is_active = true }
+                new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 3, total_time = 70, total_time_class = 40, exam_total = 3 ,is_active = true },
+                new Subject { subject_id = 2, subject_code = "MLN131", subject_name = "Triết học Mac-Lenin", assessment_method_id = 2, learning_method_id = 1, english_subject_name = "Mac-Lenin philosophy", credit = 3, total_time = 70, total_time_class = 40, exam_total = 5 ,is_active = true },
+                new Subject { subject_id = 3, subject_code = "SSG104", subject_name = "Kĩ năng trong làm việc nhóm", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Soft Skill Group", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4 ,is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumSubject>().HasData(

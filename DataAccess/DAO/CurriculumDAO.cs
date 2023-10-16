@@ -18,7 +18,8 @@ namespace DataAccess.DAO
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
                 .AsEnumerable()
-                .DistinctBy(x => x.curriculum_code)
+                .GroupBy(x => x.curriculum_code)
+                .Select(group => group.OrderByDescending(x => x.Batch.batch_name).First())
                 .ToList();
             return curriculumList;
         }
@@ -27,6 +28,19 @@ namespace DataAccess.DAO
         {
             var curriculum = _cmsDbContext.Curriculum.Include(x => x.Batch).Include(x => x.Specialization).FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
+        }
+
+        public List<Batch> GetBatchByCurriculumCode(string curriculumCode)
+        {
+            var listBatch = _cmsDbContext.Curriculum
+                .Where(x => x.curriculum_code.Equals(curriculumCode))
+                .Join(_cmsDbContext.Batch,
+                      curriculum => curriculum.batch_id,
+                      batch => batch.batch_id,
+                      (curriculum, batch) => batch)
+                .ToList();
+                
+            return listBatch;
         }
 
         public Curriculum GetCurriculum(string code, int batchId)
@@ -66,7 +80,6 @@ namespace DataAccess.DAO
             try
             {
                 _cmsDbContext.Curriculum.Update(curriculum);
-                _cmsDbContext.SaveChanges();
                 int number = _cmsDbContext.SaveChanges();
                 if (number > 0)
                 {
