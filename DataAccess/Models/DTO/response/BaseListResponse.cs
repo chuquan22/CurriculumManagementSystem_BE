@@ -18,5 +18,11 @@
             this.totalElement = total;
             this.data = data;
         }
+        public BaseListResponse(int page, int limit, object data)
+        {
+            this.page = page;
+            this.limit = limit;
+            this.data = data;
+        }
     }
 }
