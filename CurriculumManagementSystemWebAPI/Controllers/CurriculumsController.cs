@@ -78,7 +78,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             
-
             foreach (var curriculum in subjectRespone)
             {
                curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
