@@ -24,6 +24,34 @@ namespace DataAccess.DAO
             return curriculumList;
         }
 
+        public List<Curriculum> PanigationCurriculum(int page, int limit, string? txtSearch, int? specializationId)
+        {
+            IQueryable<Curriculum> query = _cmsDbContext.Curriculum
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization);
+
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
+            }
+
+            if (specializationId.HasValue)
+            {
+                query = query.Where(x => x.specialization_id == specializationId);
+            }
+
+            var curriculumList = query
+                .GroupBy(x => x.curriculum_code)
+                .Select(group => group.OrderByDescending(x => x.Batch.batch_name).First())
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .AsEnumerable()
+                .ToList();
+
+            return curriculumList;
+        }
+
         public Curriculum GetCurriculumById(int id)
         {
             var curriculum = _cmsDbContext.Curriculum.Include(x => x.Batch).Include(x => x.Specialization).FirstOrDefault(x => x.curriculum_id == id);

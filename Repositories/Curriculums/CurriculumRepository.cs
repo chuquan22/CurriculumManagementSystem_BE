@@ -24,6 +24,8 @@ namespace Repositories.Curriculums
 
         public Curriculum GetCurriculumById(int id) => curriculumDAO.GetCurriculumById(id);
 
+        public List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? specializationId) => curriculumDAO.PanigationCurriculum(page,limit, txtSearch, specializationId);  
+        
 
         public string RemoveCurriculum(Curriculum curriculum) => curriculumDAO.DeleteCurriculum(curriculum);
 

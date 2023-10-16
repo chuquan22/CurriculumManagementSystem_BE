@@ -63,22 +63,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
         // GET: api/Curriculums/Pagination/5/6/search/1
-        [HttpGet("Pagination/{page}/{limit}/{txtSearch}/{specializationId}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, string txtSearch, int specializationId)
+        [HttpGet("Pagination/{page}/{limit}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit,[FromQuery] string? txtSearch, [FromQuery]int? specializationId)
         {
-            var subject = _context.Curriculum.Where(x => (x.curriculum_code.Contains(txtSearch) || x.curriculum_name.Contains(txtSearch)) && x.specialization_id == specializationId)
-                .Skip((page - 1) * limit).Take(limit)
-                .Include(x => x.Batch)
-                .Include(x => x.Specialization)
-                .ToList();
-
-            if (subject.Count == 0)
+            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, txtSearch, specializationId);
+            
+            if (listCurriculum.Count == 0)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Subject"));
             }
-            var subjectRespone = _mapper.Map<List<CurriculumResponse>>(subject);
+            var totalpage = (int)Math.Ceiling((double)_curriculumRepository.GetAllCurriculum().Count / limit);
 
-            return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, subjectRespone)));
+            var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+
+            return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalpage, subjectRespone)));
 
         }
 
