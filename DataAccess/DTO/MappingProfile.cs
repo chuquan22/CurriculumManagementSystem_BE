@@ -30,7 +30,6 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
               .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
               .ForMember(dest => dest.curriculum_status, opt => opt.MapFrom(src => src.curriculum_status == 1 ? "approved" : "draft"))
-              //.ForMember(dest => dest.total_credit, opt => opt.MapFrom(src => src.))
               .ReverseMap();
 
             CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
@@ -58,6 +57,7 @@ namespace DataAccess.Models.DTO
 
             CreateMap<ComboCurriculum, CurriculumComboDTOResponse>()
                 .ForMember(dest => dest.combo_name, opt => opt.MapFrom(src => src.Combo.combo_code + ": " + src.Combo.combo_name))
+                .ForMember(dest => dest.is_active, opt => opt.MapFrom(src => src.Combo.is_active))
                 .ReverseMap();
 
             CreateMap<ComboSubject, CurriculumComboSubjectDTOResponse>()

@@ -13,6 +13,7 @@ namespace Repositories.CurriculumSubjects
         List<CurriculumSubject> GetListCurriculumBySubject(int subjectId);
         List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId);
         List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no);
+        List<Subject> GetListSubject(int curriculumId);
         string CreateCurriculumSubject(CurriculumSubject curriculumSubject);
         string UpdateCurriculumSubject(CurriculumSubject curriculumSubject);
         string DeleteCurriculumSubject(CurriculumSubject curriculumSubject);

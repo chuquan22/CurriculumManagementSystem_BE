@@ -10,8 +10,8 @@ namespace DataAccess.Models.DTO.response
     public class CurriculumComboDTOResponse
     {
         public int combo_id { get; set; }
-        public string combo_name { get; set; }
         public int curriculum_id { get; set; }
+        public string combo_name { get; set; }
         public bool is_active { get; set; }
     }
 }
