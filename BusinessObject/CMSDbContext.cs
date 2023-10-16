@@ -155,9 +155,9 @@ namespace BusinessObject
 
             modelBuilder.Entity<User>().HasData(
 
-                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_email = "chuquan2k1@gmail.com",  user_name = "QuanCQ",  is_active = true },
-                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_name = "ThuNT", is_active = true }
-                , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_name = "admin", is_active = true }
+                new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_email = "chuquan2k1@gmail.com", user_password = "quan123" , user_name = "QuanCQ",  is_active = true },
+                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_password = "quan123", user_name = "ThuNT", is_active = true }
+                , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_password = "quan123", user_name = "admin", is_active = true }
 
                 );
 
