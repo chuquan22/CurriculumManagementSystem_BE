@@ -9,7 +9,9 @@ namespace Repositories.Syllabus
     public interface ISyllabusRepository
     {
          public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch);
-        public int GetTotalSyllabus(string txtSearch);
+         public int GetTotalSyllabus(string txtSearch);
+
+        public BusinessObject.Syllabus GetSyllabusById(int id);    
 
     }
 }

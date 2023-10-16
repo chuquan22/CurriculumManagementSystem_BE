@@ -17,6 +17,11 @@ namespace Repositories.Syllabus
             return db.GetListSyllabus(start, end, txtSearch);
         }
 
+        public BusinessObject.Syllabus GetSyllabusById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetTotalSyllabus(string txtSearch)
         {
             return db.GetTotalSyllabus(txtSearch);

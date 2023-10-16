@@ -26,7 +26,6 @@ namespace DataAccess.DAO
                     .ToList();                
                 }
                 rs = rs
-                .OrderByDescending(e => e.syllabus_id)
                 .Skip(start).Take(end).ToList();
             }
             return rs;
@@ -44,6 +43,16 @@ namespace DataAccess.DAO
                     || sy.Subject.subject_code.Contains(txtSearch)
                     || sy.syllabus_note.Equals(txtSearch)).ToList().Count();
                 }
+            }
+            return rs;
+        }
+
+        public Syllabus GetSyllabusById(int id)
+        {
+            Syllabus rs = new Syllabus();
+            using (var context = new CMSDbContext())
+            {
+                rs = context.Syllabus.Where(s => s.subject_id == id).FirstOrDefault();
             }
             return rs;
         }
