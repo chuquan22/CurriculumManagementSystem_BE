@@ -73,15 +73,34 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound();
             }
 
-            //var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+            //var curriculumSubjectMapper = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
-            //foreach(var curriSubject in curriculumSubject)
-            //{
-            //    curriculumSubjectResponse.Add(new CurriculumSubjectDTO()
-            //    {
-            //        semester_no = curriSubject
-            //    })
-            //}
+
+            foreach (var curriSubject in curriculumSubject)
+            {
+                var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
+                // Kiểm tra xem semester_no đã tồn tại trong danh sách CurriculumSubjectDTO chưa
+                var existingCurriculumSubjectDTO = curriculumSubjectResponse
+                    .FirstOrDefault(dto => dto.semester_no == curriSubject.term_no.ToString());
+
+                if (existingCurriculumSubjectDTO != null)
+                {
+                    // Nếu semester_no đã tồn tại, thêm CurriculumComboDTOResponse vào list của semester_no đó
+                     
+                    existingCurriculumSubjectDTO.list.Add(curriculumSubjectMapper);
+                }
+                else
+                {
+                    // Nếu semester_no chưa tồn tại, tạo một CurriculumSubjectDTO mới và thêm vào list
+                    var newCurriculumSubjectDTO = new CurriculumSubjectDTO
+                    {
+                        semester_no = curriSubject.term_no.ToString(),
+
+                        list = new List<CurriculumSubjectResponse> { curriculumSubjectMapper }
+                    };
+                    curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
+                }
+            }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }

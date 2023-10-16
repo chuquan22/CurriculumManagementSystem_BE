@@ -9,6 +9,6 @@ namespace DataAccess.Models.DTO.response
     public class CurriculumSubjectDTO
     {
         public string semester_no { get; set; }
-        public List<CurriculumComboDTOResponse> list { get; set; }
+        public List<CurriculumSubjectResponse> list { get; set; }
     }
 }
