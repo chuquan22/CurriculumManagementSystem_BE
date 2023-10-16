@@ -23,8 +23,9 @@ namespace DataAccess.DAO
                 {
                     rs = rs.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
                     || sy.Subject.subject_code.Contains(txtSearch)
-                    || sy.document_type.Contains(txtSearch))
-                    .ToList();                
+                    || sy.Subject.english_subject_name.Contains(txtSearch)
+
+                    ).ToList();                
                 }
                 rs = rs
                 .Skip(start).Take(end).ToList();
@@ -42,7 +43,8 @@ namespace DataAccess.DAO
                 {
                     rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_name.Contains(txtSearch)
                     || sy.Subject.subject_code.Contains(txtSearch)
-                    || sy.document_type.Contains(txtSearch)).ToList().Count();
+                    || sy.Subject.english_subject_name.Contains(txtSearch)
+                    ).ToList().Count();
                 }
             }
             return rs;

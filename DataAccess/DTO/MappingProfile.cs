@@ -32,7 +32,7 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.subject_code,opt => opt.MapFrom(src => src.Subject.subject_code))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
                 .ForMember(dest => dest.isApproved, opt => opt.MapFrom(src => src.approved_date))
-                .ForMember(dest => dest.syllabus_name, opt => opt.MapFrom(src => src.document_type))
+                .ForMember(dest => dest.syllabus_name, opt => opt.MapFrom(src => src.Subject.english_subject_name + "_" + src.Subject.subject_name))
                  .ReverseMap();
 
             CreateMap<Curriculum, CurriculumResponse>()
