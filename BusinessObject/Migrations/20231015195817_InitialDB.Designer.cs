@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231011161034_InitialDB")]
+    [Migration("20231015195817_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -286,7 +286,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -299,7 +299,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -779,7 +779,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 11, 23, 10, 34, 352, DateTimeKind.Local).AddTicks(3374),
+                            semester_end_date = new DateTime(2023, 10, 16, 2, 58, 16, 870, DateTimeKind.Local).AddTicks(8084),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },

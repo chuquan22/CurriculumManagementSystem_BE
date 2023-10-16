@@ -801,7 +801,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 11, 23, 10, 34, 352, DateTimeKind.Local).AddTicks(3374), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 16, 2, 58, 16, 870, DateTimeKind.Local).AddTicks(8084), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
@@ -836,12 +836,12 @@ namespace BusinessObject.Migrations
             migrationBuilder.InsertData(
                 table: "Curriculum",
                 columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
-                values: new object[] { 1, new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", 1, "360/QĐ-CĐFPL", "Graphic Design", 1 });
+                values: new object[] { 1, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", 1, "360/QĐ-CĐFPL", "Graphic Design", 1 });
 
             migrationBuilder.InsertData(
                 table: "Curriculum",
                 columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id" },
-                values: new object[] { 2, new DateTime(2023, 10, 11, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ sư phần mềm", 0, "360/QĐ-CĐFPL", "Software Engineering", 4 });
+                values: new object[] { 2, new DateTime(2023, 10, 16, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ sư phần mềm", 0, "360/QĐ-CĐFPL", "Software Engineering", 4 });
 
             migrationBuilder.InsertData(
                 table: "Subject",

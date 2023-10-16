@@ -10,13 +10,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class MajorsController : ControllerBase
     {
-        private IConfiguration config;
         private readonly IMapper _mapper;
         private IMajorRepository repo;
 
-        public MajorsController(IConfiguration configuration, IMapper mapper)
+        public MajorsController( IMapper mapper)
         {
-            config = configuration;
             _mapper = mapper;
             repo = new MajorRepository();
         }

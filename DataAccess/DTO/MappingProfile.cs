@@ -22,9 +22,18 @@ namespace DataAccess.Models.DTO
             CreateMap<Subject, SubjectExeclResponse>()
                .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
+
                .ReverseMap();
 
             CreateMap<Subject, SubjectRequest>().ReverseMap();
+            CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
+
+            CreateMap<Syllabus, SyllabusResponse>()
+                .ForMember(dest => dest.subject_code,opt => opt.MapFrom(src => src.Subject.subject_code))
+                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
+                .ForMember(dest => dest.isApproved, opt => opt.MapFrom(src => src.approved_date))
+
+                 .ReverseMap();
 
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
