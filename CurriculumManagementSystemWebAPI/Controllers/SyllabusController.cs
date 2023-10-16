@@ -45,19 +45,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult SyllabusDetails(int syllabus_id)
         {
-            Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
-            var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
-            List<PreRequisite> pre = repo.GetPre(rs1.subject_id);
-            List<PreRequisiteResponse2> preRes = new List<PreRequisiteResponse2>();
-            foreach (PreRequisite item in pre)
+            try
             {
-                PreRequisiteResponse2 p = new PreRequisiteResponse2();
-                p.prequisite_subject_name = item.Subject.subject_name;
-                p.prequisite_name = item.PreRequisiteType.pre_requisite_type_name;
-                preRes.Add(p);
+                Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
+                var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
+                List<PreRequisite> pre = repo.GetPre(rs1.subject_id);
+               
+                result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
+                return Ok(new BaseResponse(true, "False", result));
+
             }
-            result.pre_required = preRes;
-            return Ok(new BaseResponse(true, "False", result));
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+
         }
 
     }

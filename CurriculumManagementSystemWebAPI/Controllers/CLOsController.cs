@@ -20,12 +20,63 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new CLORepository();
         }
         [HttpGet]
-        public ActionResult GetMaterial(int syllabus_id)
+        public ActionResult GetCLOs(int syllabus_id)
         {
             CLO rs = new CLO();
             try
             {
                 rs = repo.GetCLOsById(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+        [HttpPost]
+        public ActionResult CreateCLOs(CLO clo)
+        {
+            CLO rs = new CLO();
+            try
+            {
+                rs = repo.CreateCLOs(clo);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+        [HttpPut]
+        public ActionResult UpdateCLOs(CLO clo)
+        {
+            CLO rs = new CLO();
+            try
+            {
+                rs = repo.UpdateCLOs(clo);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteCLOs(int id)
+        {
+            CLO rs = new CLO();
+            try
+            {
+                rs = repo.DeleteCLOs(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

@@ -43,6 +43,10 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))
               .ReverseMap();
 
+              CreateMap<PreRequisite, PreRequisiteResponse2>()
+             .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
+            .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.pre_requisite_name))
+            .ReverseMap();
 
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
