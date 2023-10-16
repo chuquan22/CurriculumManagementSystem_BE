@@ -72,6 +72,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
+
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));

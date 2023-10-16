@@ -33,7 +33,26 @@ namespace DataAccess.DAO
             return comboSubject;
         }
 
-       
+        public string CreateCurriculumComboSubject(ComboSubject comboSubject)
+        {
+            try
+            {
+                _context.ComboSubject.Add(comboSubject);
+                int result = _context.SaveChanges();
+                if (result > 0)
+                {
+                    return Result.updateSuccessfull.ToString();
+                }
+                else
+                {
+                    return "Create Fail";
+                }
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return ex.Message;
+            }
+        }
 
         public string EditCurriculumComboSubject(ComboSubject comboSubject)
         {
@@ -54,6 +73,8 @@ namespace DataAccess.DAO
                 return ex.Message;
             }
         }
+
+
 
 
     }

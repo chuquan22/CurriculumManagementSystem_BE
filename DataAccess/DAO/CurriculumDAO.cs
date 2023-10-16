@@ -30,7 +30,6 @@ namespace DataAccess.DAO
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization);
 
-
             if (!string.IsNullOrEmpty(txtSearch))
             {
                 query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
@@ -52,6 +51,24 @@ namespace DataAccess.DAO
             return curriculumList;
         }
 
+        public int GetTotalCredit(int curriculumId)
+        {
+            var total = _cmsDbContext.Curriculum
+                .Where(x => x.curriculum_id == curriculumId)
+                .Join(_cmsDbContext.CurriculumSubject,
+                     curriculum => curriculum.curriculum_id,
+                     curriculumSubject => curriculumSubject.curriculum_id,
+                     (curriculum, curriculumSubject) => new { curriculum, curriculumSubject })
+
+                .Join(_cmsDbContext.Subject,
+                        joinResult => joinResult.curriculumSubject.subject_id,
+                        subject => subject.subject_id,
+                        (joinResult, subject) => subject)
+                 .Sum(subject => subject.credit);
+            return total;
+        }
+
+
         public Curriculum GetCurriculumById(int id)
         {
             var curriculum = _cmsDbContext.Curriculum.Include(x => x.Batch).Include(x => x.Specialization).FirstOrDefault(x => x.curriculum_id == id);
@@ -67,7 +84,7 @@ namespace DataAccess.DAO
                       batch => batch.batch_id,
                       (curriculum, batch) => batch)
                 .ToList();
-                
+
             return listBatch;
         }
 
@@ -77,7 +94,7 @@ namespace DataAccess.DAO
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
                 .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
-                
+
             return curriculum;
         }
 
@@ -95,7 +112,7 @@ namespace DataAccess.DAO
                 {
                     return "Fail";
                 }
-                
+
             }
             catch (Exception ex)
             {
