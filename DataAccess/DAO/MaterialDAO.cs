@@ -48,6 +48,7 @@ namespace DataAccess.DAO
         {
             var oldMate = _context.Material.Where(a => a.material_id == id).FirstOrDefault();
             _context.Material.Remove(oldMate);
+            _context.SaveChanges();
             return oldMate;
         }
     }
