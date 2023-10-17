@@ -54,8 +54,6 @@ namespace DataAccess.Combos
                     oldCombo.combo_no = cb.combo_no;
                     oldCombo.combo_description = cb.combo_description;
                     oldCombo.specialization_id = cb.specialization_id;
-
-                    oldCombo.curriculum_id = cb.curriculum_id;
                     oldCombo.is_active = cb.is_active;
                     db.Combo.Update(oldCombo);
                     db.SaveChanges();
