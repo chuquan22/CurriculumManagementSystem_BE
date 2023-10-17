@@ -86,8 +86,29 @@ namespace DataAccess.DAO
 
         public Curriculum GetCurriculumById(int id)
         {
-            var curriculum = _cmsDbContext.Curriculum.Include(x => x.Batch).Include(x => x.Specialization).FirstOrDefault(x => x.curriculum_id == id);
+            var curriculum = _cmsDbContext.Curriculum
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization)
+                .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
+        }
+
+        public List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode)
+        {
+            var batchIdsInCurriculum = _cmsDbContext.Curriculum
+                .Where(curriculum => curriculum.curriculum_code.Equals(curriculumCode))
+                .Select(curriculum => curriculum.batch_id)
+                .ToList();
+
+            // Lấy danh sách tất cả các batch
+            var allBatches = _cmsDbContext.Batch.ToList();
+
+            // Lọc danh sách batch không chứa batch_id trong danh sách batchIdsInCurriculum
+            var batchesNotInCurriculum = allBatches
+                .Where(batch => !batchIdsInCurriculum.Contains(batch.batch_id))
+                .ToList();
+
+            return batchesNotInCurriculum;
         }
 
         public List<Batch> GetBatchByCurriculumCode(string curriculumCode)
