@@ -11,11 +11,11 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public Session GetSession(int id)
+        public List<Session> GetSession(int id)
         {
             var rs = _cmsDbContext.Session
                 .Where(c => c.syllabus_id == id)
-                .FirstOrDefault();
+                .ToList();
             return rs;
         }
     }

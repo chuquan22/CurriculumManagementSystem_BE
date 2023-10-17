@@ -8,6 +8,12 @@ namespace Repositories.CLOS
 {
     public interface ICLORepository
     {
-        public BusinessObject.CLO GetCLOsById(int id);
+        public List<BusinessObject.CLO> GetCLOs(int id);
+
+        public BusinessObject.CLO CreateCLOs(BusinessObject.CLO clo);
+
+        public BusinessObject.CLO UpdateCLOs(BusinessObject.CLO clo);
+
+        public BusinessObject.CLO DeleteCLOs(int id);
     }
 }

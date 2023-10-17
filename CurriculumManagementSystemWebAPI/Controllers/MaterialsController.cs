@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetMaterial(int syllabus_id)
         {
-            Material rs = new Material();
+            List<Material> rs = new List<Material>();
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
@@ -37,12 +38,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMaterial(Material material)
+        public ActionResult CreateMaterial(MaterialRequest material)
         {
-            Material rs = new Material();
             try
             {
-                rs = repo.CreateMaterial(material);
+                Material rs = _mapper.Map<Material>(material);
+
+                rs = repo.CreateMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -55,12 +57,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPut]
-        public ActionResult EditMaterial(Material material)
+        public ActionResult EditMaterial(MaterialUpdateRequest material)
         {
-            Material rs = new Material();
             try
             {
-                rs = repo.EditMaterial(material);
+
+                Material rs = _mapper.Map<Material>(material);
+                rs = repo.CreateMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

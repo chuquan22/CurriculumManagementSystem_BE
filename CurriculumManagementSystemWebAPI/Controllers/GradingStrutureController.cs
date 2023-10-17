@@ -20,12 +20,61 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new GradingStrutureRepository();
         }
         [HttpGet]
-        public ActionResult GetMaterial(int syllabus_id)
+        public ActionResult GetGradingStruture(int syllabus_id)
+        {
+            List<GradingStruture> rs = new List<GradingStruture>();
+            try
+            {
+                rs = repo.GetGradingStruture(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPost]
+        public ActionResult CreateGradingStruture(GradingStruture gra)
         {
             GradingStruture rs = new GradingStruture();
             try
             {
-                rs = repo.GetGradingStruture(syllabus_id);
+                rs = repo.CreateGradingStruture(gra);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPut]
+        public ActionResult UpdateStruture(GradingStruture gra)
+        {
+            GradingStruture rs = new GradingStruture();
+            try
+            {
+                rs = repo.UpdateGradingStruture(gra);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteStruture(int id)
+        {
+            GradingStruture rs = new GradingStruture();
+            try
+            {
+                rs = repo.DeleteGradingStruture(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

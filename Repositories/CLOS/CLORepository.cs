@@ -12,9 +12,24 @@ namespace Repositories.CLOS
     {
         public readonly CLOsDAO db = new CLOsDAO();
 
-        public CLO GetCLOsById(int id)
+        public CLO CreateCLOs(CLO clo)
         {
-            return db.GetCLOsById(id);
+            return db.CreateCLOs(clo);
+        }
+
+        public CLO DeleteCLOs(int id)
+        {
+            return db.DeleteCLOs(id);
+        }
+
+        public List<CLO> GetCLOs(int id)
+        {
+            return db.GetCLOs(id);
+        }
+
+        public CLO UpdateCLOs(CLO clo)
+        {
+            return db.UpdateCOLs(clo);
         }
     }
 }

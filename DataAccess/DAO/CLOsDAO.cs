@@ -11,12 +11,39 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public CLO GetCLOsById(int id)
+        public List<CLO> GetCLOs(int id)
         {
             var rs = _cmsDbContext.CLO
                 .Where(c => c.syllabus_id == id)
-                .FirstOrDefault();
+                .ToList();
             return rs;
+        }
+
+        public CLO DeleteCLOs(int id)
+        {
+            var oldCol = _cmsDbContext.CLO.Where(c=> c.CLO_id == id).FirstOrDefault();  
+           
+            _cmsDbContext.CLO.Remove(oldCol);
+            _cmsDbContext.SaveChanges();
+            return oldCol;
+        }
+
+        public CLO CreateCLOs(CLO clo)
+        {
+            _cmsDbContext.CLO.Add(clo);
+            _cmsDbContext.SaveChanges();
+            return clo;
+        }
+
+        public CLO UpdateCOLs(CLO clo)
+        {
+            var oldCol = _cmsDbContext.CLO.Where(c => c.CLO_id == clo.CLO_id).FirstOrDefault();
+            oldCol.syllabus_id = clo.syllabus_id;
+            oldCol.CLO_name = clo.CLO_name;
+            oldCol.CLO_description = clo.CLO_description;
+            _cmsDbContext.CLO.Update(oldCol);
+            _cmsDbContext.SaveChanges();
+            return clo;
         }
     }
 }

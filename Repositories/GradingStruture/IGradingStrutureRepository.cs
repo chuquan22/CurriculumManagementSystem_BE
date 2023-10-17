@@ -8,6 +8,11 @@ namespace Repositories.GradingStruture
 {
     public interface IGradingStrutureRepository
     {
-        public BusinessObject.GradingStruture GetGradingStruture(int id);
+        public List<BusinessObject.GradingStruture> GetGradingStruture(int id);
+        public BusinessObject.GradingStruture CreateGradingStruture(BusinessObject.GradingStruture gra);
+        public BusinessObject.GradingStruture UpdateGradingStruture(BusinessObject.GradingStruture gra);
+
+        public BusinessObject.GradingStruture DeleteGradingStruture(int id);
+
     }
 }

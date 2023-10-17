@@ -20,12 +20,60 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new SessionRepository();
         }
         [HttpGet]
-        public ActionResult GetMaterial(int syllabus_id)
+        public ActionResult GetSession(int syllabus_id)
+        {
+            List < Session> rs = new List<Session>();
+            try
+            {
+                rs = repo.GetSession(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPost]
+        public ActionResult CreateSession(int syllabus_id)
         {
             Session rs = new Session();
             try
             {
-                rs = repo.GetSession(syllabus_id);
+               // rs = repo.GetSession(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPut]
+        public ActionResult UpdateMaterial(int syllabus_id)
+        {
+            Session rs = new Session();
+            try
+            {
+             //   rs = repo.GetSession(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpDelete]
+        public ActionResult DeleteSession(int syllabus_id)
+        {
+            Session rs = new Session();
+            try
+            {
+               // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

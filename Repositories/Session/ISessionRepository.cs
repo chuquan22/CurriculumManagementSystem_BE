@@ -8,6 +8,6 @@ namespace Repositories.Session
 {
     public interface ISessionRepository
     {
-        public BusinessObject.Session GetSession(int id);   
+        public List<BusinessObject.Session> GetSession(int id);   
     }
 }
