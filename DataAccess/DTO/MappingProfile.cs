@@ -59,7 +59,10 @@ namespace DataAccess.Models.DTO
              .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
               .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
               .ReverseMap();
-
+            //Combo
+            CreateMap<BusinessObject.Combo, ComboRequest>().ReverseMap();
+            CreateMap<BusinessObject.Combo, ComboUpdateRequest>().ReverseMap();
+            //
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
               .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
