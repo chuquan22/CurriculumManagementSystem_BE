@@ -45,6 +45,21 @@ namespace DataAccess.Combos
         {
             try
             {
+                var oldCombo = db.Combo.Where(c => c.combo_id == cb.combo_id).FirstOrDefault();
+                if (oldCombo != null)
+                {
+                    oldCombo.combo_code = cb.combo_code;
+                    oldCombo.combo_name = cb.combo_name;
+                    oldCombo.combo_english_name = cb.combo_english_name;
+                    oldCombo.combo_no = cb.combo_no;
+                    oldCombo.combo_description = cb.combo_description;
+                    oldCombo.specialization_id = cb.specialization_id;
+
+                    oldCombo.curriculum_id = cb.curriculum_id;
+                    oldCombo.is_active = cb.is_active;
+                    db.Combo.Update(oldCombo);
+                    db.SaveChanges();
+                }
                 return null;
             }
             catch (Exception)
@@ -52,6 +67,25 @@ namespace DataAccess.Combos
 
                 throw;
             }
+        }
+        public Combo DeleteCombo(int id)
+        {
+            Combo combo = new Combo();
+            try
+            {
+                combo = db.Combo.Where(c => c.combo_id == id).FirstOrDefault();
+                if(combo != null)
+                {
+                    db.Combo.Remove(combo);
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return combo;
         }
     }
     
