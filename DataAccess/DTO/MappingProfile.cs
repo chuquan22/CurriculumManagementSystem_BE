@@ -97,6 +97,8 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentType.assessment_type_name))
                 .ReverseMap();
 
+            CreateMap<PLOs, PLOsDTOResponse>().ReverseMap();
+            CreateMap<PLOs, PLOsDTORequest>().ReverseMap();
         }
     }
 }
