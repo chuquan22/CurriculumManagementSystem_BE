@@ -77,11 +77,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
                     //For each sheet
                     List<object> rs = new List<object>();
-                    foreach (var sheetName in sheetNames)
-                    {
+                    //foreach (var sheetName in sheetNames)
+                    //{
 
-                        var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetName);
-                        rs.Add(row);
+                    //    var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetName);
+                    //    rs.Add(row);
+
+                    //}
+                    for (int i = 0; i < sheetNames.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                Syllabus = row,
+                            };
+                                rs.Add(value);
+                        }
+                        else if(i==1)
+                        {
+                            var row = MiniExcel.Query<MaterialExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                Materials = row,
+                            };
+                            rs.Add(value);
+                        }
                     }
                    // var rows = MiniExcel.Query<SyllabusExcel>(filePath);
                     return Ok(new BaseResponse(true, "False", rs));
