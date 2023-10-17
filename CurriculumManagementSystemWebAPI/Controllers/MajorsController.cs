@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Major;
@@ -30,41 +31,42 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "False", null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
-        public ActionResult CreateMajor(Major major)
+        public ActionResult CreateMajor(MajorRequest major)
         {
-            Major rs = new Major();
             try
             {
-                rs = repo.AddMajor(major);
+                Major rs = _mapper.Map<Major>(major);
+                rs = repo.AddMajor(rs);
                 return Ok(new BaseResponse(false, "Create Sucessfully", rs));
             }
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "False", null));
             }
             return Ok(new BaseResponse(true, "Create Major False", null));
         }
 
         [HttpPut]
-        public ActionResult EditMajor(Major major)
+        public ActionResult EditMajor(MajorEditRequest major)
         {
-            Major rs = new Major();
             try
             {
-                rs = repo.EditMajor(major);
+                Major rs = _mapper.Map<Major>(major);
+                rs = repo.EditMajor(rs);
                 return Ok(new BaseResponse(false, "Edit Sucessfully", rs));
             }
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "False", null));
+
             }
             return Ok(new BaseResponse(true, "Edit False", null));
         }
@@ -85,8 +87,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "False", null));
             }
             return Ok(new BaseResponse(true, "Delete False", null));
         }
