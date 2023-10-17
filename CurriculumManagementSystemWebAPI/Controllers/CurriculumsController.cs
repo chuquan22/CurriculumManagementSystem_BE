@@ -96,7 +96,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var listCurriculum = _context.Curriculum.Where(x => x.curriculum_status == (int)Status.approved).ToList();
+            var listCurriculum = _context.Curriculum.Where(x => x.is_active == true).ToList();
             var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             return listCurriculumRespone;
         }
@@ -133,7 +133,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // PUT: api/Curriculums/UpdateCurriculum/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("UpdateCurriculum/{id}")]
-        public async Task<IActionResult> PutCurriculum(int id, [FromBody]CurriculumRequest curriculumRequest)
+        public async Task<IActionResult> PutCurriculum(int id, [FromBody]CurriculumUpdateRequest curriculumRequest)
         {
             if (!CurriculumExists(id))
             {

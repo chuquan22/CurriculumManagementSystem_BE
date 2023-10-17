@@ -15,8 +15,14 @@ namespace DataAccess.DAO
 
         //public List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId)
         //{
-        //   var plo = _context.PLOs.Where(x => x.curriculum_id == curriculumId).ToList();
-           
+        //    var plo = _context.PLOs.Where(x => x.curriculum_id == curriculumId).ToList();
+        //    var subject = _context.CurriculumSubject
+        //        .Where(x => x.curriculum_id == curriculumId)
+        //        .Join(_context.Subject,
+        //              curriculum => curriculum.curriculum_id,
+        //              batch => batch.batch_id,
+        //              (curriculum, batch) => batch)
+        //        .ToList();
 
         //}
 

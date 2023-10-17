@@ -68,10 +68,11 @@ namespace DataAccess.Models.DTO
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
               .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
-              .ForMember(dest => dest.curriculum_status, opt => opt.MapFrom(src => src.curriculum_status == 1 ? "approved" : "draft"))
               .ReverseMap();
 
             CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
+
+            CreateMap<Curriculum, CurriculumUpdateRequest>().ReverseMap();
 
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
