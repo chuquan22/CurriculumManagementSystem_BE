@@ -21,6 +21,11 @@ namespace Repositories.PreRequisites
             return _preRequisiteDAO.DeletePreRequisite(preRequisite) ;
         }
 
+        public List<PreRequisite> GetAllPreRequisite()
+        {
+            return _preRequisiteDAO.GetAllPreRequisite();
+        }
+
         public PreRequisite GetPreRequisite(int subjectId, int preSubjectId)
         {
             return _preRequisiteDAO.GetPreRequisite(subjectId, preSubjectId) ;

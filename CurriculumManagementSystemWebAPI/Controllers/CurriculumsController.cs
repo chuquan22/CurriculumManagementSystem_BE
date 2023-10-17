@@ -32,22 +32,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
         }
 
-        //// GET: api/Curriculums/GetAllCurriculum
-        //[HttpGet("GetAllCurriculum")]
-        //public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculum()
-        //{
-        //    if (_context.Curriculum == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    var listCurriculum = _curriculumRepository.GetAllCurriculum();
-        //    if (listCurriculum.Count == 0)
-        //    {
-        //        return BadRequest(new BaseResponse(true, "List Curriculum is Empty. Please Add Curriculum!"));
-        //    }
-        //    var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-        //    return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
-        //}
+        // GET: api/Curriculums/GetCurriculumByBatch/code/5
+        [HttpGet("GetCurriculumByBatch/{curriculumCode}/{batchId}")]
+        public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculumByBatch(string curriculumCode, int batchId)
+        {
+            if (_context.Curriculum == null)
+            {
+                return NotFound();
+            }
+            var listCurriculum = _curriculumRepository.GetCurriculum(curriculumCode, batchId);
+            if (listCurriculum == null)
+            {
+                return Ok(new BaseResponse(true, "Not Found Curriculum"));
+            }
+            var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
+        }
 
         // GET: api/Curriculums/GetListBatchByCurriculumCode/code
         [HttpGet("GetListBatchByCurriculumCode/{curriculumCode}")]
@@ -156,11 +156,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculum")]
         public async Task<ActionResult<Curriculum>> PostCurriculum([FromBody]CurriculumRequest curriculumRequest)
         {
-            if (CheckCurriculumExists(curriculumRequest.curriculum_code, curriculumRequest.batch_id))
+            var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
+
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id);
+            curriculum.total_semester = 7;
+            
+            if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
                 return BadRequest(new BaseResponse(true, "Curriculum Existed. Please Create other curriculum!"));
             }
-            var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
             string createResult = _curriculumRepository.CreateCurriculum(curriculum);
             if(!createResult.Equals("OK"))
             {

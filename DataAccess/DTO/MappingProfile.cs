@@ -50,7 +50,8 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.curriculum_status, opt => opt.MapFrom(src => src.curriculum_status == 1 ? "approved" : "draft"))
               .ReverseMap();
 
-            CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
+            CreateMap<Curriculum, CurriculumRequest>()
+                .ReverseMap();
 
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
@@ -85,6 +86,12 @@ namespace DataAccess.Models.DTO
             CreateMap<ComboSubject, CurriculumComboSubjectDTORequest>().ReverseMap();
 
             CreateMap<Batch, BatchDTOResponse>().ReverseMap();
+
+            CreateMap<LearningMethod, LearningMethodDTOResponse>().ReverseMap();
+
+            CreateMap<AssessmentMethod, AssessmentMethodDTOResponse>()
+                .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentType.assessment_type_name))
+                .ReverseMap();
 
         }
     }

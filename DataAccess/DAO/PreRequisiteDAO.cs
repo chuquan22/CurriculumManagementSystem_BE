@@ -13,6 +13,16 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
+        public List<PreRequisite> GetAllPreRequisite()
+        {
+                var preRequisite = _cmsDbContext.PreRequisite
+                    .Include(x => x.Subject)
+                    .Include(x => x.PreRequisiteType)
+                    .Include(x => x.PreSubject)
+                    .ToList();
+                return preRequisite;
+        }
+
         public List<PreRequisite> GetPreRequisiteBySubject(int subjectId)
         {
             try

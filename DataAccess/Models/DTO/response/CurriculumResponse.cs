@@ -14,7 +14,6 @@ namespace DataAccess.Models.DTO.response
         public string specialization_name { get; set; }
         public string batch_name { get; set; }
         public string decision_No { get; set; }
-        public string decision_Link { get; set; }
         public int total_credit { get; set; }
         public DateTime approved_date { get; set; }
         public string curriculum_status { get; set; }
