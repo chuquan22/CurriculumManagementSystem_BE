@@ -29,8 +29,6 @@ namespace DataAccess.DAO
             }
 
             var curriculumList = query
-                .GroupBy(x => x.curriculum_code)
-                .Select(group => group.OrderByDescending(x => x.Batch.batch_name).First())
                 .AsEnumerable()
                 .ToList();
             return curriculumList;
@@ -53,8 +51,6 @@ namespace DataAccess.DAO
             }
 
             var curriculumList = query
-                .GroupBy(x => x.curriculum_code)
-                .Select(group => group.OrderByDescending(x => x.Batch.batch_name).First())
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .AsEnumerable()

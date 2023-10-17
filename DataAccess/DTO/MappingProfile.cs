@@ -14,17 +14,11 @@ namespace DataAccess.Models.DTO
     {
         public MappingProfile()
         {
+            //Subject
             CreateMap<Subject, SubjectResponse>()
                .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
-
-
-            //CreateMap<Subject, CurriculumExeclResponse>()
-            //   .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
-            //   .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
-            //   .ReverseMap();
-
 
             CreateMap<Subject, SubjectRequest>().ReverseMap();
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
@@ -52,18 +46,24 @@ namespace DataAccess.Models.DTO
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
             //PreRequisite
+            CreateMap<PreRequisite, PreRequisiteResponse>()
+                .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
+                .ReverseMap();
+
+            CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
+
             CreateMap<PreRequisite, PreRequisiteResponse2>()
              .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
               .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
               .ReverseMap();
 
+            //Curriculum
             CreateMap<Curriculum, CurriculumResponse>()
-              .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name))
+              .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
               .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
               .ForMember(dest => dest.curriculum_status, opt => opt.MapFrom(src => src.curriculum_status == 1 ? "approved" : "draft"))
               .ReverseMap();
 
-            //Curriculum
             CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
 
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
@@ -73,16 +73,10 @@ namespace DataAccess.Models.DTO
             CreateMap<CurriculumSubject, CurriculumSubjectRequest>().ReverseMap();
 
             CreateMap<User, UserLoginResponse>();
+           
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
 
-            CreateMap<PreRequisite, PreRequisiteResponse>()
-                //.ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
-                //.ForMember(dest => dest.pre_subject_code, opt => opt.MapFrom(src => src.PreSubject.subject_code))
-                .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
-                .ReverseMap();
-
-            CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
 
             CreateMap<ComboCurriculum, CurriculumComboDTOResponse>()
                 .ForMember(dest => dest.combo_name, opt => opt.MapFrom(src => src.Combo.combo_code + ": " + src.Combo.combo_name))
