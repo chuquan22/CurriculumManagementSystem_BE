@@ -51,6 +51,9 @@ namespace DataAccess.Models.DTO
             //Materials
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
+            //Specialization
+            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
+            CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse2>()
              .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))

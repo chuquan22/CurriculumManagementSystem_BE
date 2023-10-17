@@ -13,12 +13,12 @@ namespace Repositories.Specialization
 
         public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization specification)
         {
-            throw new NotImplementedException();
+            return db.CreateSpecialization(specification);
         }
 
-        public BusinessObject.Specialization DeleteSpecialization(BusinessObject.Specialization specification)
+        public BusinessObject.Specialization DeleteSpecialization(int id)
         {
-            throw new NotImplementedException();
+            return db.DeleteSpecialization(id);
         }
 
         public BusinessObject.Specialization FindSpeById(int speId)
@@ -26,14 +26,14 @@ namespace Repositories.Specialization
             throw new NotImplementedException();
         }
 
-        public List<BusinessObject.Specialization> GetSpec()
+        public List<BusinessObject.Specialization> GetSpecialization()
         {
             return db.GetSpec();
         }
 
         public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification)
         {
-            throw new NotImplementedException();
+            return db.UpdateSpecialization(specification);
         }
     }
 }
