@@ -10,7 +10,7 @@ namespace Repositories.Session
     public class SessionRepository : ISessionRepository
     {
         private readonly SessionDAO  db = new SessionDAO();
-        public BusinessObject.Session GetSession(int id)
+        public List<BusinessObject.Session> GetSession(int id)
         {
             return db.GetSession(id);  
         }

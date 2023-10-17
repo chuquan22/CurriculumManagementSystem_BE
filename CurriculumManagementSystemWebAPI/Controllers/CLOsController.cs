@@ -23,10 +23,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetCLOs(int syllabus_id)
         {
-            CLO rs = new CLO();
+            List<CLO> rs = new List<CLO>();
             try
             {
-                rs = repo.GetCLOsById(syllabus_id);
+                rs = repo.GetCLOs(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

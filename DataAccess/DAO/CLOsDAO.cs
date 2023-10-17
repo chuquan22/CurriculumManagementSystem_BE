@@ -11,11 +11,11 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public CLO GetCLOsById(int id)
+        public List<CLO> GetCLOs(int id)
         {
             var rs = _cmsDbContext.CLO
                 .Where(c => c.syllabus_id == id)
-                .FirstOrDefault();
+                .ToList();
             return rs;
         }
 

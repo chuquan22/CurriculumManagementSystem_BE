@@ -23,7 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetMaterial(int syllabus_id)
         {
-            Material rs = new Material();
+            List<Material> rs = new List<Material>();
             try
             {
                 rs = repo.GetMaterial(syllabus_id);

@@ -22,7 +22,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetGradingStruture(int syllabus_id)
         {
-            GradingStruture rs = new GradingStruture();
+            List<GradingStruture> rs = new List<GradingStruture>();
             try
             {
                 rs = repo.GetGradingStruture(syllabus_id);

@@ -22,7 +22,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetSession(int syllabus_id)
         {
-            Session rs = new Session();
+            List < Session> rs = new List<Session>();
             try
             {
                 rs = repo.GetSession(syllabus_id);
@@ -41,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Session rs = new Session();
             try
             {
-                rs = repo.GetSession(syllabus_id);
+               // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -57,7 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Session rs = new Session();
             try
             {
-                rs = repo.GetSession(syllabus_id);
+             //   rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -73,7 +73,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Session rs = new Session();
             try
             {
-                rs = repo.GetSession(syllabus_id);
+               // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

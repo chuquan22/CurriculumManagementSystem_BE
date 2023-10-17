@@ -14,20 +14,20 @@ namespace Repositories.Materials
 
         public Material CreateMaterial(Material mate)
         {
-            throw new NotImplementedException();
+            return db.CreateMaterial(mate);
         }
 
         public Material DeleteMaterial(int id)
         {
-            throw new NotImplementedException();
+           return db.DeleteMaterial(id);
         }
 
         public Material EditMaterial(Material mate)
         {
-            throw new NotImplementedException();
+            return db.EditMaterial(mate);
         }
 
-        public Material GetMaterial(int id)
+        public List<BusinessObject.Material> GetMaterial(int id)
         {
             return db.GetMaterial(id);
         }

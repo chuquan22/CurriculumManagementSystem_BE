@@ -22,9 +22,9 @@ namespace Repositories.CLOS
             return db.DeleteCLOs(id);
         }
 
-        public CLO GetCLOsById(int id)
+        public List<CLO> GetCLOs(int id)
         {
-            return db.GetCLOsById(id);
+            return db.GetCLOs(id);
         }
 
         public CLO UpdateCLOs(CLO clo)

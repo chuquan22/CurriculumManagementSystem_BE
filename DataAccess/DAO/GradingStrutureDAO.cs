@@ -11,11 +11,11 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public GradingStruture GetGradingStruture(int id)
+        public List<GradingStruture> GetGradingStruture(int id)
         {
             var rs = _cmsDbContext.GradingStruture
                 .Where(c => c.syllabus_id == id)
-                .FirstOrDefault();
+                .ToList();
             return rs;
         }
 

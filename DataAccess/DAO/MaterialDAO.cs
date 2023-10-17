@@ -11,9 +11,9 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _context = new CMSDbContext();
 
-        public Material GetMaterial(int id)
+        public List<BusinessObject.Material> GetMaterial(int id)
         {
-            Material mt = _context.Material.Where(x => x.syllabus_id == id).FirstOrDefault();
+            List<BusinessObject.Material> mt = _context.Material.Where(x => x.syllabus_id == id).ToList();
             return mt;
         }
 

@@ -21,7 +21,7 @@ namespace Repositories.GradingStruture
             return db.DeleteGradingStruture(id);
         }
 
-        public BusinessObject.GradingStruture GetGradingStruture(int id)
+        public List<BusinessObject.GradingStruture> GetGradingStruture(int id)
         {
            return db.GetGradingStruture(id);
         }
