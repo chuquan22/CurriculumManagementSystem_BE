@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.request
 {
-    public class CurriculumRequest
+    public class CurriculumUpdateRequest
     {
         [Required]
         public string curriculum_name { get; set; }
@@ -14,19 +16,12 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public string curriculum_description { get; set; }
         [Required]
-        public int total_semester { get; set; } = 7;
-        [Required]
-        public int specialization_id { get; set; }
-        [Required]
-        public int batch_id { get; set; }
-        [Required]
         public string decision_No { get; set; }
-        
+
         [Required]
         [DataType(DataType.Date)]
         public DateTime approved_date { get; set; }
         [Required]
         public bool is_active { get; set; }
-
     }
 }

@@ -33,11 +33,10 @@ namespace BusinessObject
         [Required]
         public DateTime approved_date { get; set; }
         [Required]
-        public int curriculum_status { get; set; }
+        public bool is_active { get; set; }
 
         public virtual Batch Batch { get; set; }
         public virtual Specialization Specialization { get; set; }
-        public virtual ICollection<Combo> Combos { get; set;}
         public virtual ICollection<PLOs> PLOs { get; set; }
         public virtual ICollection<SemesterPlan> Semesters { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }

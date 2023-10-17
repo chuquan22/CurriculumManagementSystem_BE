@@ -144,6 +144,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
+
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
             if(deleteResult != Result.deleteSuccessfull.ToString())
             {
