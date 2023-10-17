@@ -54,7 +54,7 @@ namespace DataAccess.Models.DTO
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse2>()
              .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
-              .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.pre_requisite_name))
+              .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
               .ReverseMap();
 
             CreateMap<Curriculum, CurriculumResponse>()
