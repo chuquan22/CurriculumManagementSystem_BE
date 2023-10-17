@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
 using DataAccess.Models.DTO;
+using OfficeOpenXml;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -36,6 +37,8 @@ builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
 });
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 //More Services
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddEndpointsApiExplorer();

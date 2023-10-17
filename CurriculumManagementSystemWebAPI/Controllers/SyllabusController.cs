@@ -8,6 +8,8 @@ using Repositories.GradingStruture;
 using Repositories.Materials;
 using Repositories.Session;
 using Repositories.Syllabus;
+using MiniExcelLibs;
+using DataAccess.Models.DTO.excel;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -62,6 +64,38 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
         }
+        [HttpGet("ImportSyllabus")]
+        public ActionResult ImportSyllabus()
+        {
+            try
+            {
+                var filePath = "Syllabus.xlsx";
 
+                using (var stream = System.IO.File.OpenRead(filePath))
+                {
+                    //Get SheetName
+                    var sheetNames = MiniExcel.GetSheetNames(filePath);
+                    //For each sheet
+                    List<object> rs = new List<object>();
+                    foreach (var sheetName in sheetNames)
+                    {
+
+                        var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetName);
+                        rs.Add(row);
+                    }
+                   // var rows = MiniExcel.Query<SyllabusExcel>(filePath);
+                    return Ok(new BaseResponse(true, "False", rs));
+
+                }
+                return Ok(new BaseResponse(true, "False", null));
+
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+
+        }
     }
 }
