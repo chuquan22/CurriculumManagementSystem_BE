@@ -156,8 +156,8 @@ namespace BusinessObject
             modelBuilder.Entity<User>().HasData(
 
                 new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_email = "chuquan2k1@gmail.com", user_password = "quan123" , user_name = "QuanCQ",  is_active = true },
-                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_password = "quan123", user_name = "ThuNT", is_active = true }
-                , new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_password = "quan123", user_name = "admin", is_active = true }
+                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_password = "quan123", user_name = "ThuNT", is_active = true },
+                new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_password = "quan123", user_name = "admin", is_active = true }
 
                 );
 
@@ -170,7 +170,8 @@ namespace BusinessObject
 
             modelBuilder.Entity<Semester>().HasData(
                 new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("05/09/2023"),semester_end_date = DateTime.Now , school_year = 2023 },
-                new Semester { semester_id = 2, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"),semester_end_date = DateTime.Parse("12/04/2023") , school_year = 2023 }
+                new Semester { semester_id = 2, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"),semester_end_date = DateTime.Parse("12/04/2023") , school_year = 2023 },
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"),semester_end_date = DateTime.Parse("12/04/2023") , school_year = 2023 }
                 );
 
             modelBuilder.Entity<Major>().HasData(
@@ -194,9 +195,14 @@ namespace BusinessObject
 
             modelBuilder.Entity<Curriculum>().HasData(  
                 new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "abc.com",curriculum_status = 1},
-                new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "abc.com",curriculum_status = 1},
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "abc.com",curriculum_status = 1},
                 new Curriculum { curriculum_id = 3, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 },
-                new Curriculum { curriculum_id = 4, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 }
+                new Curriculum { curriculum_id = 4, curriculum_code = "SE", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 1},
+                new Curriculum { curriculum_id = 5, curriculum_code = "CM", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", specialization_id = 2, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 1 },
+                new Curriculum { curriculum_id = 6, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 },
+                new Curriculum { curriculum_id = 7, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 },
+                new Curriculum { curriculum_id = 8, curriculum_code = "SWP", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 },
+                new Curriculum { curriculum_id = 9, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", decision_Link = "bcd.com",curriculum_status = 0 }
 
                 );
 
@@ -223,6 +229,13 @@ namespace BusinessObject
 
             modelBuilder.Entity<CurriculumSubject>().HasData(
                 new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, option = false }
+                );
+
+            modelBuilder.Entity<Combo>().HasData(
+                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", combo_description = "lập trình web với ngôn ngữ C#", combo_no = 1, curriculum_id = 1, specialization_id = 4, is_active = true },
+                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", combo_no = 2, curriculum_id = 2, specialization_id = 3, is_active = true },
+                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", combo_no = 1, curriculum_id = 3, specialization_id = 2, is_active = false },
+                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "NodeJS Programing", combo_description = "lập trình web với NodeJS", combo_no = 1, curriculum_id = 3, specialization_id = 1, is_active = true }
                 );
 
         }

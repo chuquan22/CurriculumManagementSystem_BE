@@ -15,9 +15,6 @@ namespace BusinessObject
         public int subject_id { get; set; }
         [ForeignKey("PreSubject")]
         public int pre_subject_id { get; set; }
-        [AllowNull]
-        public string? pre_requisite_name { get; set; }
-        
         [ForeignKey("PreRequisiteType")]
         public int pre_requisite_type_id { get; set; }
 

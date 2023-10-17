@@ -101,19 +101,34 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return listCurriculumRespone;
         }
 
-        // GET: api/Curriculums/GetCurriculum/GD/5
-        [HttpGet("GetCurriculum/{code}/{batchId}")]
-        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(string code, int batchId)
+        // GET: api/Curriculums/GetCurriculum/5
+        [HttpGet("GetCurriculum/{id}")]
+        public async Task<ActionResult<CurriculumResponse>> GetCurriculum(int id)
         {
-            var curriculum = _curriculumRepository.GetCurriculum(code, batchId);
+            var curriculum = _curriculumRepository.GetCurriculumById(id);
 
             if (curriculum == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
-            return curriculumResponse;
+            return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
         }
+
+        // GET: api/Curriculums/GetListBatchNotInCurriculum/code
+        [HttpGet("GetListBatchNotInCurriculum/{curriculumCode}")]
+        public async Task<ActionResult<BatchDTOResponse>> GetlistBatch(string curriculumCode)
+        {
+            var batch = _curriculumRepository.GetListBatchNotExsitInCurriculum(curriculumCode);
+
+            if (batch.Count == 0)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found Batch Not Exsit in Curriculum!"));
+            }
+            var batchResponse = _mapper.Map<List<BatchDTOResponse>>(batch);
+            return Ok(new BaseResponse(false, "Curriculum", batchResponse));
+        }
+
 
         // PUT: api/Curriculums/UpdateCurriculum/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

@@ -150,7 +150,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, deleteResult));
             }
 
-            return Ok(new BaseResponse(false, "delete successfull!", curriculumSubject));
+            return Ok(new BaseResponse(false, "delete successfull!"));
         }
 
         private bool CurriculumSubjectExists(int curriId, int subId)
