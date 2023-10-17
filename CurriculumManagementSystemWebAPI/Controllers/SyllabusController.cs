@@ -75,15 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    //For each sheet
-                    List<object> rs = new List<object>();
-                    //foreach (var sheetName in sheetNames)
-                    //{
-
-                    //    var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetName);
-                    //    rs.Add(row);
-
-                    //}
+                    List<object> rs = new List<object>();                 
                     for (int i = 0; i < sheetNames.Count; i++)
                     {
                         if (i == 0)
@@ -93,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 Syllabus = row,
                             };
-                                rs.Add(value);
+                            rs.Add(value);
                         }
                         else if(i==1)
                         {
@@ -104,8 +96,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             };
                             rs.Add(value);
                         }
+                        else if (i == 2)
+                        {
+                            var row = MiniExcel.Query<CLOsExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                CLOs = row,
+                            };
+                            rs.Add(value);
+                        }
+                        else if (i == 5)
+                        {
+                            var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                GradingStruture = row,
+                            };
+                            rs.Add(value);
+                        }
                     }
-                   // var rows = MiniExcel.Query<SyllabusExcel>(filePath);
                     return Ok(new BaseResponse(true, "False", rs));
 
                 }

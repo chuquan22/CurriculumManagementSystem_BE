@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace DataAccess.Models.DTO.excel
 {
@@ -19,6 +20,7 @@ namespace DataAccess.Models.DTO.excel
         public string Author { get; set; }
 
         public string Publisher { get; set; }
+        [DisplayName("Published Date")]
 
         public string Published_Date { get; set; }
         public string Edition { get; set; }
