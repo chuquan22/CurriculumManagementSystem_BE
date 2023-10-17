@@ -63,7 +63,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
 
                 Material rs = _mapper.Map<Material>(material);
-                rs = repo.CreateMaterial(rs);
+                rs = repo.EditMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -80,6 +80,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.DeleteMaterial(id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+                return BadRequest(new BaseResponse(true, "False", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpGet("id")]
+        public ActionResult GetMaterialById(int id)
+        {
+            Material rs = new Material();
+            try
+            {
+                rs = repo.GetMaterialById(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

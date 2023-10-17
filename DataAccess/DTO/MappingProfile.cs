@@ -45,6 +45,9 @@ namespace DataAccess.Models.DTO
             //Materials
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
+            //Specialization
+            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
+            CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse>()
                 .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
@@ -57,6 +60,10 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
               .ReverseMap();
 
+            //Combo
+            CreateMap<BusinessObject.Combo, ComboRequest>().ReverseMap();
+            CreateMap<BusinessObject.Combo, ComboUpdateRequest>().ReverseMap();
+            
             //Curriculum
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
@@ -76,8 +83,8 @@ namespace DataAccess.Models.DTO
            
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
-
-
+            
+            // Curriculum Combo
             CreateMap<ComboCurriculum, CurriculumComboDTOResponse>()
                 .ForMember(dest => dest.combo_name, opt => opt.MapFrom(src => src.Combo.combo_code + ": " + src.Combo.combo_name))
                 .ForMember(dest => dest.is_active, opt => opt.MapFrom(src => src.Combo.is_active))
@@ -96,7 +103,7 @@ namespace DataAccess.Models.DTO
             CreateMap<AssessmentMethod, AssessmentMethodDTOResponse>()
                 .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentType.assessment_type_name))
                 .ReverseMap();
-
+            //PLOs
             CreateMap<PLOs, PLOsDTOResponse>().ReverseMap();
             CreateMap<PLOs, PLOsDTORequest>().ReverseMap();
         }

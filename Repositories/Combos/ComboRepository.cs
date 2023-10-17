@@ -14,12 +14,12 @@ namespace Repositories.Combos
 
         public Combo CreateCombo(Combo combo)
         {
-            throw new NotImplementedException();
+           return db.CreateCombo(combo);
         }
 
-        public void DeleteCombo(Combo combo)
+        public Combo DeleteCombo(int id)
         {
-            throw new NotImplementedException();
+            return db.DeleteCombo(id);
         }
 
         public Combo FindComboById(int comboId)
@@ -29,12 +29,12 @@ namespace Repositories.Combos
 
         public List<Combo> GetListCombo(int specId)
         {
-            throw new NotImplementedException();
+            return db.GetListCombo(specId);
         }
 
         public Combo UpdateCombo(Combo combo)
         {
-            throw new NotImplementedException();
+            return db.UpdateCombo(combo);
         }
     }
 }
