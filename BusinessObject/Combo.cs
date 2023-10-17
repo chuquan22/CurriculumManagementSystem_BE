@@ -25,13 +25,10 @@ namespace BusinessObject
         public string combo_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
-        [ForeignKey("Curriculum")]
-        public int curriculum_id { get; set; }
         [Required]
         public bool is_active { get; set; }
 
         public virtual Specialization Specialization { get; set; }
-        public virtual Curriculum Curriculum { get; set; }
         public virtual ICollection<ComboSubject> comboSubjects { get; set; }   
         public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }   
     }

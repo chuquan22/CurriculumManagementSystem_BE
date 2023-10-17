@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,9 @@ namespace DataAccess.DAO
 
         public List<PLOs> GetListPLOsByCurriculum(int curriculumId)
         {
-            var listPLOs = _context.PLOs.Where(x => x.curriculum_id == curriculumId).ToList();
+            var listPLOs = _context.PLOs
+                .Include(x => x.Curriculum)
+                .Where(x => x.curriculum_id == curriculumId).ToList();
             return listPLOs;
         }
 
@@ -39,7 +42,7 @@ namespace DataAccess.DAO
                     return "Create PLOs Fail!";
                 }
 
-            }catch (Exception ex)
+            }catch (DbUpdateConcurrencyException ex)
             {
                 return ex.Message;
             }

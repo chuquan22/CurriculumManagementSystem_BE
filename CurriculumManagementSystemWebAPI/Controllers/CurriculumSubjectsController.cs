@@ -68,7 +68,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             
             var curriculumSubject = _curriculumSubjectRepository.GetListSubjectByCurriculum(curriculumId);
 
-            if (curriculumSubject == null)
+            if (curriculumSubject.Count == 0)
             {
                 return NotFound();
             }

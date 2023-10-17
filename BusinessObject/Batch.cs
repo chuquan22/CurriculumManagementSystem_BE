@@ -14,8 +14,6 @@ namespace BusinessObject
         public int batch_id { get; set; }
         [Required] 
         public string batch_name { get; set; }
-        
-
         public virtual ICollection<Curriculum> Curriculums { get; set;}
     }
 }

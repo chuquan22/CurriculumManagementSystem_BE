@@ -79,41 +79,46 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // POST: api/PLOs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PLOs>> PostPLOs(PLOs pLOs)
+        public async Task<ActionResult<PLOs>> PostPLOs([FromBody] PLOsDTORequest pLOsDTORequest)
         {
-          if (_context.PLOs == null)
-          {
-              return Problem("Entity set 'CMSDbContext.PLOs'  is null.");
-          }
-            _context.PLOs.Add(pLOs);
-            await _context.SaveChangesAsync();
+            if (PLOsExists(pLOsDTORequest.PLO_name))
+            {
+                return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} had exsited! Please Create other PLO"));
+            }
+            var PLOs = _mapper.Map<PLOs>(pLOsDTORequest);
+            
+            string createResult = _plosRepository.CreatePLOs(PLOs);
+            if (!createResult.Equals(Result.createSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, createResult));
+            }
 
-            return CreatedAtAction("GetPLOs", new { id = pLOs.PLO_id }, pLOs);
+            return Ok(new BaseResponse(false, "Create Success!", pLOsDTORequest));
         }
 
         // DELETE: api/PLOs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePLOs(int id)
         {
-            if (_context.PLOs == null)
-            {
-                return NotFound();
-            }
-            var pLOs = await _context.PLOs.FindAsync(id);
+           
+            var pLOs = _plosRepository.GetPLOsById(id);
             if (pLOs == null)
             {
                 return NotFound();
             }
 
-            _context.PLOs.Remove(pLOs);
-            await _context.SaveChangesAsync();
+            string deleteResult = _plosRepository.DeletePLOs(pLOs);
+            if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
+            }
 
-            return NoContent();
+            return Ok(new BaseResponse(false, $"Delete PLO {pLOs.PLO_name} Success!"));
         }
 
-        private bool PLOsExists(int id)
+        private bool PLOsExists(string plosName)
         {
-            return (_context.PLOs?.Any(e => e.PLO_id == id)).GetValueOrDefault();
+            return (_context.PLOs?.Any(e => e.PLO_name.Equals(plosName))).GetValueOrDefault();
         }
     }
 }
