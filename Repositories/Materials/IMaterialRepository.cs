@@ -13,5 +13,7 @@ namespace Repositories.Materials
         public BusinessObject.Material EditMaterial(BusinessObject.Material mate);
         public BusinessObject.Material DeleteMaterial(int id);
 
+        public BusinessObject.Material GetMaterialById(int id);
+
     }
 }

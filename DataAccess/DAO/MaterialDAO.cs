@@ -51,5 +51,15 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return oldMate;
         }
+
+        public Material GetMaterialById(int id)
+        {
+            var oldMate = _context.Material.Where(a => a.material_id == id).FirstOrDefault();
+            if(oldMate == null)
+            {
+                return null;
+            }
+            return oldMate;
+        }
     }
 }
