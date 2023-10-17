@@ -32,7 +32,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "error", null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
@@ -50,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "error", null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
@@ -68,7 +68,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "error", null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
@@ -85,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "error", null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }

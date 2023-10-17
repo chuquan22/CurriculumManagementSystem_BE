@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.request
 {
-    public class CLOsEditRequest
+    public class CLOsUpdateRequest
     {
         public int CLO_id { get; set; }
 

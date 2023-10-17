@@ -42,7 +42,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
-        [HttpPost]
+        [HttpGet("GetSyllabusDetails")]
         public ActionResult SyllabusDetails(int syllabus_id)
         {
             try
