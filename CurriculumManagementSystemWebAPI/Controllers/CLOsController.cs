@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,12 +38,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCLOs(CLO clo)
+        public ActionResult CreateCLOs(CLOsRequest clo)
         {
-            CLO rs = new CLO();
+          
             try
             {
-                rs = repo.CreateCLOs(clo);
+                CLO rs =  _mapper.Map<CLO>(clo);
+                rs = repo.CreateCLOs(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -54,12 +56,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPut]
-        public ActionResult UpdateCLOs(CLO clo)
+        public ActionResult UpdateCLOs(CLOsUpdateRequest clo)
         {
-            CLO rs = new CLO();
+           
             try
             {
-                rs = repo.UpdateCLOs(clo);
+                CLO rs = _mapper.Map<CLO>(clo);
+                rs = repo.UpdateCLOs(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
