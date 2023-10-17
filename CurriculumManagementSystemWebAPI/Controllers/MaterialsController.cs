@@ -63,7 +63,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
 
                 Material rs = _mapper.Map<Material>(material);
-                rs = repo.CreateMaterial(rs);
+                rs = repo.EditMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
