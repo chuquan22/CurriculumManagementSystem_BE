@@ -9,6 +9,7 @@ namespace Repositories.PreRequisites
 {
     public interface IPreRequisiteRepository
     {
+        List<PreRequisite> GetAllPreRequisite();
         List<PreRequisite> GetPreRequisitesBySubject(int subjectId);
         PreRequisite GetPreRequisite(int subjectId, int preSubjectId);
         string CreatePreRequisite(PreRequisite preRequisite);

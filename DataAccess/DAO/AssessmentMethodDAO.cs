@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +8,16 @@ using System.Threading.Tasks;
 
 namespace DataAccess.DAO
 {
-    public class BatchDAO
+    public class AssessmentMethodDAO
     {
         private readonly CMSDbContext _context = new CMSDbContext();
 
-       public List<Batch> GetAllBatch()
+        public List<AssessmentMethod> GetAllAssessmentMethod()
         {
-            var listBatch = _context.Batch
-                .OrderByDescending(x => x.batch_name)
+            var listAssessmentMethod = _context.AssessmentMethod
+                .Include(x => x.AssessmentType)
                 .ToList();
-            return listBatch;
+            return listAssessmentMethod;
         }
-
-
     }
 }

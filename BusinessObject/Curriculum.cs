@@ -20,6 +20,8 @@ namespace BusinessObject
         public string curriculum_name { get; set; }
         [Required] 
         public string english_curriculum_name { get; set; }
+        [Required]
+        public int total_semester { get; set; }
         [AllowNull]
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
@@ -28,8 +30,6 @@ namespace BusinessObject
         public int batch_id { get; set;}
         [Required]
         public string decision_No { get;set; }
-        [Required]
-        public string decision_Link { get; set; }
         [Required]
         public DateTime approved_date { get; set; }
         [Required]

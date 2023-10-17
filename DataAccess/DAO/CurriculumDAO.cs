@@ -124,6 +124,7 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
+
         public Curriculum GetCurriculum(string code, int batchId)
         {
             var curriculum = _cmsDbContext.Curriculum
@@ -132,6 +133,16 @@ namespace DataAccess.DAO
                 .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
 
             return curriculum;
+        }
+
+        public string GetCurriculumCode(int batchId, int speId)
+        {
+            var specialization = _cmsDbContext.Specialization.Find(speId);
+            var batch = _cmsDbContext.Batch.Find(batchId);
+
+            var curriCode = specialization.specialization_code + "_" + batch.batch_name;
+
+            return curriCode;
         }
 
         public string CreateCurriculum(Curriculum curriculum)
