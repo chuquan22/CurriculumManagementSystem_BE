@@ -31,5 +31,10 @@ namespace Repositories.Materials
         {
             return db.GetMaterial(id);
         }
+
+        public Material GetMaterialById(int id)
+        {
+            return db.GetMaterialById(id);
+        }
     }
 }
