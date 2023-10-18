@@ -68,6 +68,9 @@ namespace DataAccess.Models.DTO
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
               .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+              .ForMember(dest => dest.vocational_code, opt => opt.MapFrom(src => src.Specialization.Major.major_code))
+              .ForMember(dest => dest.vocational_name, opt => opt.MapFrom(src => src.Specialization.Major.major_name))
+              .ForMember(dest => dest.vocational_english_name, opt => opt.MapFrom(src => src.Specialization.Major.major_english_name))
               .ReverseMap();
 
             CreateMap<Curriculum, CurriculumRequest>().ReverseMap();
@@ -86,7 +89,6 @@ namespace DataAccess.Models.DTO
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
             
-            CreateMap<Batch, BatchDTOResponse>().ReverseMap();
 
             CreateMap<LearningMethod, LearningMethodDTOResponse>().ReverseMap();
 

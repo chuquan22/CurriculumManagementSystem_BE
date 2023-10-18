@@ -25,8 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult GetAllBatch()
         {
             var listBatch = _repo.GetAllBatch();
-            var listBatchResponse = _mapper.Map<List<BatchDTOResponse>>(listBatch);
-            return Ok(new BaseResponse(false, "List Batch", listBatchResponse));
+            return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
     }
 }

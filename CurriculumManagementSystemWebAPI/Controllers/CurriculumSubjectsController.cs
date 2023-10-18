@@ -69,11 +69,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             
             var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumId);
-
-            if (curriculumSubject.Count == 0)
-            {
-                return NotFound();
-            }
+           
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
 
             for (int semesterNo = 1; semesterNo <= 7; semesterNo++)
