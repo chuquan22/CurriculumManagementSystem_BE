@@ -16,6 +16,7 @@ namespace DataAccess.Models.DTO.response
         public string decision_No { get; set; }
         public int total_credit { get; set; }
         public DateTime approved_date { get; set; }
+        public DateTime? updated_date { get; set; }
         public bool is_active { get; set; }
 
     }

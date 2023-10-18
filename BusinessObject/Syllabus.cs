@@ -16,6 +16,8 @@ namespace BusinessObject
         [Required]
         public string document_type { get; set; }
         [Required]
+        public string program { get; set; }
+        [Required]
         public int decision_No { get; set; }
         [Required]
         public int degree_level { get; set; }
@@ -37,6 +39,8 @@ namespace BusinessObject
         public DateTime approved_date { get; set; }
         [Required]
         public int syllabus_status { get; set; }
+        [Required]
+        public bool syllabus_approved { get; set; }
 
         public virtual ICollection<CLO>? CLOs { get; set; }
         public virtual ICollection<GradingStruture>? Gradings { get; set; }

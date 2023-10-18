@@ -12,6 +12,7 @@ using Repositories.CurriculumSubjects;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Repositories.Combos;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -22,6 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
+        private readonly IComboRepository _comboRepository = new ComboRepository();
 
         public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
         {
@@ -66,7 +68,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectByCurriculum(int curriculumId)
         {
             
-            var curriculumSubject = _curriculumSubjectRepository.GetListSubjectByCurriculum(curriculumId);
+            var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumId);
 
             if (curriculumSubject.Count == 0)
             {
@@ -77,6 +79,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
+
+                if (curriSubject.combo_id != null)
+                {
+                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_name;
+                }
 
                 var existingCurriculumSubjectDTO = curriculumSubjectResponse
                     .FirstOrDefault(dto => dto.semester_no == curriSubject.term_no.ToString());

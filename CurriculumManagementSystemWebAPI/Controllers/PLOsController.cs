@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BusinessObject;
 using AutoMapper;
-using Repositories.CurriculumCombo;
 using Repositories.PLOS;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;

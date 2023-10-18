@@ -74,6 +74,7 @@ namespace DataAccess.Models.DTO
 
             CreateMap<Curriculum, CurriculumUpdateRequest>().ReverseMap();
 
+            //Curriculum Subject
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
               .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
@@ -85,18 +86,6 @@ namespace DataAccess.Models.DTO
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
             
-            // Curriculum Combo
-            CreateMap<ComboCurriculum, CurriculumComboDTOResponse>()
-                .ForMember(dest => dest.combo_name, opt => opt.MapFrom(src => src.Combo.combo_code + ": " + src.Combo.combo_name))
-                .ForMember(dest => dest.is_active, opt => opt.MapFrom(src => src.Combo.is_active))
-                .ReverseMap();
-
-            CreateMap<ComboSubject, CurriculumComboSubjectDTOResponse>()
-                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_code + ": " + src.Subject.subject_name))
-                .ReverseMap();
-
-            CreateMap<ComboSubject, CurriculumComboSubjectDTORequest>().ReverseMap();
-
             CreateMap<Batch, BatchDTOResponse>().ReverseMap();
 
             CreateMap<LearningMethod, LearningMethodDTOResponse>().ReverseMap();

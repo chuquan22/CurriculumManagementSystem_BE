@@ -191,8 +191,6 @@ namespace BusinessObject
                 new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_english_name = "game programming", semester_id = 1, is_active = true }
                 );
 
-
-
             modelBuilder.Entity<Curriculum>().HasData(  
                 new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL",is_active = true},
                 new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
@@ -223,18 +221,24 @@ namespace BusinessObject
             modelBuilder.Entity<Subject>().HasData(
                 new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 3, total_time = 70, total_time_class = 40, exam_total = 3 ,is_active = true },
                 new Subject { subject_id = 2, subject_code = "MLN131", subject_name = "Triết học Mac-Lenin", assessment_method_id = 2, learning_method_id = 1, english_subject_name = "Mac-Lenin philosophy", credit = 3, total_time = 70, total_time_class = 40, exam_total = 5 ,is_active = true },
-                new Subject { subject_id = 3, subject_code = "SSG104", subject_name = "Kĩ năng trong làm việc nhóm", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Soft Skill Group", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4 ,is_active = true }
+                new Subject { subject_id = 3, subject_code = "SSG104", subject_name = "Kĩ năng trong làm việc nhóm", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Soft Skill Group", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4 ,is_active = true },
+                new Subject { subject_id = 4, subject_code = "PRN231", subject_name = "lập trình web api asp.Net", assessment_method_id = 2, learning_method_id = 2, english_subject_name = "Web api using asp.Net", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4 ,is_active = true },
+                new Subject { subject_id = 5, subject_code = "PRU211", subject_name = "lập trình game cơ bản", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Basic Game Programing", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4 ,is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumSubject>().HasData(
-                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, option = false }
+                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, combo_id = 1 ,option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2 ,option = false },
+                new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = 3 ,option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = 4 ,option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, option = false }
                 );
 
             modelBuilder.Entity<Combo>().HasData(
-                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", combo_description = "lập trình web với ngôn ngữ C#", combo_no = 1,  specialization_id = 4, is_active = true },
-                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", combo_no = 2, specialization_id = 3, is_active = true },
-                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", combo_no = 1, specialization_id = 2, is_active = false },
-                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "NodeJS Programing", combo_description = "lập trình web với NodeJS", combo_no = 2, specialization_id = 1, is_active = true }
+                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_description = "lập trình web với ngôn ngữ C#",   specialization_id = 4, is_active = true },
+                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", specialization_id = 3, is_active = true },
+                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", specialization_id = 2, is_active = false },
+                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_description = "lập trình web với NodeJS", specialization_id = 1, is_active = true }
                 );
 
         }

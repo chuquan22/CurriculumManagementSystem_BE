@@ -15,6 +15,7 @@ using System.Diagnostics.CodeAnalysis;
 using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
 
+
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -25,6 +26,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly ICurriculumSubjectRepository _curriculumsubjectRepository = new CurriculumSubjectRepository();
+        
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
@@ -141,6 +143,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             _mapper.Map(curriculumRequest, curriculum);
+            curriculum.updated_date = DateTime.Today;
             string updateResult = _curriculumRepository.UpdateCurriculum(curriculum);
             
             if(!updateResult.Equals("OK"))
