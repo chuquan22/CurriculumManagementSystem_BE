@@ -81,8 +81,10 @@ namespace DataAccess.Models.DTO
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
               .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
+              .ForMember(dest => dest.specialization_id, opt => opt.MapFrom(src => src.Curriculum.specialization_id))
               .ReverseMap();
-            CreateMap<CurriculumSubject, CurriculumSubjectRequest>().ReverseMap();
+            CreateMap<CurriculumSubject, CurriculumSubjectRequest>()
+                .ReverseMap();
 
             CreateMap<User, UserLoginResponse>();
            
@@ -98,6 +100,10 @@ namespace DataAccess.Models.DTO
             //PLOs
             CreateMap<PLOs, PLOsDTOResponse>().ReverseMap();
             CreateMap<PLOs, PLOsDTORequest>().ReverseMap();
+
+            //PLOMapping
+            CreateMap<PLOMapping, PLOMappingDTOResponse>()
+                .ReverseMap();
         }
     }
 }

@@ -13,18 +13,29 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _context = new CMSDbContext();
 
-        //public List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId)
-        //{
-        //    var plo = _context.PLOs.Where(x => x.curriculum_id == curriculumId).ToList();
-        //    var subject = _context.CurriculumSubject
-        //        .Where(x => x.curriculum_id == curriculumId)
-        //        .Join(_context.Subject,
-        //              curriculum => curriculum.curriculum_id,
-        //              batch => batch.batch_id,
-        //              (curriculum, batch) => batch)
-        //        .ToList();
+        public List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId)
+        {
+            var plo = _context.PLOs.Where(x => x.curriculum_id == curriculumId).ToList();
+            var subject = _context.CurriculumSubject
+                .Where(x => x.curriculum_id == curriculumId)
+                .Join(_context.Subject,
+                    x => x.subject_id,
+                    y => y.subject_id,
+                    (x, y) => y)
+                .ToList();
 
-        //}
+            var ploMapping = _context.PLOMapping
+                .Join(plo,
+                    mapping => mapping.PLO_id,
+                    ploItem => ploItem.PLO_id,
+                    (mapping, ploItem) => new { Mapping = mapping, PLO = ploItem })
+                .Join(subject,
+                    joinResult => joinResult.Mapping.subject_id,
+                    subjectItem => subjectItem.subject_id,
+                    (joinResult, subjectItem) => joinResult.Mapping)
+                .ToList();
+            return ploMapping;
+        }
 
         public string CreatePLOMapping(PLOMapping ploMapping)
         {
