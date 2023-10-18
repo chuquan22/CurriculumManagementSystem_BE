@@ -19,7 +19,7 @@ namespace DataAccess.DAO
                 rs = context.Syllabus
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
-                                   .Where(s => s.syllabus_status == 0)
+                                   .Where(s => s.syllabus_status == true)
                                    .ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -31,7 +31,7 @@ namespace DataAccess.DAO
                 }
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(txtSearch)).ToList();
+                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList();
                 }
                 rs = rs
                 .Skip((page - 1)* limit).Take(limit).ToList();
@@ -71,7 +71,7 @@ namespace DataAccess.DAO
                 }
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_code.Contains(txtSearch) ).ToList().Count();
+                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList().Count();
                 }
             }
             return rs;

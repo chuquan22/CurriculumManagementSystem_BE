@@ -38,7 +38,7 @@ namespace BusinessObject
         [Required]
         public DateTime approved_date { get; set; }
         [Required]
-        public int syllabus_status { get; set; }
+        public bool syllabus_status { get; set; }
         [Required]
         public bool syllabus_approved { get; set; }
 

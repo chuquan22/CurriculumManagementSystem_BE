@@ -22,11 +22,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetGradingStruture(int syllabus_id)
         {
-            List<GradingStruture> rs = new List<GradingStruture>();
             try
             {
-                rs = repo.GetGradingStruture(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                List<GradingStruture> rs = repo.GetGradingStruture(syllabus_id);
+                var response = _mapper.Map<GradingStrutureResponse>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", response));
             }
             catch (Exception)
             {

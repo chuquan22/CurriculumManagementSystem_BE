@@ -48,6 +48,11 @@ namespace DataAccess.Models.DTO
             //Specialization
             CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
             CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
+            //GradingStruture
+            CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
+               .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
+               .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
+               .ReverseMap();
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse>()
                 .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))

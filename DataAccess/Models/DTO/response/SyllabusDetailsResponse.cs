@@ -35,7 +35,7 @@ namespace DataAccess.Models.DTO.response
         public bool syllabus_approved { get; set; }
 
         public DateTime approved_date { get; set; }
-        public int syllabus_status { get; set; }
+        public bool syllabus_status { get; set; }
 
     }
 }

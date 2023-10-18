@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.DAO
 {
@@ -14,6 +15,9 @@ namespace DataAccess.DAO
         public List<GradingStruture> GetGradingStruture(int id)
         {
             var rs = _cmsDbContext.GradingStruture
+                .Include(x => x.AssessmentMethod)
+                .Include(x => x.AssessmentMethod.AssessmentType)
+                .Include(x => x.Syllabus)
                 .Where(c => c.syllabus_id == id)
                 .ToList();
             return rs;
