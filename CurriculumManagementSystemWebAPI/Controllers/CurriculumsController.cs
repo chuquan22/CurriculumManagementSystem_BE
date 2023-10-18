@@ -53,7 +53,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Curriculums/GetListBatchByCurriculumCode/code
         [HttpGet("GetListBatchByCurriculumCode/{curriculumCode}")]
-        public async Task<ActionResult<IEnumerable<BatchDTOResponse>>> GetListBatch(string curriculumCode)
+        public async Task<ActionResult<IEnumerable<Batch>>> GetListBatch(string curriculumCode)
         {
            
             var listBatch = _curriculumRepository.GetBatchByCurriculumCode(curriculumCode);
@@ -61,8 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Cannot Found Batch By this curriculum"));
             }
-            var listBatchResponse = _mapper.Map<List<BatchDTOResponse>>(listBatch);
-            return Ok(new BaseResponse(false, "list Batch", listBatchResponse));
+            return Ok(new BaseResponse(false, "list Batch", listBatch));
         }
 
 
@@ -119,7 +118,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Curriculums/GetListBatchNotInCurriculum/code
         [HttpGet("GetListBatchNotInCurriculum/{curriculumCode}")]
-        public async Task<ActionResult<BatchDTOResponse>> GetlistBatch(string curriculumCode)
+        public async Task<ActionResult<Batch>> GetlistBatch(string curriculumCode)
         {
             var batch = _curriculumRepository.GetListBatchNotExsitInCurriculum(curriculumCode);
 
@@ -127,8 +126,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Not Found Batch Not Exsit in Curriculum!"));
             }
-            var batchResponse = _mapper.Map<List<BatchDTOResponse>>(batch);
-            return Ok(new BaseResponse(false, "Curriculum", batchResponse));
+            return Ok(new BaseResponse(false, "Curriculum", batch));
         }
 
 
