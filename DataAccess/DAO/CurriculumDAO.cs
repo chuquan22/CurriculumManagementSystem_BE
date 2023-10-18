@@ -85,6 +85,7 @@ namespace DataAccess.DAO
             var curriculum = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
+                .Include(x => x.Specialization.Major)
                 .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
         }
