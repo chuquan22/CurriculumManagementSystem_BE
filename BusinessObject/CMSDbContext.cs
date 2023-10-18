@@ -258,6 +258,11 @@ namespace BusinessObject
                 new PLOMapping { PLO_id = 1, subject_id = 4 },
                 new PLOMapping { PLO_id = 2, subject_id = 4 }
                 );
+            modelBuilder.Entity<GradingStruture>().HasData(
+                new GradingStruture { grading_id = 1, grading_weight = 10,grading_part = 1, minimum_value_to_meet_completion = 0, grading_duration = "6 phut", scope_knowledge = "Nội dung trong Giáo trình, Slide, Lab, Assignment và các tài nguyên tham khảo trong Syllabus", how_granding_structure = "SV nộp bài để giáo viên chấm(thời hạn: cuối giờ hoặc cuối ngày(23h55), hoặc giảng viên quy định phù hợp với thời gian học của lớp)",grading_note = "Bài nộp trên LMS", session_no = 3, references = "Lab", syllabus_id = 1 },
+                new GradingStruture { grading_id = 2, grading_weight = 20, grading_part = 2, minimum_value_to_meet_completion = 10, grading_duration = "8 phut", scope_knowledge = "Nội dung trong Giáo trình, Slide, Lab, Assignment và các tài nguyên tham khảo trong Syllabus", how_granding_structure = "SV nộp bài để giáo viên chấm(thời hạn: cuối giờ hoặc cuối ngày(23h55), hoặc giảng viên quy định phù hợp với thời gian học của lớp)", grading_note = "Bài nộp trên LMS", session_no = 1, references = "Lab", syllabus_id = 1 }
+
+                );
 
         }
     }
