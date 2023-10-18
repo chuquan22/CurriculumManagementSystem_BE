@@ -66,6 +66,7 @@ namespace DataAccess.Combos
                 {
                     oldCombo.combo_code = cb.combo_code;
                     oldCombo.combo_name = cb.combo_name;
+                    oldCombo.combo_english_name = cb.combo_english_name;
                     oldCombo.combo_description = cb.combo_description;
                     oldCombo.specialization_id = cb.specialization_id;
                     oldCombo.is_active = cb.is_active;

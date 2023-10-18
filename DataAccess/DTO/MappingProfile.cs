@@ -77,7 +77,7 @@ namespace DataAccess.Models.DTO
             //Curriculum Subject
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
-              .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
+              .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
               .ReverseMap();
             CreateMap<CurriculumSubject, CurriculumSubjectRequest>().ReverseMap();
 
