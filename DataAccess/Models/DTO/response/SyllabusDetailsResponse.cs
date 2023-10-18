@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
     {
         public int syllabus_id { get; set; }
         public int decision_No { get; set; }
+        public string program { get; set; }
 
         public string document_type { get; set; }
         public string subject_name { get; set; }
@@ -31,6 +32,8 @@ namespace DataAccess.Models.DTO.response
         public string? syllabus_note { get; set; }
         public decimal min_GPA_to_pass { get; set; }
         public int scoring_scale { get; set; }
+        public bool syllabus_approved { get; set; }
+
         public DateTime approved_date { get; set; }
         public int syllabus_status { get; set; }
 
