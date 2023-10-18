@@ -30,7 +30,7 @@ namespace DataAccess.DAO
         {
             var rs = _cmsDbContext.Session
               .Where(c => c.syllabus_id == id)
-              .ToList();
+              .FirstOrDefault();
             return rs;
         }
 
