@@ -28,6 +28,15 @@ namespace DataAccess.DAO
             return oldCol;
         }
 
+        public CLO GetCLOsById(int id)
+        {
+            var oldCol = _cmsDbContext.CLO.Where(c => c.CLO_id == id).FirstOrDefault();
+
+            _cmsDbContext.CLO.Remove(oldCol);
+            _cmsDbContext.SaveChanges();
+            return oldCol;
+        }
+
         public CLO CreateCLOs(CLO clo)
         {
             _cmsDbContext.CLO.Add(clo);

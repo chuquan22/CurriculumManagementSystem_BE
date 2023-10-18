@@ -89,5 +89,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+
+        [HttpGet("{id}")]
+        public ActionResult GetCLOsById(int id)
+        {
+            CLO rs = new CLO();
+            try
+            {
+                rs = repo.GetCLOsById(id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
     }
 }
