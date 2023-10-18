@@ -103,6 +103,8 @@ namespace DataAccess.Models.DTO
 
             //PLOMapping
             CreateMap<PLOMapping, PLOMappingDTOResponse>()
+                .ForMember(dest => dest.PLO_name, opt => opt.MapFrom(src => src.PLOs.PLO_name))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
                 .ReverseMap();
         }
     }

@@ -42,13 +42,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var listCurriculum = _curriculumRepository.GetCurriculum(curriculumCode, batchId);
-            if (listCurriculum == null)
+            var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode, batchId);
+            if (Curriculum == null)
             {
                 return Ok(new BaseResponse(true, "Not Found Curriculum"));
             }
-            var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return Ok(new BaseResponse(false, "list Curriculums", listCurriculumRespone));
+            var CurriculumRespone = _mapper.Map<CurriculumResponse>(Curriculum);
+            return Ok(new BaseResponse(false, "list Curriculums", CurriculumRespone));
         }
 
         // GET: api/Curriculums/GetListBatchByCurriculumCode/code
@@ -86,20 +86,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false,"Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, subjectRespone)));
 
-        }
-
-        // GET: api/Curriculums/GetListCurriculumCanDelete
-        // Get List Curriculum Have Status Can Remove
-        [HttpGet("GetListCurriculumCanDelete")]
-        public async Task<ActionResult<IEnumerable<CurriculumResponse>>> Curriculum()
-        {
-            if (_context.Curriculum == null)
-            {
-                return NotFound();
-            }
-            var listCurriculum = _context.Curriculum.Where(x => x.is_active == true).ToList();
-            var listCurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            return listCurriculumRespone;
         }
 
         // GET: api/Curriculums/GetCurriculum/5
@@ -179,15 +165,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteCurriculum/{id}")]
         public async Task<IActionResult> DeleteCurriculum(int id)
         {
-            if (_context.Curriculum == null)
+            if (CheckCurriculumCanDelete(id))
             {
-                return NotFound();
+                return Ok(new BaseResponse(true, "Can not Delete this Curriculum!"));
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             if (curriculum == null)
             {
                 return NotFound(new BaseResponse(true, "Not found this curriculum"));
             }
+
             string deleteResult = _curriculumRepository.RemoveCurriculum(curriculum);
             if (!deleteResult.Equals("OK"))
             {
@@ -205,6 +192,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private bool CheckCurriculumExists(string code, int batchId)
         {
             return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code) && e.batch_id == batchId)).GetValueOrDefault();
-        }    
+        }
+
+        private bool CheckCurriculumCanDelete(int id)
+        {
+            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
+        }
+
     }
 }

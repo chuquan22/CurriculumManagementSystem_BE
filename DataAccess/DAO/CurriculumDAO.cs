@@ -16,7 +16,8 @@ namespace DataAccess.DAO
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
-                .Include(x => x.Specialization);
+                .Include(x => x.Specialization)
+                .Include(x => x.Specialization.Major);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -38,7 +39,8 @@ namespace DataAccess.DAO
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
-                .Include(x => x.Specialization);
+                .Include(x => x.Specialization)
+                .Include(x => x.Specialization.Major);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -127,6 +129,7 @@ namespace DataAccess.DAO
             var curriculum = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
+                .Include(x => x.Specialization.Major)
                 .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
 
             return curriculum;
