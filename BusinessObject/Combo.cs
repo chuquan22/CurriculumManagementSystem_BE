@@ -18,6 +18,8 @@ namespace BusinessObject
         [Required]
         public string combo_name { get; set;}
         [Required]
+        public string combo_english_name { get; set; }
+        [Required]
         public string combo_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }

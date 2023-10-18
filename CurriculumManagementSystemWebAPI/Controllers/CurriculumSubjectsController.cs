@@ -76,32 +76,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
 
+            for (int semesterNo = 1; semesterNo <= 7; semesterNo++)
+            {
+                var newCurriculumSubjectDTO = new CurriculumSubjectDTO
+                {
+                    semester_no = semesterNo.ToString(),
+                    list = new List<CurriculumSubjectResponse>()
+                };
+                curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
+            }
+
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
 
                 if (curriSubject.combo_id != null)
                 {
-                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_name;
+                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
                 }
 
-                var existingCurriculumSubjectDTO = curriculumSubjectResponse
-                    .FirstOrDefault(dto => dto.semester_no == curriSubject.term_no.ToString());
-
-                if (existingCurriculumSubjectDTO != null)
+                foreach(var curriSubjectResponse  in curriculumSubjectResponse)
                 {
-                    existingCurriculumSubjectDTO.list.Add(curriculumSubjectMapper);
-                }
-                else
-                {
-                    var newCurriculumSubjectDTO = new CurriculumSubjectDTO
+                    if(curriSubject.term_no.ToString() == curriSubjectResponse.semester_no)
                     {
-                        semester_no = curriSubject.term_no.ToString(),
-
-                        list = new List<CurriculumSubjectResponse> { curriculumSubjectMapper }
-                    };
-                    curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
+                        curriSubjectResponse.list.Add(curriculumSubjectMapper);
+                    }
                 }
+                
             }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));

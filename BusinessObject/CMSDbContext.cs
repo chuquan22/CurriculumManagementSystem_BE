@@ -235,10 +235,10 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Combo>().HasData(
-                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_description = "lập trình web với ngôn ngữ C#",   specialization_id = 4, is_active = true },
-                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", specialization_id = 3, is_active = true },
-                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", specialization_id = 2, is_active = false },
-                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_description = "lập trình web với NodeJS", specialization_id = 1, is_active = true }
+                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", combo_description = "lập trình web với ngôn ngữ C#",   specialization_id = 4, is_active = true },
+                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", specialization_id = 3, is_active = true },
+                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", specialization_id = 2, is_active = false },
+                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", combo_description = "lập trình web với NodeJS", specialization_id = 1, is_active = true }
                 );
 
         }
