@@ -242,6 +242,29 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Combo",
+                columns: table => new
+                {
+                    combo_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    combo_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    combo_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    combo_english_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    combo_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    specialization_id = table.Column<int>(type: "int", nullable: false),
+                    is_active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Combo", x => x.combo_id);
+                    table.ForeignKey(
+                        name: "FK_Combo_Specialization_specialization_id",
+                        column: x => x.specialization_id,
+                        principalTable: "Specialization",
+                        principalColumn: "specialization_id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Curriculum",
                 columns: table => new
                 {
@@ -256,7 +279,8 @@ namespace BusinessObject.Migrations
                     batch_id = table.Column<int>(type: "int", nullable: false),
                     decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    curriculum_status = table.Column<int>(type: "int", nullable: false)
+                    updated_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    is_active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -356,6 +380,7 @@ namespace BusinessObject.Migrations
                     syllabus_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     document_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    program = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     decision_No = table.Column<int>(type: "int", nullable: false),
                     degree_level = table.Column<int>(type: "int", nullable: false),
                     syllabus_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -366,7 +391,8 @@ namespace BusinessObject.Migrations
                     min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     scoring_scale = table.Column<int>(type: "int", nullable: false),
                     approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    syllabus_status = table.Column<int>(type: "int", nullable: false)
+                    syllabus_status = table.Column<int>(type: "int", nullable: false),
+                    syllabus_approved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,33 +406,51 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Combo",
+                name: "ComboSubject",
                 columns: table => new
                 {
-                    combo_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    combo_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    combo_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    combo_english_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    combo_no = table.Column<int>(type: "int", nullable: false),
-                    combo_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    specialization_id = table.Column<int>(type: "int", nullable: false),
-                    is_active = table.Column<bool>(type: "bit", nullable: false),
-                    curriculum_id = table.Column<int>(type: "int", nullable: true)
+                    subject_id = table.Column<int>(type: "int", nullable: false),
+                    combo_id = table.Column<int>(type: "int", nullable: false),
+                    semester_no = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Combo", x => x.combo_id);
+                    table.PrimaryKey("PK_ComboSubject", x => new { x.combo_id, x.subject_id });
                     table.ForeignKey(
-                        name: "FK_Combo_Curriculum_curriculum_id",
+                        name: "FK_ComboSubject_Combo_combo_id",
+                        column: x => x.combo_id,
+                        principalTable: "Combo",
+                        principalColumn: "combo_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ComboSubject_Subject_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComboCurriculum",
+                columns: table => new
+                {
+                    combo_id = table.Column<int>(type: "int", nullable: false),
+                    curriculum_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComboCurriculum", x => new { x.combo_id, x.curriculum_id });
+                    table.ForeignKey(
+                        name: "FK_ComboCurriculum_Combo_combo_id",
+                        column: x => x.combo_id,
+                        principalTable: "Combo",
+                        principalColumn: "combo_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ComboCurriculum_Curriculum_curriculum_id",
                         column: x => x.curriculum_id,
                         principalTable: "Curriculum",
                         principalColumn: "curriculum_id");
-                    table.ForeignKey(
-                        name: "FK_Combo_Specialization_specialization_id",
-                        column: x => x.specialization_id,
-                        principalTable: "Specialization",
-                        principalColumn: "specialization_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -416,6 +460,7 @@ namespace BusinessObject.Migrations
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     curriculum_id = table.Column<int>(type: "int", nullable: false),
                     term_no = table.Column<int>(type: "int", nullable: false),
+                    combo_id = table.Column<int>(type: "int", nullable: true),
                     option = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -639,54 +684,6 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComboCurriculum",
-                columns: table => new
-                {
-                    combo_id = table.Column<int>(type: "int", nullable: false),
-                    curriculum_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComboCurriculum", x => new { x.combo_id, x.curriculum_id });
-                    table.ForeignKey(
-                        name: "FK_ComboCurriculum_Combo_combo_id",
-                        column: x => x.combo_id,
-                        principalTable: "Combo",
-                        principalColumn: "combo_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ComboCurriculum_Curriculum_curriculum_id",
-                        column: x => x.curriculum_id,
-                        principalTable: "Curriculum",
-                        principalColumn: "curriculum_id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ComboSubject",
-                columns: table => new
-                {
-                    subject_id = table.Column<int>(type: "int", nullable: false),
-                    combo_id = table.Column<int>(type: "int", nullable: false),
-                    semester_no = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComboSubject", x => new { x.combo_id, x.subject_id });
-                    table.ForeignKey(
-                        name: "FK_ComboSubject_Combo_combo_id",
-                        column: x => x.combo_id,
-                        principalTable: "Combo",
-                        principalColumn: "combo_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ComboSubject_Subject_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PLOMapping",
                 columns: table => new
                 {
@@ -811,7 +808,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 17, 22, 48, 54, 586, DateTimeKind.Local).AddTicks(9009), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 18, 15, 57, 5, 175, DateTimeKind.Local).AddTicks(3487), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
@@ -850,28 +847,28 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Combo",
-                columns: new[] { "combo_id", "combo_code", "combo_description", "combo_english_name", "combo_name", "combo_no", "curriculum_id", "is_active", "specialization_id" },
+                columns: new[] { "combo_id", "combo_code", "combo_description", "combo_english_name", "combo_name", "is_active", "specialization_id" },
                 values: new object[,]
                 {
-                    { 1, ".NET", "lập trình web với ngôn ngữ C#", "C# Programing", "Lập trình C#", 1, null, true, 4 },
-                    { 2, "JS", "kĩ sư lập trình với ngôn ngữ Nhật", "Japan Software", "kĩ sư Nhật Bản", 2, null, true, 3 },
-                    { 3, "KS", "kĩ sư lập trình với ngôn ngữ Hàn", "Korea Software", "kĩ sư Hàn Quốc", 1, null, false, 2 },
-                    { 4, "NodeJS", "lập trình web với NodeJS", "NodeJS Programing", "Lập trình NodeJS", 2, null, true, 1 }
+                    { 1, ".NET", "lập trình web với ngôn ngữ C#", "C# Programing", "Lập trình C#", true, 4 },
+                    { 2, "JS", "kĩ sư lập trình với ngôn ngữ Nhật", "Japan Software", "kĩ sư Nhật Bản", true, 3 },
+                    { 3, "KS", "kĩ sư lập trình với ngôn ngữ Hàn", "Korea Software", "kĩ sư Hàn Quốc", false, 2 },
+                    { 4, "NodeJS", "lập trình web với NodeJS", "Web api using NodeJS", "Lập trình NodeJS", true, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Curriculum",
-                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "curriculum_status", "decision_No", "english_curriculum_name", "specialization_id", "total_semester" },
+                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", 1, "360/QĐ-CĐFPL", "Graphic Design", 1, 7 },
-                    { 2, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", 1, "360/QĐ-CĐFPL", "Graphic Design", 1, 7 },
-                    { 3, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", 0, "360/QĐ-CĐFPL", "Software Engineering", 4, 7 },
-                    { 4, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", 1, "360/QĐ-CĐFPL", "Software Engineering", 4, 7 },
-                    { 5, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", 1, "360/QĐ-CĐFPL", "Curriculum Management", 2, 7 },
-                    { 6, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", 0, "360/QĐ-CĐFPL", "Soft Skill", 1, 7 },
-                    { 7, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", 0, "360/QĐ-CĐFPL", "Skill Web Program", 1, 7 },
-                    { 8, new DateTime(2023, 10, 17, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", 0, "360/QĐ-CĐFPL", "Soft Skill", 1, 7 }
+                    { 1, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 2, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 3, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 4, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 5, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
+                    { 6, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
+                    { 7, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
+                    { 8, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
@@ -881,13 +878,22 @@ namespace BusinessObject.Migrations
                 {
                     { 1, 1, 3, "Project Capstone", 3, true, 1, "SEP490", "Đồ án", 70, 40 },
                     { 2, 2, 3, "Mac-Lenin philosophy", 5, true, 1, "MLN131", "Triết học Mac-Lenin", 70, 40 },
-                    { 3, 1, 3, "Soft Skill Group", 4, true, 2, "SSG104", "Kĩ năng trong làm việc nhóm", 70, 40 }
+                    { 3, 1, 3, "Soft Skill Group", 4, true, 2, "SSG104", "Kĩ năng trong làm việc nhóm", 70, 40 },
+                    { 4, 2, 3, "Web api using asp.Net", 4, true, 2, "PRN231", "lập trình web api asp.Net", 70, 40 },
+                    { 5, 1, 3, "Basic Game Programing", 4, true, 2, "PRU211", "lập trình game cơ bản", 70, 40 }
                 });
 
             migrationBuilder.InsertData(
                 table: "CurriculumSubject",
-                columns: new[] { "curriculum_id", "subject_id", "option", "term_no" },
-                values: new object[] { 1, 1, false, 3 });
+                columns: new[] { "curriculum_id", "subject_id", "combo_id", "option", "term_no" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, false, 3 },
+                    { 1, 2, null, false, 1 },
+                    { 1, 3, 2, false, 3 },
+                    { 1, 5, 4, false, 2 },
+                    { 2, 4, 3, false, 3 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssessmentMethod_assessment_type_id",
@@ -898,11 +904,6 @@ namespace BusinessObject.Migrations
                 name: "IX_CLO_syllabus_id",
                 table: "CLO",
                 column: "syllabus_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Combo_curriculum_id",
-                table: "Combo",
-                column: "curriculum_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Combo_specialization_id",
