@@ -11,7 +11,7 @@ namespace DataAccess.DAO
 {
     public class SyllabusDAO
     {
-        public List<Syllabus> GetListSyllabus(int page, int limit, string txtSearch)
+        public List<Syllabus> GetListSyllabus(int page, int limit, string txtSearch,string subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             using (var context = new CMSDbContext())
@@ -28,6 +28,12 @@ namespace DataAccess.DAO
                     || sy.Subject.english_subject_name.Contains(txtSearch)
 
                     ).ToList();                
+                }
+                if (!string.IsNullOrEmpty(subjectCode))
+                {
+                    rs = rs.Where(sy => 
+                     sy.Subject.subject_code.Contains(txtSearch)                 
+                    ).ToList();
                 }
                 rs = rs
                 .Skip((page - 1)* limit).Take(limit).ToList();

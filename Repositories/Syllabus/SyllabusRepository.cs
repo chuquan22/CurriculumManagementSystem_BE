@@ -13,7 +13,7 @@ namespace Repositories.Syllabus
     {
         public SyllabusDAO db = new SyllabusDAO();
 
-        public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch)
+        public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch, string subjectCode)
         {
             return db.GetListSyllabus(start, end, txtSearch);
         }

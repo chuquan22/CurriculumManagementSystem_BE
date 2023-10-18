@@ -27,13 +27,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new SyllabusRepository();
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page,int limit, string? txtSearch)
+        public ActionResult GetListSyllabus(int page,int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
             {             
                 int limit2 = repo.GetTotalSyllabus(txtSearch);
-                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch);
+                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
                 return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,limit2, result)));
             }
@@ -99,6 +99,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         else if (i == 2)
                         {
                             var row = MiniExcel.Query<CLOsExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                CLOs = row,
+                            };
+                            rs.Add(value);
+                        }
+                        else if (i == 3)
+                        {
+                            var row = MiniExcel.Query<ConstructivistExcel>(filePath, sheetName: sheetNames[i]);
+                            var value = new
+                            {
+                                CLOs = row,
+                            };
+                            rs.Add(value);
+                        }
+                        else if (i == 4)
+                        {
+                            var row = MiniExcel.Query<ScheduleExcel>(filePath, sheetName: sheetNames[i]);
                             var value = new
                             {
                                 CLOs = row,
