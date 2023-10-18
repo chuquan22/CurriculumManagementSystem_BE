@@ -10,6 +10,7 @@ namespace DataAccess.Models.DTO.response
         public string subject_name { get; set; }
         public int combo_id { get; set; }
         public string combo_name { get; set; }
+        public int specialization_id { get; set; }
         public int term_no { get; set; }
         public bool option { get; set; }
         

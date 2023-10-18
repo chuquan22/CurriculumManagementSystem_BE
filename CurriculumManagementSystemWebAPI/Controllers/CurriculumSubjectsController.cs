@@ -85,8 +85,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
+                if(curriSubject.combo_id == null)
+                {
+                    curriSubject.combo_id = 0;
+                }
 
-                if (curriSubject.combo_id != null)
+                if (curriSubject.combo_id != 0)
                 {
                     curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
                 }
@@ -121,12 +125,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             [HttpPost("CreateCurriculumSubject")]
         public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] CurriculumSubjectRequest curriculumSubjectRequest)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return Problem("Entity set 'CMSDbContext.CurriculumSubject'  is null.");
-            }
+           
             var curriculumSubject = _mapper.Map<CurriculumSubject>(curriculumSubjectRequest);
+
             string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
+
             if(createResult != Result.createSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, createResult));

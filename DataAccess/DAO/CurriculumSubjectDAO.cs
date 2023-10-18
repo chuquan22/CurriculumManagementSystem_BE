@@ -57,6 +57,7 @@ namespace DataAccess.DAO
         {
             var listCurriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Subject)
+                .Include(x => x.Curriculum)
                 .Where(x => x.curriculum_id == curriculumId)
                 .ToList();
 
