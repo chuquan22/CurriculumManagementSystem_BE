@@ -17,10 +17,6 @@ namespace DataAccess.Models.DTO.request
         public string curriculum_description { get; set; }
         [Required]
         public string decision_No { get; set; }
-
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime approved_date { get; set; }
         [Required]
         public bool is_active { get; set; }
     }

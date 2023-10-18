@@ -26,6 +26,22 @@ namespace DataAccess.Combos
             return rs;
         }
 
+        public Combo FindComboById(int id)
+        {
+            var combo = new Combo();
+            try
+            {
+                 combo = db.Combo.Where(x => x.combo_id == id).FirstOrDefault();
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return combo;
+        }
+
         public Combo CreateCombo(Combo cb)
         {
             Combo combo = new Combo();
@@ -50,8 +66,6 @@ namespace DataAccess.Combos
                 {
                     oldCombo.combo_code = cb.combo_code;
                     oldCombo.combo_name = cb.combo_name;
-                    oldCombo.combo_english_name = cb.combo_english_name;
-                    oldCombo.combo_no = cb.combo_no;
                     oldCombo.combo_description = cb.combo_description;
                     oldCombo.specialization_id = cb.specialization_id;
                     oldCombo.is_active = cb.is_active;

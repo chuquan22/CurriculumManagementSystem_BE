@@ -24,7 +24,7 @@ namespace Repositories.Combos
 
         public Combo FindComboById(int comboId)
         {
-            throw new NotImplementedException();
+            return db.FindComboById(comboId);
         }
 
         public List<Combo> GetListCombo(int specId)

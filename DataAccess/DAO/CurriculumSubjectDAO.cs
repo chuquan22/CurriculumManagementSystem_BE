@@ -53,6 +53,16 @@ namespace DataAccess.DAO
             return listSubjectsNotInCurriculum;
         }
 
+        public List<CurriculumSubject> GetListCurriculumSubject(int curriculumId)
+        {
+            var listCurriculumSubject = _context.CurriculumSubject
+                .Include(x => x.Subject)
+                .Where(x => x.curriculum_id == curriculumId)
+                .ToList();
+
+            return listCurriculumSubject;
+        }
+
         public CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId)
         {
             var curriculumSubject = _context.CurriculumSubject

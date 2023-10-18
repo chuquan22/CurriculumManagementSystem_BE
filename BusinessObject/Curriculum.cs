@@ -32,6 +32,8 @@ namespace BusinessObject
         public string decision_No { get;set; }
         [Required]
         public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? updated_date { get; set; }
         [Required]
         public bool is_active { get; set; }
 
