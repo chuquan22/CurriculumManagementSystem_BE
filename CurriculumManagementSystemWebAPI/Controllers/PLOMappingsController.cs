@@ -24,8 +24,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult GetAllPLOMapping(int curriculumId)
         {
             var listPLOMapping = _repo.GetPLOMappingsInCurriculum(curriculumId);
+            var listPLOMappingResponse = _mapper.Map<PLOMappingDTOResponse>(listPLOMapping);
+            return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
+        }
 
-            return Ok(new BaseResponse(false, "List Batch"));
+        [HttpPost("CreatePLOMapping")]
+        public ActionResult CreatePLOMapping(int curriculumId)
+        {
+            var listPLOMapping = _repo.GetPLOMappingsInCurriculum(curriculumId);
+            var listPLOMappingResponse = _mapper.Map<PLOMappingDTOResponse>(listPLOMapping);
+            return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
         }
     }
 }

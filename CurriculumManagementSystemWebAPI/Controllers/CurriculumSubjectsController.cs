@@ -115,7 +115,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var subject = _curriculumSubjectRepository.GetListSubject(curriculumId);
             if(subject.Count == 0)
             {
-                return Ok(new BaseResponse(true, "Not Found Subject!"));
+                return Ok(new BaseResponse(false, "Not Found Subject!"));
             }
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
             return Ok(new BaseResponse(false, "List Subject", subjectResponse));
