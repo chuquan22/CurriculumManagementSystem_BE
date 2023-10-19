@@ -40,17 +40,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
-        public ActionResult CreateGradingStruture(GradingStruture gra, GradingCLORequest clo)
+        public ActionResult CreateGradingStruture(GradingStrutureCreateRequest gra)
         {
-            GradingStruture rs = new GradingStruture();
+            GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
             try
             {
-                rs = repo.CreateGradingStruture(gra);
-                if(clo != null)
-                {
-                    var rs2 = _mapper.Map<GradingCLO>(clo);
-                    repo2.CreateGradingCLO(rs2);
-                }
+                rs = repo.CreateGradingStruture(rs);
+             
+                var rs2 = _mapper.Map<GradingCLO>(gra.gradingCLORequest);
+                repo2.CreateGradingCLO(rs2);
+                
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
