@@ -22,6 +22,11 @@ namespace Repositories.Combos
             return db.DeleteCombo(id);
         }
 
+        public bool DisableCombo(int id)
+        {
+            return db.DisableCombo(id);
+        }
+
         public Combo FindComboById(int comboId)
         {
             return db.FindComboById(comboId);
