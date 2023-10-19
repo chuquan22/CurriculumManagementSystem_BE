@@ -28,6 +28,64 @@ namespace DataAccess.Specialization
             }
             return list;
         }
+        public List<BusinessObject.Specialization> GetSpecByPagging(int page, int limit, string txtSearch, string majorId)
+        {
+            List<BusinessObject.Specialization> rs = new List<BusinessObject.Specialization>();
+            try
+            {
+                rs = db.Specialization.ToList();
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                    rs = rs.Where(sy => sy.specialization_name.Contains(txtSearch)
+                    || sy.specialization_code.Contains(txtSearch)
+                    || sy.specialization_english_name.Contains(txtSearch)
+                    ).ToList();
+                }
+                if (!string.IsNullOrEmpty(majorId))
+                {
+                    int m = int.Parse(majorId);
+
+                    rs = rs.Where(sy => sy.major_id == m).ToList();
+                }
+                rs = rs
+                .Skip((page - 1) * limit).Take(limit).ToList();
+            }
+            catch (Exception)
+            {
+
+            }
+            return rs;
+        }
+
+        public BusinessObject.Specialization GetSpeById(int speId)
+        {
+            var spe = db.Specialization.Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
+            return spe;
+        }
+
+        public int GetTotalSpecialization(string txtSearch, string majorId)
+        {
+            int rs = 0;
+            using (var context = new CMSDbContext())
+            {
+                rs = context.Specialization
+                                   .ToList()
+                                   .Count();
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                    rs = context.Specialization.Where(sy => sy.specialization_name.Contains(txtSearch)
+                    || sy.specialization_code.Contains(txtSearch)
+                    || sy.specialization_english_name.Contains(txtSearch)
+                    ).ToList().Count();
+                }
+                if (!string.IsNullOrEmpty(majorId))
+                {
+                    int m = int.Parse(majorId);
+                    rs = context.Specialization.Where(sy => sy.major_id == m).ToList().Count();
+                }
+            }
+            return rs;
+        }
 
         public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization spe)
         {

@@ -46,8 +46,9 @@ namespace DataAccess.Models.DTO
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
             //Specialization
-            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
+            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap(); 
             CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
+
             //GradingStruture
             CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
      .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))
@@ -55,6 +56,7 @@ namespace DataAccess.Models.DTO
      .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
      .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs.Where(gc => gc.grading_id == src.grading_id).Select(gc => gc.CLO.CLO_name).ToList()))
      .ReverseMap();
+         
             //GradingStrutureRequest
             CreateMap<GradingStruture, GradingStrutureRequest>()
                 .ReverseMap();
