@@ -14,7 +14,7 @@ namespace DataAccess.DAO
     public class SubjectDAO
     {
         public readonly CMSDbContext CMSDbContext = new CMSDbContext();
-        
+
 
         public List<Subject> GetAllSubjects()
         {
@@ -33,6 +33,21 @@ namespace DataAccess.DAO
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public List<Subject> GetSubjectByCurriculum(int curriculumId)
+        {
+            var listSubjectIds = CMSDbContext.Curriculum
+                .Where(x => x.curriculum_id == curriculumId)
+                .Join(CMSDbContext.CurriculumSubject,
+                    curriculum => curriculum.curriculum_id,
+                    curriculumSubject => curriculumSubject.curriculum_id,
+                     (curriculum, curriculumSubject) => curriculumSubject.Subject)
+                .ToList();
+
+            return listSubjectIds;
+
+
         }
 
         public List<Subject> GetSubjectByName(string name)

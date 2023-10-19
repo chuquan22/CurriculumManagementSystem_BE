@@ -12,5 +12,6 @@ namespace Repositories.PLOMappings
         List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId);
         string CreatePLOMapping(PLOMapping ploMapping);
         string UpdatePLOMapping(PLOMapping ploMapping);
+        string DeletePLOMapping(PLOMapping ploMapping);
     }
 }

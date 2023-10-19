@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private IPLOMappingRepository _repo;
         private IPLOsRepository _repo1 = new PLOsRepository();
-        private ICurriculumSubjectRepository _repo2 = new CurriculumSubjectRepository();
+        private ISubjectRepository _repo2 = new SubjectRepository();
 
         public PLOMappingsController(IMapper mapper)
         {
@@ -32,12 +33,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listPLOMapping = _repo.GetPLOMappingsInCurriculum(curriculumId);
 
             var listPLO = _repo1.GetListPLOsByCurriculum(curriculumId);
-            var listSubject = _repo2.GetListSubject(curriculumId);
+            var listSubject = _repo2.GetSubjectByCurriculum(curriculumId);
 
             var listPLOMappingResponse = new List<PLOMappingDTO>();
 
-            if (listPLOMapping.Count == 0)
-            {
                 foreach (var subject in listSubject)
                 {
                     if (!SubjectExsit(subject.subject_id, listPLOMappingResponse))
@@ -53,43 +52,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         listPLOMappingResponse.Add(dto);
                     }
                 }
-
-            }
-            else
-            {
-                var listPLOMappingMapper = _mapper.Map<List<PLOMappingDTO>>(listPLOMapping);
-
-                foreach (var item in listPLOMappingMapper)
+                foreach (var item in listPLOMappingResponse)
                 {
-                    if (!SubjectExsit(item.subject_id, listPLOMappingResponse))
-                    {
-                        item.PLOs = new Dictionary<string, bool>();
                         foreach (var plo in listPLO)
                         {
                             if (CheckPLOIsMapping(plo.PLO_id, item.subject_id, listPLOMapping))
                             {
-                                item.PLOs.Add($"{plo.PLO_id}-{plo.PLO_name}", true);
-                            }
-                            else
-                            {
-                                item.PLOs.Add($"{plo.PLO_id}-{plo.PLO_name}", false);
+                               item.PLOs[$"{plo.PLO_id}-{plo.PLO_name}"] = true;
                             }
                         }
-                        listPLOMappingResponse.Add(item);
-                    }
-
                 }
-            }
+            
 
             return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
         }
 
         [HttpPost("CreatePLOMapping")]
-        public ActionResult CreatePLOMapping(int curriculumId)
+        public ActionResult CreatePLOMapping([FromBody] List<PLOMappingRequest> pLOMappingRequest)
         {
-            var listPLOMapping = _repo.GetPLOMappingsInCurriculum(curriculumId);
-            var listPLOMappingResponse = _mapper.Map<PLOMappingDTO>(listPLOMapping);
-            return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
+
+            return Ok(new BaseResponse(false, "List PLO Mapping"));
         }
 
 
