@@ -8,7 +8,6 @@ namespace DataAccess.Models.DTO.request
 {
     public class GradingStrutureRequest
     {
-        public int grading_id { get; set; }
         public string type_of_questions { get; set; }
         public string number_of_questions { get; set; }
 
