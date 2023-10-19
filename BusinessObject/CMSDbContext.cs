@@ -248,7 +248,9 @@ namespace BusinessObject
                new PLOs { PLO_id = 3, PLO_name = "PLO03", PLO_description = "Biên tập, kịch bản và xử lý kỹ xảo phim, phim quảng cáo, phim quảng cáo 3D", curriculum_id = 1 },
                new PLOs { PLO_id = 4, PLO_name = "PLO04", PLO_description = "Thiết kếm xây dưng các sản phẩm đồ họa nội ngoại thất 2D&3D hoặc các sản phẩm đồ họa 3D", curriculum_id = 1 },
                new PLOs { PLO_id = 5, PLO_name = "PLO05", PLO_description = "Kiến thức về đường, hình, khối và một số vấn đề mỹ thuật liên quan; kiến thức cơ bản về đồ họa; kiến thức cơ sở về mỹ thuật, thẩm mỹ; vật liệu,...", curriculum_id = 1 },
-               new PLOs { PLO_id = 6, PLO_name = "PLO06", PLO_description = "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng", curriculum_id = 1 }
+               new PLOs { PLO_id = 6, PLO_name = "PLO06", PLO_description = "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng", curriculum_id = 1 },
+               new PLOs { PLO_id = 7, PLO_name = "PLO07", PLO_description = "Giao tiếp, thuyết trình tự tin trước đám đông", curriculum_id = 2 },
+               new PLOs { PLO_id = 8, PLO_name = "PLO08", PLO_description = "Kĩ năng làm việc nhóm", curriculum_id = 2 }
                );
 
             modelBuilder.Entity<PLOMapping>().HasData(

@@ -73,6 +73,20 @@ namespace DataAccess.DAO
             }
         }
 
+        public string DeletePLOMapping(PLOMapping ploMapping)
+        {
+            try
+            {
+                _context.PLOMapping.Remove(ploMapping);
+                _context.SaveChanges();
+                return Result.deleteSuccessfull.ToString();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return ex.Message;
+            }
+        }
+
 
     }
 }
