@@ -41,9 +41,14 @@ namespace DataAccess.DAO
             return listPloMapping;
         }
 
-        private PLOMapping GetPLOMappingExsit(int subjectId, int ploId)
+        public PLOMapping GetPLOMappingExsit(int subjectId, int ploId)
         {
             return _context.PLOMapping?.Include(x => x.Subject).Include(x => x.PLOs).FirstOrDefault(e => e.subject_id == subjectId && e.PLO_id == ploId);
+        }
+
+        public bool CheckPLOMappingExsit(int subjectId, int ploId)
+        {
+            return (_context.PLOMapping?.Include(x => x.Subject).Include(x => x.PLOs).Any(e => e.subject_id == subjectId && e.PLO_id == ploId)).GetValueOrDefault();
         }
 
         public string CreatePLOMapping(PLOMapping ploMapping)

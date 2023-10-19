@@ -11,6 +11,12 @@ namespace Repositories.PLOMappings
     public class PLOMappingRepository : IPLOMappingRepository
     {
         private readonly PLOMappingDAO pLOMappingDAO = new PLOMappingDAO();
+
+        public bool CheckPLOMappingExsit(int subjectId, int ploId)
+        {
+            return pLOMappingDAO.CheckPLOMappingExsit(subjectId, ploId);
+        }
+
         public string CreatePLOMapping(PLOMapping ploMapping)
         {
             return pLOMappingDAO.CreatePLOMapping(ploMapping);
@@ -19,6 +25,11 @@ namespace Repositories.PLOMappings
         public string DeletePLOMapping(PLOMapping ploMapping)
         {
             return pLOMappingDAO.DeletePLOMapping(ploMapping);
+        }
+
+        public PLOMapping GetPLOMappingExsit(int subjectId, int ploId)
+        {
+            return pLOMappingDAO.GetPLOMappingExsit(subjectId, ploId);
         }
 
         public List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId)

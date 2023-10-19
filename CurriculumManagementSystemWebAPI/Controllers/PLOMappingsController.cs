@@ -2,6 +2,7 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
+using DataAccess.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -37,41 +38,74 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var listPLOMappingResponse = new List<PLOMappingDTO>();
 
-                foreach (var subject in listSubject)
+            foreach (var subject in listSubject)
+            {
+                if (!SubjectExsit(subject.subject_id, listPLOMappingResponse))
                 {
-                    if (!SubjectExsit(subject.subject_id, listPLOMappingResponse))
+                    PLOMappingDTO dto = new PLOMappingDTO();
+                    dto.subject_code = subject.subject_code;
+                    dto.subject_id = subject.subject_id;
+                    dto.PLOs = new Dictionary<string, bool>();
+                    foreach (var plo in listPLO)
                     {
-                        PLOMappingDTO dto = new PLOMappingDTO();
-                        dto.subject_code = subject.subject_code;
-                        dto.subject_id = subject.subject_id;
-                        dto.PLOs = new Dictionary<string, bool>();
-                        foreach (var plo in listPLO)
-                        {
-                            dto.PLOs.Add($"{plo.PLO_id}-{plo.PLO_name}", false);
-                        }
-                        listPLOMappingResponse.Add(dto);
+                        dto.PLOs.Add($"{plo.PLO_id}-{plo.PLO_name}", false);
+                    }
+                    listPLOMappingResponse.Add(dto);
+                }
+            }
+            foreach (var item in listPLOMappingResponse)
+            {
+                foreach (var plo in listPLO)
+                {
+                    if (CheckPLOIsMapping(plo.PLO_id, item.subject_id, listPLOMapping))
+                    {
+                        item.PLOs[$"{plo.PLO_id}-{plo.PLO_name}"] = true;
                     }
                 }
-                foreach (var item in listPLOMappingResponse)
-                {
-                        foreach (var plo in listPLO)
-                        {
-                            if (CheckPLOIsMapping(plo.PLO_id, item.subject_id, listPLOMapping))
-                            {
-                               item.PLOs[$"{plo.PLO_id}-{plo.PLO_name}"] = true;
-                            }
-                        }
-                }
-            
+            }
+
 
             return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
         }
 
-        [HttpPost("CreatePLOMapping")]
-        public ActionResult CreatePLOMapping([FromBody] List<PLOMappingRequest> pLOMappingRequest)
+        [HttpPut("UpdatePLOMapping")]
+        public ActionResult UpdatePLOMapping([FromBody] List<PLOMappingRequest> pLOMappingRequest)
         {
+            foreach (var ploMapping in pLOMappingRequest)
+            {
+                foreach (var plo in ploMapping.PLOs)
+                {
 
-            return Ok(new BaseResponse(false, "List PLO Mapping"));
+                    string[] parts = plo.Key.Split('-');
+                    string plo_id = parts[0];
+                    var pLOMapping = new PLOMapping()
+                    {
+                        PLO_id = int.Parse(plo_id),
+                        subject_id = ploMapping.subject_id
+                    };
+
+                    if (_repo.CheckPLOMappingExsit(ploMapping.subject_id, int.Parse(plo_id)))
+                    {
+                       
+                            string deleteResult = _repo.DeletePLOMapping(pLOMapping);
+                            if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()) )
+                            {
+                            return Ok(new BaseResponse(true, deleteResult));
+                        }
+                    }
+
+                    if(plo.Value)
+                    {
+                        string createResult = _repo.CreatePLOMapping(pLOMapping);
+                        if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                        {
+                            return Ok(new BaseResponse(true, createResult));
+                        }
+                    }
+                }
+
+            }
+            return Ok(new BaseResponse(false, "Update PLOMapping Success"));
         }
 
 
