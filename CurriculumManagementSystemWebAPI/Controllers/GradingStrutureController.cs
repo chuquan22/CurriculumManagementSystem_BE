@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.GradingCLOs;
 using Repositories.GradingStruture;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -13,6 +15,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private IGradingStrutureRepository repo;
+        private IGradingCLOsRepository repo2;
+
 
         public GradingStrutureController(IMapper mapper)
         {
@@ -36,12 +40,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
-        public ActionResult CreateGradingStruture(GradingStruture gra)
+        public ActionResult CreateGradingStruture(GradingStruture gra, GradingCLORequest clo)
         {
             GradingStruture rs = new GradingStruture();
             try
             {
                 rs = repo.CreateGradingStruture(gra);
+                if(clo != null)
+                {
+                    var rs2 = _mapper.Map<GradingCLO>(clo);
+                    repo2.CreateGradingCLO(rs2);
+                }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

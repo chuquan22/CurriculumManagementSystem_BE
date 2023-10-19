@@ -46,7 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
 
-                rs = repo.UpdateSpecialization(rs);
+                rs = repo.CreateSpecialization(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
