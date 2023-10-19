@@ -391,7 +391,7 @@ namespace BusinessObject.Migrations
                     min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     scoring_scale = table.Column<int>(type: "int", nullable: false),
                     approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    syllabus_status = table.Column<int>(type: "int", nullable: false),
+                    syllabus_status = table.Column<bool>(type: "bit", nullable: false),
                     syllabus_approved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -580,6 +580,10 @@ namespace BusinessObject.Migrations
                 {
                     grading_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    type_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    number_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    session_no = table.Column<int>(type: "int", nullable: false),
+                    references = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     grading_weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     grading_part = table.Column<int>(type: "int", nullable: false),
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
@@ -768,9 +772,10 @@ namespace BusinessObject.Migrations
                 values: new object[,]
                 {
                     { 1, "K19.3" },
-                    { 2, "K18" },
-                    { 3, "K17" },
-                    { 4, "K20" }
+                    { 2, "K18.3" },
+                    { 3, "K18.2" },
+                    { 4, "K20.2" },
+                    { 5, "K20.1" }
                 });
 
             migrationBuilder.InsertData(
@@ -808,7 +813,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 18, 15, 57, 5, 175, DateTimeKind.Local).AddTicks(3487), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 19, 14, 41, 2, 929, DateTimeKind.Local).AddTicks(884), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
@@ -861,14 +866,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 2, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 3, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 4, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 5, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
-                    { 6, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
-                    { 7, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
-                    { 8, new DateTime(2023, 10, 18, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
+                    { 1, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 2, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 3, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 4, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 5, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
+                    { 6, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
+                    { 7, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
+                    { 8, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
@@ -893,6 +898,31 @@ namespace BusinessObject.Migrations
                     { 1, 3, 2, false, 3 },
                     { 1, 5, 4, false, 2 },
                     { 2, 4, 3, false, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PLOs",
+                columns: new[] { "PLO_id", "PLO_description", "PLO_name", "curriculum_id" },
+                values: new object[,]
+                {
+                    { 1, "Thiết kế xử lý hình ảnh, xây dựng các sản phẩm đồ họa 2D", "PLO01", 1 },
+                    { 2, "Thiết kế theo các chủ đề: xây dựng thương hiệu, ấn phẩm quảng cáo, bao bì", "PLO02", 1 },
+                    { 3, "Biên tập, kịch bản và xử lý kỹ xảo phim, phim quảng cáo, phim quảng cáo 3D", "PLO03", 1 },
+                    { 4, "Thiết kếm xây dưng các sản phẩm đồ họa nội ngoại thất 2D&3D hoặc các sản phẩm đồ họa 3D", "PLO04", 1 },
+                    { 5, "Kiến thức về đường, hình, khối và một số vấn đề mỹ thuật liên quan; kiến thức cơ bản về đồ họa; kiến thức cơ sở về mỹ thuật, thẩm mỹ; vật liệu,...", "PLO05", 1 },
+                    { 6, "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng", "PLO06", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PLOMapping",
+                columns: new[] { "PLO_id", "subject_id" },
+                values: new object[,]
+                {
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 1, 4 },
+                    { 2, 3 },
+                    { 2, 4 }
                 });
 
             migrationBuilder.CreateIndex(
