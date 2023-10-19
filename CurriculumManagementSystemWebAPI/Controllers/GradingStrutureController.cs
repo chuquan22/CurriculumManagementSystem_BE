@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 List<GradingStruture> rs = repo.GetGradingStruture(syllabus_id);
-                var response = _mapper.Map<GradingStrutureResponse>(rs);
+                var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", response));
             }
             catch (Exception)

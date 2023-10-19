@@ -18,6 +18,7 @@ namespace DataAccess.DAO
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.AssessmentMethod.AssessmentType)
                 .Include(x => x.Syllabus)
+                .Include(x => x.GradingCLOs).ThenInclude( gc => gc.CLO)
                 .Where(c => c.syllabus_id == id)
                 .ToList();
             return rs;
