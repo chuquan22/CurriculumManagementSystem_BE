@@ -32,6 +32,20 @@ namespace DataAccess.DAO
             return gra;
         }
 
+        public GradingStruture GetGradingStrutureById(int id)
+        {
+            var oldGra = _cmsDbContext.GradingStruture
+                .Include(x => x.AssessmentMethod)
+                .Include(x => x.AssessmentMethod.AssessmentType)
+                .Include(x => x.Syllabus)
+                .Include(x => x.GradingCLOs)
+                .ThenInclude(gc => gc.CLO)
+                .Where(u => u.grading_id == id)
+                .FirstOrDefault();
+            return oldGra;
+
+        }
+
         public GradingStruture DeleteGradingStruture(int id)
         {
            

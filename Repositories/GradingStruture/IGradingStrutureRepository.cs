@@ -13,6 +13,6 @@ namespace Repositories.GradingStruture
         public string UpdateGradingStruture(BusinessObject.GradingStruture gra, List<int> listClo);
 
         public BusinessObject.GradingStruture DeleteGradingStruture(int id);
-
+        BusinessObject.GradingStruture GetGradingStrutureById(int id);
     }
 }

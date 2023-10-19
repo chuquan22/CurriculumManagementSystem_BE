@@ -41,6 +41,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+        [HttpGet("{id}")]
+        public ActionResult GetGradingStrutureById(int id)
+        {
+            GradingStruture rs = new GradingStruture();
+            try
+            {
+                rs = repo.GetGradingStrutureById(id);
+                var response = _mapper.Map<GradingStrutureResponse>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", response));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
         [HttpPost]
         public ActionResult CreateGradingStruture(GradingStrutureCreateRequest gra)
         {
