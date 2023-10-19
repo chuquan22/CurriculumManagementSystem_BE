@@ -100,7 +100,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.DeleteGradingStruture(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Sucessfully", true));
             }
             catch (Exception)
             {
