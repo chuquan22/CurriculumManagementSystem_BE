@@ -16,6 +16,11 @@ namespace Repositories.PLOMappings
             return pLOMappingDAO.CreatePLOMapping(ploMapping);
         }
 
+        public string DeletePLOMapping(PLOMapping ploMapping)
+        {
+            return pLOMappingDAO.DeletePLOMapping(ploMapping);
+        }
+
         public List<PLOMapping> GetPLOMappingsInCurriculum(int curriculumId)
         {
             return pLOMappingDAO.GetPLOMappingsInCurriculum(curriculumId);

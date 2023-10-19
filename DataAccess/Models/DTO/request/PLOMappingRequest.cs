@@ -8,6 +8,8 @@ namespace DataAccess.Models.DTO.request
 {
     public class PLOMappingRequest
     {
-
+        public int subject_id {  get; set; }
+        public string subject_name { get; set;}
+        public Dictionary<string, bool> PLOs { get; set; }
     }
 }
