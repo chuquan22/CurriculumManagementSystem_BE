@@ -45,7 +45,7 @@ namespace DataAccess.DAO
             return oldGra;
         }
 
-        public GradingStruture UpdateGradingStruture(GradingStruture gra)
+        public GradingStruture UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
             oldGra.grading_weight = gra.grading_weight;
@@ -56,6 +56,18 @@ namespace DataAccess.DAO
             oldGra.how_granding_structure = gra.how_granding_structure;
             oldGra.assessment_method_id = gra.assessment_method_id;
             oldGra.grading_note = gra.grading_note;
+            var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == gra.grading_id).ToList();
+            foreach (var cLo in listCLo)
+            {
+                _cmsDbContext.GradingCLO.Remove(cLo);
+            }
+            foreach (var cLo2 in list)
+            {
+                GradingCLO gr = new GradingCLO();
+                gr.grading_id = oldGra.grading_id;
+                gr.CLO_id = cLo2;
+                _cmsDbContext.GradingCLO.Add(gr);
+            }
             _cmsDbContext.GradingStruture.Update(oldGra);
             _cmsDbContext.SaveChanges();
             return oldGra;

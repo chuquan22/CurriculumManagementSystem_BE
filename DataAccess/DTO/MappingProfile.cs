@@ -56,10 +56,12 @@ namespace DataAccess.Models.DTO
      .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
      .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs.Where(gc => gc.grading_id == src.grading_id).Select(gc => gc.CLO.CLO_name).ToList()))
      .ReverseMap();
-         
-            //GradingStrutureRequest
+
+            //GradingStrutureRequest GradingUpdateRequest
             CreateMap<GradingStruture, GradingStrutureRequest>()
                 .ReverseMap();
+            CreateMap<GradingStruture, GradingUpdateRequest>()
+               .ReverseMap();
             //GradingCLO
             CreateMap<GradingCLO, GradingCLORequest>()
                 .ReverseMap();

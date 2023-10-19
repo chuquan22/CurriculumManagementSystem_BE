@@ -77,12 +77,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
         [HttpPut]
-        public ActionResult UpdateStruture(GradingStruture gra)
+        public ActionResult UpdateStruture(GradingStrutureUpdateRequest gra)
         {
-            GradingStruture rs = new GradingStruture();
+            GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
             try
             {
-                rs = repo.UpdateGradingStruture(gra);
+                rs = repo.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
