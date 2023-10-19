@@ -8,6 +8,8 @@ namespace DataAccess.Models.DTO.response
 {
     public class GradingStrutureResponse
     {
+        public int grading_id { get; set; }
+
         public int assessment_method_id { get; set; }
         public string assessment_component { get; set; }
         public string assessment_type { get; set; }

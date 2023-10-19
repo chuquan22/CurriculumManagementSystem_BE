@@ -33,7 +33,13 @@ namespace DataAccess.DAO
 
         public GradingStruture DeleteGradingStruture(int id)
         {
+           
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == id).FirstOrDefault();
+            var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == id).ToList();
+            foreach (var cLo in listCLo)
+            {
+                _cmsDbContext.GradingCLO.Remove(cLo);
+            }
             _cmsDbContext.GradingStruture.Remove(oldGra);
             _cmsDbContext.SaveChanges();
             return oldGra;
