@@ -41,8 +41,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Subject hasn't Prerequisite Subject!"));
             }
-            var preRequisiteResponse = _mapper.Map<List<PreRequisiteTypeResponse>>(preRequisite);
-            return Ok(new BaseResponse(false, "Get PreRequisite By Subject", preRequisite));
+            var preRequisiteResponse = _mapper.Map<List<PreRequisiteResponse>>(preRequisite);
+            return Ok(new BaseResponse(false, "Get PreRequisite By Subject", preRequisiteResponse));
         }
 
         // GET: api/GetPreRequisite/{subjectId}/{preSubjectId}
