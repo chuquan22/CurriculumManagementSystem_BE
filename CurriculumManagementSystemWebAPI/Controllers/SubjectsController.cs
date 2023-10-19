@@ -112,6 +112,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             subjectPreRequisitesRequest.SubjectRequest.is_active = true;
             var subject = _mapper.Map<Subject>(subjectPreRequisitesRequest.SubjectRequest);
+            if (CheckCodeExist(subject.subject_code))
+            {
+                return BadRequest(new BaseResponse(true, "Subject had Exsited!"));
+            }
             string createResult = _subjectRepository.CreateNewSubject(subject);
 
             if (!createResult.Equals("OK"))
@@ -141,6 +145,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Cannot Found this subject"));
             }
+           
             var subject = _subjectRepository.GetSubjectById(id);
             _mapper.Map(subjectPreRequisitesRequest.SubjectRequest, subject);
 
@@ -216,6 +221,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public bool CheckIdExist(int id)
         {
             if (_context.Subject.Find(id) == null) return false;
+            return true;
+        }
+
+        [NonAction]
+        public bool CheckCodeExist(string code)
+        {
+            if (_context.Subject.Where(x => x.subject_code.Equals(code)) == null) return false;
             return true;
         }
     }
