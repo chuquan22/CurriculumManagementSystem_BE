@@ -66,11 +66,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         rs2.CLO_id = g;
                         rs2.grading_id = rs.grading_id;
                         var rs3 = repo2.CreateGradingCLO(rs2);
-                    }
-                    
-                }
-               
-
+                    }                 
+                }              
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)

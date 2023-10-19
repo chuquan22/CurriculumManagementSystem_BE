@@ -21,14 +21,24 @@ namespace Repositories.Specialization
             return db.DeleteSpecialization(id);
         }
 
-        public BusinessObject.Specialization FindSpeById(int speId)
+        public BusinessObject.Specialization GetSpeById(int speId)
         {
             throw new NotImplementedException();
+        }
+
+        public List<BusinessObject.Specialization> GetListSpecialization(int page, int limit, string? txtSearch, string? major_id)
+        {
+            return db.GetSpecByPagging(page, limit, txtSearch, major_id);
         }
 
         public List<BusinessObject.Specialization> GetSpecialization()
         {
             return db.GetSpec();
+        }
+
+        public int GetTotalSpecialization(string? txtSearch, string? major_id)
+        {
+            return db.GetTotalSpecialization(txtSearch, major_id);
         }
 
         public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification)
