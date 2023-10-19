@@ -8,7 +8,6 @@ namespace DataAccess.Models.DTO.request
 {
     public class GradingCLORequest
     {
-        public int grading_id { get; set; }
-        public int CLO_id { get; set; }
+        public List<int> CLO_id { get; set; }
     }
 }

@@ -22,6 +22,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             _mapper = mapper;
             repo = new GradingStrutureRepository();
+            repo2 = new GradingCLOsRepository();
+
         }
         [HttpGet]
         public ActionResult GetGradingStruture(int syllabus_id)
@@ -42,22 +44,40 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult CreateGradingStruture(GradingStrutureCreateRequest gra)
         {
-            GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
+            if (gra == null)
+            {
+                return BadRequest("Invalid request. 'gra' is null.");
+            }
+
+            if (gra.gradingStruture == null || gra.gradingCLORequest == null)
+            {
+                return BadRequest("Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.");
+            }
+
             try
             {
+                GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
                 rs = repo.CreateGradingStruture(rs);
-             
-                var rs2 = _mapper.Map<GradingCLO>(gra.gradingCLORequest);
-                repo2.CreateGradingCLO(rs2);
-                
+                if(rs != null)
+                {
+                    foreach(var g in gra.gradingCLORequest.CLO_id)
+                    {
+                        GradingCLO rs2 = new GradingCLO();
+                        rs2.CLO_id = g;
+                        rs2.grading_id = rs.grading_id;
+                        var rs3 = repo2.CreateGradingCLO(rs2);
+                    }
+                    
+                }
+               
+
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return StatusCode(500, "An error occurred: " + ex.Message);
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPut]
         public ActionResult UpdateStruture(GradingStruture gra)
