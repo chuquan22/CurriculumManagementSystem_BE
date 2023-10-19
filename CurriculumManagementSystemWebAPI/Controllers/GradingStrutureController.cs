@@ -82,8 +82,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
             try
             {
-                rs = repo.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                string ressult = repo.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
+                return Ok(new BaseResponse(false, "Sucessfully", ressult));
             }
             catch (Exception)
             {

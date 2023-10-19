@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DataAccess.Models.Enums;
 
 namespace DataAccess.DAO
 {
@@ -45,7 +46,7 @@ namespace DataAccess.DAO
             return oldGra;
         }
 
-        public GradingStruture UpdateGradingStruture(GradingStruture gra, List<int> list)
+        public string UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
             oldGra.grading_weight = gra.grading_weight;
@@ -70,7 +71,7 @@ namespace DataAccess.DAO
             }
             _cmsDbContext.GradingStruture.Update(oldGra);
             _cmsDbContext.SaveChanges();
-            return oldGra;
+            return Result.updateSuccessfull.ToString();
         }
     }
 }
