@@ -30,7 +30,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/PLOs/GetListPLOs/5
         [HttpGet("GetListPLOs/{curriculumId}")]
-        public async Task<ActionResult<IEnumerable<PLOs>>> GetListPLOs(int curriculumId)
+        public async Task<ActionResult<IEnumerable<PLOs>>> GetListPLOsByCurriculum(int curriculumId)
         {
             var plos = _plosRepository.GetListPLOsByCurriculum(curriculumId);
             if (plos == null)

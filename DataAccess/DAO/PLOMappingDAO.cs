@@ -24,17 +24,26 @@ namespace DataAccess.DAO
                     (x, y) => y)
                 .ToList();
 
-            var ploMapping = _context.PLOMapping
-                .Join(plo,
-                    mapping => mapping.PLO_id,
-                    ploItem => ploItem.PLO_id,
-                    (mapping, ploItem) => new { Mapping = mapping, PLO = ploItem })
-                .Join(subject,
-                    joinResult => joinResult.Mapping.subject_id,
-                    subjectItem => subjectItem.subject_id,
-                    (joinResult, subjectItem) => joinResult.Mapping)
-                .ToList();
-            return ploMapping;
+            var listPloMapping = new List<PLOMapping>();
+            
+            foreach (var s in subject)
+            {
+                foreach (var p in plo)
+                {
+                    var ploMapping = GetPLOMappingExsit(s.subject_id, p.PLO_id);
+                    if(ploMapping != null)
+                    {
+                        listPloMapping.Add(ploMapping);
+                    }
+                }
+            }
+
+            return listPloMapping;
+        }
+
+        private PLOMapping GetPLOMappingExsit(int subjectId, int ploId)
+        {
+            return _context.PLOMapping?.Include(x => x.Subject).Include(x => x.PLOs).FirstOrDefault(e => e.subject_id == subjectId && e.PLO_id == ploId);
         }
 
         public string CreatePLOMapping(PLOMapping ploMapping)
