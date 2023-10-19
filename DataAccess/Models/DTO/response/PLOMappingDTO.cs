@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.response
 {
-    public class PLOMappingDTOResponse
+    public class PLOMappingDTO
     {
-        public int PLO_id { get; set; }
-        public string PLO_name { get; set; }
         public int subject_id { get; set; }
         public string subject_code { get; set; }
+        public Dictionary<string, bool> PLOs { get; set; }
     }
 }
