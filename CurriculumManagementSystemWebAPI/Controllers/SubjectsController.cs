@@ -227,7 +227,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [NonAction]
         public bool CheckCodeExist(string code)
         {
-            if (_context.Subject.Where(x => x.subject_code.Equals(code)) == null) return false;
+            var subject = _context.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
+            if (subject == null) return false;
             return true;
         }
     }
