@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.Excel
 {
-    internal class PLOMappingExcel
+    public class PLOMappingExcel
     {
+        [DisplayName("Subject Code")]
         public string subject_code { get; set; }
-        public Dictionary<string, bool> PLOs { get; set; }
+        [DisplayName("PLO")]
+        public List<string> PLO { get; set; }
     }
 }
