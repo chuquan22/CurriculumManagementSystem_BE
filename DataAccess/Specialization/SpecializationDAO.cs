@@ -68,22 +68,24 @@ namespace DataAccess.Specialization
             int rs = 0;
             using (var context = new CMSDbContext())
             {
-                rs = context.Specialization
-                                   .ToList()
-                                   .Count();
+                var query = context.Specialization.AsQueryable(); 
+
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
-                    rs = context.Specialization.Where(sy => sy.specialization_name.Contains(txtSearch)
-                    || sy.specialization_code.Contains(txtSearch)
-                    || sy.specialization_english_name.Contains(txtSearch)
-                    ).ToList().Count();
+                    query = query.Where(sy => sy.specialization_name.Contains(txtSearch)
+                        || sy.specialization_code.Contains(txtSearch)
+                        || sy.specialization_english_name.Contains(txtSearch));
                 }
+
                 if (!string.IsNullOrEmpty(majorId))
                 {
                     int m = int.Parse(majorId);
-                    rs = context.Specialization.Where(sy => sy.major_id == m).ToList().Count();
+                    query = query.Where(sy => sy.major_id == m);
                 }
+
+                rs = query.Count(); 
             }
+
             return rs;
         }
 
