@@ -45,5 +45,10 @@ namespace Repositories.Specialization
         {
             return db.UpdateSpecialization(specification);
         }
+
+        public bool IsCodeExist(string code)
+        {
+            return db.IsCodeExist(code);
+        }
     }
 }

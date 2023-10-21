@@ -80,9 +80,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
+                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
+                if (checkCodeExist != true)
+                {
+                    rs = repo.CreateSpecialization(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
 
-                rs = repo.CreateSpecialization(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
             }
             catch (Exception)
             {
@@ -97,9 +105,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
+                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
 
-                rs = repo.UpdateSpecialization(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                if (checkCodeExist != true)
+                {
+                    rs = repo.UpdateSpecialization(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
+
+                }
             }
             catch (Exception)
             {

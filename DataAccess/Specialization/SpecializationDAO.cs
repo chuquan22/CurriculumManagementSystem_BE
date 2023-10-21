@@ -62,6 +62,15 @@ namespace DataAccess.Specialization
             var spe = db.Specialization.Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
             return spe;
         }
+        public bool IsCodeExist(string code)
+        {
+            var spe = db.Specialization.Where(x => x.specialization_code.Equals(code)).ToList().FirstOrDefault();
+            if (spe != null)
+            {
+                return true;
+            }        
+            return false;
+        }
 
         public int GetTotalSpecialization(string txtSearch, string majorId)
         {
