@@ -63,6 +63,19 @@ namespace DataAccess.DAO
             }
         }
 
+        public Subject GetSubjectByCode(string code)
+        {
+            try
+            {
+                var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
+                return subject;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public string CreateSubject(Subject subject)
         {
             try

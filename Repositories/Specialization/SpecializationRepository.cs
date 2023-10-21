@@ -36,9 +36,15 @@ namespace Repositories.Specialization
             return db.GetSpec();
         }
 
+
+        public int GetSpecializationIdByCode(string spe_code)
+        {
+            return db.GetSpecializationIdByCode(spe_code);
+
         public int GetTotalSpecialization(string? txtSearch, string? major_id)
         {
             return db.GetTotalSpecialization(txtSearch, major_id);
+
         }
 
         public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification)

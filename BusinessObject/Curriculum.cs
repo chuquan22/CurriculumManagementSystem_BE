@@ -20,7 +20,7 @@ namespace BusinessObject
         public string curriculum_name { get; set; }
         [Required] 
         public string english_curriculum_name { get; set; }
-        [Required]
+        [AllowNull]
         public int total_semester { get; set; }
         [AllowNull]
         public string curriculum_description { get; set; }

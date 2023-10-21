@@ -11,6 +11,8 @@ namespace Repositories.PLOS
     {
         List<PLOs> GetListPLOsByCurriculum(int curriculumId);
         PLOs GetPLOsById(int id);
+        bool CheckPLONameExsit(string ploName, int curriId);
+        PLOs GetPLOsByName(string ploName);
         string CreatePLOs(PLOs plo);
         string UpdatePLOs(PLOs plo);
         string DeletePLOs(PLOs plo);
