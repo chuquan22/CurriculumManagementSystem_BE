@@ -70,6 +70,8 @@ namespace DataAccess.Models.DTO
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse>()
                 .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.PreSubject.subject_code))
+                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.PreSubject.english_subject_name))
                 .ReverseMap();
 
             CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
