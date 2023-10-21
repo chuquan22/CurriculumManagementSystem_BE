@@ -260,11 +260,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var curriculumSubject = new CurriculumSubject();
                             curriculumSubject.curriculum_id = curriculum_id;
                             var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                            if(subject == null)
+                            {
+                                return Ok(new BaseResponse(true, $"Subject {item.subject_code} Not Found"));
+                            }
                             curriculumSubject.subject_id = subject.subject_id;
                             curriculumSubject.term_no = item.term_no;
                             curriculumSubject.option = (item.option == null || item.option.Equals("")) ?  false :  true;
 
-                            _curriculumsubjectRepository.CreateCurriculumSubject(curriculumSubject);
+                            string createResult = _curriculumsubjectRepository.CreateCurriculumSubject(curriculumSubject);
+                            if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                            {
+                                return Ok(new BaseResponse(true, "Create Curriculum Subject Fail"));
+                            }
                         }
                         
                     }
