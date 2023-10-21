@@ -26,6 +26,27 @@ namespace DataAccess.Combos
             return rs;
         }
 
+        public bool DisableCombo(int id)
+        {
+            var combo = db.Combo.Where(x => x.combo_id == id).FirstOrDefault();
+            if(combo != null)
+            {
+                if (combo.is_active = false)
+                {
+                    combo.is_active = true;
+                }
+                else
+                {
+                    combo.is_active = false;
+                }
+                return true;
+            }
+            else
+            {
+                return false;   
+            }
+        }
+
         public Combo FindComboById(int id)
         {
             var combo = new Combo();

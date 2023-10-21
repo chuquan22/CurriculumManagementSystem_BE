@@ -26,9 +26,15 @@ namespace Repositories.GradingStruture
            return db.GetGradingStruture(id);
         }
 
-        public BusinessObject.GradingStruture UpdateGradingStruture(BusinessObject.GradingStruture gra)
+        public BusinessObject.GradingStruture GetGradingStrutureById(int id)
         {
-            return db.UpdateGradingStruture(gra);
+            return db.GetGradingStrutureById(id);
         }
+
+        public string UpdateGradingStruture(BusinessObject.GradingStruture gra, List<int> listClo)
+        {
+            return db.UpdateGradingStruture(gra, listClo);
+        }
+
     }
 }

@@ -13,7 +13,7 @@ namespace DataAccess.Models.DTO.response
         public string subject_code { get; set; }
         public string subject_name { get; set; }
         public string decisionNo { get; set; }
-        public int isActive { get; set; }
+        public bool isActive { get; set; }
         public DateTime isApproved { get; set; }
 
     }

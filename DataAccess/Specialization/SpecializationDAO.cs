@@ -28,6 +28,75 @@ namespace DataAccess.Specialization
             }
             return list;
         }
+        public List<BusinessObject.Specialization> GetSpecByPagging(int page, int limit, string txtSearch, string majorId)
+        {
+            List<BusinessObject.Specialization> rs = new List<BusinessObject.Specialization>();
+            try
+            {
+                rs = db.Specialization.ToList();
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                    rs = rs.Where(sy => sy.specialization_name.Contains(txtSearch)
+                    || sy.specialization_code.Contains(txtSearch)
+                    || sy.specialization_english_name.Contains(txtSearch)
+                    ).ToList();
+                }
+                if (!string.IsNullOrEmpty(majorId))
+                {
+                    int m = int.Parse(majorId);
+
+                    rs = rs.Where(sy => sy.major_id == m).ToList();
+                }
+                rs = rs
+                .Skip((page - 1) * limit).Take(limit).ToList();
+            }
+            catch (Exception)
+            {
+
+            }
+            return rs;
+        }
+
+        public BusinessObject.Specialization GetSpeById(int speId)
+        {
+            var spe = db.Specialization.Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
+            return spe;
+        }
+        public bool IsCodeExist(string code)
+        {
+            var spe = db.Specialization.Where(x => x.specialization_code.Equals(code)).ToList().FirstOrDefault();
+            if (spe != null)
+            {
+                return true;
+            }        
+            return false;
+        }
+
+        public int GetTotalSpecialization(string txtSearch, string majorId)
+        {
+            int rs = 0;
+            using (var context = new CMSDbContext())
+            {
+                var query = context.Specialization.AsQueryable(); 
+
+                if (!string.IsNullOrEmpty(txtSearch))
+                {
+                    query = query.Where(sy => sy.specialization_name.Contains(txtSearch)
+                        || sy.specialization_code.Contains(txtSearch)
+                        || sy.specialization_english_name.Contains(txtSearch));
+                }
+
+                if (!string.IsNullOrEmpty(majorId))
+                {
+                    int m = int.Parse(majorId);
+                    query = query.Where(sy => sy.major_id == m);
+                }
+
+                rs = query.Count(); 
+            }
+
+            return rs;
+        }
 
         public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization spe)
         {

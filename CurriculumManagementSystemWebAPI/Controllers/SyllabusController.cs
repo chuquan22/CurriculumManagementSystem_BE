@@ -25,13 +25,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new SyllabusRepository();
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page,int limit, string? txtSearch)
+        public ActionResult GetListSyllabus(int page,int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
             {             
-                int limit2 = repo.GetTotalSyllabus(txtSearch);
-                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch);
+                int limit2 = repo.GetTotalSyllabus(txtSearch, subjectCode);
+                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
                 return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,limit2, result)));
             }
