@@ -11,6 +11,12 @@ namespace Repositories.PLOS
     public class PLOsRepository : IPLOsRepository
     {
         private PLOsDAO _plosDAO = new PLOsDAO();
+
+        public bool CheckPLONameExsit(string ploName, int curriId)
+        {
+            return _plosDAO.CheckPLONameExsit(ploName, curriId);
+        }
+
         public string CreatePLOs(PLOs plo)
         {
             return _plosDAO.CreatePLOs(plo);

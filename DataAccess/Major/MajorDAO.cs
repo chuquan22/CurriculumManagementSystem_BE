@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Major
 {
@@ -45,6 +47,11 @@ namespace DataAccess.Major
         {
             BusinessObject.Major major = db.Major.Where(x => x.major_id == id).FirstOrDefault();
             return major;
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorCode(string code)
+        {
+            return db.Major?.FirstOrDefault(e => e.major_code.Equals(code));
         }
     }
 }

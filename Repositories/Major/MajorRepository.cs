@@ -16,6 +16,11 @@ namespace Repositories.Major
             return db.AddMajor(major);
         }
 
+        public BusinessObject.Major CheckMajorbyMajorCode(string code)
+        {
+            return db.CheckMajorbyMajorCode(code);
+        }
+
         public void DeleteMajor(int id)
         {
             db.DeleteMajor(id);

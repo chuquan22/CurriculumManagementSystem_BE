@@ -18,5 +18,6 @@ namespace Repositories.Specialization
 
         public BusinessObject.Specialization FindSpeById(int speId);
 
+        int GetSpecializationIdByCode(string spe_code);
     }
 }

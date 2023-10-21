@@ -98,5 +98,17 @@ namespace DataAccess.Specialization
             }
             return spe;
         }
+
+
+        public int GetSpecializationIdByCode(string spe_code)
+        {
+            int id = 0;
+            var specialization = db.Specialization.FirstOrDefault(x => x.specialization_code.Equals(spe_code));
+            if(specialization != null)
+            {
+                id = specialization.specialization_id;
+            }
+            return id;
+        }
     }
 }

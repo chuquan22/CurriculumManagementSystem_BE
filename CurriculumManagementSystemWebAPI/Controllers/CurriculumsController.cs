@@ -18,6 +18,11 @@ using MiniExcelLibs;
 using DataAccess.Models.DTO.Excel;
 using System.IO;
 using MiniExcelLibs.OpenXml;
+using Repositories.Batchs;
+using Repositories.Major;
+using Newtonsoft.Json.Linq;
+using Repositories.Specialization;
+using Repositories.PLOS;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -29,7 +34,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly ICurriculumSubjectRepository _curriculumsubjectRepository = new CurriculumSubjectRepository();
-
+        private readonly IBatchRepository _batchRepository = new BatchRepository();
+        private readonly IMajorRepository _majorRepository = new MajorRepository();
+        private readonly ISpecializationRepository _specializationRepository = new SpecializationRepository();
+        private readonly IPLOsRepository _ploRepository = new PLOsRepository();
+        private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
@@ -186,6 +195,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Curriculum Successfull!"));
         }
 
+        // Post: Import Curriculum by Excel File
         [HttpPost("ImportCurriculum")]
         public async Task<IActionResult> ImportCurriculum(IFormFile fileCurriculum)
         {
@@ -200,96 +210,161 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 //Get SheetName
                 var sheetNames = MiniExcel.GetSheetNames(filePath);
+                string result = "";
                 List<object> rs = new List<object>();
-
+                var curriculum_id = 0;
                 for (int i = 0; i < sheetNames.Count; i++)
                 {
+                    
                     if (i == 0)
                     {
                         var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                        var curriculum = new Curriculum();
-                        foreach (var r in row)
+                        var curriculumExcel = GetCurriculumInExcel(row);
+                        var curriculum = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
+                        
+                        if(curriculum != null)
                         {
-                            if(r.Title == null) { }
-                            else if(r.Title.Equals("Curriculum Name"))
-                            {
-                                curriculum.curriculum_name = r.Details;
-                            }else if(r.Title.Equals("Curriculum Code"))
-                            {
-                                curriculum.curriculum_code = r.Details;
-                            }else if(r.Title.Equals("English Curriculum Name"))
-                            {
-                                curriculum.english_curriculum_name = r.Details;
-                            }
-                            else if (r.Title.Equals("Curriculum Description"))
-                            {
-                                curriculum.curriculum_description = r.Details;
-                            }
-                            else if (r.Title.Equals("Decision No."))
-                            {
-                                curriculum.decision_No = r.Details;
-                            }
-                            else if (r.Title.Equals("Approved date"))
-                            {
-                                curriculum.approved_date = DateTime.Parse(r.Details);
-                            }
-                            curriculum.batch_id = 1;
-                            curriculum.specialization_id = 3;
-                            curriculum.total_semester = 7;
-                            curriculum.is_active = true;
-
+                            return Ok(new BaseResponse(true, "Curriculum Exsited"));
                         }
-                        var value = new
+                        _curriculumRepository.CreateCurriculum(curriculumExcel);
+                        if(curriculumExcel.curriculum_id == 0)
                         {
-                            Curriculum = curriculum,
-                        };
-                        rs.Add(value);
+                            return Ok(new BaseResponse(true, "Create Curriculum Fail"));
+                        }
+                        curriculum_id = curriculumExcel.curriculum_id;
                     }
                     else if (i == 1)
                     {
                         var row = MiniExcel.Query<PLOExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                        var value = new
+                        
+                        foreach (var item in row)
                         {
-                            PLO = row,
-                        };
-                        rs.Add(value);
+                            var plo = new PLOs();
+                            plo.curriculum_id = curriculum_id;
+                            plo.PLO_name = item.PLO_name;
+                            plo.PLO_description = item.PLO_description;
+                            
+                            if(!_ploRepository.CheckPLONameExsit(plo.PLO_name, plo.curriculum_id))
+                            {
+                                _ploRepository.CreatePLOs(plo);
+                            }
+                           
+                        }
                     }
                     else if (i == 2)
                     {
-                        
+
                         var row = MiniExcel.Query<CurriculumSubjectExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                        var value = new
+                        foreach (var item in row)
                         {
-                            CurriculumSubject = row,
-                        };
-                        rs.Add(value);
-                    }
-                    else if (i == 3)
-                    {
+                            var curriculumSubject = new CurriculumSubject();
+                            curriculumSubject.curriculum_id = curriculum_id;
+                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                            curriculumSubject.subject_id = subject.subject_id;
+                            curriculumSubject.term_no = item.term_no;
+                            curriculumSubject.option = (item.option == null || item.option.Equals("")) ?  false :  true;
+
+                            _curriculumsubjectRepository.CreateCurriculumSubject(curriculumSubject);
+                        }
                         
-                        var row = MiniExcel.Query(filePath, sheetName: sheetNames[i], useHeaderRow: true, startCell: "A2", excelType: ExcelType.XLSX).Cast<IDictionary<string, object>>();
-                        var value = new
-                        {
-                            PLOMapping = row,
-                        };
-                       
-                        rs.Add(row);
                     }
+                    //else if (i == 3)
+                    //{
+
+                    //    var row = MiniExcel.Query(filePath, sheetName: sheetNames[i], useHeaderRow: true, startCell: "A2", excelType: ExcelType.XLSX);
+                    //    var value = new
+                    //    {
+                    //        PLOMapping = row,
+                    //    };
+
+                    //    rs.Add(row);
+                    //}
                 }
 
-
-
-                return Ok(new BaseResponse(true, "Success", rs));
+                return Ok(new BaseResponse(false, "Success", rs));
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(false, "Error: " + ex.Message, null));
+                return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException, null));
             }
         }
 
+        private Curriculum GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
+        {
+            var curriculum = new Curriculum();
+            var major = new Major();
+            foreach (var r in row)
+            {
+                // if title is null -> nothing
+                if (r.Title == null) { }
+                // if Title equal Curriculum Name -> set curriculum_name = value in coloum detail
+                else if (r.Title.Equals("Curriculum Name"))
+                {
+                    curriculum.curriculum_name = r.Details;
+                }
+                // if Title equal Curriculum Code -> set curriculum_code = value in coloum detail
+                else if (r.Title.Equals("Curriculum Code"))
+                {
+                    curriculum.curriculum_code = r.Details;
+                    // Split string ex: GD-GD-19.4
+                    string[] parts = r.Details.Split('-');
+                    // get part have index 2 in array string ex: 19.4
+                    string batch_name = parts[2];
+                    // get batch_id by batch_name
+                    curriculum.batch_id = _batchRepository.GetBatchIDByName(batch_name);
+                    //
+                    string specializationCode = parts[1];
+                    curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(specializationCode);
+                }
+                // if Title equal English Curriculum Name -> set english_curriculum_name = value in coloum detail
+                else if (r.Title.Equals("English Curriculum Name"))
+                {
+                    curriculum.english_curriculum_name = r.Details;
+                }
+                // if Title equal Curriculum Description -> set curriculum_description = value in coloum detail
+                else if (r.Title.Equals("Curriculum Description"))
+                {
+                    curriculum.curriculum_description = r.Details;
+                }
+                // if Title equal Decision No. -> set decision_No = value in coloum detail
+                else if (r.Title.Equals("Decision No."))
+                {
+                    curriculum.decision_No = r.Details;
+                }
+                // if Title equal Approved date -> set approved_date = value in coloum detail
+                else if (r.Title.Equals("Approved date"))
+                {
+                    curriculum.approved_date = DateTime.Parse(r.Details);
+                }else if(r.Title.Equals("Vocational Name"))
+                {
+                    major.major_name = r.Details;
+                }
+                else if (r.Title.Equals("English Vocational Name"))
+                {
+                    major.major_english_name = r.Details;
+                }
+                else if(r.Title.Equals("Vocational Code"))
+                {
+                    // set major_code = value in coloum detail
+                    major.major_code = r.Details;
+                }
+            }
+            curriculum.total_semester = 7;
+            curriculum.is_active = true;
 
+            major.is_active = true;
+            var majors = _majorRepository.CheckMajorbyMajorCode(major.major_code);
+            // if major not exsited -> add major
+            if (majors == null)
+            {
+                _majorRepository.AddMajor(major);
+            }
+            return curriculum;
+        }
 
-        private bool CurriculumExists(int id)
+        
+
+            private bool CurriculumExists(int id)
         {
             return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
@@ -303,6 +378,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             return (_context.CurriculumSubject?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
+
+
+     
 
     }
 }

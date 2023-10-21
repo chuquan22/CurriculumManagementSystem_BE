@@ -15,5 +15,10 @@ namespace Repositories.Batchs
         {
             return _batchDAO.GetAllBatch(); 
         }
+
+        public int GetBatchIDByName(string batchName)
+        {
+            return _batchDAO.GetBatchIDByName(batchName);
+        }
     }
 }
