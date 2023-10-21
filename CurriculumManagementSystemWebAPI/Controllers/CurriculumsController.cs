@@ -262,7 +262,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
                             if(subject == null)
                             {
-                                return Ok(new BaseResponse(true, $"Subject {item.subject_code} Not Found"));
+                                //return Ok(new BaseResponse(true, $"Subject {item.subject_code} Not Found"));
+                                var subjectCreate = new Subject()
+                                {
+                                    subject_code = item.subject_code,
+                                    subject_name = item.subject_name,
+                                    english_subject_name = item.english_subject_name,
+                                    credit = item.credit,
+                                    total_time = 70,
+                                    total_time_class = 30,
+                                    is_active = true,
+                                    assessment_method_id = 1,
+                                    learning_method_id = 1,
+                                    exam_total = 3,
+                                    
+                                };
+                                _subjectRepository.CreateNewSubject(subjectCreate);
+                                subject = subjectCreate;
                             }
                             curriculumSubject.subject_id = subject.subject_id;
                             curriculumSubject.term_no = item.term_no;
