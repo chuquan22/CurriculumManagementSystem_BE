@@ -24,7 +24,7 @@ namespace Repositories.Subjects
 
         public Subject GetSubjectByCode(string code)
         {
-            throw new NotImplementedException();
+            return subjectDAO.GetSubjectByCode(code);
         }
 
         public List<Subject> GetSubjectByCurriculum(int curriculumId)

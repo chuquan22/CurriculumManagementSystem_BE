@@ -19,6 +19,28 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
+        public int GetBatchIDByName(string batchName)
+        {
+            
+            var batch = _context.Batch.Where(x => x.batch_name.Equals(batchName)).FirstOrDefault();
+            var batch_id = 0;
+            if(batch == null)
+            {
+                batch_id = CreateBatch(new Batch { batch_name = batchName });
+            }
+            else
+            {
+                batch_id = batch.batch_id;
+            }
+            return batch_id;
+        }
+
+        private int CreateBatch(Batch batch)
+        {
+            _context.Batch.Add(batch);
+            _context.SaveChanges();
+            return batch.batch_id;
+        }
 
     }
 }

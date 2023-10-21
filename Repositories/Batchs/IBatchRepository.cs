@@ -10,5 +10,6 @@ namespace Repositories.Batchs
     public interface IBatchRepository
     {
         List<Batch> GetAllBatch();
+        int GetBatchIDByName(string batchName);
     }
 }
