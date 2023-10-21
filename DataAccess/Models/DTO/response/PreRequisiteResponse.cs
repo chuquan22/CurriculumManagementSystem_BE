@@ -14,6 +14,7 @@ namespace DataAccess.Models.DTO.response
         public int pre_subject_id { get; set; }
         public string subject_code { get; set; }
         public string subject_name { get; set; }
+        public int pre_requisite_type_id { get; set; }
         public string pre_requisite_type_name { get; set; }
     }
 }
