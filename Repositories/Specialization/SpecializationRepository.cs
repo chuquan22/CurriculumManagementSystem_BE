@@ -23,7 +23,7 @@ namespace Repositories.Specialization
 
         public BusinessObject.Specialization FindSpeById(int speId)
         {
-            throw new NotImplementedException();
+            return db.FindSpeById(speId);
         }
 
         public List<BusinessObject.Specialization> GetSpecialization()

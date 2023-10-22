@@ -88,6 +88,7 @@ namespace DataAccess.DAO
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
+                .Include(x => x.CurriculumSubjects)
                 .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
         }

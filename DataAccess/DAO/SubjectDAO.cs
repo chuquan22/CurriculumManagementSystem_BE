@@ -76,6 +76,18 @@ namespace DataAccess.DAO
             }
         }
 
+        public List<Subject> GetListSubjectByTermNo(int term_no, int curriculumId)
+        {
+            var listSubject = new List<Subject>();
+            var curriculumSubject = CMSDbContext.CurriculumSubject.Where(x => x.term_no == term_no && x.curriculum_id == curriculumId).ToList();
+            foreach (var item in curriculumSubject)
+            {
+                var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == item.subject_id);
+                listSubject.Add(subject);
+            }
+            return listSubject;
+        }
+
         public string CreateSubject(Subject subject)
         {
             try
