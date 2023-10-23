@@ -51,6 +51,11 @@ namespace DataAccess.Models.DTO
             //AssessmentType
             CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
             //Session
+            CreateMap<BusinessObject.Session, SessionRequest>().ReverseMap();
+            CreateMap<BusinessObject.Session, SessionUpdate>().ReverseMap();
+
+            CreateMap<BusinessObject.SessionCLO, SessionCLOsRequest>().ReverseMap();
+
             CreateMap<BusinessObject.Session, SessionResponse>()
              .ForMember(dest => dest.listCLOs, opt => opt.MapFrom(src => src.SessionCLO
              .Where(gc => gc.session_id == src.schedule_id)
