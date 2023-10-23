@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.request
 {
-    public class SessionRequest
+    public class SessionUpdate
     {
+        public int schedule_id { get; set; }
+  
         public string schedule_content { get; set; }
         public int syllabus_id { get; set; }
 
@@ -21,7 +23,6 @@ namespace DataAccess.Models.DTO.request
         public string? student_material_link { get; set; }
         public string? lecturer_material_link { get; set; }
         public int class_session_type_id { get; set; }
-        //check
         public int remote_learning { get; set; }
         public int ass_defense { get; set; }
         public int eos_exam { get; set; }

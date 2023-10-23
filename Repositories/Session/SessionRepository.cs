@@ -1,4 +1,5 @@
 ﻿using DataAccess.DAO;
+using DataAccess.Models.DTO.request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.Session
 {
+
     public class SessionRepository : ISessionRepository
     {
         private readonly SessionDAO  db = new SessionDAO();
@@ -16,7 +18,7 @@ namespace Repositories.Session
             return db.CreateSession(session);
         }
 
-        public BusinessObject.Session DeleteSession(int id)
+        public string DeleteSession(int id)
         {
             return db.DeleteSession(id);
         }
@@ -32,10 +34,9 @@ namespace Repositories.Session
 
         }
 
-        public BusinessObject.Session UpdateSession(BusinessObject.Session session)
+        public string UpdateSession(BusinessObject.Session session, List<SessionCLOsRequest> listClos)
         {
-            return db.UpdateSession(session);
-
+            return db.UpdateSession(session,listClos);
         }
     }
 }

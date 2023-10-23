@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccess.Models.DTO.request;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,9 @@ namespace Repositories.Session
         public List<BusinessObject.Session> GetSession(int id);
         public BusinessObject.Session CreateSession(BusinessObject.Session session);
 
-        public BusinessObject.Session UpdateSession(BusinessObject.Session session);
+        public string UpdateSession(BusinessObject.Session session, List<SessionCLOsRequest> listClos);
 
-        public BusinessObject.Session DeleteSession(int id);
+        public string DeleteSession(int id);
 
         public BusinessObject.Session GetSessionById(int id);
 
