@@ -208,7 +208,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             string templatePath = "Curriculum.xlsx";
             var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
-            var specialization = _specializationRepository.FindSpeById(curriculum.specialization_id);
+            var specialization = _specializationRepository.GetSpeById(curriculum.specialization_id);
             var major = _majorRepository.FindMajorById(curriculum.Specialization.major_id);
             var comboList = _comboRepository.GetListCombo(specialization.specialization_id);
             var subject = _subjectRepository.GetSubjectByCurriculum(curriculumId);
