@@ -26,7 +26,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetSession(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var result = _mapper.Map < List<SessionResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)
             {
@@ -52,7 +53,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPut]
-        public ActionResult UpdateMaterial(int syllabus_id)
+        public ActionResult UpdateSesion(int syllabus_id)
         {
             Session rs = new Session();
             try
@@ -74,6 +75,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                // rs = repo.GetSession(syllabus_id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpGet("{id}")]
+        public ActionResult GetSessionById(int id)
+        {
+            Session rs = new Session();
+            try
+            {
+                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

@@ -14,6 +14,13 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int grading_id { get; set; }
         [Required]
+        public string type_of_questions { get; set; }
+        [Required]
+        public string number_of_questions { get; set; }
+
+        public int session_no { get; set; }
+        public string references { get; set; }
+        [Required]
         public decimal grading_weight { get; set; }
         [Required]
         public int grading_part { get; set; }
@@ -31,6 +38,7 @@ namespace BusinessObject
         public int assessment_method_id { get; set; }
         [AllowNull]
         public string? grading_note { get; set; }
+
         
         public virtual Syllabus Syllabus { get; set;}
         public virtual AssessmentMethod AssessmentMethod { get; set; }

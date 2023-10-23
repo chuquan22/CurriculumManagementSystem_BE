@@ -46,11 +46,43 @@ namespace DataAccess.Models.DTO
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
             //Specialization
-            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
+            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap(); 
             CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
+            //AssessmentType
+            CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
+            //Session
+            CreateMap<BusinessObject.Session, SessionResponse>()
+             .ForMember(dest => dest.listCLOs, opt => opt.MapFrom(src => src.SessionCLO
+             .Where(gc => gc.session_id == src.schedule_id)
+             .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })
+             .ToList()))
+                .ReverseMap();
+            //GradingStruture
+            CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
+     .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))
+     .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
+     .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
+     .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs
+    .Where(gc => gc.grading_id == src.grading_id)
+    .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })
+    .ToList()))
+     .ReverseMap();
+
+            //GradingStrutureRequest GradingUpdateRequest
+            CreateMap<GradingStruture, GradingStrutureRequest>()
+                .ReverseMap();
+            CreateMap<GradingStruture, GradingUpdateRequest>()
+               .ReverseMap();
+            //GradingCLO
+            CreateMap<GradingCLO, GradingCLORequest>()
+                .ReverseMap();
+            CreateMap<GradingCLORequest, GradingCLO>()
+              .ReverseMap();
             //PreRequisite
             CreateMap<PreRequisite, PreRequisiteResponse>()
                 .ForMember(dest => dest.pre_requisite_type_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.PreSubject.subject_code))
+                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.PreSubject.english_subject_name))
                 .ReverseMap();
 
             CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();

@@ -27,6 +27,11 @@ namespace Repositories.CLOS
             return db.GetCLOs(id);
         }
 
+        public CLO GetCLOsById(int id)
+        {
+           return db.GetCLOsById(id);
+        }
+
         public CLO UpdateCLOs(CLO clo)
         {
             return db.UpdateCOLs(clo);

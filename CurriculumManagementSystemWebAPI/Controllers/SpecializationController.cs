@@ -24,12 +24,47 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         
         [HttpGet]
-        public ActionResult GetListSpecialization()
+        public ActionResult GetListAllSpecialization()
         {
             List<Specialization> rs = new List<Specialization>();
             try
             {
                 rs = repo.GetSpecialization();
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "Get List Major False", null));
+        }
+        [HttpGet("GetListPagging")]
+        public ActionResult GetListSpecialization(int page, int limit, string? txtSearch,string? major_id)
+        {
+            List<Specialization> rs = new List<Specialization>();
+            try
+            {
+                int limit2 = repo.GetTotalSpecialization(txtSearch, major_id);
+                rs = repo.GetListSpecialization(page,limit,txtSearch,major_id);
+                var result = _mapper.Map<List<Specialization>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", new BaseListResponse(page,limit2,rs)));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "Get List Major False", null));
+        }
+        [HttpGet("{id}")]
+        public ActionResult GetSpecialization(int id)
+        {
+            Specialization rs = new Specialization();
+            try
+            {
+                
+                rs = repo.GetSpeById(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -45,9 +80,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
+                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
+                if (checkCodeExist != true)
+                {
+                    rs = repo.CreateSpecialization(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
 
-                rs = repo.UpdateSpecialization(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
             }
             catch (Exception)
             {
@@ -62,9 +105,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
+                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
 
-                rs = repo.UpdateSpecialization(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                if (checkCodeExist != true)
+                {
+                    rs = repo.UpdateSpecialization(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
+
+                }
             }
             catch (Exception)
             {

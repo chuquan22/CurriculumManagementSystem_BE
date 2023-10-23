@@ -18,7 +18,7 @@ namespace BusinessObject
         [Required]
         public string program { get; set; }
         [Required]
-        public int decision_No { get; set; }
+        public string decision_No { get; set; }
         [Required]
         public int degree_level { get; set; }
         [Required]
@@ -38,7 +38,7 @@ namespace BusinessObject
         [Required]
         public DateTime approved_date { get; set; }
         [Required]
-        public int syllabus_status { get; set; }
+        public bool syllabus_status { get; set; }
         [Required]
         public bool syllabus_approved { get; set; }
 

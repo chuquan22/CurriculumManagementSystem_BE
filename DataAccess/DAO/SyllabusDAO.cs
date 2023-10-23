@@ -11,7 +11,7 @@ namespace DataAccess.DAO
 {
     public class SyllabusDAO
     {
-        public List<Syllabus> GetListSyllabus(int page, int limit, string txtSearch)
+        public List<Syllabus> GetListSyllabus(int page, int limit, string txtSearch, string subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             using (var context = new CMSDbContext())
@@ -19,7 +19,7 @@ namespace DataAccess.DAO
                 rs = context.Syllabus
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
-                                   .Where(s => s.syllabus_status == 0)
+                                   .Where(s => s.syllabus_status == true)
                                    .ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -28,6 +28,10 @@ namespace DataAccess.DAO
                     || sy.Subject.english_subject_name.Contains(txtSearch)
 
                     ).ToList();                
+                }
+                if (!string.IsNullOrEmpty(subjectCode))
+                {
+                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList();
                 }
                 rs = rs
                 .Skip((page - 1)* limit).Take(limit).ToList();
@@ -49,7 +53,7 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public int GetTotalSyllabus(string txtSearch)
+        public int GetTotalSyllabus(string txtSearch, string subjectCode)
         {
             int rs = 0;
             using (var context = new CMSDbContext())
@@ -64,6 +68,10 @@ namespace DataAccess.DAO
                     || sy.Subject.subject_code.Contains(txtSearch)
                     || sy.Subject.english_subject_name.Contains(txtSearch)
                     ).ToList().Count();
+                }
+                if (!string.IsNullOrEmpty(subjectCode))
+                {
+                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList().Count();
                 }
             }
             return rs;

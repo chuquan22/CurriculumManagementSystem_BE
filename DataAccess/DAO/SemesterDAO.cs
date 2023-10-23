@@ -23,6 +23,5 @@ namespace DataAccess.DAO
             return semester;
         }
 
-        //public string CreateSemester
     }
 }

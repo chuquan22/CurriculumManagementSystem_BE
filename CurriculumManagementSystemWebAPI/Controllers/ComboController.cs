@@ -53,6 +53,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+        [HttpPost("DisableCombo")]
+        public ActionResult DisableCombo(int id)
+        {
+            try
+            {
+              
+                bool rs = repo.DisableCombo(id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
         [HttpPut]
         public ActionResult UpdateCombo(ComboUpdateRequest cb)
         {

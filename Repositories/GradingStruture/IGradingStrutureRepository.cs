@@ -10,9 +10,9 @@ namespace Repositories.GradingStruture
     {
         public List<BusinessObject.GradingStruture> GetGradingStruture(int id);
         public BusinessObject.GradingStruture CreateGradingStruture(BusinessObject.GradingStruture gra);
-        public BusinessObject.GradingStruture UpdateGradingStruture(BusinessObject.GradingStruture gra);
+        public string UpdateGradingStruture(BusinessObject.GradingStruture gra, List<int> listClo);
 
         public BusinessObject.GradingStruture DeleteGradingStruture(int id);
-
+        BusinessObject.GradingStruture GetGradingStrutureById(int id);
     }
 }

@@ -32,14 +32,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetPreRequisiteBySubject/{subjectId}")]
         public async Task<ActionResult<IEnumerable<PreRequisite>>> GetPreRequisiteBySubject(int subjectId)
         {
-            if (_context.PreRequisite == null)
-            {
-                return NotFound();
-            }
+           
             var preRequisite = _preRequisiteRepository.GetPreRequisitesBySubject(subjectId);
             if (preRequisite.Count == 0)
             {
-                return NotFound(new BaseResponse(true, "Subject hasn't Prerequisite Subject!"));
+                return Ok(new BaseResponse(false, "Subject hasn't Prerequisite Subject!", preRequisite));
             }
             var preRequisiteResponse = _mapper.Map<List<PreRequisiteResponse>>(preRequisite);
             return Ok(new BaseResponse(false, "Get PreRequisite By Subject", preRequisiteResponse));

@@ -13,9 +13,9 @@ namespace Repositories.Syllabus
     {
         public SyllabusDAO db = new SyllabusDAO();
 
-        public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch)
+        public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch, string subjectCode)
         {
-            return db.GetListSyllabus(start, end, txtSearch);
+            return db.GetListSyllabus(start, end, txtSearch, subjectCode);
         }
 
         public List<PreRequisite> GetPre(int id)
@@ -28,9 +28,9 @@ namespace Repositories.Syllabus
            return db.GetSyllabusById(id);
         }
 
-        public int GetTotalSyllabus(string txtSearch)
+        public int GetTotalSyllabus(string txtSearch, string subjectCode)
         {
-            return db.GetTotalSyllabus(txtSearch);
+            return db.GetTotalSyllabus(txtSearch, subjectCode);
         }
     }
 }
