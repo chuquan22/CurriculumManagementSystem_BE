@@ -23,12 +23,16 @@ namespace Repositories.Specialization
 
         public BusinessObject.Specialization GetSpeById(int speId)
         {
-            return db.GetSpeById(speId);
+
+            return db.FindSpeById(speId);
+
+           // return db.GetSpeById(speId);
         }
 
         public List<BusinessObject.Specialization> GetListSpecialization(int page, int limit, string? txtSearch, string? major_id)
         {
             return db.GetSpecByPagging(page, limit, txtSearch, major_id);
+
         }
 
         public List<BusinessObject.Specialization> GetSpecialization()

@@ -25,6 +25,8 @@ using Repositories.Specialization;
 using Repositories.PLOS;
 using OfficeOpenXml;
 using Repositories.PLOMappings;
+using Microsoft.AspNetCore.Routing.Template;
+using Repositories.Combos;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -42,6 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IPLOsRepository _ploRepository = new PLOsRepository();
         private readonly IPLOMappingRepository _ploMappingRepository = new PLOMappingRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
+        private readonly IComboRepository _comboRepository = new ComboRepository();
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
@@ -198,6 +201,90 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Curriculum Successfull!"));
         }
 
+
+        // Post: Import Curriculum by Excel File
+        [HttpPost("ExportCurriculum/{curriculumId}")]
+        public async Task<IActionResult> ExportCurriculum(int curriculumId)
+        {
+            string templatePath = "Curriculum.xlsx";
+            var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
+            var specialization = _specializationRepository.FindSpeById(curriculum.specialization_id);
+            var major = _majorRepository.FindMajorById(curriculum.Specialization.major_id);
+            var comboList = _comboRepository.GetListCombo(specialization.specialization_id);
+            var subject = _subjectRepository.GetSubjectByCurriculum(curriculumId);
+            var subject1 = _subjectRepository.GetListSubjectByTermNo(1, curriculumId);
+            var subject2 = _subjectRepository.GetListSubjectByTermNo(2, curriculumId);
+            var subject3 = _subjectRepository.GetListSubjectByTermNo(3, curriculumId);
+            var subject4 = _subjectRepository.GetListSubjectByTermNo(4, curriculumId);
+            var subject5 = _subjectRepository.GetListSubjectByTermNo(5, curriculumId);
+            var subject6 = _subjectRepository.GetListSubjectByTermNo(6, curriculumId);
+
+            var comboExcel = "";
+            var curriculumExcel = "";
+            for (int i = 1; i <= comboList.Count; i++)
+            {
+                comboExcel += $"CN{i}: " + comboList.Skip(i-1).Select(x => x.combo_name).FirstOrDefault();
+                //curriculumExcel += $"CN{i}: " + curriculum.skip
+                if(i < comboList.Count)
+                {
+                    comboExcel += "; ";
+                }
+            }
+
+            var subjectN1 = GetArraySubject(subject1, subject2, subject3);
+            var subjectN2 = GetArraySubject(subject4, subject5, subject6);
+
+            Dictionary<string, object> value = new Dictionary<string, object>()
+            {
+                ["decision_No"] = curriculum.decision_No,
+                ["approved_date"] = $"Ngày {curriculum.approved_date.Day} tháng {curriculum.approved_date.Month} năm {curriculum.approved_date.Year}",
+                ["major_name"] = major.major_name,
+                ["major_english_name"] = major.major_english_name,
+                ["major_code"] = major.major_code,
+                ["specialization_name"] = specialization.specialization_name,
+                ["specialization_english_name"] = specialization.specialization_english_name,
+
+                ["curriculum_code"] = "CN1:" + curriculum.curriculum_code,
+
+                ["Combo"] = comboExcel,
+
+                ["SubjectN1"] = subjectN1,
+                ["SubjectN2"] = subjectN2,
+
+                ["total_credit"] = subject1.Sum(x => x.credit),
+                ["total_time"] = subject1.Sum(x => x.total_time),
+
+                ["total_credit_2"] = subject2.Sum(x => x.credit),
+                ["total_time_2"] = subject2.Sum(x => x.total_time),
+
+                ["total_credit_3"] = subject3.Sum(x => x.credit),
+                ["total_time_3"] = subject3.Sum(x => x.total_time),
+
+                ["total_credit_4"] = subject4.Sum(x => x.credit),
+                ["total_time_4"] = subject4.Sum(x => x.total_time),
+
+                ["total_credit_5"] = subject5.Sum(x => x.credit),
+                ["total_time_5"] = subject5.Sum(x => x.total_time),
+
+                ["total_credit_6"] = subject6.Sum(x => x.credit),
+                ["total_time_6"] = subject6.Sum(x => x.total_time),
+
+                ["total_all_credit"] = subject.Sum(x => x.credit),
+                ["total_all_time"] = subject.Sum(x => x.total_time),
+                ["total_subject"] = subject.Count
+
+            };
+
+            MemoryStream memoryStream = new MemoryStream();
+            memoryStream.SaveAsByTemplate(templatePath, value);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            return new FileStreamResult(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                FileDownloadName = "Curriculum.xlsx"
+            };
+        }
+
+
         // Post: Import Curriculum by Excel File
         [HttpPost("ImportCurriculum")]
         public async Task<IActionResult> ImportCurriculum(IFormFile fileCurriculum)
@@ -207,13 +294,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 List<object> rs = new List<object>();
 
                 var filePath = Path.GetTempFileName();
-
+                var curriculum_id = 0;
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileCurriculum.CopyToAsync(stream);
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    var curriculum_id = 0;
+                    
                     for (int i = 0; i < sheetNames.Count; i++)
                     {
 
@@ -225,12 +312,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                             if (curriculum != null)
                             {
-                                return Ok(new BaseResponse(true, "Curriculum Exsited"));
+                                return BadRequest(new BaseResponse(true, "Curriculum Exsited"));
                             }
-                            _curriculumRepository.CreateCurriculum(curriculumExcel);
+                            string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
                             if (curriculumExcel.curriculum_id == 0)
                             {
-                                return Ok(new BaseResponse(true, "Create Curriculum Fail"));
+                                return BadRequest(new BaseResponse(true, createResult));
                             }
                             curriculum_id = curriculumExcel.curriculum_id;
                         }
@@ -337,13 +424,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
 
 
-                    return Ok(new BaseResponse(false, "Success", rs));
+                    return Ok(new BaseResponse(false, "Success", curriculum_id));
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException, null));
             }
+        }
+
+        private string ValidationDataExcel(IEnumerable<CurriculumExcel> row)
+        {
+            return null;
         }
 
         private Curriculum GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
@@ -420,6 +512,50 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return curriculum;
         }
 
+        private SubjectExcel[] GetArraySubject(List<Subject> listSubject, List<Subject> listSubject1, List<Subject> listSubject2)
+        {
+            int maxIndex = Math.Max(listSubject.Count, Math.Max(listSubject1.Count, listSubject2.Count));
+            var ArraySubject = new SubjectExcel[maxIndex];
+
+            for (int i = 0; i < maxIndex; i++)
+            {
+                var subjectExcel = new SubjectExcel()
+                {
+                    No = i + 1,
+                };
+
+                if (i < listSubject.Count)
+                {
+                    subjectExcel.subject_code = listSubject[i].subject_code;
+                    subjectExcel.subject_name = listSubject[i].subject_name;
+                    subjectExcel.english_subject_name = listSubject[i].english_subject_name;
+                    subjectExcel.credit = (listSubject[i].credit != 0) ? listSubject[i].credit.ToString() : "";
+                    subjectExcel.total_time = (listSubject[i].total_time != 0) ? listSubject[i].total_time.ToString() : "";
+                }
+
+                if (i < listSubject1.Count)
+                {
+                    subjectExcel.subject_code_2 = listSubject1[i].subject_code;
+                    subjectExcel.subject_name_2 = listSubject1[i].subject_name;
+                    subjectExcel.english_subject_name_2 = listSubject1[i].english_subject_name;
+                    subjectExcel.credit_2 = (listSubject1[i].credit != 0) ? listSubject1[i].credit.ToString() : "";
+                    subjectExcel.total_time_2 = (listSubject1[i].total_time != 0) ? listSubject1[i].total_time.ToString() : "";
+                }
+
+                if (i < listSubject2.Count)
+                {
+                    subjectExcel.subject_code_3 = listSubject2[i].subject_code;
+                    subjectExcel.subject_name_3 = listSubject2[i].subject_name;
+                    subjectExcel.english_subject_name_3 = listSubject2[i].english_subject_name;
+                    subjectExcel.credit_3 = (listSubject2[i].credit != 0) ? listSubject2[i].credit.ToString() : "";
+                    subjectExcel.total_time_3 = (listSubject2[i].total_time != 0) ? listSubject2[i].total_time.ToString() : "";
+                }
+
+                ArraySubject[i] = subjectExcel;
+            }
+
+            return ArraySubject;
+        }
 
 
         private bool CurriculumExists(int id)

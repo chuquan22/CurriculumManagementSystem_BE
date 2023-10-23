@@ -98,6 +98,13 @@ namespace DataAccess.Specialization
             return rs;
         }
 
+        public BusinessObject.Specialization FindSpeById(int id)
+        {
+            var specialization = new BusinessObject.Specialization();
+            specialization = db.Specialization.FirstOrDefault(x => x.specialization_id == id);
+            return specialization;
+        }
+
         public BusinessObject.Specialization CreateSpecialization(BusinessObject.Specialization spe)
         {
             try
