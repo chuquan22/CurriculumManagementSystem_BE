@@ -50,7 +50,13 @@ namespace DataAccess.Models.DTO
             CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
             //AssessmentType
             CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
-
+            //Session
+            CreateMap<BusinessObject.Session, SessionResponse>()
+             .ForMember(dest => dest.listCLOs, opt => opt.MapFrom(src => src.SessionCLO
+             .Where(gc => gc.session_id == src.schedule_id)
+             .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })
+             .ToList()))
+                .ReverseMap();
             //GradingStruture
             CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
      .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))

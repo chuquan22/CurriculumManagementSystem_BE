@@ -26,7 +26,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetSession(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var result = _mapper.Map < List<SessionResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)
             {

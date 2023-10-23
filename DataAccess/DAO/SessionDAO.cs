@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace DataAccess.DAO
         public List<Session> GetSession(int id)
         {
             var rs = _cmsDbContext.Session
+                .Include(x => x.SessionCLO).ThenInclude(g => g.CLO)
                 .Where(c => c.syllabus_id == id)
                 .ToList();
             return rs;
