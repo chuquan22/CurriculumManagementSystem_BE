@@ -40,6 +40,7 @@ namespace Repositories.Specialization
         public int GetSpecializationIdByCode(string spe_code)
         {
             return db.GetSpecializationIdByCode(spe_code);
+        } 
 
         public int GetTotalSpecialization(string? txtSearch, string? major_id)
         {
