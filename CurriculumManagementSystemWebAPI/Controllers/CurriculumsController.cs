@@ -294,13 +294,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 List<object> rs = new List<object>();
 
                 var filePath = Path.GetTempFileName();
-
+                var curriculum_id = 0;
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileCurriculum.CopyToAsync(stream);
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    var curriculum_id = 0;
+                    
                     for (int i = 0; i < sheetNames.Count; i++)
                     {
 
@@ -312,12 +312,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                             if (curriculum != null)
                             {
-                                return Ok(new BaseResponse(true, "Curriculum Exsited"));
+                                return BadRequest(new BaseResponse(true, "Curriculum Exsited"));
                             }
-                            _curriculumRepository.CreateCurriculum(curriculumExcel);
+                            string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
                             if (curriculumExcel.curriculum_id == 0)
                             {
-                                return Ok(new BaseResponse(true, "Create Curriculum Fail"));
+                                return BadRequest(new BaseResponse(true, createResult));
                             }
                             curriculum_id = curriculumExcel.curriculum_id;
                         }
@@ -424,13 +424,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
 
 
-                    return Ok(new BaseResponse(false, "Success", rs));
+                    return Ok(new BaseResponse(false, "Success", curriculum_id));
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException, null));
             }
+        }
+
+        private string ValidationDataExcel(IEnumerable<CurriculumExcel> row)
+        {
+            return null;
         }
 
         private Curriculum GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
