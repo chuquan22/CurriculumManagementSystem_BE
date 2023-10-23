@@ -509,38 +509,49 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private SubjectExcel[] GetArraySubject(List<Subject> listSubject, List<Subject> listSubject1, List<Subject> listSubject2)
         {
-            int maxIndex = (listSubject.Count > listSubject1.Count) ? (listSubject.Count > listSubject2.Count ? listSubject.Count : listSubject2.Count) : (listSubject1.Count > listSubject2.Count ? listSubject1.Count : listSubject2.Count);
+            int maxIndex = Math.Max(listSubject.Count, Math.Max(listSubject1.Count, listSubject2.Count));
             var ArraySubject = new SubjectExcel[maxIndex];
+
             for (int i = 0; i < maxIndex; i++)
             {
                 var subjectExcel = new SubjectExcel()
                 {
-                    No = i+1,
-                    
-                    subject_code = listSubject.Skip(i).Select(x => x.subject_code).FirstOrDefault() ?? "",
-                    subject_name = listSubject.Skip(i).Select(x => x.subject_name).FirstOrDefault() ?? "",
-                    english_subject_name = listSubject.Skip(i).Select(x => x.english_subject_name).FirstOrDefault() ?? "",
-                    credit = (listSubject.Skip(i).Select(x => x.credit).FirstOrDefault() != 0) ? listSubject.Skip(i).Select(x => x.credit).FirstOrDefault().ToString() : "",
-                    total_time = (listSubject.Skip(i).Select(x => x.total_time).FirstOrDefault() != 0) ? listSubject.Skip(i).Select(x => x.total_time).FirstOrDefault().ToString() : "",
-
-
-                    subject_code_2 = listSubject1.Skip(i).Select(x => x.subject_code).FirstOrDefault() ?? "",
-                    subject_name_2 = listSubject1.Skip(i).Select(x => x.subject_name).FirstOrDefault() ?? "",
-                    english_subject_name_2 = listSubject1.Skip(i).Select(x => x.english_subject_name).FirstOrDefault() ?? "",
-                    credit_2 = (listSubject1.Skip(i).FirstOrDefault().credit != 0) ? listSubject1.Skip(i).FirstOrDefault().credit.ToString() : "",
-                    total_time_2 = (listSubject1.Skip(i).FirstOrDefault().total_time != 0) ? listSubject1.Skip(i).FirstOrDefault().total_time.ToString() : "",
-
-                    subject_code_3 = listSubject2.Skip(i).Select(x => x.subject_code).FirstOrDefault() ?? "",
-                    subject_name_3 = listSubject2.Skip(i).Select(x => x.subject_name).FirstOrDefault() ?? "",
-                    english_subject_name_3 = listSubject2.Skip(i).Select(x => x.english_subject_name).FirstOrDefault() ?? "",
-                    credit_3 = (listSubject2.Skip(i).Select(x => x.credit).FirstOrDefault() != 0) ? listSubject2.Skip(i).Select(x => x.credit).FirstOrDefault().ToString() : "",
-                    total_time_3 = (listSubject2.Skip(i).Select(x => x.total_time).FirstOrDefault() != 0) ? listSubject2.Skip(i).Select(x => x.total_time).FirstOrDefault().ToString() : "",
-
+                    No = i + 1,
                 };
+
+                if (i < listSubject.Count)
+                {
+                    subjectExcel.subject_code = listSubject[i].subject_code;
+                    subjectExcel.subject_name = listSubject[i].subject_name;
+                    subjectExcel.english_subject_name = listSubject[i].english_subject_name;
+                    subjectExcel.credit = (listSubject[i].credit != 0) ? listSubject[i].credit.ToString() : "";
+                    subjectExcel.total_time = (listSubject[i].total_time != 0) ? listSubject[i].total_time.ToString() : "";
+                }
+
+                if (i < listSubject1.Count)
+                {
+                    subjectExcel.subject_code_2 = listSubject1[i].subject_code;
+                    subjectExcel.subject_name_2 = listSubject1[i].subject_name;
+                    subjectExcel.english_subject_name_2 = listSubject1[i].english_subject_name;
+                    subjectExcel.credit_2 = (listSubject1[i].credit != 0) ? listSubject1[i].credit.ToString() : "";
+                    subjectExcel.total_time_2 = (listSubject1[i].total_time != 0) ? listSubject1[i].total_time.ToString() : "";
+                }
+
+                if (i < listSubject2.Count)
+                {
+                    subjectExcel.subject_code_3 = listSubject2[i].subject_code;
+                    subjectExcel.subject_name_3 = listSubject2[i].subject_name;
+                    subjectExcel.english_subject_name_3 = listSubject2[i].english_subject_name;
+                    subjectExcel.credit_3 = (listSubject2[i].credit != 0) ? listSubject2[i].credit.ToString() : "";
+                    subjectExcel.total_time_3 = (listSubject2[i].total_time != 0) ? listSubject2[i].total_time.ToString() : "";
+                }
+
                 ArraySubject[i] = subjectExcel;
             }
+
             return ArraySubject;
         }
+
 
         private bool CurriculumExists(int id)
         {
