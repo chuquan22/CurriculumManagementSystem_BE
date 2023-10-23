@@ -14,6 +14,10 @@ namespace BusinessObject
         [ForeignKey("Syllabus")]
         public int syllabus_id { get; set; }
         [Required]
+
+        public int session_No { get; set; }
+        [Required]
+
         public string ITU { get; set; }
         [Required]
         public long schedule_student_task { get; set; }

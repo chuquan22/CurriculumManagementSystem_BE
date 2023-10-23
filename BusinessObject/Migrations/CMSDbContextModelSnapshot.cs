@@ -345,7 +345,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -359,7 +359,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -373,7 +373,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 3,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -387,7 +387,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 4,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -401,7 +401,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 5,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM",
                             curriculum_description = "",
@@ -415,7 +415,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 6,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -429,7 +429,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 7,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SWP",
                             curriculum_description = "",
@@ -443,7 +443,7 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 8,
-                            approved_date = new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -875,6 +875,20 @@ namespace BusinessObject.Migrations
                             PLO_description = "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng",
                             PLO_name = "PLO06",
                             curriculum_id = 1
+                        },
+                        new
+                        {
+                            PLO_id = 7,
+                            PLO_description = "Giao tiếp, thuyết trình tự tin trước đám đông",
+                            PLO_name = "PLO07",
+                            curriculum_id = 2
+                        },
+                        new
+                        {
+                            PLO_id = 8,
+                            PLO_description = "Kĩ năng làm việc nhóm",
+                            PLO_name = "PLO08",
+                            curriculum_id = 2
                         });
                 });
 
@@ -1048,7 +1062,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 19, 14, 41, 2, 929, DateTimeKind.Local).AddTicks(884),
+                            semester_end_date = new DateTime(2023, 10, 23, 14, 42, 17, 494, DateTimeKind.Local).AddTicks(562),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -1149,6 +1163,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<long>("schedule_student_task")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("session_No")
+                        .HasColumnType("int");
 
                     b.Property<string>("student_material")
                         .IsRequired()
@@ -1435,8 +1452,9 @@ namespace BusinessObject.Migrations
                     b.Property<DateTime>("approved_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("decision_No")
-                        .HasColumnType("int");
+                    b.Property<string>("decision_No")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("degree_level")
                         .HasColumnType("int");

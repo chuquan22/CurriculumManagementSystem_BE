@@ -18,7 +18,7 @@ namespace BusinessObject
         [Required]
         public string program { get; set; }
         [Required]
-        public int decision_No { get; set; }
+        public string decision_No { get; set; }
         [Required]
         public int degree_level { get; set; }
         [Required]

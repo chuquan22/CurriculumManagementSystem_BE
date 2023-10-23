@@ -381,7 +381,7 @@ namespace BusinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     document_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     program = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    decision_No = table.Column<int>(type: "int", nullable: false),
+                    decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     degree_level = table.Column<int>(type: "int", nullable: false),
                     syllabus_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     subject_id = table.Column<int>(type: "int", nullable: false),
@@ -653,6 +653,7 @@ namespace BusinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     schedule_content = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
+                    session_No = table.Column<int>(type: "int", nullable: false),
                     ITU = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     schedule_student_task = table.Column<long>(type: "bigint", nullable: false),
                     student_material = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -813,7 +814,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 19, 14, 41, 2, 929, DateTimeKind.Local).AddTicks(884), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 23, 14, 42, 17, 494, DateTimeKind.Local).AddTicks(562), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
@@ -866,14 +867,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 2, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 3, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 4, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 5, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
-                    { 6, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
-                    { 7, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
-                    { 8, new DateTime(2023, 10, 19, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
+                    { 1, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 2, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 3, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 4, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 5, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
+                    { 6, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
+                    { 7, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
+                    { 8, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
@@ -910,7 +911,9 @@ namespace BusinessObject.Migrations
                     { 3, "Biên tập, kịch bản và xử lý kỹ xảo phim, phim quảng cáo, phim quảng cáo 3D", "PLO03", 1 },
                     { 4, "Thiết kếm xây dưng các sản phẩm đồ họa nội ngoại thất 2D&3D hoặc các sản phẩm đồ họa 3D", "PLO04", 1 },
                     { 5, "Kiến thức về đường, hình, khối và một số vấn đề mỹ thuật liên quan; kiến thức cơ bản về đồ họa; kiến thức cơ sở về mỹ thuật, thẩm mỹ; vật liệu,...", "PLO05", 1 },
-                    { 6, "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng", "PLO06", 1 }
+                    { 6, "Giao tiếp, tìm hiểu, nắm bắt nhu cầu của khách hàng, tư vấn cho khách hàng, làm được sản phẩm theo yêu cầu của khách hàng", "PLO06", 1 },
+                    { 7, "Giao tiếp, thuyết trình tự tin trước đám đông", "PLO07", 2 },
+                    { 8, "Kĩ năng làm việc nhóm", "PLO08", 2 }
                 });
 
             migrationBuilder.InsertData(

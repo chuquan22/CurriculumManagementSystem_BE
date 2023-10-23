@@ -54,7 +54,10 @@ namespace DataAccess.Models.DTO
      .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))
      .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
      .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
-     .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs.Where(gc => gc.grading_id == src.grading_id).Select(gc => gc.CLO.CLO_name).ToList()))
+     .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs
+    .Where(gc => gc.grading_id == src.grading_id)
+    .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })
+    .ToList()))
      .ReverseMap();
 
             //GradingStrutureRequest GradingUpdateRequest

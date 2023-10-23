@@ -29,7 +29,7 @@ namespace DataAccess.Models.DTO.response
         public int session_no { get; set; }
         public string references { get; set; }
         public int syllabus_id { get; set; }
-        public List<string> listCLO { get; set; }
+        public List<ListCLOsResponse> listCLO { get; set; }
 
     }
 }
