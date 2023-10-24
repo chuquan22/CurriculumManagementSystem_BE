@@ -46,7 +46,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
+                query = query.Where(x => x.english_curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
             }
 
             if (majorId.HasValue)
