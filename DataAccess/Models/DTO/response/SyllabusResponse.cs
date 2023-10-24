@@ -12,9 +12,10 @@ namespace DataAccess.Models.DTO.response
         public string syllabus_name { get; set; }
         public string subject_code { get; set; }
         public string subject_name { get; set; }
-        public string decisionNo { get; set; }
-        public bool isActive { get; set; }
-        public DateTime isApproved { get; set; }
+        public string decision_No { get; set; }
+        public bool syllabus_status { get; set; }
+        public bool syllabus_approved { get; set; }
+        public DateTime approved_date { get; set; }
 
     }
 }
