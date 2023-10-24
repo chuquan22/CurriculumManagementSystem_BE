@@ -164,7 +164,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
             curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id);
-            curriculum.total_semester = 7;
 
             if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
@@ -278,10 +277,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             MemoryStream memoryStream = new MemoryStream();
             memoryStream.SaveAsByTemplate(templatePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
-            return new FileStreamResult(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
-                FileDownloadName = "Curriculum.xlsx"
-            };
+            byte[] fileContents = memoryStream.ToArray();
+            return Ok(fileContents);
         }
 
 

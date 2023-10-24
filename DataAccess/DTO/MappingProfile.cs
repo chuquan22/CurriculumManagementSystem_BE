@@ -118,6 +118,8 @@ namespace DataAccess.Models.DTO
             CreateMap<CurriculumSubject, CurriculumSubjectResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
               .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
+              .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))
+              .ForMember(dest => dest.total_time, opt => opt.MapFrom(src => src.Subject.total_time))
               .ForMember(dest => dest.specialization_id, opt => opt.MapFrom(src => src.Curriculum.specialization_id))
               .ReverseMap();
             CreateMap<CurriculumSubject, CurriculumSubjectRequest>()

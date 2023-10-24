@@ -23,6 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
+        private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
 
         public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
@@ -67,15 +68,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetSubjectByCurriculum/{curriculumId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectByCurriculum(int curriculumId)
         {
-            
             var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumId);
-           
+            var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
+
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
 
-            for (int semesterNo = 1; semesterNo <= 7; semesterNo++)
+            for (int semesterNo = 1; semesterNo <= curriculum.total_semester; semesterNo++)
             {
                 var newCurriculumSubjectDTO = new CurriculumSubjectDTO
                 {
+                    total_all_credit = 0,
+                    total_all_time = 0,
                     semester_no = semesterNo.ToString(),
                     list = new List<CurriculumSubjectResponse>()
                 };
@@ -85,7 +88,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
-                if(curriSubject.combo_id == null)
+                if (curriSubject.combo_id == null)
                 {
                     curriSubject.combo_id = 0;
                 }
@@ -95,18 +98,31 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
                 }
 
-                foreach(var curriSubjectResponse  in curriculumSubjectResponse)
+                foreach (var curriSubjectResponse in curriculumSubjectResponse)
                 {
-                    if(curriSubject.term_no.ToString() == curriSubjectResponse.semester_no)
+                    if (curriSubject.term_no.ToString() == curriSubjectResponse.semester_no)
                     {
                         curriSubjectResponse.list.Add(curriculumSubjectMapper);
                     }
+                    curriSubjectResponse.total_all_credit = curriSubjectResponse.list.Sum(x => x.credit);
+                    curriSubjectResponse.total_all_time = curriSubjectResponse.list.Sum(x => x.total_time);
                 }
-                
+            }
+
+            // Sắp xếp danh sách bên trong curriculumSubjectResponse
+            foreach (var curriSubjectResponse in curriculumSubjectResponse)
+            {
+                curriSubjectResponse.list = curriSubjectResponse.list
+                    .OrderBy(x => x.combo_id == 0 ? 0 : 1)
+                    .ThenBy(x => x.option == false ? 0 : 1)
+                    .ToList();
+
+               
             }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
+
 
         // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
         [HttpGet("GetSubjectNotExsitCurriculum/{curriculumId}")]

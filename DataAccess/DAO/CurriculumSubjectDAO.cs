@@ -29,10 +29,10 @@ namespace DataAccess.DAO
                 .Include(x => x.Curriculum)
                 .Include(x => x.Subject)
                 .Where(x => x.curriculum_id == curriculumId)
-                .OrderBy(x => x.term_no)
                 .ToList();
             return listCurriculumSubject;
         }
+
 
         public List<Subject> GetListSubject(int curriculumId)
         {
