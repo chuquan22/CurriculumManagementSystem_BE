@@ -280,8 +280,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.SaveAsByTemplate(templatePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
-            //return Ok(fileContents);
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
+            return Ok(fileContents);
+            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
         }
 
 
@@ -370,6 +370,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
                                 curriculumSubject.subject_id = subject.subject_id;
                                 curriculumSubject.term_no = item.term_no;
+                                if (item.combo_code != null)
+                                {
+                                    var combo = _comboRepository.FindComboByCode(item.combo_code);
+                                    curriculumSubject.combo_id = combo.combo_id;
+                                }
                                 curriculumSubject.option = (item.option == null || item.option.Equals("")) ? false : true;
 
                                 string createResult = _curriculumsubjectRepository.CreateCurriculumSubject(curriculumSubject);
@@ -387,7 +392,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var Row = MiniExcel.QueryAsDataTable(filePath, sheetName: sheetNames[i], startCell: "A2", excelType: ExcelType.XLSX);
                             using (var package = new ExcelPackage(stream))
                             {
-                                var worksheet = package.Workbook.Worksheets[3]; // Lấy trang tính nào đó
+                                var worksheet = package.Workbook.Worksheets[3]; 
 
                                 for (int row = 1; row <= worksheet.Dimension.End.Row; row++)
                                 {

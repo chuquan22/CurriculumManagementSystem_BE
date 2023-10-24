@@ -21,6 +21,8 @@ namespace DataAccess.Models.DTO.Excel
         public int credit { get; set; }
         [DisplayName("Options")]
         public string option { get; set; }
+        [DisplayName("ComboCode")]
+        public string combo_code { get; set; }
 
     }
 }
