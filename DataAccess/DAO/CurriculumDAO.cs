@@ -31,6 +31,8 @@ namespace DataAccess.DAO
 
             var curriculumList = query
                 .AsEnumerable()
+                .OrderByDescending(x => x.Batch.batch_name)  // Sắp xếp theo Batch Name giảm dần
+                .ThenBy(x => x.curriculum_code)
                 .ToList();
             return curriculumList;
         }
@@ -53,16 +55,18 @@ namespace DataAccess.DAO
             }
 
             var curriculumList = query
+                .OrderByDescending(x => x.Batch.batch_name)  // Sắp xếp theo Batch Name giảm dần
+                .ThenBy(x => x.curriculum_code)  // Nếu Batch Name trùng nhau, sắp xếp theo Curriculum Code
                 .Skip((page - 1) * limit)
                 .Take(limit)
-                .AsEnumerable()
                 .ToList();
 
             return curriculumList;
         }
 
 
-      
+
+
 
         public int GetTotalCredit(int curriculumId)
         {
