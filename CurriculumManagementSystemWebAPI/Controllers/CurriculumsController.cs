@@ -384,7 +384,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var Row = MiniExcel.QueryAsDataTable(filePath, sheetName: sheetNames[i], startCell: "A2", excelType: ExcelType.XLSX);
                             using (var package = new ExcelPackage(stream))
                             {
-                                var worksheet = package.Workbook.Worksheets[3]; // Lấy trang tính nào đó
+                                var worksheet = package.Workbook.Worksheets[3];
 
                                 for (int row = 1; row <= worksheet.Dimension.End.Row; row++)
                                 {

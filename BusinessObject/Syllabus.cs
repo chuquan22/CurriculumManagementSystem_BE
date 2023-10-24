@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +20,7 @@ namespace BusinessObject
         [Required]
         public string decision_No { get; set; }
         [Required]
-        public int degree_level { get; set; }
+        public string degree_level { get; set; }
         [Required]
         public string syllabus_description { get; set; }
         [ForeignKey("Subject")]
@@ -35,8 +35,8 @@ namespace BusinessObject
         public decimal min_GPA_to_pass { get; set; }
         [Required]
         public int scoring_scale { get; set; }
-        [Required]
-        public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
         [Required]
         public bool syllabus_status { get; set; }
         [Required]

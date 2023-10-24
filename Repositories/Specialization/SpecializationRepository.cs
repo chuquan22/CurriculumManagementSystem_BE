@@ -24,7 +24,7 @@ namespace Repositories.Specialization
         public BusinessObject.Specialization GetSpeById(int speId)
         {
 
-            return db.FindSpeById(speId);
+            return db.GetSpeById(speId);
 
            // return db.GetSpeById(speId);
         }

@@ -17,6 +17,7 @@ namespace Repositories.CLOS
         public BusinessObject.CLO DeleteCLOs(int id);
 
         public BusinessObject.CLO GetCLOsById(int id);
+        public BusinessObject.CLO GetCLOByName(string name);
 
     }
 }

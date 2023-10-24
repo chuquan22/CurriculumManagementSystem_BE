@@ -20,13 +20,13 @@ namespace BusinessObject
 
         public string ITU { get; set; }
         [Required]
-        public long schedule_student_task { get; set; }
+        public string schedule_student_task { get; set; }
         [Required]
         public string student_material { get; set; }
         [Required]
         public string lecturer_material { get; set;}
         [Required]
-        public long schedule_lecturer_task { get; set; }
+        public string schedule_lecturer_task { get; set; }
         [AllowNull]
         public string? student_material_link { get; set; }
         [AllowNull]
