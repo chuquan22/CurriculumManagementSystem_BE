@@ -24,6 +24,8 @@ namespace DataAccess.Models.DTO.response
         public string? student_material_link { get; set; }
         public string? lecturer_material_link { get; set; }
         public int class_session_type_id { get; set; }
+        public string class_session_type_name { get; set; }
+
         //check
         public int remote_learning { get; set; }
 

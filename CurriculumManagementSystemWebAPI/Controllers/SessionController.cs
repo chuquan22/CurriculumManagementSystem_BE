@@ -4,6 +4,7 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.ClassSessionTypes;
 using Repositories.Session;
 using Repositories.SessionCLOs;
 
@@ -16,12 +17,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private ISessionRepository repo;
         private ISessionCLOsRepository repo2;
+        private IClassSessionTypeRepository repo3;
 
         public SessionController(IMapper mapper)
         {
             _mapper = mapper;
             repo = new SessionRepository();
             repo2 = new SessionCLOsRepository();
+            repo3 = new ClassSessionTypeRepository();
         }
         [HttpGet]
         public ActionResult GetSession(int syllabus_id)
@@ -30,8 +33,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetSession(syllabus_id);
-                var result = _mapper.Map < List<SessionResponse>>(rs);
+                List<SessionResponse> result = _mapper.Map < List<SessionResponse>>(rs);
+                foreach (SessionResponse rs2 in result)
+                {
+                    var class_session_type = repo3.GetClassSessionType(rs2.class_session_type_id);
+                    rs2.class_session_type_name = class_session_type.class_session_type_name;
+                }
                 return Ok(new BaseResponse(false, "Sucessfully", result));
+
             }
             catch (Exception)
             {
@@ -71,6 +80,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         [HttpPut]
         public ActionResult UpdateSesion(SessionUpdateRequest request)
+        {
+            try
+            {
+                Session rs = _mapper.Map<Session>(request.session);
+
+                //   rs = repo.GetSession(syllabus_id);
+                string result = repo.UpdateSession(rs, request.session_clo);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPatch]
+        public ActionResult UpdatePatchSesion(SessionUpdateRequest request)
         {
             try
             {
