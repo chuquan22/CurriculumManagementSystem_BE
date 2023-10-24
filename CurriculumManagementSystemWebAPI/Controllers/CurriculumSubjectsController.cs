@@ -139,18 +139,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             // POST: api/CurriculumSubjects/CreateCurriculumSubject
             [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] CurriculumSubjectRequest curriculumSubjectRequest)
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
         {
-           
-            var curriculumSubject = _mapper.Map<CurriculumSubject>(curriculumSubjectRequest);
-
-            string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
-
-            if(createResult != Result.createSuccessfull.ToString())
+            foreach (var subject in curriculumSubjectRequest)
             {
-                return BadRequest(new BaseResponse(true, createResult));
-            }
+                var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
 
+                string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
+
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createResult));
+                }
+            }
             return Ok(new BaseResponse(false, "Create success!", curriculumSubjectRequest));
         }
 

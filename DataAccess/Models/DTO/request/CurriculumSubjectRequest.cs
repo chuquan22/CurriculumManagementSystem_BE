@@ -12,6 +12,8 @@ namespace DataAccess.Models.DTO.request
         public int curriculum_id { get; set; }
         [Required]
         public int term_no { get; set; }
+        [Required]
+        public string subject_group { get; set; }
         [AllowNull]
         public int? combo_id { get; set; }
         [Required]

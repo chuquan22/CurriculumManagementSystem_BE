@@ -85,15 +85,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Curriculums/Pagination/5/6/search/1
         [HttpGet("Pagination/{page}/{limit}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, [FromQuery] string? txtSearch, [FromQuery] int? specializationId)
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, [FromQuery] string? txtSearch, [FromQuery] int? majorId)
         {
-            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, txtSearch, specializationId);
+            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, txtSearch, majorId);
 
             if (listCurriculum.Count == 0)
             {
                 return Ok(new BaseResponse(true, "Not Found Subject"));
             }
-            var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, specializationId).Count();
+            var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
 
             var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
 
@@ -244,6 +244,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["specialization_english_name"] = specialization.specialization_english_name,
 
                 ["curriculum_code"] = "CN1:" + curriculum.curriculum_code,
+                ["degree_level"] = curriculum.degree_level,
+                ["formality"] = curriculum.Formality,
 
                 ["Combo"] = comboExcel,
 
@@ -278,7 +280,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.SaveAsByTemplate(templatePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
-            return Ok(fileContents);
+            //return Ok(fileContents);
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
         }
 
 
@@ -494,6 +497,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     // set major_code = value in coloum detail
                     major.major_code = r.Details;
+                }
+                else if (r.Title.Equals("Degree level"))
+                {
+                    curriculum.degree_level = r.Details;
+                }
+                else if (r.Title.Equals("Formality"))
+                {
+                    curriculum.Formality = r.Details;
                 }
             }
             curriculum.total_semester = 7;

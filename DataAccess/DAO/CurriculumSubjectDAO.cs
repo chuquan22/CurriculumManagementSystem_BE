@@ -100,7 +100,7 @@ namespace DataAccess.DAO
                 
             }catch (Exception ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -121,7 +121,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
