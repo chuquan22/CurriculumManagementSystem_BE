@@ -12,7 +12,7 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? specializationId)
+        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
@@ -24,9 +24,9 @@ namespace DataAccess.DAO
                 query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
             }
 
-            if (specializationId.HasValue)
+            if (majorId.HasValue)
             {
-                query = query.Where(x => x.specialization_id == specializationId);
+                query = query.Where(x => x.Specialization.Major.major_id == majorId);
             }
 
             var curriculumList = query
@@ -37,7 +37,7 @@ namespace DataAccess.DAO
             return curriculumList;
         }
 
-        public List<Curriculum> PanigationCurriculum(int page, int limit, string? txtSearch, int? specializationId)
+        public List<Curriculum> PanigationCurriculum(int page, int limit, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
@@ -49,14 +49,14 @@ namespace DataAccess.DAO
                 query = query.Where(x => x.curriculum_name.Contains(txtSearch) || x.curriculum_code.Contains(txtSearch));
             }
 
-            if (specializationId.HasValue)
+            if (majorId.HasValue)
             {
-                query = query.Where(x => x.specialization_id == specializationId);
+                query = query.Where(x => x.Specialization.Major.major_id == majorId);
             }
 
             var curriculumList = query
-                .OrderByDescending(x => x.Batch.batch_name)  // Sắp xếp theo Batch Name giảm dần
-                .ThenBy(x => x.curriculum_code)  // Nếu Batch Name trùng nhau, sắp xếp theo Curriculum Code
+                .OrderByDescending(x => x.Batch.batch_name) 
+                .ThenBy(x => x.curriculum_code) 
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
@@ -143,9 +143,10 @@ namespace DataAccess.DAO
         public string GetCurriculumCode(int batchId, int speId)
         {
             var specialization = _cmsDbContext.Specialization.Find(speId);
+            var major = _cmsDbContext.Major.Find(specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
 
-            var curriCode = specialization.specialization_code + "_" + batch.batch_name;
+            var curriCode = major.major_code+ "-" + specialization.specialization_code + "-" + batch.batch_name;
 
             return curriCode;
         }
@@ -168,7 +169,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -189,7 +190,7 @@ namespace DataAccess.DAO
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -210,7 +211,7 @@ namespace DataAccess.DAO
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
     }

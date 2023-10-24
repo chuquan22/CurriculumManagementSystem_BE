@@ -107,27 +107,27 @@ namespace BusinessObject.Migrations
                         new
                         {
                             batch_id = 1,
-                            batch_name = "K19.3"
+                            batch_name = "19.3"
                         },
                         new
                         {
                             batch_id = 2,
-                            batch_name = "K18.3"
+                            batch_name = "18.3"
                         },
                         new
                         {
                             batch_id = 3,
-                            batch_name = "K18.2"
-                        },
-                        new
-                        {
-                            batch_id = 5,
-                            batch_name = "K20.1"
+                            batch_name = "18.2"
                         },
                         new
                         {
                             batch_id = 4,
-                            batch_name = "K20.2"
+                            batch_name = "20.1"
+                        },
+                        new
+                        {
+                            batch_id = 5,
+                            batch_name = "20.2"
                         });
                 });
 
@@ -294,6 +294,10 @@ namespace BusinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("curriculum_id"), 1L, 1);
 
+                    b.Property<string>("Formality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("approved_date")
                         .HasColumnType("datetime2");
 
@@ -302,8 +306,7 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("curriculum_code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("curriculum_description")
                         .IsRequired()
@@ -314,6 +317,10 @@ namespace BusinessObject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("decision_No")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("degree_level")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -345,12 +352,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế đồ họa",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Graphic Design",
                             is_active = true,
                             specialization_id = 1,
@@ -359,12 +368,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế mĩ thuật số",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "international associate ",
                             english_curriculum_name = "Graphic Design",
                             is_active = true,
                             specialization_id = 1,
@@ -373,12 +384,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 3,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ sư phần mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Software Engineering",
                             is_active = true,
                             specialization_id = 4,
@@ -387,12 +400,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 4,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ thuật phần mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "international associate ",
                             english_curriculum_name = "Software Engineering",
                             is_active = true,
                             specialization_id = 4,
@@ -401,12 +416,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 5,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM",
                             curriculum_description = "",
                             curriculum_name = "quản lí học liệu",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Curriculum Management",
                             is_active = true,
                             specialization_id = 2,
@@ -415,12 +432,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 6,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Soft Skill",
                             is_active = true,
                             specialization_id = 1,
@@ -429,12 +448,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 7,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SWP",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng lập trình web",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Skill Web Program",
                             is_active = false,
                             specialization_id = 1,
@@ -443,12 +464,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 8,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 24, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Soft Skill",
                             is_active = true,
                             specialization_id = 1,
@@ -470,6 +493,10 @@ namespace BusinessObject.Migrations
                     b.Property<bool>("option")
                         .HasColumnType("bit");
 
+                    b.Property<string>("subject_group")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("term_no")
                         .HasColumnType("int");
 
@@ -486,6 +513,7 @@ namespace BusinessObject.Migrations
                             subject_id = 1,
                             combo_id = 1,
                             option = false,
+                            subject_group = "môn học chung",
                             term_no = 3
                         },
                         new
@@ -494,6 +522,7 @@ namespace BusinessObject.Migrations
                             subject_id = 3,
                             combo_id = 2,
                             option = false,
+                            subject_group = "môn chuyên môn",
                             term_no = 3
                         },
                         new
@@ -502,6 +531,7 @@ namespace BusinessObject.Migrations
                             subject_id = 4,
                             combo_id = 3,
                             option = false,
+                            subject_group = "môn chuyên ngành",
                             term_no = 3
                         },
                         new
@@ -510,6 +540,7 @@ namespace BusinessObject.Migrations
                             subject_id = 5,
                             combo_id = 4,
                             option = false,
+                            subject_group = "môn học chung",
                             term_no = 2
                         },
                         new
@@ -517,6 +548,7 @@ namespace BusinessObject.Migrations
                             curriculum_id = 1,
                             subject_id = 2,
                             option = false,
+                            subject_group = "môn tự chọn",
                             term_no = 1
                         });
                 });
@@ -1062,7 +1094,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 23, 14, 42, 17, 494, DateTimeKind.Local).AddTicks(562),
+                            semester_end_date = new DateTime(2023, 10, 24, 16, 42, 51, 826, DateTimeKind.Local).AddTicks(1700),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },

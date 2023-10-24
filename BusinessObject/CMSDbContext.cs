@@ -162,11 +162,11 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Batch>().HasData(
-                new Batch { batch_id = 1, batch_name = "K19.3" },
-                new Batch { batch_id = 2, batch_name = "K18.3" },
-                new Batch { batch_id = 3, batch_name = "K18.2" },
-                new Batch { batch_id = 5, batch_name = "K20.1" },
-                new Batch { batch_id = 4, batch_name = "K20.2" }
+                new Batch { batch_id = 1, batch_name = "19.3" },
+                new Batch { batch_id = 2, batch_name = "18.3" },
+                new Batch { batch_id = 3, batch_name = "18.2" },
+                new Batch { batch_id = 4, batch_name = "20.1" },
+                new Batch { batch_id = 5, batch_name = "20.2" }
                 );
 
             modelBuilder.Entity<Semester>().HasData(
@@ -193,14 +193,14 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Curriculum>().HasData(
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 3, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 4, curriculum_code = "SE", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 5, curriculum_code = "CM", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", total_semester = 7, specialization_id = 2, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 6, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true },
-                new Curriculum { curriculum_id = 7, curriculum_code = "SWP", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = false },
-                new Curriculum { curriculum_id = 8, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", is_active = true }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "associate", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, batch_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "international associate ", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 3, curriculum_code = "SE", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "associate", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 4, curriculum_code = "SE", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, batch_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "international associate ", Formality = "formal education", is_active = true },
+                new Curriculum {curriculum_id = 5, curriculum_code = "CM", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", total_semester = 7, specialization_id = 2, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "vocational diploma", Formality = "formal education", is_active = true },
+                new Curriculum {curriculum_id = 6, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "vocational diploma", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 7, curriculum_code = "SWP", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "associate", Formality = "formal education", is_active = false },
+                new Curriculum {curriculum_id = 8, curriculum_code = "SS", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, batch_id = 3, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", degree_level = "vocational diploma", Formality = "formal education", is_active = true }
 
                 );
 
@@ -228,11 +228,11 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<CurriculumSubject>().HasData(
-                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, combo_id = 1, option = false },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2, option = false },
-                new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = 3, option = false },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = 4, option = false },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, option = false }
+                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, combo_id = 1, subject_group = "môn học chung", option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2, subject_group = "môn chuyên môn", option = false },
+                new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = 3, subject_group = "môn chuyên ngành", option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = 4, subject_group = "môn học chung", option = false },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, subject_group = "môn tự chọn", option = false }
                 );
 
             modelBuilder.Entity<Combo>().HasData(

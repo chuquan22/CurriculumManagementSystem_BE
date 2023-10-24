@@ -14,11 +14,15 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public string curriculum_description { get; set; }
         [Required]
-        public int total_semester { get; set; } = 7;
+        public int total_semester { get; set; }
         [Required]
         public int specialization_id { get; set; }
         [Required]
         public int batch_id { get; set; }
+        [Required]
+        public string degree_level { get; set; }
+        [Required]
+        public string Formality { get; set; }
         [Required]
         public string decision_No { get; set; }
         
