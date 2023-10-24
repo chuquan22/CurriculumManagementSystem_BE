@@ -63,6 +63,22 @@ namespace DataAccess.Combos
             return combo;
         }
 
+        public Combo FindComboByCode(string comboCode)
+        {
+            var combo = new Combo();
+            try
+            {
+                combo = db.Combo.Where(x => x.combo_code == comboCode).FirstOrDefault();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return combo;
+        }
+
         public Combo CreateCombo(Combo cb)
         {
             Combo combo = new Combo();
