@@ -20,18 +20,18 @@ namespace DataAccess.DAO
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
                                    .Where(s => s.syllabus_status == true)
-                                   .ToList();
+                                   .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
                     rs = rs.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
                     || sy.Subject.subject_code.Contains(txtSearch)
                     || sy.Subject.english_subject_name.Contains(txtSearch)
 
-                    ).ToList();                
+                    ).OrderByDescending(x => x.approved_date).ToList();                
                 }
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList();
+                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).OrderByDescending(x => x.approved_date).ToList();
                 }
                 rs = rs
                 .Skip((page - 1)* limit).Take(limit).ToList();
