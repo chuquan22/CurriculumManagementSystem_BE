@@ -97,14 +97,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPatch]
-        public ActionResult UpdatePatchSesion(SessionUpdateRequest request)
+        public ActionResult UpdatePatchSesion(SessionPatchRequest request)
         {
             try
             {
-                Session rs = _mapper.Map<Session>(request.session);
+                Session rs = _mapper.Map<Session>(request);
 
                 //   rs = repo.GetSession(syllabus_id);
-                string result = repo.UpdateSession(rs, request.session_clo);
+                string result = repo.UpdatePatchSession(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)

@@ -130,7 +130,6 @@ namespace DataAccess.Specialization
                 spe = db.Specialization.Where(x => x.specialization_id == speEdit.specialization_id).ToList().FirstOrDefault();
                 if(spe != null)
                 {
-                    spe.specialization_code = speEdit.specialization_code;
                     spe.specialization_name = speEdit.specialization_name;
                     spe.specialization_english_name = speEdit.specialization_english_name;
                     spe.major_id = speEdit.major_id;

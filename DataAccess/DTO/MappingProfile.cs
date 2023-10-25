@@ -54,6 +54,7 @@ namespace DataAccess.Models.DTO
             //Session
             CreateMap<BusinessObject.Session, SessionRequest>().ReverseMap();
             CreateMap<BusinessObject.Session, SessionUpdate>().ReverseMap();
+            CreateMap<BusinessObject.Session, SessionPatchRequest>().ReverseMap();
 
             CreateMap<BusinessObject.SessionCLO, SessionCLOsRequest>().ReverseMap();
 

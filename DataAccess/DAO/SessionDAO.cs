@@ -106,6 +106,43 @@ namespace DataAccess.DAO
                 throw;
             }
         }
+        public string UpdatePatchSession(Session session)
+        {
+            var oldRs = _cmsDbContext.Session
+               .Include(x => x.SessionCLO)
+               .ThenInclude(g => g.CLO)
+               .Where(s => s.schedule_id == session.schedule_id)
+               .FirstOrDefault();
+
+            if (oldRs != null)
+            {
+                if (session.remote_learning != null && session.remote_learning != 0)
+                    oldRs.remote_learning = session.remote_learning;
+
+                if (session.ass_defense != null && session.ass_defense != 0)
+                    oldRs.ass_defense = session.ass_defense;
+
+                if (session.video_learning != null && session.video_learning != 0)
+                    oldRs.video_learning = session.video_learning;
+
+                if (session.IVQ != null && session.IVQ != 0)
+                    oldRs.IVQ = session.IVQ;
+
+                if (session.online_lab != null && session.online_lab != 0)
+                    oldRs.online_lab = session.online_lab;
+
+                if (session.online_test != null && session.online_test != 0)
+                    oldRs.online_test = session.online_test;
+
+                if (session.assigment != null && session.assigment != 0)
+                    oldRs.assigment = session.assigment;
+
+                _cmsDbContext.Session.Update(oldRs);
+                _cmsDbContext.SaveChanges();
+            }
+
+            return Result.updateSuccessfull.ToString();
+        }
 
         public Session GetSessionById(int id)
         {
