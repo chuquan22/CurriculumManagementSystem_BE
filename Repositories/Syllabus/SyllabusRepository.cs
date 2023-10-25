@@ -32,5 +32,10 @@ namespace Repositories.Syllabus
         {
             return db.GetTotalSyllabus(txtSearch, subjectCode);
         }
+
+        public string UpdatePatchSyllabus(BusinessObject.Syllabus syllabus)
+        {
+            return db.UpdatePatchSyllabus(syllabus);
+        }
     }
 }

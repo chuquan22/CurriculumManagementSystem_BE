@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "error", null));
             }
 
+        }
+
+        [HttpPatch]
+        public ActionResult UpdatePatchSyllabus(SyllabusPatchRequest request)
+        {
+            try
+            {
+                Syllabus rs = _mapper.Map<Syllabus>(request);
+
+                //   rs = repo.GetSession(syllabus_id);
+                string result = repo.UpdatePatchSyllabus(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
         }
 
     }
