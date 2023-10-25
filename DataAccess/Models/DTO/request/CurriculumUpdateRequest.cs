@@ -18,6 +18,8 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public string decision_No { get; set; }
         [Required]
+        public string degree_level { get; set; }
+        [Required]
         public bool is_active { get; set; }
     }
 }
