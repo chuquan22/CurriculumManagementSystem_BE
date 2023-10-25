@@ -27,6 +27,7 @@ using OfficeOpenXml;
 using Repositories.PLOMappings;
 using Microsoft.AspNetCore.Routing.Template;
 using Repositories.Combos;
+using System.Text.RegularExpressions;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -307,19 +308,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         if (i == 0)
                         {
                             var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                            var curriculumExcel = GetCurriculumInExcel(row);
-                            var curriculum = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
+                            string result = ValidationDataExcel(row);
+                            if (result.Equals("Success"))
+                            {
+                                var curriculumExcel = GetCurriculumInExcel(row);
+                                var curriculum = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
 
-                            if (curriculum != null)
-                            {
-                                return BadRequest(new BaseResponse(true, "Curriculum Exsited"));
+                                if (curriculum != null)
+                                {
+                                    return BadRequest(new BaseResponse(true, "Curriculum Exsited"));
+                                }
+                                string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
+                                if (curriculumExcel.curriculum_id == 0)
+                                {
+                                    return BadRequest(new BaseResponse(true, createResult));
+                                }
+                                curriculum_id = curriculumExcel.curriculum_id;
                             }
-                            string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
-                            if (curriculumExcel.curriculum_id == 0)
+                            else
                             {
-                                return BadRequest(new BaseResponse(true, createResult));
+                                return BadRequest(new BaseResponse(true, result));
                             }
-                            curriculum_id = curriculumExcel.curriculum_id;
                         }
                         else if (i == 1)
                         {
@@ -336,6 +345,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 {
                                     _ploRepository.CreatePLOs(plo);
                                 }
+                                else
+                                {
+                                    return BadRequest(new BaseResponse(true, $"{plo.PLO_name} is exsited in curriculum"));
+                                }
 
                             }
                         }
@@ -350,29 +363,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
                                 if (subject == null)
                                 {
-                                    //return Ok(new BaseResponse(true, $"Subject {item.subject_code} Not Found"));
-                                    var subjectCreate = new Subject()
-                                    {
-                                        subject_code = item.subject_code,
-                                        subject_name = item.subject_name,
-                                        english_subject_name = item.english_subject_name,
-                                        credit = item.credit,
-                                        total_time = 70,
-                                        total_time_class = 30,
-                                        is_active = true,
-                                        assessment_method_id = 1,
-                                        learning_method_id = 1,
-                                        exam_total = 3,
+                                    return Ok(new BaseResponse(true, $"Subject {item.subject_code} Not Found. Please Create Subject"));
+                                    //var subjectCreate = new Subject()
+                                    //{
+                                    //    subject_code = item.subject_code,
+                                    //    subject_name = item.subject_name,
+                                    //    english_subject_name = item.english_subject_name,
+                                    //    credit = item.credit,
+                                    //    total_time = 70,
+                                    //    total_time_class = 30,
+                                    //    is_active = true,
+                                    //    assessment_method_id = 1,
+                                    //    learning_method_id = 1,
+                                    //    exam_total = 3,
 
-                                    };
-                                    _subjectRepository.CreateNewSubject(subjectCreate);
-                                    subject = subjectCreate;
+                                    //};
+                                    //_subjectRepository.CreateNewSubject(subjectCreate);
+                                    //subject = subjectCreate;
                                 }
                                 curriculumSubject.subject_id = subject.subject_id;
                                 curriculumSubject.term_no = item.term_no;
                                 if (item.combo_code != null)
                                 {
                                     var combo = _comboRepository.FindComboByCode(item.combo_code);
+                                    if(combo == null)
+                                    {
+                                        return Ok(new BaseResponse(true, $"Subject {item.combo_code} Not Found. Please Create Combo"));
+                                    }
                                     curriculumSubject.combo_id = combo.combo_id;
                                 }
                                 curriculumSubject.option = (item.option == null || item.option.Equals("")) ? false : true;
@@ -440,7 +457,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private string ValidationDataExcel(IEnumerable<CurriculumExcel> row)
         {
-            return null;
+            string[] expectedOrder = {  "Curriculum Code", "Curriculum Name", "English Curriculum Name", "Curriculum Description", "Vocational Code", "Vocational Name", "English Vocational Name", "Decision No.", "Approved date", "Degree level", "Formality" };
+            int index = 0;
+            foreach (var r in row)
+            {
+               // CHECK VALIDATION IN SHEET CURRICULUM
+
+                // Check information in coloumn title
+                if (!r.Title.Equals(expectedOrder[index]))
+                {
+                    return "Can't change title in sheet curriculum";
+                }
+                index++;
+                // Check format of curriculum code
+                string pattern = @"^([A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
+                if (r.Title.Equals("Curriculum Code"))
+                {
+                    if (!Regex.IsMatch(r.Details, pattern))
+                    {
+                        return "Curriculum Code must format ex:GD-GD-19.3 (GD: Graphic Design)";
+                    }
+                }
+                // Check data exsited
+
+
+            }
+
+            return "Success";
         }
 
         private Curriculum GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)

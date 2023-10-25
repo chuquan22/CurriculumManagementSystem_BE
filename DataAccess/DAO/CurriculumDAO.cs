@@ -146,9 +146,25 @@ namespace DataAccess.DAO
             var major = _cmsDbContext.Major.Find(specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
 
-            var curriCode = major.major_code+ "-" + specialization.specialization_code + "-" + batch.batch_name;
+            var curriCode = GetAbbreviations(major.major_english_name) + "-" + GetAbbreviations(specialization.specialization_english_name) + "-" + batch.batch_name;
 
             return curriCode;
+        }
+
+
+        public string GetAbbreviations(string name)
+        {
+            var Abbreviations = "";
+            string[] parts = name.Split(' ');
+            for(int i = 0; i < parts.Length; i ++)
+            {
+                string firstLetter = parts[i].Substring(0, 1);
+                if (char.IsUpper(firstLetter[0]))
+                {
+                    Abbreviations += firstLetter;
+                }
+            }
+            return Abbreviations;
         }
 
         public string CreateCurriculum(Curriculum curriculum)
