@@ -22,7 +22,7 @@ namespace DataAccess.Models.DTO.response
         public string vocational_english_name { get; set; }
         public DateTime approved_date { get; set; }
         public DateTime? updated_date { get; set; }
-        public bool is_active { get; set; }
+       
 
     }
 }
