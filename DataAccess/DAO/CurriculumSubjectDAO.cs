@@ -37,7 +37,7 @@ namespace DataAccess.DAO
         public List<Subject> GetListSubject(int curriculumId)
         {
             var listSubjectIds = _context.Curriculum
-                .Where(x => x.curriculum_id == curriculumId)
+                .Where(x => x.curriculum_id == curriculumId && x.is_active == true)
                 .Join(_context.CurriculumSubject,
                     curriculum => curriculum.curriculum_id,
                     curriculumSubject => curriculumSubject.curriculum_id,
