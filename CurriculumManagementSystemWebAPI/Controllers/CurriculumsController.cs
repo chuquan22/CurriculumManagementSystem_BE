@@ -165,7 +165,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
             curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id);
-
+            curriculum.is_active = true;
             if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
                 return BadRequest(new BaseResponse(true, "Curriculum Existed. Please Create other curriculum!"));

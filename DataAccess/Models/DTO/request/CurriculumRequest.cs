@@ -29,8 +29,7 @@ namespace DataAccess.Models.DTO.request
         [Required]
         [DataType(DataType.Date)]
         public DateTime approved_date { get; set; }
-        [Required]
-        public bool is_active { get; set; }
+        
 
     }
 }
