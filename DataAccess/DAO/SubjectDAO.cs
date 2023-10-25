@@ -38,8 +38,9 @@ namespace DataAccess.DAO
         public List<Subject> GetSubjectByCurriculum(int curriculumId)
         {
             var listSubjectIds = CMSDbContext.Curriculum
+                .Include(x => x.CurriculumSubjects)
                 .Where(x => x.curriculum_id == curriculumId)
-                .Join(CMSDbContext.CurriculumSubject,
+                .Join(CMSDbContext.CurriculumSubject.Include(x => x.Subject),
                     curriculum => curriculum.curriculum_id,
                     curriculumSubject => curriculumSubject.curriculum_id,
                      (curriculum, curriculumSubject) => curriculumSubject.Subject)

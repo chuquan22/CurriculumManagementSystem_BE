@@ -478,8 +478,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         return "Curriculum Code must format ex:GD-GD-19.3 (GD: Graphic Design)";
                     }
                 }
-                // Check data exsited
-
+                // Check Major Exsit
+                else if (r.Title.Equals("Vocational Code"))
+                {
+                   
+                }
 
             }
 
