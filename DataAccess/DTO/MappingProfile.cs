@@ -43,6 +43,9 @@ namespace DataAccess.Models.DTO
             //CLOS
             CreateMap<BusinessObject.CLO, CLOsRequest>().ReverseMap();
             CreateMap<BusinessObject.CLO, CLOsUpdateRequest>().ReverseMap();
+            //Syllabus
+            CreateMap<BusinessObject.Syllabus, SyllabusPatchRequest>().ReverseMap();
+
             //Materials
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
