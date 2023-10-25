@@ -20,7 +20,7 @@ namespace BusinessObject
         [Required]
         public string decision_No { get; set; }
         [Required]
-        public int degree_level { get; set; }
+        public string degree_level { get; set; }
         [Required]
         public string syllabus_description { get; set; }
         [ForeignKey("Subject")]

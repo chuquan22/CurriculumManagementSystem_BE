@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var listClassSessionType = _repo.GetListClassSessionType();
             var listAssessmentTypeResponse = _mapper.Map<List<ClassSessionTypeResponse>>(listClassSessionType);
-            return Ok(new BaseResponse(false, "Sucessfully", null));
+            return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
         }
     }
 }
