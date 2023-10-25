@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
     {
         public int subject_id { get; set; }
         public string subject_code { get; set; }
+        public string subject_group { get; set; }
         public Dictionary<string, bool> PLOs { get; set; }
     }
 }

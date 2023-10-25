@@ -21,6 +21,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IPLOMappingRepository _repo;
         private IPLOsRepository _repo1 = new PLOsRepository();
         private ISubjectRepository _repo2 = new SubjectRepository();
+        private ICurriculumSubjectRepository _curriSubjectRepo = new CurriculumSubjectRepository();
 
         public PLOMappingsController(IMapper mapper)
         {
@@ -45,6 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     PLOMappingDTO dto = new PLOMappingDTO();
                     dto.subject_code = subject.subject_code;
                     dto.subject_id = subject.subject_id;
+                    dto.subject_group = _curriSubjectRepo.GetListCurriculumSubject(curriculumId).Where(x => x.subject_id == subject.subject_id).Select(x => x.subject_group).FirstOrDefault();
                     dto.PLOs = new Dictionary<string, bool>();
                     foreach (var plo in listPLO)
                     {

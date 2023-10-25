@@ -22,12 +22,12 @@ namespace DataAccess.Models.DTO
 
             CreateMap<Subject, SubjectRequest>().ReverseMap();
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
-           //Major
+            //Major
             CreateMap<BusinessObject.Major, MajorRequest>().ReverseMap();
             CreateMap<BusinessObject.Major, MajorEditRequest>().ReverseMap();
             //Syllabus
             CreateMap<Syllabus, SyllabusResponse>()
-                .ForMember(dest => dest.subject_code,opt => opt.MapFrom(src => src.Subject.subject_code))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
                 .ForMember(dest => dest.isApproved, opt => opt.MapFrom(src => src.approved_date))
                 .ForMember(dest => dest.syllabus_name, opt => opt.MapFrom(src => src.Subject.english_subject_name + "_" + src.Subject.subject_name))
@@ -46,7 +46,7 @@ namespace DataAccess.Models.DTO
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
             //Specialization
-            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap(); 
+            CreateMap<BusinessObject.Specialization, SpecializationRequest>().ReverseMap();
             CreateMap<BusinessObject.Specialization, SpecializationUpdateRequest>().ReverseMap();
             //AssessmentType
             CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
@@ -100,7 +100,7 @@ namespace DataAccess.Models.DTO
             //Combo
             CreateMap<BusinessObject.Combo, ComboRequest>().ReverseMap();
             CreateMap<BusinessObject.Combo, ComboUpdateRequest>().ReverseMap();
-            
+
             //Curriculum
             CreateMap<Curriculum, CurriculumResponse>()
               .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
@@ -126,10 +126,10 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
 
             CreateMap<User, UserLoginResponse>();
-           
+
             CreateMap<PreRequisiteType, PreRequisiteTypeRequest>().ReverseMap();
             CreateMap<PreRequisiteType, PreRequisiteTypeResponse>().ReverseMap();
-            
+
 
             CreateMap<LearningMethod, LearningMethodDTOResponse>().ReverseMap();
 
@@ -143,6 +143,7 @@ namespace DataAccess.Models.DTO
             //PLOMapping
             CreateMap<PLOMapping, PLOMappingDTO>()
                 .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
+                .ForMember(dest => dest.subject_group, opt => opt.MapFrom(src => src.Subject.CurriculumSubjects.Select(x => x.subject_group)))
                 .ForMember(dest => dest.PLOs, opt => opt.Ignore())
                 .ReverseMap();
         }
