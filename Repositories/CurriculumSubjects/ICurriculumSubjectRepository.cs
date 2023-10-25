@@ -10,6 +10,7 @@ namespace Repositories.CurriculumSubjects
     public interface ICurriculumSubjectRepository
     {
         CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId);
+        CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId);
         List<CurriculumSubject> GetListCurriculumBySubject(int subjectId);
         List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId);
         List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no);

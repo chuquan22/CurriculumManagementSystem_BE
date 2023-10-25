@@ -55,7 +55,7 @@ namespace DataAccess.DAO
 
             }catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 

@@ -60,7 +60,7 @@ namespace DataAccess.DAO
                 return Result.createSuccessfull.ToString();
             }catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -74,7 +74,7 @@ namespace DataAccess.DAO
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -88,7 +88,7 @@ namespace DataAccess.DAO
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
