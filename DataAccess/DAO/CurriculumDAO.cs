@@ -17,7 +17,8 @@ namespace DataAccess.DAO
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major);
+                .Include(x => x.Specialization.Major)
+                .Where(x => x.is_active == true);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -42,7 +43,8 @@ namespace DataAccess.DAO
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major);
+                .Include(x => x.Specialization.Major)
+                .Where(x => x.is_active == true);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -71,13 +73,13 @@ namespace DataAccess.DAO
         public int GetTotalCredit(int curriculumId)
         {
             var total = _cmsDbContext.Curriculum
-                .Where(x => x.curriculum_id == curriculumId)
+                .Where(x => x.curriculum_id == curriculumId && x.is_active == true)
                 .Join(_cmsDbContext.CurriculumSubject,
                      curriculum => curriculum.curriculum_id,
                      curriculumSubject => curriculumSubject.curriculum_id,
                      (curriculum, curriculumSubject) => new { curriculum, curriculumSubject })
 
-                .Join(_cmsDbContext.Subject,
+                .Join(_cmsDbContext.Subject.Where(x => x.is_active == true),
                         joinResult => joinResult.curriculumSubject.subject_id,
                         subject => subject.subject_id,
                         (joinResult, subject) => subject)
@@ -93,6 +95,7 @@ namespace DataAccess.DAO
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
                 .Include(x => x.CurriculumSubjects)
+                .Where(x => x.is_active == true)
                 .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
         }
@@ -100,7 +103,7 @@ namespace DataAccess.DAO
         public List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode)
         {
             var batchIdsInCurriculum = _cmsDbContext.Curriculum
-                .Where(curriculum => curriculum.curriculum_code.Equals(curriculumCode))
+                .Where(curriculum => curriculum.curriculum_code.Equals(curriculumCode) && curriculum.is_active == true)
                 .Select(curriculum => curriculum.batch_id)
                 .ToList();
 
@@ -118,7 +121,7 @@ namespace DataAccess.DAO
         public List<Batch> GetBatchByCurriculumCode(string curriculumCode)
         {
             var listBatch = _cmsDbContext.Curriculum
-                .Where(x => x.curriculum_code.Equals(curriculumCode))
+                .Where(x => x.curriculum_code.Equals(curriculumCode) && x.is_active == true)
                 .Join(_cmsDbContext.Batch,
                       curriculum => curriculum.batch_id,
                       batch => batch.batch_id,
@@ -135,6 +138,7 @@ namespace DataAccess.DAO
                 .Include(x => x.Batch)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
+                .Where(x => x.is_active == true)
                 .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
 
             return curriculum;
@@ -143,23 +147,24 @@ namespace DataAccess.DAO
         public string GetCurriculumCode(int batchId, int speId)
         {
             var specialization = _cmsDbContext.Specialization.Find(speId);
-            var major = _cmsDbContext.Major.Find(specialization.major_id);
+            var major = _cmsDbContext.Major.Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
 
-            var curriCode = GetAbbreviations(major.major_english_name) + "-" + GetAbbreviations(specialization.specialization_english_name) + "-" + batch.batch_name;
+            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + batch.batch_name;
 
             return curriCode;
         }
 
 
-        public string GetAbbreviations(string name)
+        private string GetAbbreviations(string name)
         {
+
             var Abbreviations = "";
             string[] parts = name.Split(' ');
             for(int i = 0; i < parts.Length; i ++)
             {
                 string firstLetter = parts[i].Substring(0, 1);
-                if (char.IsUpper(firstLetter[0]))
+                if (!parts[i].Equals("AND"))
                 {
                     Abbreviations += firstLetter;
                 }

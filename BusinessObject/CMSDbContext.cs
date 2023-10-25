@@ -184,12 +184,12 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Specialization>().HasData(
-                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and exterior design", semester_id = 1, is_active = true },
-                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_english_name = "Filmmaking and advertising", semester_id = 1, is_active = true },
-                new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and exterior design", semester_id = 2, is_active = true },
+                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and Exterior Design", semester_id = 1, is_active = true },
+                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "FMA", specialization_name = "Dựng phim và quảng cáo", specialization_english_name = "Filmmaking and Advertising", semester_id = 1, is_active = true },
+                new Specialization { specialization_id = 3, major_id = 1, specialization_code = "IED", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and Exterior Design", semester_id = 2, is_active = true },
                 new Specialization { specialization_id = 4, major_id = 2, specialization_code = "SE", specialization_name = "kĩ thuật phần mềm", specialization_english_name = "Software Engineering", semester_id = 2, is_active = true },
-                new Specialization { specialization_id = 5, major_id = 2, specialization_code = "WP", specialization_name = "lập trình web", specialization_english_name = "web programming", semester_id = 2, is_active = true },
-                new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_english_name = "game programming", semester_id = 1, is_active = true }
+                new Specialization { specialization_id = 5, major_id = 2, specialization_code = "WP", specialization_name = "lập trình web", specialization_english_name = "Web Programming", semester_id = 2, is_active = true },
+                new Specialization { specialization_id = 6, major_id = 2, specialization_code = "GP", specialization_name = "lập trình game", specialization_english_name = "Game Programming", semester_id = 1, is_active = true }
                 );
 
             modelBuilder.Entity<Curriculum>().HasData(
