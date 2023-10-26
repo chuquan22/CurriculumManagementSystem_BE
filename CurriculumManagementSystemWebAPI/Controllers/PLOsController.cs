@@ -82,7 +82,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             if (PLOsExists(pLOsDTORequest.PLO_name))
             {
-                return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} had exsited! Please Create other PLO"));
+                return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} is Duplicate!"));
             }
             var PLOs = _mapper.Map<PLOs>(pLOsDTORequest);
             
