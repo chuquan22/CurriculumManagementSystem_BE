@@ -1,4 +1,6 @@
 ﻿using BusinessObject;
+using DataAccess.Combos;
+using DataAccess.DAO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -153,11 +155,21 @@ namespace DataAccess.Specialization
 
         public BusinessObject.Specialization DeleteSpecialization(int id)
         {
+            if (CheckSpeExistInCurriculum(id))
+            {
+                return null;
+            }
+            ComboDAO comboDAO = new ComboDAO();
             BusinessObject.Specialization spe = new BusinessObject.Specialization();
             try
             {
                 spe = db.Specialization.Where(x => x.specialization_id == id).ToList().FirstOrDefault();
-                if(spe != null)
+                var combo = comboDAO.GetListCombo(spe.specialization_id);
+                foreach (var item in combo)
+                {
+                    comboDAO.DeleteCombo(item.combo_id);
+                }
+                if (spe != null)
                 {
                     db.Specialization.Remove(spe);
                     db.SaveChanges();
@@ -184,6 +196,19 @@ namespace DataAccess.Specialization
                 id = specialization.specialization_id;
             }
             return id;
+        }
+
+        private bool CheckSpeExistInCurriculum(int spe_id)
+        {
+            var curriculum = db.Curriculum.Where(x => x.is_active == true).ToList();
+            foreach (var item in curriculum)
+            {
+                if(item.specialization_id == spe_id)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

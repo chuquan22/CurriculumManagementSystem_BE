@@ -184,7 +184,7 @@ namespace DataAccess.Combos
                 return ex.InnerException.Message;
 
             }
-            return "Delete false";
+            return null;
         }
 
         private bool CheckComboExist(int combo_id)
