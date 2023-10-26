@@ -125,6 +125,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete]
         public ActionResult DeleteSpecialization(int id)
         {
+            string rs = null;
+
             try
             {
 

@@ -229,7 +229,7 @@ namespace BusinessObject
             modelBuilder.Entity<AssessmentMethod>().HasData(
                 new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
                 new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 },
-                       new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "AAAVBB", assessment_type_id = 1 }
+                       new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "AAAVBB", assessment_type_id = 1 });
 
            
 
