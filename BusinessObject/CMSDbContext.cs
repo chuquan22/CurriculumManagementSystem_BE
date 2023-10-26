@@ -172,7 +172,7 @@ namespace BusinessObject
 
             modelBuilder.Entity<Semester>().HasData(
                 new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, batch_id = 1 },
-                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/20/2023"), school_year = 2023 , batch_id = 2},
+                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/20/2023"), school_year = 2023, batch_id = 2 },
                 new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/14/2023"), school_year = 2023, batch_id = 3 },
                 new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, batch_id = 4 },
                 new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, batch_id = 5 },
@@ -214,13 +214,14 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<AssessmentType>().HasData(
-                new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" },
-                new AssessmentType { assessment_type_id = 2, assessment_type_name = "ORIT" }
+                new AssessmentType { assessment_type_id = 1, assessment_type_name = "On-Going" },
+                new AssessmentType { assessment_type_id = 2, assessment_type_name = "Final Exam" }
                 );
 
             modelBuilder.Entity<AssessmentMethod>().HasData(
-                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
-                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 }
+                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "Lab", assessment_type_id = 1 },
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "Quiz", assessment_type_id = 1 },
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "Assgiment", assessment_type_id = 2 }
                 );
 
             modelBuilder.Entity<Subject>().HasData(
@@ -316,6 +317,25 @@ namespace BusinessObject
                 new PLOMapping { PLO_id = 2, subject_id = 4 }
                 );
 
+            modelBuilder.Entity<PreRequisiteType>().HasData(
+                new PreRequisiteType { pre_requisite_type_id = 1, pre_requisite_type_name = "Corequisite" },
+                new PreRequisiteType { pre_requisite_type_id = 2, pre_requisite_type_name = "Prerequisite" },
+                new PreRequisiteType { pre_requisite_type_id = 3, pre_requisite_type_name = "Recommended" },
+                new PreRequisiteType { pre_requisite_type_id = 4, pre_requisite_type_name = "Elective" }
+                );
+
+            modelBuilder.Entity<PreRequisite>().HasData(
+                new PreRequisite { subject_id = 1, pre_subject_id = 2, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 2, pre_subject_id = 3, pre_requisite_type_id = 2 },
+                new PreRequisite { subject_id = 3, pre_subject_id = 5, pre_requisite_type_id = 3 },
+                new PreRequisite { subject_id = 4, pre_subject_id = 7, pre_requisite_type_id = 4 },
+                new PreRequisite { subject_id = 5, pre_subject_id = 8, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 10, pre_subject_id = 12, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 11, pre_subject_id = 14, pre_requisite_type_id = 2 },
+                new PreRequisite { subject_id = 15, pre_subject_id = 17, pre_requisite_type_id = 3 }
+                );
+
+                
         }
     }
 }
