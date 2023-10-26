@@ -71,7 +71,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
             foreach(var subjectRespones in subjectResponse)
             {
-                subjectRespones.prerequisites = _preRequisiteRepository.GetPreRequisitesBySubject(subjectRespones.subject_id);
+                var prerequisites = _preRequisiteRepository.GetPreRequisitesBySubject(subjectRespones.subject_id);
+                subjectRespones.prerequisites = _mapper.Map<List<PreRequisiteResponse>>(prerequisites);
             }
 
             var paginationResponse = new PaginationResponse<SubjectResponse>
