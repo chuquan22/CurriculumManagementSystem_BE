@@ -20,13 +20,13 @@ namespace BusinessObject
 
         public string ITU { get; set; }
         [Required]
-        public long schedule_student_task { get; set; }
+        public string schedule_student_task { get; set; }
         [Required]
         public string student_material { get; set; }
         [Required]
         public string lecturer_material { get; set;}
         [Required]
-        public long schedule_lecturer_task { get; set; }
+        public string schedule_lecturer_task { get; set; }
         [AllowNull]
         public string? student_material_link { get; set; }
         [AllowNull]
@@ -35,21 +35,21 @@ namespace BusinessObject
         public int class_session_type_id { get; set; }
         //check
         [Required]
-        public int remote_learning  { get; set; }
+        public float remote_learning  { get; set; }
         [Required]
-        public int ass_defense { get; set; }
+        public float ass_defense { get; set; }
         [Required]
-        public int eos_exam { get; set; }
+        public float eos_exam { get; set; }
         [Required]
-        public int video_learning { get; set; }
+        public float video_learning { get; set; }
         [Required]
-        public int IVQ { get; set; }
+        public float IVQ { get; set; }
         [Required]
-        public int online_lab { get; set; }
+        public float online_lab { get; set; }
         [Required]
-        public int online_test { get; set; }
+        public float online_test { get; set; }
         [Required]
-        public int assigment { get; set; }
+        public float assigment { get; set; }
 
         public virtual Syllabus Syllabus { get; set; }
         public virtual ClassSessionType ClassSessionType { get; set; }

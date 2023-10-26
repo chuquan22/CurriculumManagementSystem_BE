@@ -17,7 +17,7 @@ namespace Repositories.Combos
            return db.CreateCombo(combo);
         }
 
-        public Combo DeleteCombo(int id)
+        public string DeleteCombo(int id)
         {
             return db.DeleteCombo(id);
         }
@@ -45,6 +45,11 @@ namespace Repositories.Combos
         public List<Combo> GetListComboByCurriId(int curriId)
         {
             return db.GetListComboByCurriId(curriId);
+
+        public bool IsCodeExist(string code)
+        {
+           return db.IsCodeExist(code);
+
         }
 
         public Combo UpdateCombo(Combo combo)

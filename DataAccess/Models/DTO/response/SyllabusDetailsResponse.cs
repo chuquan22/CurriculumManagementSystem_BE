@@ -20,7 +20,7 @@ namespace DataAccess.Models.DTO.response
         public string learning_teaching_method { get; set; }
         public string credit { get; set; }
 
-        public int degree_level { get; set; }
+        public string degree_level { get; set; }
         public string time_allocation { get; set; }
         public List<PreRequisiteResponse2> pre_required { get; set; }
 

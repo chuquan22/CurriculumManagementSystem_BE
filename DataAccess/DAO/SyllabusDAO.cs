@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.DTO.response;
+using DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,18 +21,18 @@ namespace DataAccess.DAO
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
                                    .Where(s => s.syllabus_status == true)
-                                   .ToList();
+                                   .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
                     rs = rs.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
                     || sy.Subject.subject_code.Contains(txtSearch)
                     || sy.Subject.english_subject_name.Contains(txtSearch)
 
-                    ).ToList();                
+                    ).OrderByDescending(x => x.approved_date).ToList();                
                 }
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList();
+                    rs = rs.Where(sy => sy.Subject.subject_code.Contains(subjectCode)).OrderByDescending(x => x.approved_date).ToList();
                 }
                 rs = rs
                 .Skip((page - 1)* limit).Take(limit).ToList();
@@ -90,5 +91,34 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string UpdatePatchSyllabus(Syllabus syllabus)
+        {
+            using (var context = new CMSDbContext())
+            {
+                var oldRs = context.Syllabus
+               .Include(s => s.Subject)
+               .Include(s => s.Subject.LearningMethod)
+               .Where(s => s.syllabus_id == syllabus.syllabus_id)
+               .FirstOrDefault();
+
+                if (oldRs != null)
+                {
+                    if (syllabus.syllabus_description != null)
+                        oldRs.syllabus_description = syllabus.syllabus_description;
+
+                    if (syllabus.degree_level != null)
+                        oldRs.degree_level = syllabus.degree_level;
+
+                    if (syllabus.syllabus_tool != null )
+                        oldRs.syllabus_tool = syllabus.syllabus_tool;
+
+
+
+                    context.Syllabus.Update(oldRs);
+                    context.SaveChanges();
+                }
+            }
+            return Result.updateSuccessfull.ToString();
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace Repositories.Syllabus
          public int GetTotalSyllabus(string txtSearch, string subjectCode);
         public List<PreRequisite> GetPre(int id);
         public BusinessObject.Syllabus GetSyllabusById(int id);    
+        public string UpdatePatchSyllabus(BusinessObject.Syllabus syllabus);
 
     }
 }

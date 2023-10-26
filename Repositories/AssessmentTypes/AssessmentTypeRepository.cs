@@ -16,5 +16,10 @@ namespace Repositories.AssessmentTypes
         {
             return db.GetAllAssessmentMethod();
         }
+
+        public AssessmentType GetAssessmentTypeByName(string name)
+        {
+            return db.GetAssessmentTypeByName(name);
+        }
     }
 }
