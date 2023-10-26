@@ -42,6 +42,11 @@ namespace Repositories.Combos
             return db.GetListCombo(specId);
         }
 
+        public bool IsCodeExist(string code)
+        {
+           return db.IsCodeExist(code);
+        }
+
         public Combo UpdateCombo(Combo combo)
         {
             return db.UpdateCombo(combo);

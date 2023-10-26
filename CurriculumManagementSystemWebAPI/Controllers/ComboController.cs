@@ -42,9 +42,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Combo rs = _mapper.Map<Combo>(cb);
+                bool checkCode = repo.IsCodeExist(rs.combo_code);
+                if (checkCode == false)
+                {
+                    rs = repo.CreateCombo(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(true, "Combo Code Exist!", null));
 
-                rs = repo.CreateCombo(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+
             }
             catch (Exception)
             {

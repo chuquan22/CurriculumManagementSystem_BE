@@ -17,5 +17,7 @@ namespace Repositories.Combos
         public Combo FindComboById(int comboId);
         Combo FindComboByCode(string comboCode);
         bool DisableCombo(int id);
+
+        bool IsCodeExist(string code);
     }
 }

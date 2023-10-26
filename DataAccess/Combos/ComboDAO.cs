@@ -49,6 +49,26 @@ namespace DataAccess.Combos
             }
         }
 
+        public bool IsCodeExist(string code)
+        {
+            var combo = new Combo();
+            try
+            {
+                combo = db.Combo.Where(x => x.combo_code.Equals(code.Trim())).FirstOrDefault();
+                if(combo != null)
+                {
+                    return true;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return false;
+        }
+
         public Combo FindComboById(int id)
         {
             var combo = new Combo();
