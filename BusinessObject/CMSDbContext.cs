@@ -209,14 +209,22 @@ namespace BusinessObject
                new LearningMethod { learning_method_id = 2, learning_method_name = "Balence", learning_method_description = "" }
                 );
 
+            modelBuilder.Entity<LearningResource>().HasData(
+             new LearningResource { learning_resource_id = 1, learning_resource_type = "Lab"},
+             new LearningResource { learning_resource_id = 2, learning_resource_type = "Assessment"}
+              );
+
             modelBuilder.Entity<AssessmentType>().HasData(
                 new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" },
-                new AssessmentType { assessment_type_id = 2, assessment_type_name = "ORIT" }
+                new AssessmentType { assessment_type_id = 2, assessment_type_name = "ORIT" },
+                 new AssessmentType { assessment_type_id = 3, assessment_type_name = "On-going" },
+                  new AssessmentType { assessment_type_id = 4, assessment_type_name = "Final Exam" }
                 );
 
             modelBuilder.Entity<AssessmentMethod>().HasData(
                 new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
-                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 }
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 },
+                       new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "AAAVBB", assessment_type_id = 1 }
                 );
 
             modelBuilder.Entity<Subject>().HasData(
@@ -274,7 +282,8 @@ namespace BusinessObject
                 new Subject { subject_id = 52, subject_code = "CS103", subject_name = "Công nghệ thông tin 3", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Computer Science 3", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 53, subject_code = "MECH103", subject_name = "Cơ khí học 3", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Mechanical Engineering 3", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 54, subject_code = "ELEC103", subject_name = "Điện tử và điện lạnh 3", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Electronics and Electrical Engineering 3", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
-                new Subject { subject_id = 55, subject_code = "ARCH103", subject_name = "Kiến trúc 3", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Architecture 3", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true }
+                new Subject { subject_id = 55, subject_code = "ARCH103", subject_name = "Kiến trúc 3", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Architecture 3", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
+                new Subject { subject_id = 56, subject_code = "MUL1013", subject_name = "Thiết kế hình ảnh với Photoshop", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Image Design using Photoshop", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true }
 
                 );
 
@@ -292,7 +301,13 @@ namespace BusinessObject
                 new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", specialization_id = 2, is_active = false },
                 new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", combo_description = "lập trình web với NodeJS", specialization_id = 1, is_active = true }
                 );
+            modelBuilder.Entity<ClassSessionType>().HasData(
+                new ClassSessionType { class_session_type_id = 1, class_session_type_name = "Online"},
+                 new ClassSessionType { class_session_type_id = 2, class_session_type_name = "Offline" },
+                  new ClassSessionType { class_session_type_id = 3, class_session_type_name = "ORIT" }
+                );
 
+            
             modelBuilder.Entity<PLOs>().HasData(
                new PLOs { PLO_id = 1, PLO_name = "PLO01", PLO_description = "Thiết kế xử lý hình ảnh, xây dựng các sản phẩm đồ họa 2D", curriculum_id = 1 },
                new PLOs { PLO_id = 2, PLO_name = "PLO02", PLO_description = "Thiết kế theo các chủ đề: xây dựng thương hiệu, ấn phẩm quảng cáo, bao bì", curriculum_id = 1 },

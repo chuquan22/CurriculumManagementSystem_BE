@@ -13,12 +13,12 @@ namespace BusinessObject
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CLO_id { get; set; }
-        [Required] 
-        public string CLO_name { get; set; }
+        [AllowNull] 
+        public string? CLO_name { get; set; }
         [ForeignKey("Syllabus")]
         public int syllabus_id { get; set; }
-        [Required] 
-        public string CLO_description { get; set; }  
+        [AllowNull] 
+        public string? CLO_description { get; set; }  
         
         public virtual Syllabus Syllabus { get; set; }
         

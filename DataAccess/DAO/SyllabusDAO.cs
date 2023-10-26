@@ -40,6 +40,16 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public Syllabus CreateSyllabus(Syllabus rs)
+        {
+            using (var context = new CMSDbContext())
+            {
+                context.Syllabus.Add(rs);
+                context.SaveChanges();
+            }
+            return rs;
+        }
+
         public List<PreRequisite> GetListPre(int id)
         {
             List<PreRequisite> rs = new List<PreRequisite>();

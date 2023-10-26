@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.request
 {
-    public class SessionCLOsRequest
+    public class SessionPatchUpdateRequest
     {
-        public int CLO_id { get; set; }
-        public int? session_id { get; set; }
+        public int id { get; set; }
+        public SessionUpdateRequest request { get; set; }
     }
 }

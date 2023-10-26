@@ -25,5 +25,7 @@ namespace DataAccess.Models.DTO.request
         public int assessment_method_id { get; set; }
         
         public string? grading_note { get; set; }
+
+        public string? clo_name { get; set; }
     }
 }
