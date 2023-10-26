@@ -53,11 +53,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public async Task<IActionResult> PaginationSubject(int page, int limit, [FromQuery] string? txtSearch)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
-
             IQueryable<Subject> subjectQuery = _context.Subject;
 
             if (!string.IsNullOrWhiteSpace(txtSearch))
@@ -70,11 +65,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.LearningMethod)
                 .ToList();
-
-            if (subject.Count == 0)
-            {
-                return NotFound();
-            }
 
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
 

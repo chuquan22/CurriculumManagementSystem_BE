@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace DataAccess.Combos
             var combo = db.Combo.Where(x => x.combo_id == id).FirstOrDefault();
             if(combo != null)
             {
-                if (combo.is_active = false)
+                if (combo.is_active == false)
                 {
                     combo.is_active = true;
                 }
@@ -39,12 +40,34 @@ namespace DataAccess.Combos
                 {
                     combo.is_active = false;
                 }
+                db.Combo.Update(combo);
+                db.SaveChanges();
                 return true;
             }
             else
             {
                 return false;   
             }
+        }
+
+        public bool IsCodeExist(string code)
+        {
+            var combo = new Combo();
+            try
+            {
+                combo = db.Combo.Where(x => x.combo_code.Equals(code.Trim())).FirstOrDefault();
+                if(combo != null)
+                {
+                    return true;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return false;
         }
 
         public Combo FindComboById(int id)
@@ -63,9 +86,24 @@ namespace DataAccess.Combos
             return combo;
         }
 
+        public Combo FindComboByCode(string comboCode)
+        {
+            var combo = new Combo();
+            try
+            {
+                combo = db.Combo.Where(x => x.combo_code == comboCode).FirstOrDefault();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return combo;
+        }
+
         public Combo CreateCombo(Combo cb)
         {
-            Combo combo = new Combo();
             try
             {
                 db.Combo.Add(cb);
@@ -85,7 +123,6 @@ namespace DataAccess.Combos
                 var oldCombo = db.Combo.Where(c => c.combo_id == cb.combo_id).FirstOrDefault();
                 if (oldCombo != null)
                 {
-                    oldCombo.combo_code = cb.combo_code;
                     oldCombo.combo_name = cb.combo_name;
                     oldCombo.combo_english_name = cb.combo_english_name;
                     oldCombo.combo_description = cb.combo_description;
@@ -102,7 +139,7 @@ namespace DataAccess.Combos
                 throw;
             }
         }
-        public Combo DeleteCombo(int id)
+        public string DeleteCombo(int id)
         {
             Combo combo = new Combo();
             try
@@ -112,14 +149,20 @@ namespace DataAccess.Combos
                 {
                     db.Combo.Remove(combo);
                     db.SaveChanges();
-                }
-            }
-            catch (Exception)
-            {
+                    return "Delete sucessfully.";
 
-                throw;
+                }
+                else
+                {
+                    return "Combo is not exist in system!";
+                }
+
             }
-            return combo;
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+            return "Delete false";
         }
     }
     

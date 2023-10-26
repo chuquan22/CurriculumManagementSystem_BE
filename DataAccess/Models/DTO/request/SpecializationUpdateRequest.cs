@@ -10,7 +10,7 @@ namespace DataAccess.Models.DTO.request
     {
         public int specialization_id { get; set; }
 
-        public string specialization_code { get; set; }
+        //public string specialization_code { get; set; }
   
         public string specialization_name { get; set; }
         public string specialization_english_name { get; set; }

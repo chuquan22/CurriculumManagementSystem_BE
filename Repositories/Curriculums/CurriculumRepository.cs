@@ -14,7 +14,7 @@ namespace Repositories.Curriculums
         public string CreateCurriculum(Curriculum curriculum) => curriculumDAO.CreateCurriculum(curriculum);
        
 
-        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? specializationId) => curriculumDAO.GetAllCurriculum(txtSearch, specializationId);
+        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId) => curriculumDAO.GetAllCurriculum(txtSearch, majorId);
 
         public List<Batch> GetBatchByCurriculumCode(string curriculumCode) => curriculumDAO.GetBatchByCurriculumCode(curriculumCode);
        
@@ -33,7 +33,7 @@ namespace Repositories.Curriculums
         public int GetTotalCredit(int curriculumId) => curriculumDAO.GetTotalCredit(curriculumId);
         
 
-        public List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? specializationId) => curriculumDAO.PanigationCurriculum(page,limit, txtSearch, specializationId);  
+        public List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? majorId) => curriculumDAO.PanigationCurriculum(page,limit, txtSearch, majorId);  
         
 
         public string RemoveCurriculum(Curriculum curriculum) => curriculumDAO.DeleteCurriculum(curriculum);

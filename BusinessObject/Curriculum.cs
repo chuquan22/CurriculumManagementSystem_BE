@@ -14,7 +14,6 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int curriculum_id { get; set; }
         [Required]
-        [MaxLength(10)]
         public string curriculum_code { get; set; }
         [Required]
         public string curriculum_name { get; set; }
@@ -30,6 +29,10 @@ namespace BusinessObject
         public int batch_id { get; set;}
         [Required]
         public string decision_No { get;set; }
+        [Required]
+        public string degree_level { get; set; }
+        [Required]
+        public string Formality { get; set; }
         [Required]
         public DateTime approved_date { get; set; }
         [AllowNull]

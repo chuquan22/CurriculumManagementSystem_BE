@@ -270,7 +270,7 @@ namespace BusinessObject.Migrations
                 {
                     curriculum_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    curriculum_code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    curriculum_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     curriculum_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     english_curriculum_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     total_semester = table.Column<int>(type: "int", nullable: false),
@@ -278,6 +278,8 @@ namespace BusinessObject.Migrations
                     specialization_id = table.Column<int>(type: "int", nullable: false),
                     batch_id = table.Column<int>(type: "int", nullable: false),
                     decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    degree_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Formality = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updated_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     is_active = table.Column<bool>(type: "bit", nullable: false)
@@ -461,6 +463,7 @@ namespace BusinessObject.Migrations
                     curriculum_id = table.Column<int>(type: "int", nullable: false),
                     term_no = table.Column<int>(type: "int", nullable: false),
                     combo_id = table.Column<int>(type: "int", nullable: true),
+                    subject_group = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     option = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -655,21 +658,21 @@ namespace BusinessObject.Migrations
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
                     session_No = table.Column<int>(type: "int", nullable: false),
                     ITU = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    schedule_student_task = table.Column<long>(type: "bigint", nullable: false),
+                    schedule_student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     student_material = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lecturer_material = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    schedule_lecturer_task = table.Column<long>(type: "bigint", nullable: false),
+                    schedule_lecturer_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     student_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     lecturer_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     class_session_type_id = table.Column<int>(type: "int", nullable: false),
-                    remote_learning = table.Column<int>(type: "int", nullable: false),
-                    ass_defense = table.Column<int>(type: "int", nullable: false),
-                    eos_exam = table.Column<int>(type: "int", nullable: false),
-                    video_learning = table.Column<int>(type: "int", nullable: false),
-                    IVQ = table.Column<int>(type: "int", nullable: false),
-                    online_lab = table.Column<int>(type: "int", nullable: false),
-                    online_test = table.Column<int>(type: "int", nullable: false),
-                    assigment = table.Column<int>(type: "int", nullable: false)
+                    remote_learning = table.Column<float>(type: "real", nullable: false),
+                    ass_defense = table.Column<float>(type: "real", nullable: false),
+                    eos_exam = table.Column<float>(type: "real", nullable: false),
+                    video_learning = table.Column<float>(type: "real", nullable: false),
+                    IVQ = table.Column<float>(type: "real", nullable: false),
+                    online_lab = table.Column<float>(type: "real", nullable: false),
+                    online_test = table.Column<float>(type: "real", nullable: false),
+                    assigment = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -772,11 +775,11 @@ namespace BusinessObject.Migrations
                 columns: new[] { "batch_id", "batch_name" },
                 values: new object[,]
                 {
-                    { 1, "K19.3" },
-                    { 2, "K18.3" },
-                    { 3, "K18.2" },
-                    { 4, "K20.2" },
-                    { 5, "K20.1" }
+                    { 1, "19.3" },
+                    { 2, "18.3" },
+                    { 3, "18.2" },
+                    { 4, "20.1" },
+                    { 5, "20.2" }
                 });
 
             migrationBuilder.InsertData(
@@ -814,7 +817,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 23, 14, 42, 17, 494, DateTimeKind.Local).AddTicks(562), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 25, 16, 39, 30, 260, DateTimeKind.Local).AddTicks(7850), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
@@ -864,17 +867,17 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Curriculum",
-                columns: new[] { "curriculum_id", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
+                columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "degree_level", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 2, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 3, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 4, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 5, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
-                    { 6, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
-                    { 7, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 1, 7, null },
-                    { 8, new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
+                    { 1, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
+                    { 2, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
+                    { 3, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
+                    { 4, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
+                    { 5, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
+                    { 6, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
+                    { 7, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
+                    { 8, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
@@ -886,19 +889,76 @@ namespace BusinessObject.Migrations
                     { 2, 2, 3, "Mac-Lenin philosophy", 5, true, 1, "MLN131", "Triết học Mac-Lenin", 70, 40 },
                     { 3, 1, 3, "Soft Skill Group", 4, true, 2, "SSG104", "Kĩ năng trong làm việc nhóm", 70, 40 },
                     { 4, 2, 3, "Web api using asp.Net", 4, true, 2, "PRN231", "lập trình web api asp.Net", 70, 40 },
-                    { 5, 1, 3, "Basic Game Programing", 4, true, 2, "PRU211", "lập trình game cơ bản", 70, 40 }
+                    { 5, 1, 3, "Basic Game Programing", 4, true, 2, "PRU211", "lập trình game cơ bản", 70, 40 },
+                    { 6, 1, 3, "Mathematics", 4, true, 2, "MAT101", "Toán học", 70, 40 },
+                    { 7, 1, 3, "Physics", 4, true, 2, "PHY101", "Vật lý", 70, 40 },
+                    { 8, 1, 3, "Chemistry", 4, true, 2, "CHE101", "Hóa học", 70, 40 },
+                    { 9, 1, 3, "Biology", 4, true, 2, "BIO101", "Sinh học", 70, 40 },
+                    { 10, 1, 3, "Linguistics", 4, true, 2, "LING101", "Ngôn ngữ học", 70, 40 },
+                    { 11, 1, 3, "English and Literature", 4, true, 2, "ENG101", "Tiếng Anh và văn học", 70, 40 },
+                    { 12, 1, 3, "History", 4, true, 2, "HIS101", "Lịch sử", 70, 40 },
+                    { 13, 1, 3, "Political Science", 4, true, 2, "POL101", "Khoa học chính trị", 70, 40 },
+                    { 14, 1, 3, "Social Science", 4, true, 2, "SOC101", "Khoa học xã hội", 70, 40 },
+                    { 15, 1, 3, "Economics", 4, true, 2, "ECO101", "Kinh tế học", 70, 40 },
+                    { 16, 1, 3, "Business Management", 4, true, 2, "BUS101", "Quản trị kinh doanh", 70, 40 },
+                    { 17, 1, 3, "Finance", 4, true, 2, "FIN101", "Tài chính", 70, 40 },
+                    { 18, 1, 3, "Information Systems", 4, true, 2, "IT101", "Hệ thống thông tin", 70, 40 },
+                    { 19, 1, 3, "Computer Science", 4, true, 2, "CS101", "Công nghệ thông tin", 70, 40 },
+                    { 20, 1, 3, "Mechanical Engineering", 4, true, 2, "MECH101", "Cơ khí học", 70, 40 },
+                    { 21, 1, 3, "Electronics and Electrical Engineering", 4, true, 2, "ELEC101", "Điện tử và điện lạnh", 70, 40 },
+                    { 22, 1, 3, "Architecture", 4, true, 2, "ARCH101", "Kiến trúc", 70, 40 },
+                    { 23, 1, 3, "Art and Design", 4, true, 2, "ART101", "Nghệ thuật và thiết kế", 70, 40 },
+                    { 24, 1, 3, "Music and Performing Arts", 4, true, 2, "MUSIC101", "Âm nhạc và nghệ thuật biểu diễn", 70, 40 },
+                    { 25, 1, 3, "Foreign Language", 4, true, 2, "FOREIGN101", "Ngôn ngữ nước ngoài", 70, 40 },
+                    { 26, 1, 3, "Geography", 4, true, 2, "GEO101", "Địa lý", 70, 40 },
+                    { 27, 1, 3, "Environmental Science", 4, true, 2, "ENV101", "Môi trường học", 70, 40 },
+                    { 28, 1, 3, "Psychology", 4, true, 2, "PSY101", "Tâm lý học", 70, 40 },
+                    { 29, 1, 3, "Antropology", 4, true, 2, "ANTH101", "Antropology", 70, 40 },
+                    { 30, 1, 3, "Economics 2", 4, true, 2, "ECO102", "Kinh tế học 2", 70, 40 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Subject",
+                columns: new[] { "subject_id", "assessment_method_id", "credit", "english_subject_name", "exam_total", "is_active", "learning_method_id", "subject_code", "subject_name", "total_time", "total_time_class" },
+                values: new object[,]
+                {
+                    { 31, 1, 3, "Business Management 2", 4, true, 2, "BUS102", "Quản trị kinh doanh 2", 70, 40 },
+                    { 32, 1, 3, "Finance 2", 4, true, 2, "FIN102", "Tài chính 2", 70, 40 },
+                    { 33, 1, 3, "Information Systems 2", 4, true, 2, "IT102", "Hệ thống thông tin 2", 70, 40 },
+                    { 34, 1, 3, "Computer Science 2", 4, true, 2, "CS102", "Công nghệ thông tin 2", 70, 40 },
+                    { 35, 1, 3, "Mechanical Engineering 2", 4, true, 2, "MECH102", "Cơ khí học 2", 70, 40 },
+                    { 36, 1, 3, "Electronics and Electrical Engineering 2", 4, true, 2, "ELEC102", "Điện tử và điện lạnh 2", 70, 40 },
+                    { 37, 1, 3, "Architecture 2", 4, true, 2, "ARCH102", "Kiến trúc 2", 70, 40 },
+                    { 38, 1, 3, "Art and Design 2", 4, true, 2, "ART102", "Nghệ thuật và thiết kế 2", 70, 40 },
+                    { 39, 1, 3, "Music and Performing Arts 2", 4, true, 2, "MUSIC102", "Âm nhạc và nghệ thuật biểu diễn 2", 70, 40 },
+                    { 40, 1, 3, "Foreign Language 2", 4, true, 2, "FOREIGN102", "Ngôn ngữ nước ngoài 2", 70, 40 },
+                    { 41, 1, 3, "Philosophy", 4, true, 2, "PHILO101", "Triết học", 70, 40 },
+                    { 42, 1, 3, "Psychology 2", 4, true, 2, "PSYCH102", "Tâm lý học 2", 70, 40 },
+                    { 43, 1, 3, "Linguistics 2", 4, true, 2, "LING102", "Ngôn ngữ học 2", 70, 40 },
+                    { 44, 1, 3, "English and Literature 2", 4, true, 2, "ENG102", "Tiếng Anh và văn học 2", 70, 40 },
+                    { 45, 1, 3, "Geography 2", 4, true, 2, "GEO102", "Địa lý 2", 70, 40 },
+                    { 46, 1, 3, "Environmental Science 2", 4, true, 2, "ENV102", "Môi trường học 2", 70, 40 },
+                    { 47, 1, 3, "Antropology 2", 4, true, 2, "ANTH102", "Antropology 2", 70, 40 },
+                    { 48, 1, 3, "Economics 3", 4, true, 2, "ECO103", "Kinh tế học 3", 70, 40 },
+                    { 49, 1, 3, "Business Management 3", 4, true, 2, "BUS103", "Quản trị kinh doanh 3", 70, 40 },
+                    { 50, 1, 3, "Finance 3", 4, true, 2, "FIN103", "Tài chính 3", 70, 40 },
+                    { 51, 1, 3, "Information Systems 3", 4, true, 2, "IT103", "Hệ thống thông tin 3", 70, 40 },
+                    { 52, 1, 3, "Computer Science 3", 4, true, 2, "CS103", "Công nghệ thông tin 3", 70, 40 },
+                    { 53, 1, 3, "Mechanical Engineering 3", 4, true, 2, "MECH103", "Cơ khí học 3", 70, 40 },
+                    { 54, 1, 3, "Electronics and Electrical Engineering 3", 4, true, 2, "ELEC103", "Điện tử và điện lạnh 3", 70, 40 },
+                    { 55, 1, 3, "Architecture 3", 4, true, 2, "ARCH103", "Kiến trúc 3", 70, 40 }
                 });
 
             migrationBuilder.InsertData(
                 table: "CurriculumSubject",
-                columns: new[] { "curriculum_id", "subject_id", "combo_id", "option", "term_no" },
+                columns: new[] { "curriculum_id", "subject_id", "combo_id", "option", "subject_group", "term_no" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, false, 3 },
-                    { 1, 2, null, false, 1 },
-                    { 1, 3, 2, false, 3 },
-                    { 1, 5, 4, false, 2 },
-                    { 2, 4, 3, false, 3 }
+                    { 1, 1, 1, false, "General Subject", 3 },
+                    { 1, 2, 3, true, "Option Subject", 1 },
+                    { 1, 3, 2, true, "Option Subject", 3 },
+                    { 1, 5, 0, false, "Basic Subject", 2 },
+                    { 2, 4, 0, false, "Specialization Subject", 3 }
                 });
 
             migrationBuilder.InsertData(

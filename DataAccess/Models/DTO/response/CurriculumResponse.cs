@@ -15,12 +15,14 @@ namespace DataAccess.Models.DTO.response
         public string batch_name { get; set; }
         public string decision_No { get; set; }
         public int total_credit { get; set; }
+        public string degree_level { get; set; }
+        public string Formality { get; set; }
         public string vocational_code { get; set; }
         public string vocational_name { get; set; }
         public string vocational_english_name { get; set; }
         public DateTime approved_date { get; set; }
         public DateTime? updated_date { get; set; }
-        public bool is_active { get; set; }
+       
 
     }
 }

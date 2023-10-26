@@ -37,7 +37,7 @@ namespace DataAccess.DAO
         public List<Subject> GetListSubject(int curriculumId)
         {
             var listSubjectIds = _context.Curriculum
-                .Where(x => x.curriculum_id == curriculumId)
+                .Where(x => x.curriculum_id == curriculumId && x.is_active == true)
                 .Join(_context.CurriculumSubject,
                     curriculum => curriculum.curriculum_id,
                     curriculumSubject => curriculumSubject.curriculum_id,
@@ -73,6 +73,18 @@ namespace DataAccess.DAO
             return curriculumSubject;
         }
 
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId)
+        {
+            var curriculumSubject = _context.CurriculumSubject
+                .Include(x => x.Curriculum)
+                .Include(x => x.Subject)
+                .FirstOrDefault(x => x.term_no == term_no 
+                && x.subject_group.Equals(subjectGroup) 
+                && x.subject_id != subjectId
+                && x.option == true);
+            return curriculumSubject;
+        }
+
         public List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no)
         {
             var curriculumSubject = _context.CurriculumSubject
@@ -100,7 +112,7 @@ namespace DataAccess.DAO
                 
             }catch (Exception ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 
@@ -121,7 +133,7 @@ namespace DataAccess.DAO
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return ex.InnerException.Message;
             }
         }
 

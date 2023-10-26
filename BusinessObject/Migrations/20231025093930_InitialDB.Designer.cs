@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231023074217_InitialDB")]
+    [Migration("20231025093930_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,27 +109,27 @@ namespace BusinessObject.Migrations
                         new
                         {
                             batch_id = 1,
-                            batch_name = "K19.3"
+                            batch_name = "19.3"
                         },
                         new
                         {
                             batch_id = 2,
-                            batch_name = "K18.3"
+                            batch_name = "18.3"
                         },
                         new
                         {
                             batch_id = 3,
-                            batch_name = "K18.2"
-                        },
-                        new
-                        {
-                            batch_id = 5,
-                            batch_name = "K20.1"
+                            batch_name = "18.2"
                         },
                         new
                         {
                             batch_id = 4,
-                            batch_name = "K20.2"
+                            batch_name = "20.1"
+                        },
+                        new
+                        {
+                            batch_id = 5,
+                            batch_name = "20.2"
                         });
                 });
 
@@ -296,6 +296,10 @@ namespace BusinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("curriculum_id"), 1L, 1);
 
+                    b.Property<string>("Formality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("approved_date")
                         .HasColumnType("datetime2");
 
@@ -304,8 +308,7 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("curriculum_code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("curriculum_description")
                         .IsRequired()
@@ -316,6 +319,10 @@ namespace BusinessObject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("decision_No")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("degree_level")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -347,12 +354,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 1,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế đồ họa",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Graphic Design",
                             is_active = true,
                             specialization_id = 1,
@@ -361,12 +370,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 2,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế mĩ thuật số",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "international associate ",
                             english_curriculum_name = "Graphic Design",
                             is_active = true,
                             specialization_id = 1,
@@ -375,12 +386,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 3,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ sư phần mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Software Engineering",
                             is_active = true,
                             specialization_id = 4,
@@ -389,12 +402,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 4,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
                             curriculum_name = "kĩ thuật phần mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "international associate ",
                             english_curriculum_name = "Software Engineering",
                             is_active = true,
                             specialization_id = 4,
@@ -403,12 +418,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 5,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM",
                             curriculum_description = "",
                             curriculum_name = "quản lí học liệu",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Curriculum Management",
                             is_active = true,
                             specialization_id = 2,
@@ -417,12 +434,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 6,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Soft Skill",
                             is_active = true,
                             specialization_id = 1,
@@ -431,12 +450,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 7,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SWP",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng lập trình web",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "associate",
                             english_curriculum_name = "Skill Web Program",
                             is_active = false,
                             specialization_id = 1,
@@ -445,12 +466,14 @@ namespace BusinessObject.Migrations
                         new
                         {
                             curriculum_id = 8,
-                            approved_date = new DateTime(2023, 10, 23, 0, 0, 0, 0, DateTimeKind.Local),
+                            Formality = "formal education",
+                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",
                             decision_No = "360/QĐ-CĐFPL",
+                            degree_level = "vocational diploma",
                             english_curriculum_name = "Soft Skill",
                             is_active = true,
                             specialization_id = 1,
@@ -472,6 +495,10 @@ namespace BusinessObject.Migrations
                     b.Property<bool>("option")
                         .HasColumnType("bit");
 
+                    b.Property<string>("subject_group")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("term_no")
                         .HasColumnType("int");
 
@@ -488,6 +515,7 @@ namespace BusinessObject.Migrations
                             subject_id = 1,
                             combo_id = 1,
                             option = false,
+                            subject_group = "General Subject",
                             term_no = 3
                         },
                         new
@@ -495,30 +523,35 @@ namespace BusinessObject.Migrations
                             curriculum_id = 1,
                             subject_id = 3,
                             combo_id = 2,
-                            option = false,
+                            option = true,
+                            subject_group = "Option Subject",
                             term_no = 3
                         },
                         new
                         {
                             curriculum_id = 2,
                             subject_id = 4,
-                            combo_id = 3,
+                            combo_id = 0,
                             option = false,
+                            subject_group = "Specialization Subject",
                             term_no = 3
                         },
                         new
                         {
                             curriculum_id = 1,
                             subject_id = 5,
-                            combo_id = 4,
+                            combo_id = 0,
                             option = false,
+                            subject_group = "Basic Subject",
                             term_no = 2
                         },
                         new
                         {
                             curriculum_id = 1,
                             subject_id = 2,
-                            option = false,
+                            combo_id = 3,
+                            option = true,
+                            subject_group = "Option Subject",
                             term_no = 1
                         });
                 });
@@ -1064,7 +1097,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 23, 14, 42, 17, 494, DateTimeKind.Local).AddTicks(562),
+                            semester_end_date = new DateTime(2023, 10, 25, 16, 39, 30, 260, DateTimeKind.Local).AddTicks(7850),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -1124,20 +1157,20 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IVQ")
-                        .HasColumnType("int");
+                    b.Property<float>("IVQ")
+                        .HasColumnType("real");
 
-                    b.Property<int>("ass_defense")
-                        .HasColumnType("int");
+                    b.Property<float>("ass_defense")
+                        .HasColumnType("real");
 
-                    b.Property<int>("assigment")
-                        .HasColumnType("int");
+                    b.Property<float>("assigment")
+                        .HasColumnType("real");
 
                     b.Property<int>("class_session_type_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("eos_exam")
-                        .HasColumnType("int");
+                    b.Property<float>("eos_exam")
+                        .HasColumnType("real");
 
                     b.Property<string>("lecturer_material")
                         .IsRequired()
@@ -1146,25 +1179,27 @@ namespace BusinessObject.Migrations
                     b.Property<string>("lecturer_material_link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("online_lab")
-                        .HasColumnType("int");
+                    b.Property<float>("online_lab")
+                        .HasColumnType("real");
 
-                    b.Property<int>("online_test")
-                        .HasColumnType("int");
+                    b.Property<float>("online_test")
+                        .HasColumnType("real");
 
-                    b.Property<int>("remote_learning")
-                        .HasColumnType("int");
+                    b.Property<float>("remote_learning")
+                        .HasColumnType("real");
 
                     b.Property<string>("schedule_content")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<long>("schedule_lecturer_task")
-                        .HasColumnType("bigint");
+                    b.Property<string>("schedule_lecturer_task")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("schedule_student_task")
-                        .HasColumnType("bigint");
+                    b.Property<string>("schedule_student_task")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("session_No")
                         .HasColumnType("int");
@@ -1179,8 +1214,8 @@ namespace BusinessObject.Migrations
                     b.Property<int>("syllabus_id")
                         .HasColumnType("int");
 
-                    b.Property<int>("video_learning")
-                        .HasColumnType("int");
+                    b.Property<float>("video_learning")
+                        .HasColumnType("real");
 
                     b.HasKey("schedule_id");
 
@@ -1438,6 +1473,706 @@ namespace BusinessObject.Migrations
                             learning_method_id = 2,
                             subject_code = "PRU211",
                             subject_name = "lập trình game cơ bản",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 6,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Mathematics",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MAT101",
+                            subject_name = "Toán học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 7,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Physics",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "PHY101",
+                            subject_name = "Vật lý",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 8,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Chemistry",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "CHE101",
+                            subject_name = "Hóa học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 9,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Biology",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "BIO101",
+                            subject_name = "Sinh học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 10,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Linguistics",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "LING101",
+                            subject_name = "Ngôn ngữ học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 11,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "English and Literature",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ENG101",
+                            subject_name = "Tiếng Anh và văn học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 12,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "History",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "HIS101",
+                            subject_name = "Lịch sử",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 13,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Political Science",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "POL101",
+                            subject_name = "Khoa học chính trị",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 14,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Social Science",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "SOC101",
+                            subject_name = "Khoa học xã hội",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 15,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Economics",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ECO101",
+                            subject_name = "Kinh tế học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 16,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Business Management",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "BUS101",
+                            subject_name = "Quản trị kinh doanh",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 17,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Finance",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "FIN101",
+                            subject_name = "Tài chính",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 18,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Information Systems",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "IT101",
+                            subject_name = "Hệ thống thông tin",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 19,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Computer Science",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "CS101",
+                            subject_name = "Công nghệ thông tin",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 20,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Mechanical Engineering",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MECH101",
+                            subject_name = "Cơ khí học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 21,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Electronics and Electrical Engineering",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ELEC101",
+                            subject_name = "Điện tử và điện lạnh",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 22,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Architecture",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ARCH101",
+                            subject_name = "Kiến trúc",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 23,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Art and Design",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ART101",
+                            subject_name = "Nghệ thuật và thiết kế",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 24,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Music and Performing Arts",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MUSIC101",
+                            subject_name = "Âm nhạc và nghệ thuật biểu diễn",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 25,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Foreign Language",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "FOREIGN101",
+                            subject_name = "Ngôn ngữ nước ngoài",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 26,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Geography",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "GEO101",
+                            subject_name = "Địa lý",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 27,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Environmental Science",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ENV101",
+                            subject_name = "Môi trường học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 28,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Psychology",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "PSY101",
+                            subject_name = "Tâm lý học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 29,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Antropology",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ANTH101",
+                            subject_name = "Antropology",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 30,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Economics 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ECO102",
+                            subject_name = "Kinh tế học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 31,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Business Management 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "BUS102",
+                            subject_name = "Quản trị kinh doanh 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 32,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Finance 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "FIN102",
+                            subject_name = "Tài chính 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 33,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Information Systems 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "IT102",
+                            subject_name = "Hệ thống thông tin 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 34,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Computer Science 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "CS102",
+                            subject_name = "Công nghệ thông tin 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 35,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Mechanical Engineering 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MECH102",
+                            subject_name = "Cơ khí học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 36,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Electronics and Electrical Engineering 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ELEC102",
+                            subject_name = "Điện tử và điện lạnh 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 37,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Architecture 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ARCH102",
+                            subject_name = "Kiến trúc 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 38,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Art and Design 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ART102",
+                            subject_name = "Nghệ thuật và thiết kế 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 39,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Music and Performing Arts 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MUSIC102",
+                            subject_name = "Âm nhạc và nghệ thuật biểu diễn 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 40,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Foreign Language 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "FOREIGN102",
+                            subject_name = "Ngôn ngữ nước ngoài 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 41,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Philosophy",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "PHILO101",
+                            subject_name = "Triết học",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 42,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Psychology 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "PSYCH102",
+                            subject_name = "Tâm lý học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 43,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Linguistics 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "LING102",
+                            subject_name = "Ngôn ngữ học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 44,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "English and Literature 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ENG102",
+                            subject_name = "Tiếng Anh và văn học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 45,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Geography 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "GEO102",
+                            subject_name = "Địa lý 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 46,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Environmental Science 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ENV102",
+                            subject_name = "Môi trường học 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 47,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Antropology 2",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ANTH102",
+                            subject_name = "Antropology 2",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 48,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Economics 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ECO103",
+                            subject_name = "Kinh tế học 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 49,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Business Management 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "BUS103",
+                            subject_name = "Quản trị kinh doanh 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 50,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Finance 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "FIN103",
+                            subject_name = "Tài chính 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 51,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Information Systems 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "IT103",
+                            subject_name = "Hệ thống thông tin 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 52,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Computer Science 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "CS103",
+                            subject_name = "Công nghệ thông tin 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 53,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Mechanical Engineering 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MECH103",
+                            subject_name = "Cơ khí học 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 54,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Electronics and Electrical Engineering 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ELEC103",
+                            subject_name = "Điện tử và điện lạnh 3",
+                            total_time = 70,
+                            total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 55,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Architecture 3",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "ARCH103",
+                            subject_name = "Kiến trúc 3",
                             total_time = 70,
                             total_time_class = 40
                         });

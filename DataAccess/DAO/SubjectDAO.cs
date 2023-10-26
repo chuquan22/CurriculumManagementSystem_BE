@@ -18,7 +18,7 @@ namespace DataAccess.DAO
 
         public List<Subject> GetAllSubjects()
         {
-            var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
+            var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true).ToList();
             return list;
         }
 
@@ -26,7 +26,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).SingleOrDefault(x => x.subject_id == id);
+                var subject = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true).SingleOrDefault(x => x.subject_id == id);
                 return subject;
             }
             catch (Exception ex)
@@ -38,8 +38,9 @@ namespace DataAccess.DAO
         public List<Subject> GetSubjectByCurriculum(int curriculumId)
         {
             var listSubjectIds = CMSDbContext.Curriculum
+                .Include(x => x.CurriculumSubjects)
                 .Where(x => x.curriculum_id == curriculumId)
-                .Join(CMSDbContext.CurriculumSubject,
+                .Join(CMSDbContext.CurriculumSubject.Include(x => x.Subject),
                     curriculum => curriculum.curriculum_id,
                     curriculumSubject => curriculumSubject.curriculum_id,
                      (curriculum, curriculumSubject) => curriculumSubject.Subject)
@@ -54,7 +55,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).ToList();
+                var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true).ToList();
                 return list;
             }
             catch (Exception ex)
@@ -67,7 +68,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.Equals(code));
                 return subject;
             }
             catch (Exception ex)
@@ -82,7 +83,7 @@ namespace DataAccess.DAO
             var curriculumSubject = CMSDbContext.CurriculumSubject.Where(x => x.term_no == term_no && x.curriculum_id == curriculumId).ToList();
             foreach (var item in curriculumSubject)
             {
-                var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == item.subject_id);
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_id == item.subject_id);
                 listSubject.Add(subject);
             }
             return listSubject;
