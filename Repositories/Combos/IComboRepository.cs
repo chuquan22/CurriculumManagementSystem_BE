@@ -13,7 +13,7 @@ namespace Repositories.Combos
 
         public Combo CreateCombo(Combo combo);
         public Combo UpdateCombo(Combo combo);
-        public Combo DeleteCombo(int id);
+        public string DeleteCombo(int id);
         public Combo FindComboById(int comboId);
         Combo FindComboByCode(string comboCode);
         bool DisableCombo(int id);

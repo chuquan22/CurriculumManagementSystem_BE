@@ -17,7 +17,7 @@ namespace Repositories.Combos
            return db.CreateCombo(combo);
         }
 
-        public Combo DeleteCombo(int id)
+        public string DeleteCombo(int id)
         {
             return db.DeleteCombo(id);
         }

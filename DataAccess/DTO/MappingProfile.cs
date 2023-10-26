@@ -19,9 +19,12 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
-
+           
             CreateMap<Subject, SubjectRequest>().ReverseMap();
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
+            //Combo
+            CreateMap<Combo, ComboResponse>().ReverseMap();
+
             //Major
             CreateMap<BusinessObject.Major, MajorRequest>().ReverseMap();
             CreateMap<BusinessObject.Major, MajorEditRequest>().ReverseMap();

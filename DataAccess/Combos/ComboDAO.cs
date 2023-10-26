@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -138,7 +139,7 @@ namespace DataAccess.Combos
                 throw;
             }
         }
-        public Combo DeleteCombo(int id)
+        public string DeleteCombo(int id)
         {
             Combo combo = new Combo();
             try
@@ -148,14 +149,20 @@ namespace DataAccess.Combos
                 {
                     db.Combo.Remove(combo);
                     db.SaveChanges();
-                }
-            }
-            catch (Exception)
-            {
+                    return "Delete sucessfully.";
 
-                throw;
+                }
+                else
+                {
+                    return "Combo is not exist in system!";
+                }
+
             }
-            return combo;
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+            return "Delete false";
         }
     }
     
