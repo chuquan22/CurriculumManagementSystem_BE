@@ -165,7 +165,7 @@ namespace DataAccess.Specialization
             }
             catch (Exception)
             {
-
+                return null;
             }
             finally
             {
