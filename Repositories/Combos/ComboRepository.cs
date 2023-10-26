@@ -42,6 +42,11 @@ namespace Repositories.Combos
             return db.GetListCombo(specId);
         }
 
+        public List<Combo> GetListComboByCurriId(int curriId)
+        {
+            return db.GetListComboByCurriId(curriId);
+        }
+
         public Combo UpdateCombo(Combo combo)
         {
             return db.UpdateCombo(combo);

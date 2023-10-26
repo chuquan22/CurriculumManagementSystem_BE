@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.DAO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,22 @@ namespace DataAccess.Combos
             try
             {
                 rs = db.Combo.Where(x => x.specialization_id == specId).ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return rs;
+        }
+
+        public List<Combo> GetListComboByCurriId(int curriId)
+        {
+            List<Combo> rs = new List<Combo>();
+            try
+            {
+                var curriculum = db.Curriculum.FirstOrDefault(x => x.curriculum_id == curriId && x.is_active == true);
+                rs = GetListCombo(curriculum.specialization_id);
             }
             catch (Exception)
             {
@@ -109,6 +126,7 @@ namespace DataAccess.Combos
                     oldCombo.is_active = cb.is_active;
                     db.Combo.Update(oldCombo);
                     db.SaveChanges();
+                    return cb;
                 }
                 return null;
             }
@@ -121,6 +139,10 @@ namespace DataAccess.Combos
         public Combo DeleteCombo(int id)
         {
             Combo combo = new Combo();
+            if (CheckComboExist(id))
+            {
+                return null;
+            }
             try
             {
                 combo = db.Combo.Where(c => c.combo_id == id).FirstOrDefault();
@@ -128,14 +150,27 @@ namespace DataAccess.Combos
                 {
                     db.Combo.Remove(combo);
                     db.SaveChanges();
+                    
                 }
             }
             catch (Exception)
             {
-
-                throw;
+                return null;
             }
             return combo;
+        }
+
+        private bool CheckComboExist(int combo_id)
+        {
+            var listCurriSubject = db.CurriculumSubject.ToList();
+            foreach(var c in listCurriSubject)
+            {
+                if(c.combo_id == combo_id)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
     

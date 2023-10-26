@@ -36,6 +36,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+
+        [HttpGet("GetListComboByCurri/{curri_Id}")]
+        public ActionResult GetListComboByCurriculum(int curri_Id)
+        {
+            List<Combo> rs = new List<Combo>();
+            try
+            {
+                rs = repo.GetListComboByCurriId(curri_Id);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+
+
         [HttpPost]
         public ActionResult CreateCombo(ComboRequest cb)
         {
@@ -74,17 +93,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                Combo rs = _mapper.Map<Combo>(cb);
-
-                rs = repo.UpdateCombo(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var combo = repo.FindComboById(cb.combo_id);
+                _mapper.Map(cb, combo);
+                combo = repo.UpdateCombo(combo);
+                return Ok(new BaseResponse(false, "Sucessfully", combo));
             }
             catch (Exception)
             {
 
                 return BadRequest(new BaseResponse(true, "error", null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpDelete]
         public ActionResult DeleteCombo(int id)
@@ -94,6 +112,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.DeleteCombo(id);
+                if(rs == null)
+                {
+                    return BadRequest(new BaseResponse(true, "Can't Delete Combo Used"));
+                }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -101,7 +123,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, "error", null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

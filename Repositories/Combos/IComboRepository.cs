@@ -10,7 +10,7 @@ namespace Repositories.Combos
     public interface IComboRepository
     {
         public List<Combo> GetListCombo(int specId);
-
+        List<Combo> GetListComboByCurriId(int curriId);
         public Combo CreateCombo(Combo combo);
         public Combo UpdateCombo(Combo combo);
         public Combo DeleteCombo(int id);
