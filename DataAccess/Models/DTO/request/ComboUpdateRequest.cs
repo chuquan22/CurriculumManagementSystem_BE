@@ -9,7 +9,6 @@ namespace DataAccess.Models.DTO.request
     public class ComboUpdateRequest
     {
         public int combo_id { get; set; }
-        public string combo_code { get; set; }
         public string combo_name { get; set; }
         public string combo_english_name { get; set; }
         public string combo_description { get; set; }

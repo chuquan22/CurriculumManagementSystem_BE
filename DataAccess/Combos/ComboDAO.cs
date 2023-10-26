@@ -102,7 +102,6 @@ namespace DataAccess.Combos
                 var oldCombo = db.Combo.Where(c => c.combo_id == cb.combo_id).FirstOrDefault();
                 if (oldCombo != null)
                 {
-                    oldCombo.combo_code = cb.combo_code;
                     oldCombo.combo_name = cb.combo_name;
                     oldCombo.combo_english_name = cb.combo_english_name;
                     oldCombo.combo_description = cb.combo_description;
