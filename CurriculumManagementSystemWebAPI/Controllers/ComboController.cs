@@ -23,10 +23,28 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public ActionResult GetListCombo(int specialization_id)
         {
-            List<Combo> rs = new List<Combo>();
+            List<ComboResponse> rs = new List<ComboResponse>();
             try
             {
-                rs = repo.GetListCombo(specialization_id);
+                var result = repo.GetListCombo(specialization_id);
+                rs = _mapper.Map<List<ComboResponse>>(result);
+                return Ok(new BaseResponse(false, "Sucessfully", rs));
+            }
+            catch (Exception)
+            {
+
+                return BadRequest(new BaseResponse(true, "error", null));
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpGet("{id}")]
+        public ActionResult GetCombo(int id)
+        {
+            ComboResponse rs = new ComboResponse();
+            try
+            {
+                var result = repo.FindComboById(id);
+                rs = _mapper.Map<ComboResponse>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -61,9 +79,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Combo rs = _mapper.Map<Combo>(cb);
+                bool checkCode = repo.IsCodeExist(rs.combo_code);
+                if (checkCode == false)
+                {
+                    rs = repo.CreateCombo(rs);
+                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(true, "Combo code already exist!", null));
 
-                rs = repo.CreateCombo(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                }
+
             }
             catch (Exception)
             {
@@ -108,7 +135,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult DeleteCombo(int id)
         {
 
-            Combo rs = new Combo();
+            string rs = null;
             try
             {
                 rs = repo.DeleteCombo(id);
@@ -117,6 +144,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     return BadRequest(new BaseResponse(true, "Can't Delete Combo Used"));
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
+
             }
             catch (Exception)
             {

@@ -31,7 +31,9 @@ namespace DataAccess.Major
             var editMajor = db.Major.FirstOrDefault(x => x.major_id == major.major_id);
             editMajor.major_name = major.major_name;
             editMajor.is_active = major.is_active;
-            editMajor.major_code = major.major_code;
+            //editMajor.major_code = major.major_code;
+            editMajor.major_english_name = major.major_english_name;
+            db.Major.Update(editMajor); 
             db.SaveChanges();
             return major;
         }

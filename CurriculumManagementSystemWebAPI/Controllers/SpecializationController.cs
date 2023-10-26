@@ -105,24 +105,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
-                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
+               // bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
 
-                if (checkCodeExist != true)
-                {
+              
                     rs = repo.UpdateSpecialization(rs);
                     return Ok(new BaseResponse(false, "Sucessfully", rs));
 
-                }
-                else
-                {
-                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
-
-                }
+            
+                
             }
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(false, "Specialization update trong hệ thống that bai!", null));
+
             }
             return Ok(new BaseResponse(true, "Get List Major False", null));
         }

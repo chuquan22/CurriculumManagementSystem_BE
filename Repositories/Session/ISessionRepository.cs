@@ -17,6 +17,6 @@ namespace Repositories.Session
         public string DeleteSession(int id);
 
         public BusinessObject.Session GetSessionById(int id);
-
+        string UpdatePatchSession(BusinessObject.Session rs);
     }
 }

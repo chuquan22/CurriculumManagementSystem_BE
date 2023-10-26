@@ -19,9 +19,12 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
-
+           
             CreateMap<Subject, SubjectRequest>().ReverseMap();
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
+            //Combo
+            CreateMap<Combo, ComboResponse>().ReverseMap();
+
             //Major
             CreateMap<BusinessObject.Major, MajorRequest>().ReverseMap();
             CreateMap<BusinessObject.Major, MajorEditRequest>().ReverseMap();
@@ -29,12 +32,13 @@ namespace DataAccess.Models.DTO
             CreateMap<Syllabus, SyllabusResponse>()
                 .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
-                .ForMember(dest => dest.isApproved, opt => opt.MapFrom(src => src.approved_date))
+                .ForMember(dest => dest.approved_date, opt => opt.MapFrom(src => src.approved_date))
                 .ForMember(dest => dest.syllabus_name, opt => opt.MapFrom(src => src.Subject.english_subject_name + "_" + src.Subject.subject_name))
                  .ReverseMap();
             CreateMap<Syllabus, SyllabusDetailsResponse>()
               .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
               .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
+              .ForMember(dest => dest.decision_No, opt => opt.MapFrom(src => src.decision_No))
               .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
               .ForMember(dest => dest.learning_teaching_method, opt => opt.MapFrom(src => src.Subject.LearningMethod.learning_method_name))
               .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))
@@ -42,6 +46,9 @@ namespace DataAccess.Models.DTO
             //CLOS
             CreateMap<BusinessObject.CLO, CLOsRequest>().ReverseMap();
             CreateMap<BusinessObject.CLO, CLOsUpdateRequest>().ReverseMap();
+            //Syllabus
+            CreateMap<BusinessObject.Syllabus, SyllabusPatchRequest>().ReverseMap();
+
             //Materials
             CreateMap<BusinessObject.Material, MaterialRequest>().ReverseMap();
             CreateMap<BusinessObject.Material, MaterialUpdateRequest>().ReverseMap();
@@ -53,6 +60,7 @@ namespace DataAccess.Models.DTO
             //Session
             CreateMap<BusinessObject.Session, SessionRequest>().ReverseMap();
             CreateMap<BusinessObject.Session, SessionUpdate>().ReverseMap();
+            CreateMap<BusinessObject.Session, SessionPatchRequest>().ReverseMap();
 
             CreateMap<BusinessObject.SessionCLO, SessionCLOsRequest>().ReverseMap();
 
@@ -62,6 +70,8 @@ namespace DataAccess.Models.DTO
              .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })
              .ToList()))
                 .ReverseMap();
+            //ClassSessionType
+            CreateMap<BusinessObject.ClassSessionType, ClassSessionTypeResponse>().ReverseMap();
             //GradingStruture
             CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
      .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))

@@ -22,6 +22,11 @@ namespace Repositories.CLOS
             return db.DeleteCLOs(id);
         }
 
+        public CLO GetCLOByName(string name)
+        {
+            return db.GetCLOByName(name);
+        }
+
         public List<CLO> GetCLOs(int id)
         {
             return db.GetCLOs(id);

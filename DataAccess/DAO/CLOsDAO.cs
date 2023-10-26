@@ -28,6 +28,12 @@ namespace DataAccess.DAO
             return oldCol;
         }
 
+        public CLO GetCLOByName(string name)
+        {
+            var rs = _cmsDbContext.CLO.Where(c => c.CLO_name.Equals(name)).FirstOrDefault();
+            return rs;
+        }
+
         public CLO GetCLOsById(int id)
         {
             var oldCol = _cmsDbContext.CLO.Where(c => c.CLO_id == id).FirstOrDefault();
