@@ -1,7 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.DAO;
 using Microsoft.EntityFrameworkCore;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,13 +171,18 @@ namespace DataAccess.Combos
                 {
                     db.Combo.Remove(combo);
                     db.SaveChanges();
-
-                    
+                    return "Delete sucessfully.";
                 }
+                else
+                {
+                    return "Combo is not exist in system!";
+                }
+
             }
             catch (Exception ex)
             {
                 return ex.InnerException.Message;
+
             }
             return "Delete false";
         }

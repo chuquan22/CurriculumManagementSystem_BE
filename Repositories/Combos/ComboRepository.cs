@@ -47,6 +47,7 @@ namespace Repositories.Combos
             return db.GetListComboByCurriId(curriId);
         } 
 
+
         public bool IsCodeExist(string code)
         {
            return db.IsCodeExist(code);
