@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,21 @@ namespace DataAccess.DAO
             }
            
             return batch_id;
+        }
+
+        public List<Batch> GetBatchBySpe(int speId)
+        {
+            var specialization = _context.Specialization.Include(x => x.Semester.Batch).FirstOrDefault(x => x.specialization_id == speId);
+            var batch_name = specialization.Semester.Batch.batch_name;
+            var listBatch = new List<Batch>();
+            foreach(var batch in GetAllBatch())
+            {
+                if(double.Parse(batch.batch_name) >= double.Parse(batch_name))
+                {
+                    listBatch.Add(batch);
+                }
+            }
+            return listBatch;
         }
 
         private int CreateBatch(Batch batch)

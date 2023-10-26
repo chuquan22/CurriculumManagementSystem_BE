@@ -170,9 +170,9 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Semester>().HasData(
-                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("05/09/2023"), semester_end_date = DateTime.Now, school_year = 2023 },
-                new Semester { semester_id = 2, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023 },
-                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023 }
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("05/09/2023"), semester_end_date = DateTime.Now, school_year = 2023, batch_id = 1 },
+                new Semester { semester_id = 2, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023 , batch_id = 2},
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023, batch_id = 3 }
                 );
 
             modelBuilder.Entity<Major>().HasData(

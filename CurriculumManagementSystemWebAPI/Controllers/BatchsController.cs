@@ -27,5 +27,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listBatch = _repo.GetAllBatch();
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
+
+        [HttpGet("GetBatchBySpe/{speId}")]
+        public ActionResult GetBatch(int speId)
+        {
+            var listBatch = _repo.GetBatchBySpe(speId);
+            return Ok(new BaseResponse(false, "List Batch", listBatch));
+        }
     }
 }

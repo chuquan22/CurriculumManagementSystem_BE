@@ -168,7 +168,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             curriculum.is_active = true;
             if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
-                return BadRequest(new BaseResponse(true, "Curriculum Existed. Please Create other curriculum!"));
+                return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} is Duplicate!"));
             }
             string createResult = _curriculumRepository.CreateCurriculum(curriculum);
             if (!createResult.Equals("OK"))
@@ -185,7 +185,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             if (CheckCurriculumCanDelete(id))
             {
-                return Ok(new BaseResponse(true, "Can not Delete this Curriculum!"));
+                return BadRequest(new BaseResponse(true, "Can not Delete Curriculum Had Subject!"));
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             if (curriculum == null)
