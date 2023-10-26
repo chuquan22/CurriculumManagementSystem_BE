@@ -46,7 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 if(checkCode == null)
                 {
                     rs = repo.AddMajor(rs);
-                    return Ok(new BaseResponse(false, "Create Sucessfully", rs));
+                    return Ok(new BaseResponse(false, "Create major sucessfully", rs));
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Create major false.", null));
             }
             return Ok(new BaseResponse(true, "Create Major False", null));
         }
@@ -70,7 +70,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Major rs = _mapper.Map<Major>(major);
                 rs = repo.EditMajor(rs);
-                return Ok(new BaseResponse(false, "Edit Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
             }
             catch (Exception)
             {
@@ -90,14 +90,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var major = repo.FindMajorById(id);
                 if(major != null)
                 {
-                    Ok(new BaseResponse(false, "Không tìm thấy id trong hệ thống", null));
+                    Ok(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
                 }
                 repo.DeleteMajor(id);
-                return Ok(new BaseResponse(false, "Delete Sucessfully", major));
+                return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Cant not delete this major. Major already used in system!", null));
             }
             return Ok(new BaseResponse(true, "Delete False", null));
         }
