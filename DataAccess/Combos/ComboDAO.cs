@@ -31,7 +31,7 @@ namespace DataAccess.Combos
             var combo = db.Combo.Where(x => x.combo_id == id).FirstOrDefault();
             if(combo != null)
             {
-                if (combo.is_active = false)
+                if (combo.is_active == false)
                 {
                     combo.is_active = true;
                 }
@@ -39,6 +39,8 @@ namespace DataAccess.Combos
                 {
                     combo.is_active = false;
                 }
+                db.Combo.Update(combo);
+                db.SaveChanges();
                 return true;
             }
             else
@@ -81,7 +83,6 @@ namespace DataAccess.Combos
 
         public Combo CreateCombo(Combo cb)
         {
-            Combo combo = new Combo();
             try
             {
                 db.Combo.Add(cb);
