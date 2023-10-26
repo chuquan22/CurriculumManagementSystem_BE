@@ -432,6 +432,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var r in row)
                     {
+                        var major = new Major();
                         // Check information in coloumn title
                         if (!r.Title.Equals(expectedOrder[index]))
                         {
@@ -450,16 +451,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         // Check Major Exsit
                         else if (r.Title.Equals("Vocational Code"))
                         {
-                            var major = _majorRepository.CheckMajorbyMajorCode(r.Details);
+                             major = _majorRepository.CheckMajorbyMajorCode(r.Details);
                             //if major not exsit in database
                             if (major == null)
                             {
                                 return $"Major not Exsit. Please Create Major {r.Details}";
                             }
                         }
+                        // Check Spe exsit
                         else if (r.Title.Equals("Specialization Code"))
                         {
                             var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
+                            var spe = _specializationRepository.GetSpeById(spe_id);
+                            if(spe.major_id != major.major_id)
+                            {
+
+                            }
                             //if major not exsit in database
                             if (spe_id == 0)
                             {

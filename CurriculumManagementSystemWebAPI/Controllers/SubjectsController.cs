@@ -62,11 +62,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var totalElements = subjectQuery.Count(); 
             var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
+                .Include(x => x.PreRequisite)
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.LearningMethod)
                 .ToList();
 
+
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
+            foreach(var subjectRespones in subjectResponse)
+            {
+                subjectRespones.prerequisites = _preRequisiteRepository.GetPreRequisitesBySubject(subjectRespones.subject_id);
+            }
 
             var paginationResponse = new PaginationResponse<SubjectResponse>
             {
