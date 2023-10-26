@@ -21,6 +21,16 @@ namespace Repositories.Major
             return db.CheckMajorbyMajorCode(code);
         }
 
+        public BusinessObject.Major CheckMajorbyMajorEnglishName(string eng_name)
+        {
+            return db.CheckMajorbyMajorEnglishName(eng_name);
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorName(string name)
+        {
+            return db.CheckMajorbyMajorName(name);
+        }
+
         public void DeleteMajor(int id)
         {
             db.DeleteMajor(id);

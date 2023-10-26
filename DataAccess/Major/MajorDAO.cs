@@ -53,7 +53,17 @@ namespace DataAccess.Major
 
         public BusinessObject.Major CheckMajorbyMajorCode(string code)
         {
-            return db.Major?.FirstOrDefault(e => e.major_code.Equals(code));
+            return db.Major?.FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()));
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorName(string name)
+        {
+            return db.Major?.FirstOrDefault(e => e.major_name.ToLower().Equals(name.ToLower()));
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorEnglishName(string eng_name)
+        {
+            return db.Major?.FirstOrDefault(e => e.major_english_name.ToLower().Equals(eng_name.ToLower()));
         }
     }
 }

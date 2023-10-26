@@ -13,7 +13,7 @@ namespace Repositories.Subjects
     {
         List<Subject> GetAllSubject();
         Subject GetSubjectById(int id);
-
+        Subject GetSubjectBySyllabus(int syllabus_id);
         List<Subject> GetSubjectByName(string name);
         Subject GetSubjectByCode(string code);
         List<Subject> GetListSubjectByTermNo(int term_no, int curriculum_id);
