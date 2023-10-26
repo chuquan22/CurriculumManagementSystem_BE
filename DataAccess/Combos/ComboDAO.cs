@@ -172,7 +172,6 @@ namespace DataAccess.Combos
                     db.Combo.Remove(combo);
                     db.SaveChanges();
                     return "Delete sucessfully.";
-
                 }
                 else
                 {
