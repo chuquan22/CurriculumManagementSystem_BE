@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -35,8 +35,8 @@ namespace BusinessObject
         public decimal min_GPA_to_pass { get; set; }
         [Required]
         public int scoring_scale { get; set; }
-        [Required]
-        public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
         [Required]
         public bool syllabus_status { get; set; }
         [Required]

@@ -10,5 +10,7 @@ namespace Repositories.AssessmentTypes
     public interface IAssessmentTypeRepository
     {
         public List<AssessmentType> GetAllAssessmentType();
+
+        public AssessmentType GetAssessmentTypeByName(string name);
     }
 }
