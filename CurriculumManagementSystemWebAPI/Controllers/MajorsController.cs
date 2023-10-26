@@ -42,8 +42,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Major rs = _mapper.Map<Major>(major);
-                rs = repo.AddMajor(rs);
-                return Ok(new BaseResponse(false, "Create Sucessfully", rs));
+                Major checkCode = repo.CheckMajorbyMajorCode(rs.major_code);
+                if(checkCode == null)
+                {
+                    rs = repo.AddMajor(rs);
+                    return Ok(new BaseResponse(false, "Create Sucessfully", rs));
+                }
+                else
+                {
+                    return BadRequest(new BaseResponse(true, "Major code already exist!.", null));
+                }
+
+
             }
             catch (Exception)
             {

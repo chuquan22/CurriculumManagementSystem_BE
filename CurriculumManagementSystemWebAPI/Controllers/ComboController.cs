@@ -50,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 else
                 {
-                    return BadRequest(new BaseResponse(true, "Combo Code Exist!", null));
+                    return BadRequest(new BaseResponse(true, "Combo code already exist!", null));
 
                 }
 
