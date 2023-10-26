@@ -163,16 +163,20 @@ namespace BusinessObject
 
             modelBuilder.Entity<Batch>().HasData(
                 new Batch { batch_id = 1, batch_name = "19.3" },
-                new Batch { batch_id = 2, batch_name = "18.3" },
-                new Batch { batch_id = 3, batch_name = "18.2" },
-                new Batch { batch_id = 4, batch_name = "20.1" },
-                new Batch { batch_id = 5, batch_name = "20.2" }
+                new Batch { batch_id = 2, batch_name = "19.2" },
+                new Batch { batch_id = 3, batch_name = "19.1" },
+                new Batch { batch_id = 4, batch_name = "18.3" },
+                new Batch { batch_id = 5, batch_name = "18.2" },
+                new Batch { batch_id = 6, batch_name = "18.1" }
                 );
 
             modelBuilder.Entity<Semester>().HasData(
-                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("05/09/2023"), semester_end_date = DateTime.Now, school_year = 2023 },
-                new Semester { semester_id = 2, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023 },
-                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("03/01/2023"), semester_end_date = DateTime.Parse("12/04/2023"), school_year = 2023 }
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, batch_id = 1 },
+                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/20/2023"), school_year = 2023, batch_id = 2 },
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/14/2023"), school_year = 2023, batch_id = 3 },
+                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, batch_id = 4 },
+                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, batch_id = 5 },
+                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, batch_id = 6 }
                 );
 
             modelBuilder.Entity<Major>().HasData(
@@ -215,6 +219,7 @@ namespace BusinessObject
               );
 
             modelBuilder.Entity<AssessmentType>().HasData(
+
                 new AssessmentType { assessment_type_id = 1, assessment_type_name = "Online" },
                 new AssessmentType { assessment_type_id = 2, assessment_type_name = "ORIT" },
                  new AssessmentType { assessment_type_id = 3, assessment_type_name = "On-going" },
@@ -225,7 +230,8 @@ namespace BusinessObject
                 new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
                 new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 },
                        new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "AAAVBB", assessment_type_id = 1 }
-                );
+
+           
 
             modelBuilder.Entity<Subject>().HasData(
                 new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 3, total_time = 70, total_time_class = 40, exam_total = 3, is_active = true },
@@ -327,6 +333,25 @@ namespace BusinessObject
                 new PLOMapping { PLO_id = 2, subject_id = 4 }
                 );
 
+            modelBuilder.Entity<PreRequisiteType>().HasData(
+                new PreRequisiteType { pre_requisite_type_id = 1, pre_requisite_type_name = "Corequisite" },
+                new PreRequisiteType { pre_requisite_type_id = 2, pre_requisite_type_name = "Prerequisite" },
+                new PreRequisiteType { pre_requisite_type_id = 3, pre_requisite_type_name = "Recommended" },
+                new PreRequisiteType { pre_requisite_type_id = 4, pre_requisite_type_name = "Elective" }
+                );
+
+            modelBuilder.Entity<PreRequisite>().HasData(
+                new PreRequisite { subject_id = 1, pre_subject_id = 2, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 2, pre_subject_id = 3, pre_requisite_type_id = 2 },
+                new PreRequisite { subject_id = 3, pre_subject_id = 5, pre_requisite_type_id = 3 },
+                new PreRequisite { subject_id = 4, pre_subject_id = 7, pre_requisite_type_id = 4 },
+                new PreRequisite { subject_id = 5, pre_subject_id = 8, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 10, pre_subject_id = 12, pre_requisite_type_id = 1 },
+                new PreRequisite { subject_id = 11, pre_subject_id = 14, pre_requisite_type_id = 2 },
+                new PreRequisite { subject_id = 15, pre_subject_id = 17, pre_requisite_type_id = 3 }
+                );
+
+                
         }
     }
 }

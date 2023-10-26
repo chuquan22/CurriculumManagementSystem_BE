@@ -130,25 +130,29 @@ namespace DataAccess.DAO
 
             if (oldRs != null)
             {
-                if (session.remote_learning != null && session.remote_learning != 0)
+                if (session.remote_learning != null )
                     oldRs.remote_learning = session.remote_learning;
 
-                if (session.ass_defense != null && session.ass_defense != 0)
+                if (session.ass_defense != null)
                     oldRs.ass_defense = session.ass_defense;
 
-                if (session.video_learning != null && session.video_learning != 0)
+                if (session.video_learning != null)
                     oldRs.video_learning = session.video_learning;
 
-                if (session.IVQ != null && session.IVQ != 0)
+                if (session.IVQ != null )
                     oldRs.IVQ = session.IVQ;
 
-                if (session.online_lab != null && session.online_lab != 0)
+                if (session.online_lab != null)
                     oldRs.online_lab = session.online_lab;
 
-                if (session.online_test != null && session.online_test != 0)
+
+                if (session.eos_exam != null)
+                    oldRs.eos_exam = session.eos_exam;
+
+                if (session.online_test != null )
                     oldRs.online_test = session.online_test;
 
-                if (session.assigment != null && session.assigment != 0)
+                if (session.assigment != null )
                     oldRs.assigment = session.assigment;
 
                 _cmsDbContext.Session.Update(oldRs);

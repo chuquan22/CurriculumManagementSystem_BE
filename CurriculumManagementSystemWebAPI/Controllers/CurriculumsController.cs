@@ -168,7 +168,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             curriculum.is_active = true;
             if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
-                return BadRequest(new BaseResponse(true, "Curriculum Existed. Please Create other curriculum!"));
+                return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} is Duplicate!"));
             }
             string createResult = _curriculumRepository.CreateCurriculum(curriculum);
             if (!createResult.Equals("OK"))
@@ -185,7 +185,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             if (CheckCurriculumCanDelete(id))
             {
-                return Ok(new BaseResponse(true, "Can not Delete this Curriculum!"));
+                return BadRequest(new BaseResponse(true, "Can not Delete Curriculum Had Subject!"));
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             if (curriculum == null)
@@ -432,6 +432,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var r in row)
                     {
+                        var major = new Major();
                         // Check information in coloumn title
                         if (!r.Title.Equals(expectedOrder[index]))
                         {
@@ -450,16 +451,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         // Check Major Exsit
                         else if (r.Title.Equals("Vocational Code"))
                         {
-                            var major = _majorRepository.CheckMajorbyMajorCode(r.Details);
+                             major = _majorRepository.CheckMajorbyMajorCode(r.Details);
                             //if major not exsit in database
                             if (major == null)
                             {
                                 return $"Major not Exsit. Please Create Major {r.Details}";
                             }
                         }
+                        // Check Spe exsit
                         else if (r.Title.Equals("Specialization Code"))
                         {
                             var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
+                            var spe = _specializationRepository.GetSpeById(spe_id);
+                            if(spe.major_id != major.major_id)
+                            {
+
+                            }
                             //if major not exsit in database
                             if (spe_id == 0)
                             {
@@ -486,6 +493,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             if (plo.PLO_name.Equals(PLO.PLO_name))
                             {
                                 return $"Only one {plo.PLO_name} in Sheet PLO";
+                            }
+                            if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
+                            {
+                                return "PLO must start with 'PLO' and no cointain space ";
                             }
                         }
                     }

@@ -22,6 +22,7 @@ namespace BusinessObject
         public int? session_no { get; set; }
         [AllowNull]
         public string? references { get; set; }
+
         [Required]
         public decimal grading_weight { get; set; }
         [AllowNull]

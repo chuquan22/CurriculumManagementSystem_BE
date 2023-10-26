@@ -62,11 +62,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var totalElements = subjectQuery.Count(); 
             var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
+                .Include(x => x.PreRequisite)
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.LearningMethod)
                 .ToList();
 
+
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
+            foreach(var subjectRespones in subjectResponse)
+            {
+                var prerequisites = _preRequisiteRepository.GetPreRequisitesBySubject(subjectRespones.subject_id);
+                subjectRespones.prerequisites = _mapper.Map<List<PreRequisiteResponse>>(prerequisites);
+            }
 
             var paginationResponse = new PaginationResponse<SubjectResponse>
             {
@@ -96,6 +103,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var subjectResponse = _mapper.Map<SubjectResponse>(subject);
             return Ok(new BaseResponse(false, "Success!", subjectResponse));
         }
+
+
+        // GET: api/Subjects/5
+        [HttpGet("GetSubjectBySyllabus/{syllabus_id}")]
+        public async Task<ActionResult<SubjectResponse>> GetSubjectBySyllabus(int syllabus_id)
+        {
+            var subject = _subjectRepository.GetSubjectBySyllabus(syllabus_id);
+
+            if (subject == null)
+            {
+                return NotFound(new BaseResponse(true, "Can't Found this subject"));
+            }
+            var subjectResponse = _mapper.Map<SubjectResponse>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectResponse));
+        }
+
 
         [HttpPost("CreateSubjectWithPrerequisites")]
         public async Task<ActionResult<Subject>> PostSubjectWithPrerequisites([FromBody] SubjectPreRequisiteRequest subjectPreRequisitesRequest)

@@ -167,9 +167,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_group, subId);
 
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
-            string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
-
-            if (deleteResult != Result.deleteSuccessfull.ToString() || deleteResult2 != Result.deleteSuccessfull.ToString())
+            if(curriculumSubject2 != null)
+            {
+                string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
+                if (deleteResult2 != Result.deleteSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, "Remove Fail"));
+                }
+            }
+            if (deleteResult != Result.deleteSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, "Remove Fail"));
             }

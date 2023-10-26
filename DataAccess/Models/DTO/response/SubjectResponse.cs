@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject;
 
 namespace DataAccess.Models.DTO.response
 {
@@ -23,6 +24,7 @@ namespace DataAccess.Models.DTO.response
         public int total_time_class { get; set; }
         public int exam_total { get; set; }
         public bool is_active { get; set; }
+        public List<PreRequisiteResponse> prerequisites { get; set; }
     }
 
 

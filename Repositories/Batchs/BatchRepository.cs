@@ -16,6 +16,11 @@ namespace Repositories.Batchs
             return _batchDAO.GetAllBatch(); 
         }
 
+        public List<Batch> GetBatchBySpe(int speId)
+        {
+            return _batchDAO.GetBatchBySpe(speId);
+        }
+
         public int GetBatchIDByName(string batchName)
         {
             return _batchDAO.GetBatchIDByName(batchName);

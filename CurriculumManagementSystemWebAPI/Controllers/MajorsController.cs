@@ -43,17 +43,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Major rs = _mapper.Map<Major>(major);
                 Major checkCode = repo.CheckMajorbyMajorCode(rs.major_code);
-                if(checkCode == null)
+                Major checkName = repo.CheckMajorbyMajorName(rs.major_name);
+                Major checkEngName = repo.CheckMajorbyMajorEnglishName(rs.major_english_name);
+                if(checkCode != null)
+                {
+                    return BadRequest(new BaseResponse(true, "Major Code Duplicate!.", null));
+                }else if(checkName != null)
+                {
+                    return BadRequest(new BaseResponse(true, "Major Name Duplicate.", null));
+                }else if(checkEngName != null)
+                {
+                    return BadRequest(new BaseResponse(true, "Major English Name Duplicate.", null));
+                }
+                else
                 {
                     rs = repo.AddMajor(rs);
                     return Ok(new BaseResponse(false, "Create major sucessfully", rs));
                 }
-                else
-                {
-                    return BadRequest(new BaseResponse(true, "Major code already exist!.", null));
-                }
-
-
             }
             catch (Exception)
             {
@@ -66,11 +72,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut]
         public ActionResult EditMajor(MajorEditRequest major)
         {
+
             try
             {
                 Major rs = _mapper.Map<Major>(major);
-                rs = repo.EditMajor(rs);
-                return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
+                Major checkName = repo.CheckMajorbyMajorName(rs.major_name);
+                Major checkEngName = repo.CheckMajorbyMajorEnglishName(rs.major_english_name);
+                if (checkName != null)
+                {
+                    return BadRequest(new BaseResponse(true, "Major Name Duplicate.", null));
+                }
+                else if (checkEngName != null)
+                {
+                    return BadRequest(new BaseResponse(true, "Major English Name Duplicate.", null));
+                }
+                else
+                {
+                    rs = repo.EditMajor(rs);
+                    return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
+                }
             }
             catch (Exception)
             {
