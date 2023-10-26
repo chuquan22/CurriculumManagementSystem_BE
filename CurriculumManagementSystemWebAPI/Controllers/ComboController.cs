@@ -139,7 +139,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.DeleteCombo(id);
-                if(rs == null)
+                if(rs != "Delete sucessfully.")
                 {
                     return BadRequest(new BaseResponse(true, "Can't Delete Combo Used"));
                 }
