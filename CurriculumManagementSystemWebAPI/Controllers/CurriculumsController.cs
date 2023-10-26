@@ -494,6 +494,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 return $"Only one {plo.PLO_name} in Sheet PLO";
                             }
+                            if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
+                            {
+                                return "PLO must start with 'PLO' and no cointain space ";
+                            }
                         }
                     }
                 }
