@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BusinessObject;
+using DataAccess.Models.DTO.Excel;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using System;
@@ -28,6 +29,24 @@ namespace DataAccess.Models.DTO
             //Major
             CreateMap<BusinessObject.Major, MajorRequest>().ReverseMap();
             CreateMap<BusinessObject.Major, MajorEditRequest>().ReverseMap();
+            //Excel Syllabus
+            CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
+            CreateMap<Syllabus, SyllabusRequest>().ReverseMap();
+
+            //
+            CreateMap<GradingStruture, GradingStrutureExcel>()
+     .ForMember(dest => dest.type_of_questions, opt => opt.MapFrom(src => src.type_of_questions))
+     .ForMember(dest => dest.number_of_questions, opt => opt.MapFrom(src => src.number_of_questions))
+     .ForMember(dest => dest.SessionNo, opt => opt.MapFrom(src => src.session_no))
+     .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.references))
+     .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.grading_weight))
+     .ForMember(dest => dest.Part, opt => opt.MapFrom(src => src.grading_part))
+     .ForMember(dest => dest.minimun_value_to_meet, opt => opt.MapFrom(src => src.minimum_value_to_meet_completion))
+     .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.grading_duration))
+     .ForMember(dest => dest.scope, opt => opt.MapFrom(src => src.scope_knowledge))
+     .ForMember(dest => dest.how, opt => opt.MapFrom(src => src.how_granding_structure))
+     .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_method_id))
+     .ReverseMap();
             //Syllabus
             CreateMap<Syllabus, SyllabusResponse>()
                 .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))

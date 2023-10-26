@@ -97,6 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPatch]
+
         public ActionResult UpdatePatchSesion(List<SessionPatchRequest> request)
         {
             try

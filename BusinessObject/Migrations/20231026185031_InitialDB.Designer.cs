@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231025093930_InitialDB")]
+    [Migration("20231026185031_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,16 @@ namespace BusinessObject.Migrations
                         {
                             assessment_type_id = 2,
                             assessment_type_name = "ORIT"
+                        },
+                        new
+                        {
+                            assessment_type_id = 3,
+                            assessment_type_name = "On-going"
+                        },
+                        new
+                        {
+                            assessment_type_id = 4,
+                            assessment_type_name = "Final Exam"
                         });
                 });
 
@@ -148,6 +158,23 @@ namespace BusinessObject.Migrations
                     b.HasKey("class_session_type_id");
 
                     b.ToTable("ClassSessionType");
+
+                    b.HasData(
+                        new
+                        {
+                            class_session_type_id = 1,
+                            class_session_type_name = "Online"
+                        },
+                        new
+                        {
+                            class_session_type_id = 2,
+                            class_session_type_name = "Offline"
+                        },
+                        new
+                        {
+                            class_session_type_id = 3,
+                            class_session_type_name = "ORIT"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.CLO", b =>
@@ -159,11 +186,9 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CLO_id"), 1L, 1);
 
                     b.Property<string>("CLO_description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CLO_name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("syllabus_id")
@@ -355,7 +380,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 1,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -371,7 +396,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -387,7 +412,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 3,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -403,7 +428,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 4,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -419,7 +444,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 5,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM",
                             curriculum_description = "",
@@ -435,7 +460,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 6,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -451,7 +476,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 7,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SWP",
                             curriculum_description = "",
@@ -467,7 +492,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 8,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -582,8 +607,10 @@ namespace BusinessObject.Migrations
                     b.Property<int>("assessment_method_id")
                         .HasColumnType("int");
 
+                    b.Property<string>("clo_name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("grading_duration")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("grading_note")
@@ -596,32 +623,27 @@ namespace BusinessObject.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("how_granding_structure")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("minimum_value_to_meet_completion")
                         .HasColumnType("int");
 
                     b.Property<string>("number_of_questions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("references")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("scope_knowledge")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("session_no")
+                    b.Property<int?>("session_no")
                         .HasColumnType("int");
 
                     b.Property<int>("syllabus_id")
                         .HasColumnType("int");
 
                     b.Property<string>("type_of_questions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("grading_id");
@@ -683,6 +705,18 @@ namespace BusinessObject.Migrations
                     b.HasKey("learning_resource_id");
 
                     b.ToTable("LearningResource");
+
+                    b.HasData(
+                        new
+                        {
+                            learning_resource_id = 1,
+                            learning_resource_type = "Lab"
+                        },
+                        new
+                        {
+                            learning_resource_id = 2,
+                            learning_resource_type = "Assessment"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Major", b =>
@@ -1097,7 +1131,7 @@ namespace BusinessObject.Migrations
                         {
                             semester_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 25, 16, 39, 30, 260, DateTimeKind.Local).AddTicks(7850),
+                            semester_end_date = new DateTime(2023, 10, 27, 1, 50, 31, 486, DateTimeKind.Local).AddTicks(2247),
                             semester_name = "Fall",
                             semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -1154,7 +1188,6 @@ namespace BusinessObject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("schedule_id"), 1L, 1);
 
                     b.Property<string>("ITU")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("IVQ")
@@ -1173,7 +1206,6 @@ namespace BusinessObject.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("lecturer_material")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("lecturer_material_link")
@@ -1190,22 +1222,19 @@ namespace BusinessObject.Migrations
 
                     b.Property<string>("schedule_content")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("schedule_lecturer_task")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("schedule_student_task")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("session_No")
                         .HasColumnType("int");
 
                     b.Property<string>("student_material")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("student_material_link")
@@ -1286,7 +1315,7 @@ namespace BusinessObject.Migrations
                             major_id = 1,
                             semester_id = 1,
                             specialization_code = "IED",
-                            specialization_english_name = "Interior and exterior design",
+                            specialization_english_name = "Interior and Exterior Design",
                             specialization_name = "Thiết kế nội và ngoại thất"
                         },
                         new
@@ -1296,7 +1325,7 @@ namespace BusinessObject.Migrations
                             major_id = 1,
                             semester_id = 1,
                             specialization_code = "FMA",
-                            specialization_english_name = "Filmmaking and advertising",
+                            specialization_english_name = "Filmmaking and Advertising",
                             specialization_name = "Dựng phim và quảng cáo"
                         },
                         new
@@ -1306,7 +1335,7 @@ namespace BusinessObject.Migrations
                             major_id = 1,
                             semester_id = 2,
                             specialization_code = "IED",
-                            specialization_english_name = "Interior and exterior design",
+                            specialization_english_name = "Interior and Exterior Design",
                             specialization_name = "Thiết kế nội và ngoại thất"
                         },
                         new
@@ -1326,7 +1355,7 @@ namespace BusinessObject.Migrations
                             major_id = 2,
                             semester_id = 2,
                             specialization_code = "WP",
-                            specialization_english_name = "web programming",
+                            specialization_english_name = "Web Programming",
                             specialization_name = "lập trình web"
                         },
                         new
@@ -1336,7 +1365,7 @@ namespace BusinessObject.Migrations
                             major_id = 2,
                             semester_id = 1,
                             specialization_code = "GP",
-                            specialization_english_name = "game programming",
+                            specialization_english_name = "Game Programming",
                             specialization_name = "lập trình game"
                         });
                 });
@@ -2175,6 +2204,20 @@ namespace BusinessObject.Migrations
                             subject_name = "Kiến trúc 3",
                             total_time = 70,
                             total_time_class = 40
+                        },
+                        new
+                        {
+                            subject_id = 56,
+                            assessment_method_id = 1,
+                            credit = 3,
+                            english_subject_name = "Image Design using Photoshop",
+                            exam_total = 4,
+                            is_active = true,
+                            learning_method_id = 2,
+                            subject_code = "MUL1013",
+                            subject_name = "Thiết kế hình ảnh với Photoshop",
+                            total_time = 70,
+                            total_time_class = 40
                         });
                 });
 
@@ -2186,15 +2229,16 @@ namespace BusinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("syllabus_id"), 1L, 1);
 
-                    b.Property<DateTime>("approved_date")
+                    b.Property<DateTime?>("approved_date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("decision_No")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("degree_level")
-                        .HasColumnType("int");
+                    b.Property<string>("degree_level")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("document_type")
                         .IsRequired()

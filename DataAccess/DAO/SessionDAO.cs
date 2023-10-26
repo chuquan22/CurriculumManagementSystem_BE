@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,19 @@ namespace DataAccess.DAO
                 throw;
             }
 
+        }
+
+        public Session UpdateSessionPatchAsync(int id, JsonPatchDocument employeeDocument)
+        {
+            Session employeeQuery = GetSessionById(id);
+            if (employeeQuery == null)
+            {
+                return null;
+            }
+            employeeDocument.ApplyTo(employeeQuery);
+            _cmsDbContext.SaveChangesAsync();
+
+            return employeeQuery;
         }
 
         public string UpdateSession(Session session, List<SessionCLOsRequest> listClLOs)

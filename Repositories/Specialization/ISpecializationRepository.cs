@@ -14,7 +14,7 @@ namespace Repositories.Specialization
 
         public BusinessObject.Specialization UpdateSpecialization(BusinessObject.Specialization specification);
 
-        public BusinessObject.Specialization DeleteSpecialization(int id);
+        public string DeleteSpecialization(int id);
 
         public BusinessObject.Specialization GetSpeById(int speId);
         int GetTotalSpecialization(string? txtSearch, string? major_id);

@@ -13,37 +13,41 @@ namespace BusinessObject
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int grading_id { get; set; }
-        [Required]
-        public string type_of_questions { get; set; }
-        [Required]
-        public string number_of_questions { get; set; }
+        [AllowNull]
+        public string? type_of_questions { get; set; }
+        [AllowNull]
+        public string? number_of_questions { get; set; }
+        [AllowNull]
 
-        public int session_no { get; set; }
+        public int? session_no { get; set; }
+        [AllowNull]
+        public string? references { get; set; }
 
-        public string references { get; set; }
         [Required]
         public decimal grading_weight { get; set; }
-        [Required]
+        [AllowNull]
         public int grading_part { get; set; }
         [ForeignKey("Syllabus")]
         public int syllabus_id { get; set; }
-        [Required]
-        public int minimum_value_to_meet_completion { get; set; }
-        [Required]
-        public string grading_duration { get; set; }
-        [Required]
-        public string scope_knowledge { get; set; }
-        [Required]
-        public string how_granding_structure { get; set;}
+        [AllowNull]
+        public int? minimum_value_to_meet_completion { get; set; }
+        [AllowNull]
+        public string? grading_duration { get; set; }
+        [AllowNull]
+        public string? scope_knowledge { get; set; }
+        [AllowNull]
+        public string? how_granding_structure { get; set;}
         [ForeignKey("AssessmentMethod")]
         public int assessment_method_id { get; set; }
         [AllowNull]
         public string? grading_note { get; set; }
+        [AllowNull]
 
+        public string? clo_name { get; set; }
+
+        public virtual Syllabus? Syllabus { get; set;}
+        public virtual AssessmentMethod? AssessmentMethod { get; set; }
         
-        public virtual Syllabus Syllabus { get; set;}
-        public virtual AssessmentMethod AssessmentMethod { get; set; }
-        
-        public virtual ICollection<GradingCLO> GradingCLOs { get; set; }    
+        public virtual ICollection<GradingCLO>? GradingCLOs { get; set; }    
     }
 }

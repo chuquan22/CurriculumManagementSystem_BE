@@ -384,7 +384,7 @@ namespace BusinessObject.Migrations
                     document_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     program = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    degree_level = table.Column<int>(type: "int", nullable: false),
+                    degree_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     syllabus_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -392,7 +392,7 @@ namespace BusinessObject.Migrations
                     syllabus_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     scoring_scale = table.Column<int>(type: "int", nullable: false),
-                    approved_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    approved_date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     syllabus_status = table.Column<bool>(type: "bit", nullable: false),
                     syllabus_approved = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -562,9 +562,9 @@ namespace BusinessObject.Migrations
                 {
                     CLO_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CLO_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CLO_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
-                    CLO_description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CLO_description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -583,19 +583,20 @@ namespace BusinessObject.Migrations
                 {
                     grading_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    type_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    number_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    session_no = table.Column<int>(type: "int", nullable: false),
-                    references = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    type_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    number_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    session_no = table.Column<int>(type: "int", nullable: true),
+                    references = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     grading_weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     grading_part = table.Column<int>(type: "int", nullable: false),
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
                     minimum_value_to_meet_completion = table.Column<int>(type: "int", nullable: false),
-                    grading_duration = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    scope_knowledge = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    how_granding_structure = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    grading_duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    scope_knowledge = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    how_granding_structure = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     assessment_method_id = table.Column<int>(type: "int", nullable: false),
-                    grading_note = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    grading_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    clo_name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -654,13 +655,13 @@ namespace BusinessObject.Migrations
                 {
                     schedule_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    schedule_content = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    schedule_content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     syllabus_id = table.Column<int>(type: "int", nullable: false),
                     session_No = table.Column<int>(type: "int", nullable: false),
-                    ITU = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    schedule_student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    student_material = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    lecturer_material = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ITU = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    schedule_student_task = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    student_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lecturer_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     schedule_lecturer_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     student_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     lecturer_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -767,7 +768,9 @@ namespace BusinessObject.Migrations
                 values: new object[,]
                 {
                     { 1, "Online" },
-                    { 2, "ORIT" }
+                    { 2, "ORIT" },
+                    { 3, "On-going" },
+                    { 4, "Final Exam" }
                 });
 
             migrationBuilder.InsertData(
@@ -783,12 +786,31 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "ClassSessionType",
+                columns: new[] { "class_session_type_id", "class_session_type_name" },
+                values: new object[,]
+                {
+                    { 1, "Online" },
+                    { 2, "Offline" },
+                    { 3, "ORIT" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "LearningMethod",
                 columns: new[] { "learning_method_id", "learning_method_description", "learning_method_name" },
                 values: new object[,]
                 {
                     { 1, "", "Online Learing" },
                     { 2, "", "Balence" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "LearningResource",
+                columns: new[] { "learning_resource_id", "learning_resource_type" },
+                values: new object[,]
+                {
+                    { 1, "Lab" },
+                    { 2, "Assessment" }
                 });
 
             migrationBuilder.InsertData(
@@ -817,7 +839,7 @@ namespace BusinessObject.Migrations
                 columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, 2023, new DateTime(2023, 10, 25, 16, 39, 30, 260, DateTimeKind.Local).AddTicks(7850), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 1, 2023, new DateTime(2023, 10, 27, 1, 50, 31, 486, DateTimeKind.Local).AddTicks(2247), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
                     { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
@@ -836,12 +858,12 @@ namespace BusinessObject.Migrations
                 columns: new[] { "specialization_id", "is_active", "major_id", "semester_id", "specialization_code", "specialization_english_name", "specialization_name" },
                 values: new object[,]
                 {
-                    { 1, true, 1, 1, "IED", "Interior and exterior design", "Thiết kế nội và ngoại thất" },
-                    { 2, true, 1, 1, "FMA", "Filmmaking and advertising", "Dựng phim và quảng cáo" },
-                    { 3, true, 1, 2, "IED", "Interior and exterior design", "Thiết kế nội và ngoại thất" },
+                    { 1, true, 1, 1, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
+                    { 2, true, 1, 1, "FMA", "Filmmaking and Advertising", "Dựng phim và quảng cáo" },
+                    { 3, true, 1, 2, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
                     { 4, true, 2, 2, "SE", "Software Engineering", "kĩ thuật phần mềm" },
-                    { 5, true, 2, 2, "WP", "web programming", "lập trình web" },
-                    { 6, true, 2, 1, "GP", "game programming", "lập trình game" }
+                    { 5, true, 2, 2, "WP", "Web Programming", "lập trình web" },
+                    { 6, true, 2, 1, "GP", "Game Programming", "lập trình game" }
                 });
 
             migrationBuilder.InsertData(
@@ -870,14 +892,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "degree_level", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
-                    { 2, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
-                    { 3, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
-                    { 4, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
-                    { 5, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
-                    { 6, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
-                    { 7, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
-                    { 8, "formal education", new DateTime(2023, 10, 25, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
+                    { 1, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
+                    { 2, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
+                    { 3, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
+                    { 4, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
+                    { 5, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
+                    { 6, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
+                    { 7, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
+                    { 8, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
@@ -946,7 +968,8 @@ namespace BusinessObject.Migrations
                     { 52, 1, 3, "Computer Science 3", 4, true, 2, "CS103", "Công nghệ thông tin 3", 70, 40 },
                     { 53, 1, 3, "Mechanical Engineering 3", 4, true, 2, "MECH103", "Cơ khí học 3", 70, 40 },
                     { 54, 1, 3, "Electronics and Electrical Engineering 3", 4, true, 2, "ELEC103", "Điện tử và điện lạnh 3", 70, 40 },
-                    { 55, 1, 3, "Architecture 3", 4, true, 2, "ARCH103", "Kiến trúc 3", 70, 40 }
+                    { 55, 1, 3, "Architecture 3", 4, true, 2, "ARCH103", "Kiến trúc 3", 70, 40 },
+                    { 56, 1, 3, "Image Design using Photoshop", 4, true, 2, "MUL1013", "Thiết kế hình ảnh với Photoshop", 70, 40 }
                 });
 
             migrationBuilder.InsertData(

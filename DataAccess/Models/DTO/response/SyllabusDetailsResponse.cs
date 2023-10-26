@@ -10,7 +10,7 @@ namespace DataAccess.Models.DTO.response
     public class SyllabusDetailsResponse
     {
         public int syllabus_id { get; set; }
-        public int decision_No { get; set; }
+        public string decision_No { get; set; }
         public string program { get; set; }
 
         public string document_type { get; set; }
