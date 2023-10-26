@@ -39,6 +39,8 @@ namespace Repositories.Subjects
        
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);
+
+        public Subject GetSubjectBySyllabus(int syllabus_id) => subjectDAO.GetSubjectBySyllabus(syllabus_id);
         
 
         public string UpdateSubject(Subject subject) => subjectDAO.UpdateSubject(subject);

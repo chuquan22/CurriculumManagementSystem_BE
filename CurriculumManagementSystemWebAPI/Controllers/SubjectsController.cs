@@ -104,6 +104,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Success!", subjectResponse));
         }
 
+
+        // GET: api/Subjects/5
+        [HttpGet("GetSubjectBySyllabus/{syllabus_id}")]
+        public async Task<ActionResult<SubjectResponse>> GetSubjectBySyllabus(int syllabus_id)
+        {
+            var subject = _subjectRepository.GetSubjectBySyllabus(syllabus_id);
+
+            if (subject == null)
+            {
+                return NotFound(new BaseResponse(true, "Can't Found this subject"));
+            }
+            var subjectResponse = _mapper.Map<SubjectResponse>(subject);
+            return Ok(new BaseResponse(false, "Success!", subjectResponse));
+        }
+
+
         [HttpPost("CreateSubjectWithPrerequisites")]
         public async Task<ActionResult<Subject>> PostSubjectWithPrerequisites([FromBody] SubjectPreRequisiteRequest subjectPreRequisitesRequest)
         {

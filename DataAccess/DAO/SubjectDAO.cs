@@ -51,6 +51,16 @@ namespace DataAccess.DAO
 
         }
 
+        public Subject GetSubjectBySyllabus(int syllabus_id)
+        {
+            var syllabus = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.syllabus_id ==  syllabus_id);
+            var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == syllabus.subject_id);
+
+            return subject;
+
+
+        }
+
         public List<Subject> GetSubjectByName(string name)
         {
             try
