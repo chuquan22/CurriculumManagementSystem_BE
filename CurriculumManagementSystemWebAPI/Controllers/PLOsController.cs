@@ -59,13 +59,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("UpdatePLOs/{id}")]
         public async Task<IActionResult> PutPLOs(int id, [FromBody]PLOsDTORequest pLOsDTORequest)
         {
+            if (PLOsExists(pLOsDTORequest.PLO_name, pLOsDTORequest.curriculum_id))
+            {
+                return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} is Duplicate!"));
+            }
             var plos = _plosRepository.GetPLOsById(id);
             if (plos == null)
             {
                 return NotFound(new BaseResponse(true, "Cannot found PLOs"));
             }
             _mapper.Map(pLOsDTORequest, plos);
-
+            
             string result = _plosRepository.UpdatePLOs(plos);
             if(!result.Equals(Result.updateSuccessfull.ToString()))
             {
@@ -80,7 +84,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PLOs>> PostPLOs([FromBody] PLOsDTORequest pLOsDTORequest)
         {
-            if (PLOsExists(pLOsDTORequest.PLO_name))
+            if (PLOsExists(pLOsDTORequest.PLO_name, pLOsDTORequest.curriculum_id))
             {
                 return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} is Duplicate!"));
             }
@@ -115,9 +119,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, $"Delete PLO {pLOs.PLO_name} Success!"));
         }
 
-        private bool PLOsExists(string plosName)
+        private bool PLOsExists(string plosName, int curriId)
         {
-            return (_context.PLOs?.Any(e => e.PLO_name.Equals(plosName))).GetValueOrDefault();
+            return (_context.PLOs?.Any(e => e.PLO_name.Equals(plosName) && e.curriculum_id == curriId)).GetValueOrDefault();
         }
     }
 }
