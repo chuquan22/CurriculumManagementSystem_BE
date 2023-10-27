@@ -15,5 +15,11 @@ namespace Repositories.AssessmentMethods
         {
             return assessmentMethodDAO.GetAllAssessmentMethod();
         }
+
+        public AssessmentMethod GetAssessmentMethodByName(string name)
+        {
+            return assessmentMethodDAO.GetAsssentMethodByName(name);
+
+        }
     }
 }

@@ -7,6 +7,7 @@ using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
+using Repositories.AssessmentMethods;
 using Repositories.AssessmentTypes;
 using Repositories.CLOS;
 using Repositories.GradingStruture;
@@ -29,6 +30,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ISubjectRepository repo2;
         private IAssessmentTypeRepository repo3;
         private ICLORepository repo4;
+        private IAssessmentMethodRepository repo5;
 
         private readonly HttpClient client = null;
 
@@ -47,7 +49,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo2 = new SubjectRepository();
             repo3 = new AssessmentTypeRepository();
             repo4 = new CLORepository();
+            repo5 = new AssessmentMethodRepository();
             client = new HttpClient();
+            
            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
@@ -149,15 +153,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 Materials = materialExcel,
                             };
-                            foreach(var item in materialExcel)
-                            {
-                                item.learning_resource_id = 1;
-                                item.syllabus_id = syllabusId;
-                                MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
-                                await CreateMaterialsAPI(addRs);
-                            }
                            
-                            rs.Add(value);
+
+                                foreach (var item in materialExcel)
+                                {
+                                    if(item.material_type != null)
+                                    {
+                                        item.learning_resource_id = 1;
+                                        item.syllabus_id = syllabusId;
+                                        MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
+                                        await CreateMaterialsAPI(addRs);
+                                    }
+                                   
+                                }
+
+                                rs.Add(value);
+                          
                         }
                         else if (i == 2)
                         {
@@ -243,11 +254,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         lst = new List<int>();
                                         lst.AddRange(cloId);
+                                        gra.number_of_questions = "all clos";
                                     }
                                    
                                 }
+                                if(gradingStrutureCreate.gradingStruture.number_of_questions == null)
+                                {
+                                    gradingStrutureCreate.gradingStruture.number_of_questions = "";
+                                }
+                                gradingStrutureCreate.gradingCLORequest.CLO_id = new List<int>();
+
                                 gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
-                                //await CreateGradingStrutureAPI(gradingStrutureCreate);
+                                try
+                                {
+                                    await CreateGradingStrutureAPI(gradingStrutureCreate);
+
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    throw new Exception(ex.Message);
+                                }
 
                                 //CreateGradingStrutureAPI(gradingStrutureCreate);
                             }
@@ -382,10 +409,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<GradingStruture> result = new List<GradingStruture>();
             foreach (var r in row)
             {
+                if(r == null) { }
                 GradingStruture g = new GradingStruture();
                 g.type_of_questions = r.type_of_questions;
                 g.number_of_questions = r.number_of_questions;
-                g.session_no = null;               
+                g.session_no = ((r.SessionNo.Trim()==null||r.SessionNo.Trim().Equals("")) ?null:int.Parse(r.SessionNo));           
                 g.references = r.Reference;
                 g.grading_weight = r.weight;
                 g.grading_part = r.Part;
@@ -394,15 +422,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.grading_duration = r.Duration;
                 g.scope_knowledge = r.scope;
                 g.how_granding_structure = r.how;
-                if (GetAssessmentTypeIdByName(r.assessment_type).assessment_type_id != null)
-                {
-                    g.assessment_method_id = GetAssessmentTypeIdByName(r.assessment_type).assessment_type_id;
+                g.grading_note = r.Note;
+                //try
+                //{
 
-                }
-                else
-                {
-                    throw new Exception("Assesement Type not exist in system!");
-                }
+                //    if (GetAssessmentMethodByName(r.assessment_component) != null)
+                //    {
+                //        //g.assessment_method_id = GetAssessmentMethodByName(r.assessment_type).assessment_method_id;
+                //        g.assessment_method_id = 1;
+                //    }
+                //}
+                //catch (Exception)
+                //{
+
+                //    throw new Exception("Assesement Method not exist in system!");
+                //}
+                g.assessment_method_id = 1;
                 g.clo_name = r.CLO;
                 result.Add(g);
 
@@ -410,9 +445,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return result;
         }
 
-        private AssessmentType GetAssessmentTypeIdByName(string assessment_type)
+        private AssessmentMethod GetAssessmentMethodByName(string assessment_type)
         {
-            return repo3.GetAssessmentTypeByName(assessment_type);
+            return repo5.GetAssessmentMethodByName(assessment_type);
+        }
+
+        private AssessmentMethod GetAssessmentTypeByName(string assessment_type)
+        {
+            return repo5.GetAssessmentMethodByName(assessment_type);
         }
 
         private List<Session> GetScheduleExcel(IEnumerable<ScheduleExcel> row, Syllabus syllabus)
@@ -420,6 +460,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Session> rs = new List<Session>();
             foreach (var r in row)
             {
+                if(r == null) { }
                 Session se = new Session();
                 se.session_No = r.session_No;
                 se.schedule_content = r.Content;
@@ -439,6 +480,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<CLO> result = new List<CLO>();
             foreach (var  r in row)
             {
+                if (r.CLO_Name == null) { }
                 CLO c = new CLO();
              //   if(r.CLO_Name.Equals("All CLOs"))
              //   {
@@ -466,6 +508,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Material> materials = new List<Material>();
             foreach (var r in row)
             {
+                if(r.MaterialDescription == null) { }
                 Material m = new Material();
                 m.material_description = r.MaterialDescription;
                 m.material_purpose = r.Purpose;
