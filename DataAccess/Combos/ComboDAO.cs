@@ -98,7 +98,7 @@ namespace DataAccess.Combos
             catch (Exception)
             {
 
-                throw;
+                return null;
             }
             return combo;
         }

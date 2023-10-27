@@ -150,6 +150,7 @@ namespace DataAccess.DAO
             var major = _cmsDbContext.Major.Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
 
+
             var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + batch.batch_name;
 
             return curriCode;
