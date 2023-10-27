@@ -78,7 +78,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.Equals(code));
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.Equals(code.ToUpper()));
                 return subject;
             }
             catch (Exception ex)

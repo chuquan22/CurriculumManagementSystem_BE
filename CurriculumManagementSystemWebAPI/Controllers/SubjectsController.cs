@@ -59,7 +59,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (!string.IsNullOrWhiteSpace(txtSearch))
             {
-                subjectQuery = subjectQuery.Where(x => x.subject_code.Contains(txtSearch) || x.subject_name.Contains(txtSearch) || x.english_subject_name.Contains(txtSearch));
+                subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
             }
 
             var totalElements = subjectQuery.Count(); 

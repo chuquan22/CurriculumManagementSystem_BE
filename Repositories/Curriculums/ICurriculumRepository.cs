@@ -13,7 +13,7 @@ namespace Repositories.Curriculums
         List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? majorId);
         Curriculum GetCurriculum(string code, int batchId);
         List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode);
-        string GetCurriculumCode(int batchId, int speId);
+        string GetCurriculumCode(int batchId, int speId, string degree_level);
         Curriculum GetCurriculumById(int id);
         int GetTotalCredit(int curriculumId);
         List<Batch> GetBatchByCurriculumCode(string curriculumCode);
