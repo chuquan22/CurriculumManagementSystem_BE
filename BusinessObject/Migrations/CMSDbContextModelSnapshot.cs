@@ -2393,6 +2393,9 @@ namespace BusinessObject.Migrations
                     b.Property<string>("syllabus_tool")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("time_allocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("syllabus_id");
 
                     b.HasIndex("subject_id");

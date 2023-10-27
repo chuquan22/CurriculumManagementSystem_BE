@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231027091126_InitialDB")]
+    [Migration("20231027093140_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2393,6 +2393,9 @@ namespace BusinessObject.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("syllabus_tool")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("time_allocation")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("syllabus_id");
