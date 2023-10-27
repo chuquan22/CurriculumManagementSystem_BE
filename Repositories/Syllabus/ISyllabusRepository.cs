@@ -16,5 +16,7 @@ namespace Repositories.Syllabus
         public BusinessObject.Syllabus GetSyllabusById(int id);    
         public string UpdatePatchSyllabus(BusinessObject.Syllabus syllabus);
         BusinessObject.Syllabus CreateSyllabus(BusinessObject.Syllabus rs);
+        bool SetStatusSyllabus(int id);
+        bool SetApproved(int id);
     }
 }
