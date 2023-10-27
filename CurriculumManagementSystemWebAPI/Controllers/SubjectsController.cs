@@ -14,6 +14,7 @@ using MiniExcelLibs;
 using Newtonsoft.Json.Linq;
 using Repositories.PreRequisites;
 using DataAccess.Models.Enums;
+using Repositories.CurriculumSubjects;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -24,6 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
+        private readonly ICurriculumSubjectRepository _curriSubjectRepository = new CurriculumSubjectRepository();
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
 
         public SubjectsController(CMSDbContext context, IMapper mapper)
@@ -63,7 +65,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var totalElements = subjectQuery.Count(); 
             var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
                 .Include(x => x.PreRequisite)
-                .Include(x => x.AssessmentMethod)
+                .Include(x => x.AssessmentMethod.AssessmentType)
                 .Include(x => x.LearningMethod)
                 .ToList();
 
@@ -201,6 +203,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (subject == null)
             {
                 return NotFound(new BaseResponse(true, "Subject you want delete Not Found!"));
+            }
+
+            var checkSubject = _curriSubjectRepository.GetListCurriculumBySubject(id);
+            if (checkSubject.Count != 0)
+            {
+                return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
             // Delete foreign key of subject
