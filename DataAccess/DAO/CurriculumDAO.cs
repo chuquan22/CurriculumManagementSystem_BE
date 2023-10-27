@@ -144,14 +144,26 @@ namespace DataAccess.DAO
             return curriculum;
         }
 
-        public string GetCurriculumCode(int batchId, int speId)
+        public string GetCurriculumCode(int batchId, int speId, string degree_level)
         {
             var specialization = _cmsDbContext.Specialization.Find(speId);
             var major = _cmsDbContext.Major.Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
+            var abbreviationDgree = "";
+            if(degree_level.ToLower().Equals("associate degree"))
+            {
+                abbreviationDgree = "CD";
+            }else if(degree_level.ToLower().Equals("international associate degree"))
+            {
+                abbreviationDgree = "IC";
+            }
+            else if (degree_level.ToLower().Equals("vocational secondary"))
+            {
+                abbreviationDgree = "TC";
+            }
 
 
-            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + batch.batch_name;
+            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + abbreviationDgree + "-" + batch.batch_name;
 
             return curriCode;
         }

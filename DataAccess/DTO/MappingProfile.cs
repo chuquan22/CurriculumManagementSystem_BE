@@ -22,7 +22,7 @@ namespace DataAccess.Models.DTO
                .ReverseMap();
 
             CreateMap<Subject, SubjectRequest>()
-                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.subject_code.Trim()))
+                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.subject_code.Trim().ToUpper()))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.subject_name.Trim()))
                 .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.english_subject_name.Trim()))
                 .ReverseMap();
@@ -33,7 +33,7 @@ namespace DataAccess.Models.DTO
             //Major
 
             CreateMap<MajorRequest, BusinessObject.Major>()
-                .ForMember(dest => dest.major_code, opt => opt.MapFrom(src => src.major_code.Trim()))
+                .ForMember(dest => dest.major_code, opt => opt.MapFrom(src => src.major_code.Trim().ToUpper()))
                 .ForMember(dest => dest.major_name, opt => opt.MapFrom(src => src.major_name.Trim()))
                 .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
                 .ReverseMap();
