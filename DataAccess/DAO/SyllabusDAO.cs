@@ -136,6 +136,7 @@ namespace DataAccess.DAO
                                    .FirstOrDefault();
                 
                     rs.approved_date = DateTime.Now;
+                rs.syllabus_approved = true;
                 context.Syllabus.Update(rs);
                 context.SaveChanges();
                 return true;
