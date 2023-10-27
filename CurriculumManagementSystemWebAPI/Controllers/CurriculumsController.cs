@@ -390,9 +390,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         if (cellValue.Equals("Khối Kiến thức chung"))
                                         {
                                             group_name = "General Subject";
-                                        }else if (cellValue.Equals("Khối kiến thức ngành"))
+                                        }
+                                        else if (cellValue.Equals("Khối kiến thức ngành"))
                                         {
-                                            group_name = "Major Subject";
+                                            group_name = "Basic Subject";
                                         }
                                         else if (cellValue.Equals("Khối kiến thức chọn theo chuyên ngành hẹp"))
                                         {
@@ -406,7 +407,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             if (subjects != null && subject.subject_id == subjects.subject_id)
                                             {
                                                 subject.subject_group = group_name;
-                                                _curriculumsubjectRepository.CreateCurriculumSubject(subject);
                                             }
 
                                         }
@@ -427,14 +427,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
                                             if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                             {
-                                                return Ok(new BaseResponse(true, "Create PLO Mapping Fail"));
+                                                return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
                                             }
                                         }
                                     }
                                 }
                             }
+                            foreach (var subject in listCurriSubject)
+                            {
+                                string createResult = _curriculumsubjectRepository.CreateCurriculumSubject(subject);
+                                if (createResult != Result.createSuccessfull.ToString())
+                                {
+                                    return BadRequest(new BaseResponse(true, createResult));
+                                }
+                            }
                         }
                     }
+                    var list = listCurriSubject;
                     return Ok(new BaseResponse(false, "Import Success", curriculum_id));
                 }
             }
@@ -482,7 +491,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 return $"Batch {batch_name} Not Exsit";
                             }
                             var curri = _curriculumRepository.GetCurriculum(r.Details, _batchRepository.GetBatchIDByName(batch_name));
-                            if(curri != null)
+                            if (curri != null)
                             {
                                 return $"Curriculum {r.Details} Duplicate!";
                             }
@@ -490,7 +499,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         // Check Major Exsit
                         else if (r.Title.Equals("Vocational Code"))
                         {
-                             major = _majorRepository.CheckMajorbyMajorCode(r.Details);
+                            major = _majorRepository.CheckMajorbyMajorCode(r.Details);
                             //if major not exsit in database
                             if (major == null)
                             {
@@ -502,7 +511,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                             var spe = _specializationRepository.GetSpeById(spe_id);
-                            
+
                             //if major not exsit in database
                             if (spe_id == 0)
                             {
@@ -518,7 +527,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                     }
                 }
-                
+
                 // validate data sheet 2
                 if (i == 1)
                 {
@@ -528,7 +537,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         var plo = new PLOs();
                         plo.PLO_name = item.PLO_name;
-                        
+
                         foreach (var PLO in listPLO)
                         {
                             if (plo.PLO_name.Equals(PLO.PLO_name))
@@ -543,7 +552,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         listPLO.Add(plo);
                     }
                 }
-               
+
                 // validate data sheet 3
                 if (i == 2)
                 {
@@ -569,7 +578,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 return $"Combo {item.combo_code} Not Found. Please Create Combo";
                             }
                         }
-                        
+
                     }
                 }
                 // validate data sheet 4
@@ -591,7 +600,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     if (plo.PLO_name.Equals(celplo.Text))
                                     {
                                         found_plo = true;
-                                        
+
                                     }
                                 }
                                 if (!found_plo)
@@ -606,7 +615,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         found_subject = true;
                                     }
-                                    
+
                                 }
                                 if (!found_subject && !subjectCode.Text.Contains(" "))
                                 {
@@ -685,11 +694,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 else if (r.Title.Equals("Specialization Code"))
                 {
-                   curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
+                    curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                 }
 
             }
-            if(double.Parse(batch_name) <= 19.2)
+            if (double.Parse(batch_name) <= 19.2)
             {
                 curriculum.total_semester = 7;
             }
@@ -698,7 +707,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 curriculum.total_semester = 6;
             }
             curriculum.is_active = true;
-           
+
             return curriculum;
         }
 
