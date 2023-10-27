@@ -291,7 +291,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                List<object> rs = new List<object>();
+                List<CurriculumSubject> listCurriSubject = new List<CurriculumSubject>();
 
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
@@ -352,21 +352,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 var curriculumSubject = new CurriculumSubject();
                                 curriculumSubject.curriculum_id = curriculum_id;
-                                var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
-                               
-                                curriculumSubject.subject_id = subject.subject_id;
-                                curriculumSubject.term_no = item.term_no;
-                                if (item.combo_code != null)
+                                if (item.subject_code != null && item.subject_code != "")
                                 {
-                                    var combo = _comboRepository.FindComboByCode(item.combo_code);
-                                    curriculumSubject.combo_id = combo.combo_id;
-                                }
-                                curriculumSubject.option = (item.option == null || item.option.Equals("")) ? false : true;
+                                    var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
 
-                                string createResult = _curriculumsubjectRepository.CreateCurriculumSubject(curriculumSubject);
-                                if (!createResult.Equals(Result.createSuccessfull.ToString()))
-                                {
-                                    return Ok(new BaseResponse(true, "Create Curriculum Subject Fail"));
+                                    curriculumSubject.subject_id = subject.subject_id;
+                                    curriculumSubject.term_no = item.term_no;
+                                    item.combo_code = (item.combo_code == null || item.combo_code.Equals("")) ? null : item.combo_code;
+                                    if (item.combo_code != null)
+                                    {
+                                        var combo = _comboRepository.FindComboByCode(item.combo_code);
+                                        curriculumSubject.combo_id = combo.combo_id;
+                                    }
+                                    curriculumSubject.option = (item.option == null || item.option.Equals("")) ? false : true;
+
+
+                                    listCurriSubject.Add(curriculumSubject);
                                 }
                             }
 
@@ -375,7 +376,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         if (i == 3)
                         {
                             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
+                            var group_name = "";
                             using (var package = new ExcelPackage(stream))
                             {
                                 var worksheet = package.Workbook.Worksheets[3];
@@ -386,6 +387,29 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         var cell = worksheet.Cells[row, col];
                                         string cellValue = cell.Text;
+                                        if (cellValue.Equals("Khối Kiến thức chung"))
+                                        {
+                                            group_name = "General Subject";
+                                        }else if (cellValue.Equals("Khối kiến thức ngành"))
+                                        {
+                                            group_name = "Major Subject";
+                                        }
+                                        else if (cellValue.Equals("Khối kiến thức chọn theo chuyên ngành hẹp"))
+                                        {
+                                            group_name = "Specialization Subject";
+                                        }
+
+                                        var subjectCode = worksheet.Cells[row, 1].Text;
+                                        foreach (var subject in listCurriSubject)
+                                        {
+                                            var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
+                                            if (subjects != null && subject.subject_id == subjects.subject_id)
+                                            {
+                                                subject.subject_group = group_name;
+                                                _curriculumsubjectRepository.CreateCurriculumSubject(subject);
+                                            }
+
+                                        }
 
                                         if (cellValue.Equals("ü"))
                                         {
@@ -416,23 +440,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException));
+                return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException.Message));
             }
         }
 
         private string ValidationDataExcel(string path, List<string> sheetNames, FileStream stream)
         {
+            List<Subject> listSubject = new List<Subject>();
+            List<PLOs> listPLO = new List<PLOs>();
             for (int i = 0; i < sheetNames.Count; i++)
             {
                 // validate data sheet 1
                 if (i == 0)
                 {
-                    string[] expectedOrder = { "Curriculum Code", "Curriculum Name", "English Curriculum Name", "Curriculum Description", "Vocational Code", "Vocational Name", "English Vocational Name", "Decision No.", "Approved date", "Degree level", "Formality" };
+                    string[] expectedOrder = { "Curriculum Code", "Curriculum Name", "English Curriculum Name", "Curriculum Description", "Vocational Code", "Vocational Name", "English Vocational Name", "Decision No.", "Approved date", "Degree level", "Formality", "Specialization Code", "Specialization Name", "English Specialization Name" };
                     int index = 0;
+                    var major = new Major();
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var r in row)
                     {
-                        var major = new Major();
                         // Check information in coloumn title
                         if (!r.Title.Equals(expectedOrder[index]))
                         {
@@ -446,6 +472,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             if (!Regex.IsMatch(r.Details, pattern))
                             {
                                 return "Curriculum Code must format ex:GD-GD-19.3 (GD: Graphic Design)";
+                            }
+                            string[] parts = r.Details.Split('-');
+                            // get part have index 2 in array string ex: 19.4
+                            var batch_name = parts[2];
+                            // get batch_id by batch_name
+                            if (_batchRepository.GetBatchIDByName(batch_name) == 0)
+                            {
+                                return $"Batch {batch_name} Not Exsit";
+                            }
+                            var curri = _curriculumRepository.GetCurriculum(r.Details, _batchRepository.GetBatchIDByName(batch_name));
+                            if(curri != null)
+                            {
+                                return $"Curriculum {r.Details} Duplicate!";
                             }
                         }
                         // Check Major Exsit
@@ -463,21 +502,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                             var spe = _specializationRepository.GetSpeById(spe_id);
-                            if(spe.major_id != major.major_id)
-                            {
-
-                            }
+                            
                             //if major not exsit in database
                             if (spe_id == 0)
                             {
                                 return $"Specialization not Exsit. Please Create Specialization {r.Details}";
                             }
-                           
+
+                            if (spe.major_id != major.major_id)
+                            {
+                                return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
+                            }
+
                         }
 
                     }
                 }
-                List<PLOs> listPLO = new List<PLOs>();
+                
                 // validate data sheet 2
                 if (i == 1)
                 {
@@ -487,7 +528,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         var plo = new PLOs();
                         plo.PLO_name = item.PLO_name;
-                        listPLO.Add(plo);
+                        
                         foreach (var PLO in listPLO)
                         {
                             if (plo.PLO_name.Equals(PLO.PLO_name))
@@ -499,9 +540,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 return "PLO must start with 'PLO' and no cointain space ";
                             }
                         }
+                        listPLO.Add(plo);
                     }
                 }
-                List<Subject> listSubject = new List<Subject>();
+               
                 // validate data sheet 3
                 if (i == 2)
                 {
@@ -509,21 +551,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var item in row)
                     {
-                        var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
-                        if (subject == null)
+                        if (item.subject_code != null && item.subject_code != "")
                         {
-                            return $"Subject {item.subject_code} Not Found. Please Create Subject";
+                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                            if (subject == null)
+                            {
+                                return $"Subject {item.subject_code} Not Found. Please Create Subject";
+                            }
+                            listSubject.Add(new Subject { subject_code = item.subject_code });
                         }
-
-                        if (item.combo_code != null)
+                        string combo_code = item.combo_code;
+                        if (combo_code != null && combo_code != "")
                         {
                             var combo = _comboRepository.FindComboByCode(item.combo_code);
                             if (combo == null)
                             {
-                                return $"Subject {item.combo_code} Not Found. Please Create Combo";
+                                return $"Combo {item.combo_code} Not Found. Please Create Combo";
                             }
                         }
-                        listSubject.Add(new Subject { subject_code = item.subject_code });
+                        
                     }
                 }
                 // validate data sheet 4
@@ -538,20 +584,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
                             {
                                 var celplo = worksheet.Cells[2, col];
+                                bool found_plo = false;
+                                bool found_subject = false;
                                 foreach (var plo in listPLO)
                                 {
-                                    if (!plo.PLO_name.Equals(celplo.Text))
+                                    if (plo.PLO_name.Equals(celplo.Text))
                                     {
-                                        return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                        found_plo = true;
+                                        
                                     }
                                 }
+                                if (!found_plo)
+                                {
+                                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                }
+
                                 var subjectCode = worksheet.Cells[row, 1];
                                 foreach (var subject in listSubject)
                                 {
-                                    if (!subjectCode.Text.Contains(" ") && !subject.subject_code.Equals(subjectCode.Text))
+                                    if (subject.subject_code.Equals(subjectCode.Text))
                                     {
-                                        return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
+                                        found_subject = true;
                                     }
+                                    
+                                }
+                                if (!found_subject && !subjectCode.Text.Contains(" "))
+                                {
+                                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
                                 }
 
                             }
@@ -630,7 +689,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
 
             }
-            if(int.Parse(batch_name) <= 19.2)
+            if(double.Parse(batch_name) <= 19.2)
             {
                 curriculum.total_semester = 7;
             }

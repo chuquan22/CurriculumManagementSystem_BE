@@ -161,13 +161,20 @@ namespace DataAccess.DAO
 
             var Abbreviations = "";
             string[] parts = name.Split(' ');
-            for(int i = 0; i < parts.Length; i ++)
+            if (parts.Length >= 2)
             {
-                string firstLetter = parts[i].Substring(0, 1);
-                if (!parts[i].Equals("AND"))
+                for (int i = 0; i < parts.Length; i++)
                 {
-                    Abbreviations += firstLetter;
+                    string firstLetter = parts[i].Substring(0, 1);
+                    if (!parts[i].Equals("AND"))
+                    {
+                        Abbreviations += firstLetter;
+                    }
                 }
+            }
+            else
+            {
+                Abbreviations = parts[0].ToUpper();
             }
             return Abbreviations;
         }
@@ -176,6 +183,7 @@ namespace DataAccess.DAO
         {
             try
             {
+                curriculum.curriculum_name = curriculum.curriculum_name.Trim();
                 _cmsDbContext.Curriculum.Add(curriculum);
                 int number = _cmsDbContext.SaveChanges();
                 if (number > 0)
