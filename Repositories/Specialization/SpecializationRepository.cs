@@ -16,7 +16,7 @@ namespace Repositories.Specialization
             return db.CreateSpecialization(specification);
         }
 
-        public BusinessObject.Specialization DeleteSpecialization(int id)
+        public string DeleteSpecialization(int id)
         {
             return db.DeleteSpecialization(id);
         }

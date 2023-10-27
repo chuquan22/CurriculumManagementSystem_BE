@@ -39,6 +39,7 @@ namespace Repositories.Session
             return db.UpdatePatchSession(rs);
         }
 
+
         public string UpdateSession(BusinessObject.Session session, List<SessionCLOsRequest> listClos)
         {
             return db.UpdateSession(session,listClos);

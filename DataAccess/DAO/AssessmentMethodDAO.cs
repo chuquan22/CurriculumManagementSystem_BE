@@ -19,5 +19,11 @@ namespace DataAccess.DAO
                 .ToList();
             return listAssessmentMethod;
         }
+
+        public AssessmentMethod GetAsssentMethodByName(string name)
+        {
+            var rs = _context.AssessmentMethod.Include(a => a.AssessmentType).Where(x => x.assessment_method_component.Contains(name)).FirstOrDefault();
+            return rs;
+        }
     }
 }

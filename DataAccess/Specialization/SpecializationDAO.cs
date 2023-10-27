@@ -154,7 +154,7 @@ namespace DataAccess.Specialization
             return spe;
         }
 
-        public BusinessObject.Specialization DeleteSpecialization(int id)
+        public string DeleteSpecialization(int id)
         {
             if (CheckSpeExistInCurriculum(id))
             {
@@ -174,17 +174,24 @@ namespace DataAccess.Specialization
                 {
                     db.Specialization.Remove(spe);
                     db.SaveChanges();
+                    return "Delete Specialization Sucessfully!";
                 }
+                else
+                {
+                    return "Specialization is not exist in system!";
+                }
+                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                return ex.InnerException.Message;
+
             }
             finally
             {
 
             }
-            return spe;
+            return "Delete false";
         }
 
 

@@ -84,11 +84,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 if (checkCodeExist != true)
                 {
                     rs = repo.CreateSpecialization(rs);
-                    return Ok(new BaseResponse(false, "Sucessfully", rs));
+                    return Ok(new BaseResponse(false, "Create specialization successfully.", rs));
                 }
                 else
                 {
-                    return BadRequest(new BaseResponse(false, "Specialization Code đã tồn tại trong hệ thống!", rs));
+                    return BadRequest(new BaseResponse(false, "Specialization code already exist in system.", rs));
 
                 }
             }
@@ -117,7 +117,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                return BadRequest(new BaseResponse(false, "Specialization update trong hệ thống that bai!", null));
+                return BadRequest(new BaseResponse(false, "Specialization update false!", null));
 
             }
             return Ok(new BaseResponse(true, "Get List Major False", null));
@@ -125,22 +125,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete]
         public ActionResult DeleteSpecialization(int id)
         {
-            Specialization rs = new Specialization();
+            string rs = null;
+
             try
             {
+
                 rs = repo.DeleteSpecialization(id);
                 if(rs == null)
                 {
                     return BadRequest(new BaseResponse(true, "Can't Delete This Specialization!"));
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
+
             }
             catch (Exception)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(false, "Delete Specialization False. Specialization is already using in system!", null));
+
             }
-            return Ok(new BaseResponse(true, "Get List Major False", null));
+            return Ok(new BaseResponse(true, "Delete specialization false", null));
         }
     }
 }

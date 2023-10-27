@@ -9,23 +9,22 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int schedule_id { get; set; }
         [Required]
-        [StringLength(50)]
         public string schedule_content { get; set; }
         [ForeignKey("Syllabus")]
         public int syllabus_id { get; set; }
         [Required]
 
         public int session_No { get; set; }
-        [Required]
+        [AllowNull]
 
-        public string ITU { get; set; }
-        [Required]
-        public string schedule_student_task { get; set; }
-        [Required]
-        public string student_material { get; set; }
-        [Required]
-        public string lecturer_material { get; set;}
-        [Required]
+        public string? ITU { get; set; }
+        [AllowNull]
+        public string? schedule_student_task { get; set; }
+        [AllowNull]
+        public string? student_material { get; set; }
+        [AllowNull]
+        public string? lecturer_material { get; set;}
+        [AllowNull]
         public string schedule_lecturer_task { get; set; }
         [AllowNull]
         public string? student_material_link { get; set; }

@@ -58,15 +58,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 else
                 {
                     rs = repo.AddMajor(rs);
-                    return Ok(new BaseResponse(false, "Create major sucessfully", rs));
+                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", rs));
                 }
             }
             catch (Exception)
             {
 
-                return BadRequest(new BaseResponse(true, "Create major false.", null));
+                return BadRequest(new BaseResponse(true, "Add major false.", null));
             }
-            return Ok(new BaseResponse(true, "Create Major False", null));
+            return Ok(new BaseResponse(true, "Add major False", null));
         }
 
         [HttpPut]
