@@ -111,6 +111,7 @@ namespace DataAccess.Specialization
         {
             try
             {
+                spe.specialization_english_name = spe.specialization_english_name.Trim();
                 db.Specialization.Add(spe);
                 db.SaveChanges();
             }

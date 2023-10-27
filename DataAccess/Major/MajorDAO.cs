@@ -21,6 +21,7 @@ namespace DataAccess.Major
 
         public BusinessObject.Major AddMajor(BusinessObject.Major major)
         {
+            major.major_english_name = major.major_english_name.Trim();
             db.Major.Add(major);
             db.SaveChanges();
             return major;
