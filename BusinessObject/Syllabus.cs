@@ -30,6 +30,8 @@ namespace BusinessObject
         [AllowNull]
         public string? syllabus_tool { get; set; }
         [AllowNull]
+        public string? time_allocation { get; set; }
+        [AllowNull]
         public string? syllabus_note { get; set; }
         [Required]
         public decimal min_GPA_to_pass { get; set; }

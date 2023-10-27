@@ -21,7 +21,7 @@ namespace DataAccess.Models.DTO.response
         public string credit { get; set; }
 
         public string degree_level { get; set; }
-        public string time_allocation { get; set; }
+        public string? time_allocation { get; set; }
         public List<PreRequisiteResponse2> pre_required { get; set; }
 
         public string syllabus_description { get; set; }

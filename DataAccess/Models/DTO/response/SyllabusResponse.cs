@@ -15,6 +15,7 @@ namespace DataAccess.Models.DTO.response
         public string decision_No { get; set; }
         public bool syllabus_status { get; set; }
         public bool syllabus_approved { get; set; }
+        public string? time_allocation { get; set; }
         public DateTime approved_date { get; set; }
 
     }

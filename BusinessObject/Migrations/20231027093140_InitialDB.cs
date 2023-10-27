@@ -312,6 +312,7 @@ namespace BusinessObject.Migrations
                     subject_id = table.Column<int>(type: "int", nullable: false),
                     student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     syllabus_tool = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    time_allocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     syllabus_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     scoring_scale = table.Column<int>(type: "int", nullable: false),

@@ -51,20 +51,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo4 = new CLORepository();
             repo5 = new AssessmentMethodRepository();
             client = new HttpClient();
-            
-           var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page,int limit, string? txtSearch, string? subjectCode)
+        public ActionResult GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
-            {             
+            {
                 int limit2 = repo.GetTotalSyllabus(txtSearch, subjectCode);
                 List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page,limit2, result)));
+                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
             }
             catch (Exception)
             {
@@ -76,13 +76,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult CreateSyllabus(SyllabusRequest request)
         {
-            
+
             try
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
 
                 var result = repo.CreateSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucess",rs));
+                return Ok(new BaseResponse(false, "Sucess", rs));
             }
             catch (Exception)
             {
@@ -99,7 +99,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = repo.GetPre(rs1.subject_id);
-               
+
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
                 return Ok(new BaseResponse(true, "False", result));
 
@@ -139,10 +139,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             syllabusExcel = GetSyllabusExel(row);
                             var value = new
                             {
-                               Syllabus = syllabusExcel,
-                            };                   
-                           // syllabusId = syllabusExcel.syllabus_id;
-                            syllabusId = await CreateSyllabusAPI(syllabusExcel);
+                                Syllabus = syllabusExcel,
+                            };
+                            try
+                            {
+                                syllabusId = await CreateSyllabusAPI(syllabusExcel);
+
+                            }
+                            catch (Exception)
+                            {
+
+                                return BadRequest("False when craete syllabus.");
+                            }
                             rs.Add(value);
                         }
                         else if (i == 1)
@@ -153,22 +161,32 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 Materials = materialExcel,
                             };
-                           
 
-                                foreach (var item in materialExcel)
+
+                            foreach (var item in materialExcel)
+                            {
+                                if (item.material_type != null)
                                 {
-                                    if(item.material_type != null)
+                                    item.learning_resource_id = 1;
+                                    item.syllabus_id = syllabusId;
+                                    MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
+                                    try
                                     {
-                                        item.learning_resource_id = 1;
-                                        item.syllabus_id = syllabusId;
-                                        MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
                                         await CreateMaterialsAPI(addRs);
+
                                     }
-                                   
+                                    catch (Exception)
+                                    {
+
+                                        return BadRequest("False when saving CLOs.");
+
+                                    }
                                 }
 
-                                rs.Add(value);
-                          
+                            }
+
+                            rs.Add(value);
+
                         }
                         else if (i == 2)
                         {
@@ -185,14 +203,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
                                 addRs.syllabus_id = syllabusId;
                                 int idClo = await CreateCLOsAPI(addRs);
-                                if(idClo == 0)
+                                if (idClo == 0)
                                 {
-
+                                    return BadRequest("False when saving CLOs.");
                                 }
                                 cloId.Add(idClo);
 
                             }
-                            
+
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
@@ -219,14 +237,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
                                 dataSession.session.syllabus_id = syllabusId;
                                 dataSession.session.class_session_type_id = 1;
-                                await CreateSchudeleAPI(dataSession);
+                                try
+                                {
+                                    await CreateSchudeleAPI(dataSession);
+
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    return BadRequest("False when saving schudule.");
+                                }
                             }
 
                             rs.Add(value);
                         }
                         else if (i == 5)
                         {
-                            var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i],excelType: ExcelType.XLSX);
+                            var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             List<GradingStruture> gradingStrutureExcel = GetGradingStrutureExcel(row, syllabusExcel);
                             gradingStrutureCreate.gradingStruture = new GradingStrutureRequest();
                             var list = _mapper.Map<List<GradingStrutureRequest>>(gradingStrutureExcel);
@@ -243,26 +270,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     string name = "null";
                                     if (repo4.GetCLOsById(cl) != null)
                                     {
-                                         name = repo4.GetCLOsById(cl).CLO_name;
+                                        name = repo4.GetCLOsById(cl).CLO_name;
                                         if (gra.clo_name.Contains(name))
                                         {
                                             lst.Add(cl);
                                         }
                                     }
-                                                                 
-                                    if(gra.clo_name.Contains("All CLOs"))
+
+                                    if (gra.clo_name.Contains("All CLOs"))
                                     {
                                         lst = new List<int>();
                                         lst.AddRange(cloId);
-                                        gra.number_of_questions = "all clos";
+                                        gra.number_of_questions = "";
                                     }
-                                   
+
                                 }
-                                if(gradingStrutureCreate.gradingStruture.number_of_questions == null)
-                                {
-                                    gradingStrutureCreate.gradingStruture.number_of_questions = "";
-                                }
-                                gradingStrutureCreate.gradingCLORequest.CLO_id = new List<int>();
 
                                 gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
                                 try
@@ -273,10 +295,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 catch (Exception ex)
                                 {
 
-                                    throw new Exception(ex.Message);
+                                    throw new Exception("Error when saving Grading Struture");
                                 }
 
-                                //CreateGradingStrutureAPI(gradingStrutureCreate);
                             }
 
                             var value = new
@@ -299,10 +320,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
         }
- 
+
         private async Task<int> CreateSyllabusAPI(Syllabus sy)
         {
-            string apiUrl = API_PORT+ API_SYLLABUS;
+            string apiUrl = API_PORT + API_SYLLABUS;
             var jsonData = JsonSerializer.Serialize(sy);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
@@ -409,11 +430,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<GradingStruture> result = new List<GradingStruture>();
             foreach (var r in row)
             {
-                if(r == null) { }
+                if (r == null) { }
                 GradingStruture g = new GradingStruture();
                 g.type_of_questions = r.type_of_questions;
                 g.number_of_questions = r.number_of_questions;
-                g.session_no = ((r.SessionNo.Trim()==null||r.SessionNo.Trim().Equals("")) ?null:int.Parse(r.SessionNo));           
+                g.session_no = ((r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")) ? null : int.Parse(r.SessionNo));
                 g.references = r.Reference;
                 g.grading_weight = r.weight;
                 g.grading_part = r.Part;
@@ -460,7 +481,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Session> rs = new List<Session>();
             foreach (var r in row)
             {
-                if(r == null) { }
+                if (r == null) { }
                 Session se = new Session();
                 se.session_No = r.session_No;
                 se.schedule_content = r.Content;
@@ -478,19 +499,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private List<CLO> GetClosExcel(IEnumerable<CLOsExcel> row)
         {
             List<CLO> result = new List<CLO>();
-            foreach (var  r in row)
+            foreach (var r in row)
             {
                 if (r.CLO_Name == null) { }
                 CLO c = new CLO();
-             //   if(r.CLO_Name.Equals("All CLOs"))
-             //   {
-                    c.CLO_id = 1;
-             //   }
-              //  else
-              //  {
+                //   if(r.CLO_Name.Equals("All CLOs"))
+                //   {
+                c.CLO_id = 1;
+                //   }
+                //  else
+                //  {
                 //    c.CLO_id = GetCloIdByName(r.CLO_Name).CLO_id;
 
-               // }
+                // }
                 c.CLO_name = r.CLO_Name;
                 c.CLO_description = r.CLO_Description;
                 result.Add(c);
@@ -508,7 +529,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Material> materials = new List<Material>();
             foreach (var r in row)
             {
-                if(r.MaterialDescription == null) { }
+                if (r.MaterialDescription == null) { }
                 Material m = new Material();
                 m.material_description = r.MaterialDescription;
                 m.material_purpose = r.Purpose;
@@ -518,7 +539,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 m.material_note = r.Note;
                 m.material_author = r.Author;
                 m.material_publisher = r.Publisher;
-               // m.material_published_date = DateTime.Parse(r.Published_Date);
+                // m.material_published_date = DateTime.Parse(r.Published_Date);
                 m.material_edition = r.Edition;
                 materials.Add(m);
 
@@ -549,7 +570,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     else if (r.Title.Equals("Course Code"))
                     {
                         var subject = GetSubjectByCode(r.Details);
-                        if(subject != null)
+                        if (subject != null)
                         {
                             syllabus.subject_id = subject.subject_id;
 
@@ -574,7 +595,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("Time Allocation"))
                     {
-
+                        syllabus.time_allocation = r.Details;
                     }
                     else if (r.Title.Equals("Pre-requisite"))
                     {
@@ -617,7 +638,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 throw;
             }
-          
+
             return syllabus;
         }
 

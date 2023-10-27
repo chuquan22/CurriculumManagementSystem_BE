@@ -44,6 +44,7 @@ namespace DataAccess.DAO
         {
             using (var context = new CMSDbContext())
             {
+                rs.syllabus_status = true;
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }

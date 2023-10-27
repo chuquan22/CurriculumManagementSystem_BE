@@ -15,6 +15,8 @@ namespace DataAccess.Models.DTO.request
         public string syllabus_description { get; set; }
         public int subject_id { get; set; }
         public string student_task { get; set; }
+        public string? time_allocation { get; set; }
+
         public string? syllabus_tool { get; set; }
         public string? syllabus_note { get; set; }
         
