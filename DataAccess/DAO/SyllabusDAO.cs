@@ -45,6 +45,10 @@ namespace DataAccess.DAO
             using (var context = new CMSDbContext())
             {
                 rs.syllabus_status = true;
+                if(rs.approved_date != null)
+                {
+                    rs.syllabus_approved = true;
+                }
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }
@@ -100,6 +104,45 @@ namespace DataAccess.DAO
                                    .FirstOrDefault();
             }
             return rs;
+        }
+        public bool SetStatus(int id)
+        {
+            Syllabus rs = new Syllabus();
+            using (var context = new CMSDbContext())
+            {
+                rs = context.Syllabus.Include(s => s.Subject)
+                                   .Include(s => s.Subject.LearningMethod)
+                                   .Where(s => s.syllabus_id == id)
+                                   .FirstOrDefault();
+                if(rs.syllabus_status == true)
+                {
+                    rs.syllabus_status = false;
+                    context.Syllabus.Update(rs);
+                    context.SaveChanges();
+                    return true;
+                }
+                
+            }
+            return false;
+        }
+        public bool SetApproved(int id)
+        {
+            Syllabus rs = new Syllabus();
+            using (var context = new CMSDbContext())
+            {
+                rs = context.Syllabus.Include(s => s.Subject)
+                                   .Include(s => s.Subject.LearningMethod)
+                                   .Where(s => s.syllabus_id == id)
+                                   .FirstOrDefault();
+                
+                    rs.approved_date = DateTime.Now;
+                context.Syllabus.Update(rs);
+                context.SaveChanges();
+                return true;
+               
+
+            }
+            return false;
         }
 
         public string UpdatePatchSyllabus(Syllabus syllabus)

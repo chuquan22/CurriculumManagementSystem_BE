@@ -31,6 +31,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IAssessmentTypeRepository repo3;
         private ICLORepository repo4;
         private IAssessmentMethodRepository repo5;
+        private IMaterialRepository repo6;
+        private IGradingStrutureRepository repo7;
+
 
         private readonly HttpClient client = null;
 
@@ -50,6 +53,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo3 = new AssessmentTypeRepository();
             repo4 = new CLORepository();
             repo5 = new AssessmentMethodRepository();
+            repo6 = new MaterialRepository();
+            repo7 = new GradingStrutureRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -666,6 +671,63 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
+         // Post: Export Curriculum by Excel File
+        [HttpPost("ExportSyllabus/{syllabus_id}")]
+        public async Task<IActionResult> ExportSyllabus(int syllabus_id)
+        {
+            string templatePath = "Syllabus.xlsx";
+            var syllabus = repo.GetSyllabusById(syllabus_id);
+           // var materials = repo6.GetMaterialById(syllabus_id);
+           // var clos = repo4.GetCLOsById(syllabus_id);
+           // var gradingStruture = repo7.GetGradingStrutureById(syllabus_id);
 
+   
+
+            Dictionary<string, object> value = new Dictionary<string, object>()
+            {
+                ["syllabus"] = syllabus
+
+            };
+
+            MemoryStream memoryStream = new MemoryStream();
+            memoryStream.SaveAsByTemplate(templatePath, value);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            byte[] fileContents = memoryStream.ToArray();
+            //return Ok(fileContents);
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SyllabusExported.xlsx");
+        }
+
+        [HttpPost("SetStatus")]
+        public ActionResult SetStatusSyllabus(int id)
+        {
+            try
+            {
+               
+                var result = repo.SetStatusSyllabus(id);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
+        [HttpPost("SetApproved")]
+        public ActionResult SetApproved(int id)
+        {
+            try
+            {
+               
+                var result = repo.SetApproved(id);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Ok(new BaseResponse(true, "False", null));
+        }
     }
 }

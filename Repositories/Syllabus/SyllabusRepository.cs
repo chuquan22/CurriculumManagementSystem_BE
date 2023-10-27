@@ -38,6 +38,16 @@ namespace Repositories.Syllabus
             return db.GetTotalSyllabus(txtSearch, subjectCode);
         }
 
+        public bool SetApproved(int id)
+        {
+            return db.SetApproved(id);
+        }
+
+        public bool SetStatusSyllabus(int id)
+        {
+            return db.SetStatus(id);
+        }
+
         public string UpdatePatchSyllabus(BusinessObject.Syllabus syllabus)
         {
             return db.UpdatePatchSyllabus(syllabus);
