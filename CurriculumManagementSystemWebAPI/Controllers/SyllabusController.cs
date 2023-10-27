@@ -33,6 +33,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IAssessmentMethodRepository repo5;
         private IMaterialRepository repo6;
         private IGradingStrutureRepository repo7;
+        private ISessionRepository repo8;
 
 
         private readonly HttpClient client = null;
@@ -55,6 +56,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo5 = new AssessmentMethodRepository();
             repo6 = new MaterialRepository();
             repo7 = new GradingStrutureRepository();
+            repo8 = new SessionRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -675,26 +677,50 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ExportSyllabus/{syllabus_id}")]
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)
         {
-            string templatePath = "Syllabus.xlsx";
+            string templatePath = "SyllabusExcel.xlsx";
             var syllabus = repo.GetSyllabusById(syllabus_id);
-           // var materials = repo6.GetMaterialById(syllabus_id);
-           // var clos = repo4.GetCLOsById(syllabus_id);
-           // var gradingStruture = repo7.GetGradingStrutureById(syllabus_id);
+             var materials = repo6.GetMaterial(syllabus_id);
+             var clos = repo4.GetCLOs(syllabus_id);
+            var schedule = repo8.GetSession(syllabus_id);
+             var gradingStruture = repo7.GetGradingStruture(syllabus_id);
 
-   
+
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
-                ["syllabus"] = syllabus
-
+                //Tab Syllabus
+                ["document_type"] = syllabus.document_type,
+                ["program"] = syllabus.program,
+                ["decision_no"] = syllabus.decision_No,
+                ["course_name"] = syllabus.Subject.subject_name,
+                ["course_name_english"] = syllabus.Subject.english_subject_name,
+                ["course_code"] = syllabus.Subject.subject_code,
+                ["leaning-teaching_method"] = null,
+                ["credit"] = null,
+                ["degree_level"] = syllabus.degree_level,
+                ["time_allocation"] = syllabus.time_allocation,
+                ["description"] = syllabus.syllabus_description,
+                ["student_task"] = syllabus.student_task,
+                ["tools"] = syllabus.syllabus_tool,
+                ["note"] = syllabus.syllabus_note,
+                ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
+                ["scoring_scale"] = syllabus.scoring_scale,
+                ["approved_date"] = syllabus.approved_date,
+                //Tab Materials
+                ["materials"] = materials,
+                //Tab CLO
+                ["CLOs"] = clos,
+                //Tab Schedule
+                ["schedule"] = schedule,    
+                //Tab GradingStruture
+                ["gradingStruture"] = gradingStruture
             };
 
-            MemoryStream memoryStream = new MemoryStream();
-            memoryStream.SaveAsByTemplate(templatePath, value);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            byte[] fileContents = memoryStream.ToArray();
-            //return Ok(fileContents);
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "SyllabusExported.xlsx");
+         
+            MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
+
+            byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
         }
 
         [HttpPost("SetStatus")]

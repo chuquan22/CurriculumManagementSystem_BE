@@ -134,9 +134,8 @@ namespace DataAccess.DAO
                                    .Include(s => s.Subject.LearningMethod)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
-                
-                    rs.approved_date = DateTime.Now;
                 rs.syllabus_approved = true;
+                rs.approved_date = DateTime.Now;
                 context.Syllabus.Update(rs);
                 context.SaveChanges();
                 return true;
