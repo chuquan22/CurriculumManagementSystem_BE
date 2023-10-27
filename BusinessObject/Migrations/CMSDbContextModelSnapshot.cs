@@ -55,6 +55,12 @@ namespace BusinessObject.Migrations
                             assessment_method_id = 2,
                             assessment_method_component = "TEST",
                             assessment_type_id = 2
+                        },
+                        new
+                        {
+                            assessment_method_id = 3,
+                            assessment_method_component = "AAAVBB",
+                            assessment_type_id = 1
                         });
                 });
 
@@ -122,22 +128,27 @@ namespace BusinessObject.Migrations
                         new
                         {
                             batch_id = 2,
-                            batch_name = "18.3"
+                            batch_name = "19.2"
                         },
                         new
                         {
                             batch_id = 3,
-                            batch_name = "18.2"
+                            batch_name = "19.1"
                         },
                         new
                         {
                             batch_id = 4,
-                            batch_name = "20.1"
+                            batch_name = "18.3"
                         },
                         new
                         {
                             batch_id = 5,
-                            batch_name = "20.2"
+                            batch_name = "18.2"
+                        },
+                        new
+                        {
+                            batch_id = 6,
+                            batch_name = "18.1"
                         });
                 });
 
@@ -623,7 +634,7 @@ namespace BusinessObject.Migrations
                     b.Property<string>("how_granding_structure")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("minimum_value_to_meet_completion")
+                    b.Property<int?>("minimum_value_to_meet_completion")
                         .HasColumnType("int");
 
                     b.Property<string>("number_of_questions")
@@ -977,6 +988,56 @@ namespace BusinessObject.Migrations
                     b.HasIndex("pre_subject_id");
 
                     b.ToTable("PreRequisite");
+
+                    b.HasData(
+                        new
+                        {
+                            subject_id = 1,
+                            pre_subject_id = 2,
+                            pre_requisite_type_id = 1
+                        },
+                        new
+                        {
+                            subject_id = 2,
+                            pre_subject_id = 3,
+                            pre_requisite_type_id = 2
+                        },
+                        new
+                        {
+                            subject_id = 3,
+                            pre_subject_id = 5,
+                            pre_requisite_type_id = 3
+                        },
+                        new
+                        {
+                            subject_id = 4,
+                            pre_subject_id = 7,
+                            pre_requisite_type_id = 4
+                        },
+                        new
+                        {
+                            subject_id = 5,
+                            pre_subject_id = 8,
+                            pre_requisite_type_id = 1
+                        },
+                        new
+                        {
+                            subject_id = 10,
+                            pre_subject_id = 12,
+                            pre_requisite_type_id = 1
+                        },
+                        new
+                        {
+                            subject_id = 11,
+                            pre_subject_id = 14,
+                            pre_requisite_type_id = 2
+                        },
+                        new
+                        {
+                            subject_id = 15,
+                            pre_subject_id = 17,
+                            pre_requisite_type_id = 3
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.PreRequisiteType", b =>
@@ -994,6 +1055,28 @@ namespace BusinessObject.Migrations
                     b.HasKey("pre_requisite_type_id");
 
                     b.ToTable("PreRequisiteType");
+
+                    b.HasData(
+                        new
+                        {
+                            pre_requisite_type_id = 1,
+                            pre_requisite_type_name = "Corequisite"
+                        },
+                        new
+                        {
+                            pre_requisite_type_id = 2,
+                            pre_requisite_type_name = "Prerequisite"
+                        },
+                        new
+                        {
+                            pre_requisite_type_id = 3,
+                            pre_requisite_type_name = "Recommended"
+                        },
+                        new
+                        {
+                            pre_requisite_type_id = 4,
+                            pre_requisite_type_name = "Elective"
+                        });
                 });
 
             modelBuilder.Entity("BusinessObject.Question", b =>
@@ -1107,6 +1190,9 @@ namespace BusinessObject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("semester_id"), 1L, 1);
 
+                    b.Property<int>("batch_id")
+                        .HasColumnType("int");
+
                     b.Property<int>("school_year")
                         .HasColumnType("int");
 
@@ -1122,32 +1208,64 @@ namespace BusinessObject.Migrations
 
                     b.HasKey("semester_id");
 
+                    b.HasIndex("batch_id");
+
                     b.ToTable("Semester");
 
                     b.HasData(
                         new
                         {
                             semester_id = 1,
+                            batch_id = 1,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 10, 27, 1, 50, 31, 486, DateTimeKind.Local).AddTicks(2247),
+                            semester_end_date = new DateTime(2023, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             semester_name = "Fall",
-                            semester_start_date = new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            semester_start_date = new DateTime(2023, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             semester_id = 2,
+                            batch_id = 2,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            semester_name = "Spring",
-                            semester_start_date = new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            semester_end_date = new DateTime(2023, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            semester_name = "Summer",
+                            semester_start_date = new DateTime(2023, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             semester_id = 3,
+                            batch_id = 3,
                             school_year = 2023,
-                            semester_end_date = new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            semester_end_date = new DateTime(2023, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             semester_name = "Spring",
-                            semester_start_date = new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            semester_start_date = new DateTime(2023, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            semester_id = 4,
+                            batch_id = 4,
+                            school_year = 2022,
+                            semester_end_date = new DateTime(2022, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            semester_name = "Fall",
+                            semester_start_date = new DateTime(2022, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            semester_id = 5,
+                            batch_id = 5,
+                            school_year = 2022,
+                            semester_end_date = new DateTime(2022, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            semester_name = "Summer",
+                            semester_start_date = new DateTime(2022, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            semester_id = 6,
+                            batch_id = 6,
+                            school_year = 2022,
+                            semester_end_date = new DateTime(2022, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            semester_name = "Spring",
+                            semester_start_date = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -2594,6 +2712,17 @@ namespace BusinessObject.Migrations
                         .IsRequired();
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("BusinessObject.Semester", b =>
+                {
+                    b.HasOne("BusinessObject.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("batch_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Batch");
                 });
 
             modelBuilder.Entity("BusinessObject.SemesterPlan", b =>

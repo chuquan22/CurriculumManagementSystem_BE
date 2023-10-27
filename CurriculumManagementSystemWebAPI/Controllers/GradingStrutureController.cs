@@ -74,6 +74,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
+                if(rs.number_of_questions == null)
+                {
+                    rs.number_of_questions = "";
+                }
                 rs = repo.CreateGradingStruture(rs);
                 if(rs != null)
                 {

@@ -10,5 +10,7 @@ namespace Repositories.AssessmentMethods
     public interface IAssessmentMethodRepository
     {
         List<AssessmentMethod> GetAllAssessmentMethod();
+        public AssessmentMethod GetAssessmentMethodByName(string name);
+
     }
 }

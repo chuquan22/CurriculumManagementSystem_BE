@@ -118,22 +118,6 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Semester",
-                columns: table => new
-                {
-                    semester_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    semester_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    semester_start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    semester_end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    school_year = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Semester", x => x.semester_id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AssessmentMethod",
                 columns: table => new
                 {
@@ -150,6 +134,29 @@ namespace BusinessObject.Migrations
                         column: x => x.assessment_type_id,
                         principalTable: "AssessmentType",
                         principalColumn: "assessment_type_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Semester",
+                columns: table => new
+                {
+                    semester_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    semester_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    semester_start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    semester_end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    school_year = table.Column<int>(type: "int", nullable: false),
+                    batch_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Semester", x => x.semester_id);
+                    table.ForeignKey(
+                        name: "FK_Semester_Batch_batch_id",
+                        column: x => x.batch_id,
+                        principalTable: "Batch",
+                        principalColumn: "batch_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -176,35 +183,6 @@ namespace BusinessObject.Migrations
                         principalTable: "Role",
                         principalColumn: "role_id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Specialization",
-                columns: table => new
-                {
-                    specialization_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    specialization_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    specialization_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    specialization_english_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    major_id = table.Column<int>(type: "int", nullable: false),
-                    semester_id = table.Column<int>(type: "int", nullable: false),
-                    is_active = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Specialization", x => x.specialization_id);
-                    table.ForeignKey(
-                        name: "FK_Specialization_Major_major_id",
-                        column: x => x.major_id,
-                        principalTable: "Major",
-                        principalColumn: "major_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Specialization_Semester_semester_id",
-                        column: x => x.semester_id,
-                        principalTable: "Semester",
-                        principalColumn: "semester_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -238,6 +216,117 @@ namespace BusinessObject.Migrations
                         column: x => x.learning_method_id,
                         principalTable: "LearningMethod",
                         principalColumn: "learning_method_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Specialization",
+                columns: table => new
+                {
+                    specialization_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    specialization_code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    specialization_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    specialization_english_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    major_id = table.Column<int>(type: "int", nullable: false),
+                    semester_id = table.Column<int>(type: "int", nullable: false),
+                    is_active = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Specialization", x => x.specialization_id);
+                    table.ForeignKey(
+                        name: "FK_Specialization_Major_major_id",
+                        column: x => x.major_id,
+                        principalTable: "Major",
+                        principalColumn: "major_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Specialization_Semester_semester_id",
+                        column: x => x.semester_id,
+                        principalTable: "Semester",
+                        principalColumn: "semester_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PreRequisite",
+                columns: table => new
+                {
+                    subject_id = table.Column<int>(type: "int", nullable: false),
+                    pre_subject_id = table.Column<int>(type: "int", nullable: false),
+                    pre_requisite_type_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PreRequisite", x => new { x.subject_id, x.pre_subject_id });
+                    table.ForeignKey(
+                        name: "FK_PreRequisite_PreRequisiteType_pre_requisite_type_id",
+                        column: x => x.pre_requisite_type_id,
+                        principalTable: "PreRequisiteType",
+                        principalColumn: "pre_requisite_type_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PreRequisite_Subject_pre_subject_id",
+                        column: x => x.pre_subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PreRequisite_Subject_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Quiz",
+                columns: table => new
+                {
+                    quiz_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    quiz_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    subject_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Quiz", x => x.quiz_id);
+                    table.ForeignKey(
+                        name: "FK_Quiz_Subject_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Syllabus",
+                columns: table => new
+                {
+                    syllabus_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    document_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    program = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    degree_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    syllabus_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    subject_id = table.Column<int>(type: "int", nullable: false),
+                    student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    syllabus_tool = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    syllabus_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    scoring_scale = table.Column<int>(type: "int", nullable: false),
+                    approved_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    syllabus_status = table.Column<bool>(type: "bit", nullable: false),
+                    syllabus_approved = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Syllabus", x => x.syllabus_id);
+                    table.ForeignKey(
+                        name: "FK_Syllabus_Subject_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -302,56 +391,6 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PreRequisite",
-                columns: table => new
-                {
-                    subject_id = table.Column<int>(type: "int", nullable: false),
-                    pre_subject_id = table.Column<int>(type: "int", nullable: false),
-                    pre_requisite_type_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PreRequisite", x => new { x.subject_id, x.pre_subject_id });
-                    table.ForeignKey(
-                        name: "FK_PreRequisite_PreRequisiteType_pre_requisite_type_id",
-                        column: x => x.pre_requisite_type_id,
-                        principalTable: "PreRequisiteType",
-                        principalColumn: "pre_requisite_type_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PreRequisite_Subject_pre_subject_id",
-                        column: x => x.pre_subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PreRequisite_Subject_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Quiz",
-                columns: table => new
-                {
-                    quiz_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    quiz_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    subject_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Quiz", x => x.quiz_id);
-                    table.ForeignKey(
-                        name: "FK_Quiz_Subject_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SpecializationSubject",
                 columns: table => new
                 {
@@ -376,34 +415,164 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Syllabus",
+                name: "Question",
                 columns: table => new
                 {
-                    syllabus_id = table.Column<int>(type: "int", nullable: false)
+                    question_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    document_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    program = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    decision_No = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    degree_level = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    syllabus_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    subject_id = table.Column<int>(type: "int", nullable: false),
-                    student_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    syllabus_tool = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    syllabus_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    min_GPA_to_pass = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    scoring_scale = table.Column<int>(type: "int", nullable: false),
-                    approved_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    syllabus_status = table.Column<bool>(type: "bit", nullable: false),
-                    syllabus_approved = table.Column<bool>(type: "bit", nullable: false)
+                    question_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    question_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    quiz_id = table.Column<int>(type: "int", nullable: false),
+                    answers_1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    answers_2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    answers_3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    answers_4 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    correct_answer = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Syllabus", x => x.syllabus_id);
+                    table.PrimaryKey("PK_Question", x => x.question_id);
                     table.ForeignKey(
-                        name: "FK_Syllabus_Subject_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id",
+                        name: "FK_Question_Quiz_quiz_id",
+                        column: x => x.quiz_id,
+                        principalTable: "Quiz",
+                        principalColumn: "quiz_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CLO",
+                columns: table => new
+                {
+                    CLO_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CLO_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    syllabus_id = table.Column<int>(type: "int", nullable: false),
+                    CLO_description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CLO", x => x.CLO_id);
+                    table.ForeignKey(
+                        name: "FK_CLO_Syllabus_syllabus_id",
+                        column: x => x.syllabus_id,
+                        principalTable: "Syllabus",
+                        principalColumn: "syllabus_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GradingStruture",
+                columns: table => new
+                {
+                    grading_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    type_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    number_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    session_no = table.Column<int>(type: "int", nullable: true),
+                    references = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    grading_weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    grading_part = table.Column<int>(type: "int", nullable: false),
+                    syllabus_id = table.Column<int>(type: "int", nullable: false),
+                    minimum_value_to_meet_completion = table.Column<int>(type: "int", nullable: true),
+                    grading_duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    scope_knowledge = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    how_granding_structure = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    assessment_method_id = table.Column<int>(type: "int", nullable: false),
+                    grading_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    clo_name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GradingStruture", x => x.grading_id);
+                    table.ForeignKey(
+                        name: "FK_GradingStruture_AssessmentMethod_assessment_method_id",
+                        column: x => x.assessment_method_id,
+                        principalTable: "AssessmentMethod",
+                        principalColumn: "assessment_method_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GradingStruture_Syllabus_syllabus_id",
+                        column: x => x.syllabus_id,
+                        principalTable: "Syllabus",
+                        principalColumn: "syllabus_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Material",
+                columns: table => new
+                {
+                    material_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    material_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    material_purpose = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    material_ISBN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    material_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    syllabus_id = table.Column<int>(type: "int", nullable: false),
+                    material_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    learning_resource_id = table.Column<int>(type: "int", nullable: false),
+                    material_author = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    material_publisher = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    material_published_date = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    material_edition = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Material", x => x.material_id);
+                    table.ForeignKey(
+                        name: "FK_Material_LearningResource_learning_resource_id",
+                        column: x => x.learning_resource_id,
+                        principalTable: "LearningResource",
+                        principalColumn: "learning_resource_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Material_Syllabus_syllabus_id",
+                        column: x => x.syllabus_id,
+                        principalTable: "Syllabus",
+                        principalColumn: "syllabus_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Session",
+                columns: table => new
+                {
+                    schedule_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    schedule_content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    syllabus_id = table.Column<int>(type: "int", nullable: false),
+                    session_No = table.Column<int>(type: "int", nullable: false),
+                    ITU = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    schedule_student_task = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    student_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lecturer_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    schedule_lecturer_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    student_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    lecturer_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    class_session_type_id = table.Column<int>(type: "int", nullable: false),
+                    remote_learning = table.Column<float>(type: "real", nullable: false),
+                    ass_defense = table.Column<float>(type: "real", nullable: false),
+                    eos_exam = table.Column<float>(type: "real", nullable: false),
+                    video_learning = table.Column<float>(type: "real", nullable: false),
+                    IVQ = table.Column<float>(type: "real", nullable: false),
+                    online_lab = table.Column<float>(type: "real", nullable: false),
+                    online_test = table.Column<float>(type: "real", nullable: false),
+                    assigment = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Session", x => x.schedule_id);
+                    table.ForeignKey(
+                        name: "FK_Session_ClassSessionType_class_session_type_id",
+                        column: x => x.class_session_type_id,
+                        principalTable: "ClassSessionType",
+                        principalColumn: "class_session_type_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Session_Syllabus_syllabus_id",
+                        column: x => x.syllabus_id,
+                        principalTable: "Syllabus",
+                        principalColumn: "syllabus_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -531,192 +700,6 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
-                columns: table => new
-                {
-                    question_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    question_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    question_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    quiz_id = table.Column<int>(type: "int", nullable: false),
-                    answers_1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    answers_2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    answers_3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    answers_4 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    correct_answer = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Question", x => x.question_id);
-                    table.ForeignKey(
-                        name: "FK_Question_Quiz_quiz_id",
-                        column: x => x.quiz_id,
-                        principalTable: "Quiz",
-                        principalColumn: "quiz_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CLO",
-                columns: table => new
-                {
-                    CLO_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CLO_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    syllabus_id = table.Column<int>(type: "int", nullable: false),
-                    CLO_description = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CLO", x => x.CLO_id);
-                    table.ForeignKey(
-                        name: "FK_CLO_Syllabus_syllabus_id",
-                        column: x => x.syllabus_id,
-                        principalTable: "Syllabus",
-                        principalColumn: "syllabus_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GradingStruture",
-                columns: table => new
-                {
-                    grading_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    type_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    number_of_questions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    session_no = table.Column<int>(type: "int", nullable: true),
-                    references = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    grading_weight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    grading_part = table.Column<int>(type: "int", nullable: false),
-                    syllabus_id = table.Column<int>(type: "int", nullable: false),
-                    minimum_value_to_meet_completion = table.Column<int>(type: "int", nullable: false),
-                    grading_duration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    scope_knowledge = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    how_granding_structure = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    assessment_method_id = table.Column<int>(type: "int", nullable: false),
-                    grading_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    clo_name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GradingStruture", x => x.grading_id);
-                    table.ForeignKey(
-                        name: "FK_GradingStruture_AssessmentMethod_assessment_method_id",
-                        column: x => x.assessment_method_id,
-                        principalTable: "AssessmentMethod",
-                        principalColumn: "assessment_method_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GradingStruture_Syllabus_syllabus_id",
-                        column: x => x.syllabus_id,
-                        principalTable: "Syllabus",
-                        principalColumn: "syllabus_id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Material",
-                columns: table => new
-                {
-                    material_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    material_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    material_purpose = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    material_ISBN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    material_type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    syllabus_id = table.Column<int>(type: "int", nullable: false),
-                    material_note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    learning_resource_id = table.Column<int>(type: "int", nullable: false),
-                    material_author = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    material_publisher = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    material_published_date = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    material_edition = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Material", x => x.material_id);
-                    table.ForeignKey(
-                        name: "FK_Material_LearningResource_learning_resource_id",
-                        column: x => x.learning_resource_id,
-                        principalTable: "LearningResource",
-                        principalColumn: "learning_resource_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Material_Syllabus_syllabus_id",
-                        column: x => x.syllabus_id,
-                        principalTable: "Syllabus",
-                        principalColumn: "syllabus_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Session",
-                columns: table => new
-                {
-                    schedule_id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    schedule_content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    syllabus_id = table.Column<int>(type: "int", nullable: false),
-                    session_No = table.Column<int>(type: "int", nullable: false),
-                    ITU = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    schedule_student_task = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    student_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lecturer_material = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    schedule_lecturer_task = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    student_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    lecturer_material_link = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    class_session_type_id = table.Column<int>(type: "int", nullable: false),
-                    remote_learning = table.Column<float>(type: "real", nullable: false),
-                    ass_defense = table.Column<float>(type: "real", nullable: false),
-                    eos_exam = table.Column<float>(type: "real", nullable: false),
-                    video_learning = table.Column<float>(type: "real", nullable: false),
-                    IVQ = table.Column<float>(type: "real", nullable: false),
-                    online_lab = table.Column<float>(type: "real", nullable: false),
-                    online_test = table.Column<float>(type: "real", nullable: false),
-                    assigment = table.Column<float>(type: "real", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Session", x => x.schedule_id);
-                    table.ForeignKey(
-                        name: "FK_Session_ClassSessionType_class_session_type_id",
-                        column: x => x.class_session_type_id,
-                        principalTable: "ClassSessionType",
-                        principalColumn: "class_session_type_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Session_Syllabus_syllabus_id",
-                        column: x => x.syllabus_id,
-                        principalTable: "Syllabus",
-                        principalColumn: "syllabus_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PLOMapping",
-                columns: table => new
-                {
-                    PLO_id = table.Column<int>(type: "int", nullable: false),
-                    subject_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PLOMapping", x => new { x.PLO_id, x.subject_id });
-                    table.ForeignKey(
-                        name: "FK_PLOMapping_PLOs_PLO_id",
-                        column: x => x.PLO_id,
-                        principalTable: "PLOs",
-                        principalColumn: "PLO_id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PLOMapping_Subject_subject_id",
-                        column: x => x.subject_id,
-                        principalTable: "Subject",
-                        principalColumn: "subject_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GradingCLO",
                 columns: table => new
                 {
@@ -762,6 +745,30 @@ namespace BusinessObject.Migrations
                         principalColumn: "schedule_id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PLOMapping",
+                columns: table => new
+                {
+                    PLO_id = table.Column<int>(type: "int", nullable: false),
+                    subject_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PLOMapping", x => new { x.PLO_id, x.subject_id });
+                    table.ForeignKey(
+                        name: "FK_PLOMapping_PLOs_PLO_id",
+                        column: x => x.PLO_id,
+                        principalTable: "PLOs",
+                        principalColumn: "PLO_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PLOMapping_Subject_subject_id",
+                        column: x => x.subject_id,
+                        principalTable: "Subject",
+                        principalColumn: "subject_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AssessmentType",
                 columns: new[] { "assessment_type_id", "assessment_type_name" },
@@ -779,10 +786,11 @@ namespace BusinessObject.Migrations
                 values: new object[,]
                 {
                     { 1, "19.3" },
-                    { 2, "18.3" },
-                    { 3, "18.2" },
-                    { 4, "20.1" },
-                    { 5, "20.2" }
+                    { 2, "19.2" },
+                    { 3, "19.1" },
+                    { 4, "18.3" },
+                    { 5, "18.2" },
+                    { 6, "18.1" }
                 });
 
             migrationBuilder.InsertData(
@@ -825,6 +833,17 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "PreRequisiteType",
+                columns: new[] { "pre_requisite_type_id", "pre_requisite_type_name" },
+                values: new object[,]
+                {
+                    { 1, "Corequisite" },
+                    { 2, "Prerequisite" },
+                    { 3, "Recommended" },
+                    { 4, "Elective" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "role_id", "role_name" },
                 values: new object[,]
@@ -835,35 +854,26 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Semester",
-                columns: new[] { "semester_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
-                values: new object[,]
-                {
-                    { 1, 2023, new DateTime(2023, 10, 27, 1, 50, 31, 486, DateTimeKind.Local).AddTicks(2247), "Fall", new DateTime(2023, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, 2023, new DateTime(2023, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
-            migrationBuilder.InsertData(
                 table: "AssessmentMethod",
                 columns: new[] { "assessment_method_id", "assessment_method_component", "assessment_type_id" },
                 values: new object[,]
                 {
                     { 1, "ABC", 1 },
-                    { 2, "TEST", 2 }
+                    { 2, "TEST", 2 },
+                    { 3, "AAAVBB", 1 }
                 });
 
             migrationBuilder.InsertData(
-                table: "Specialization",
-                columns: new[] { "specialization_id", "is_active", "major_id", "semester_id", "specialization_code", "specialization_english_name", "specialization_name" },
+                table: "Semester",
+                columns: new[] { "semester_id", "batch_id", "school_year", "semester_end_date", "semester_name", "semester_start_date" },
                 values: new object[,]
                 {
-                    { 1, true, 1, 1, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
-                    { 2, true, 1, 1, "FMA", "Filmmaking and Advertising", "Dựng phim và quảng cáo" },
-                    { 3, true, 1, 2, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
-                    { 4, true, 2, 2, "SE", "Software Engineering", "kĩ thuật phần mềm" },
-                    { 5, true, 2, 2, "WP", "Web Programming", "lập trình web" },
-                    { 6, true, 2, 1, "GP", "Game Programming", "lập trình game" }
+                    { 1, 1, 2023, new DateTime(2023, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fall", new DateTime(2023, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, 2023, new DateTime(2023, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Summer", new DateTime(2023, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 3, 2023, new DateTime(2023, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2023, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, 4, 2022, new DateTime(2022, 12, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Fall", new DateTime(2022, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, 5, 2022, new DateTime(2022, 8, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), "Summer", new DateTime(2022, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 6, 6, 2022, new DateTime(2022, 4, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Spring", new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -877,29 +887,16 @@ namespace BusinessObject.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Combo",
-                columns: new[] { "combo_id", "combo_code", "combo_description", "combo_english_name", "combo_name", "is_active", "specialization_id" },
+                table: "Specialization",
+                columns: new[] { "specialization_id", "is_active", "major_id", "semester_id", "specialization_code", "specialization_english_name", "specialization_name" },
                 values: new object[,]
                 {
-                    { 1, ".NET", "lập trình web với ngôn ngữ C#", "C# Programing", "Lập trình C#", true, 4 },
-                    { 2, "JS", "kĩ sư lập trình với ngôn ngữ Nhật", "Japan Software", "kĩ sư Nhật Bản", true, 3 },
-                    { 3, "KS", "kĩ sư lập trình với ngôn ngữ Hàn", "Korea Software", "kĩ sư Hàn Quốc", false, 2 },
-                    { 4, "NodeJS", "lập trình web với NodeJS", "Web api using NodeJS", "Lập trình NodeJS", true, 1 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Curriculum",
-                columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "degree_level", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
-                values: new object[,]
-                {
-                    { 1, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
-                    { 2, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
-                    { 3, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
-                    { 4, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
-                    { 5, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
-                    { 6, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
-                    { 7, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
-                    { 8, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
+                    { 1, true, 1, 1, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
+                    { 2, true, 1, 1, "FMA", "Filmmaking and Advertising", "Dựng phim và quảng cáo" },
+                    { 3, true, 1, 2, "IED", "Interior and Exterior Design", "Thiết kế nội và ngoại thất" },
+                    { 4, true, 2, 2, "SE", "Software Engineering", "kĩ thuật phần mềm" },
+                    { 5, true, 2, 2, "WP", "Web Programming", "lập trình web" },
+                    { 6, true, 2, 1, "GP", "Game Programming", "lập trình game" }
                 });
 
             migrationBuilder.InsertData(
@@ -936,7 +933,13 @@ namespace BusinessObject.Migrations
                     { 27, 1, 3, "Environmental Science", 4, true, 2, "ENV101", "Môi trường học", 70, 40 },
                     { 28, 1, 3, "Psychology", 4, true, 2, "PSY101", "Tâm lý học", 70, 40 },
                     { 29, 1, 3, "Antropology", 4, true, 2, "ANTH101", "Antropology", 70, 40 },
-                    { 30, 1, 3, "Economics 2", 4, true, 2, "ECO102", "Kinh tế học 2", 70, 40 }
+                    { 30, 1, 3, "Economics 2", 4, true, 2, "ECO102", "Kinh tế học 2", 70, 40 },
+                    { 31, 1, 3, "Business Management 2", 4, true, 2, "BUS102", "Quản trị kinh doanh 2", 70, 40 },
+                    { 32, 1, 3, "Finance 2", 4, true, 2, "FIN102", "Tài chính 2", 70, 40 },
+                    { 33, 1, 3, "Information Systems 2", 4, true, 2, "IT102", "Hệ thống thông tin 2", 70, 40 },
+                    { 34, 1, 3, "Computer Science 2", 4, true, 2, "CS102", "Công nghệ thông tin 2", 70, 40 },
+                    { 35, 1, 3, "Mechanical Engineering 2", 4, true, 2, "MECH102", "Cơ khí học 2", 70, 40 },
+                    { 36, 1, 3, "Electronics and Electrical Engineering 2", 4, true, 2, "ELEC102", "Điện tử và điện lạnh 2", 70, 40 }
                 });
 
             migrationBuilder.InsertData(
@@ -944,12 +947,6 @@ namespace BusinessObject.Migrations
                 columns: new[] { "subject_id", "assessment_method_id", "credit", "english_subject_name", "exam_total", "is_active", "learning_method_id", "subject_code", "subject_name", "total_time", "total_time_class" },
                 values: new object[,]
                 {
-                    { 31, 1, 3, "Business Management 2", 4, true, 2, "BUS102", "Quản trị kinh doanh 2", 70, 40 },
-                    { 32, 1, 3, "Finance 2", 4, true, 2, "FIN102", "Tài chính 2", 70, 40 },
-                    { 33, 1, 3, "Information Systems 2", 4, true, 2, "IT102", "Hệ thống thông tin 2", 70, 40 },
-                    { 34, 1, 3, "Computer Science 2", 4, true, 2, "CS102", "Công nghệ thông tin 2", 70, 40 },
-                    { 35, 1, 3, "Mechanical Engineering 2", 4, true, 2, "MECH102", "Cơ khí học 2", 70, 40 },
-                    { 36, 1, 3, "Electronics and Electrical Engineering 2", 4, true, 2, "ELEC102", "Điện tử và điện lạnh 2", 70, 40 },
                     { 37, 1, 3, "Architecture 2", 4, true, 2, "ARCH102", "Kiến trúc 2", 70, 40 },
                     { 38, 1, 3, "Art and Design 2", 4, true, 2, "ART102", "Nghệ thuật và thiết kế 2", 70, 40 },
                     { 39, 1, 3, "Music and Performing Arts 2", 4, true, 2, "MUSIC102", "Âm nhạc và nghệ thuật biểu diễn 2", 70, 40 },
@@ -970,6 +967,47 @@ namespace BusinessObject.Migrations
                     { 54, 1, 3, "Electronics and Electrical Engineering 3", 4, true, 2, "ELEC103", "Điện tử và điện lạnh 3", 70, 40 },
                     { 55, 1, 3, "Architecture 3", 4, true, 2, "ARCH103", "Kiến trúc 3", 70, 40 },
                     { 56, 1, 3, "Image Design using Photoshop", 4, true, 2, "MUL1013", "Thiết kế hình ảnh với Photoshop", 70, 40 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Combo",
+                columns: new[] { "combo_id", "combo_code", "combo_description", "combo_english_name", "combo_name", "is_active", "specialization_id" },
+                values: new object[,]
+                {
+                    { 1, ".NET", "lập trình web với ngôn ngữ C#", "C# Programing", "Lập trình C#", true, 4 },
+                    { 2, "JS", "kĩ sư lập trình với ngôn ngữ Nhật", "Japan Software", "kĩ sư Nhật Bản", true, 3 },
+                    { 3, "KS", "kĩ sư lập trình với ngôn ngữ Hàn", "Korea Software", "kĩ sư Hàn Quốc", false, 2 },
+                    { 4, "NodeJS", "lập trình web với NodeJS", "Web api using NodeJS", "Lập trình NodeJS", true, 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Curriculum",
+                columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "degree_level", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
+                values: new object[,]
+                {
+                    { 1, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
+                    { 2, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
+                    { 3, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
+                    { 4, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
+                    { 5, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
+                    { 6, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
+                    { 7, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
+                    { 8, "formal education", new DateTime(2023, 10, 27, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PreRequisite",
+                columns: new[] { "pre_subject_id", "subject_id", "pre_requisite_type_id" },
+                values: new object[,]
+                {
+                    { 2, 1, 1 },
+                    { 3, 2, 2 },
+                    { 5, 3, 3 },
+                    { 7, 4, 4 },
+                    { 8, 5, 1 },
+                    { 12, 10, 1 },
+                    { 14, 11, 2 },
+                    { 17, 15, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -1107,6 +1145,11 @@ namespace BusinessObject.Migrations
                 column: "subject_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Semester_batch_id",
+                table: "Semester",
+                column: "batch_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SemesterPlan_curriculum_id",
                 table: "SemesterPlan",
                 column: "curriculum_id");
@@ -1237,9 +1280,6 @@ namespace BusinessObject.Migrations
                 name: "Syllabus");
 
             migrationBuilder.DropTable(
-                name: "Batch");
-
-            migrationBuilder.DropTable(
                 name: "Specialization");
 
             migrationBuilder.DropTable(
@@ -1256,6 +1296,9 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.DropTable(
                 name: "LearningMethod");
+
+            migrationBuilder.DropTable(
+                name: "Batch");
 
             migrationBuilder.DropTable(
                 name: "AssessmentType");
