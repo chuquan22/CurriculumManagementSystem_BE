@@ -16,5 +16,11 @@ namespace DataAccess.Models.DTO.request
 
         public string? syllabus_tool { get; set; }
 
+        public string? student_task { get; set; }
+        public string? time_allocation { get; set; }
+        public string? syllabus_note { get; set; }
+        public decimal? min_GPA_to_pass { get; set; }
+        public int? scoring_scale { get; set; }
+
     }
 }
