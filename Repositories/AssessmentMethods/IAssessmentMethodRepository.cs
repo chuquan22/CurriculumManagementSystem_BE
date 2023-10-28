@@ -11,6 +11,10 @@ namespace Repositories.AssessmentMethods
     {
         List<AssessmentMethod> GetAllAssessmentMethod();
         public AssessmentMethod GetAssessmentMethodByName(string name);
+        string CreateAssessmentMethod(AssessmentMethod method);
+        string UpdateAssessmentMethod(AssessmentMethod method);
+        string DeleteAssessmentMethod(AssessmentMethod method);
+
 
     }
 }

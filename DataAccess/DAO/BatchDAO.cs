@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -48,11 +49,31 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
-        private int CreateBatch(Batch batch)
+        public string CreateBatch(Batch batch)
         {
-            _context.Batch.Add(batch);
-            _context.SaveChanges();
-            return batch.batch_id;
+            try
+            {
+                _context.Batch.Add(batch);
+                _context.SaveChanges();
+                return Result.createSuccessfull.ToString();
+            }catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+        }
+
+        public string DeleteBatch(Batch batch)
+        {
+            try
+            {
+                _context.Batch.Remove(batch);
+                _context.SaveChanges();
+                return Result.deleteSuccessfull.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
         }
 
     }

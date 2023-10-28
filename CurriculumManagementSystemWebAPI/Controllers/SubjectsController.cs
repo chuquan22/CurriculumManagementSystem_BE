@@ -199,6 +199,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             
             var subject = _subjectRepository.GetSubjectById(id);
+            var subjectRespone = _mapper.Map<SubjectResponse>(subject);
             // if subject not exsit
             if (subject == null)
             {
@@ -225,7 +226,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                 }
             }
-            
             // delete subject
             string deleteResult = _subjectRepository.DeleteSubject(subject);
             if (!deleteResult.Equals("OK"))
@@ -234,7 +234,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             
 
-            return Ok(new BaseResponse(false, "Delete successfull!", id));
+            return Ok(new BaseResponse(false, "Delete successfull!", subjectRespone));
         }
 
 

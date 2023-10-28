@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,48 @@ namespace DataAccess.DAO
         {
             var classSessionTyoe = _context.ClassSessionType.Where(x => x.class_session_type_id == id).FirstOrDefault();
             return classSessionTyoe;
+        }
+
+        public string CreateClassSessionType(ClassSessionType classSessionType)
+        {
+            try
+            {
+                _context.ClassSessionType.Add(classSessionType);
+                _context.SaveChanges();
+                return Result.createSuccessfull.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+        }
+
+        public string UpdateClassSessionType(ClassSessionType classSessionType)
+        {
+            try
+            {
+                _context.ClassSessionType.Update(classSessionType);
+                _context.SaveChanges();
+                return Result.updateSuccessfull.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+        }
+
+        public string DeleteClassSessionType(ClassSessionType classSessionType)
+        {
+            try
+            {
+                _context.ClassSessionType.Remove(classSessionType);
+                _context.SaveChanges();
+                return Result.deleteSuccessfull.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
         }
     }
 }
