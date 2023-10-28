@@ -858,9 +858,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "assessment_method_id", "assessment_method_component", "assessment_type_id" },
                 values: new object[,]
                 {
-                    { 1, "ABC", 1 },
-                    { 2, "TEST", 2 },
-                    { 3, "AAAVBB", 1 }
+                    { 1, "Lab", 3 },
+                    { 2, "Quiz", 3 },
+                    { 3, "Assignment", 3 },
+                    { 4, "Bài học online", 3 },
+                    { 5, "Lab", 3 },
+                    { 6, "Bảo vệ assignment", 4 },
+                    { 7, "Quiz", 3 },
+                    { 8, "Đánh giá Assignment GĐ 1", 3 }
                 });
 
             migrationBuilder.InsertData(

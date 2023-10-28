@@ -12,5 +12,7 @@ namespace Repositories.ClassSessionTypes
         public List<ClassSessionType> GetListClassSessionType();
 
         public ClassSessionType GetClassSessionType(int id);
+        public ClassSessionType GetClassSessionTypeByName(string name);
+
     }
 }

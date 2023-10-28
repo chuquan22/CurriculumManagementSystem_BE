@@ -16,6 +16,12 @@ namespace Repositories.ClassSessionTypes
             return db.GetClassSessionType(id); 
         }
 
+        public ClassSessionType GetClassSessionTypeByName(string name)
+        {
+            return db.GetClassSessionTypeByName(name);
+
+        }
+
         public List<ClassSessionType> GetListClassSessionType()
         {
             return db.GetListClassSessionType();
