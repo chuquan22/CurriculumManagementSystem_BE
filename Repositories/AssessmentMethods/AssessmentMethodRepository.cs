@@ -11,6 +11,17 @@ namespace Repositories.AssessmentMethods
     public class AssessmentMethodRepository : IAssessmentMethodRepository
     {
         private readonly AssessmentMethodDAO assessmentMethodDAO = new AssessmentMethodDAO();
+
+        public string CreateAssessmentMethod(AssessmentMethod method)
+        {
+            return assessmentMethodDAO.CreateAssessmentMethod(method);
+        }
+
+        public string DeleteAssessmentMethod(AssessmentMethod method)
+        {
+            return assessmentMethodDAO.UpdateAssessmentMethod(method);
+        }
+
         public List<AssessmentMethod> GetAllAssessmentMethod()
         {
             return assessmentMethodDAO.GetAllAssessmentMethod();
@@ -20,6 +31,11 @@ namespace Repositories.AssessmentMethods
         {
             return assessmentMethodDAO.GetAsssentMethodByName(name);
 
+        }
+
+        public string UpdateAssessmentMethod(AssessmentMethod method)
+        {
+            return assessmentMethodDAO.DeleteAssessmentMethod(method);
         }
     }
 }
