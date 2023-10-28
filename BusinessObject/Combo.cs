@@ -27,7 +27,6 @@ namespace BusinessObject
         public bool is_active { get; set; }
 
         public virtual Specialization Specialization { get; set; }
-        public virtual ICollection<ComboSubject> comboSubjects { get; set; }   
         public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }   
     }
 }
