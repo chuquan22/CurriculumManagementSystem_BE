@@ -70,6 +70,7 @@ namespace DataAccess.DAO
             oldGra.grading_duration = gra.grading_duration;
             oldGra.type_of_questions = gra.type_of_questions;
             oldGra.session_no = gra.session_no;
+            oldGra.references = gra.references;
             oldGra.number_of_questions = gra.number_of_questions;
             oldGra.scope_knowledge = oldGra.scope_knowledge;
             oldGra.how_granding_structure = gra.how_granding_structure;

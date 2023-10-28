@@ -71,27 +71,27 @@ namespace DataAccess.DAO
 
         public int GetTotalSyllabus(string txtSearch, string subjectCode)
         {
-            int rs = 0;
             using (var context = new CMSDbContext())
             {
-                rs = context.Syllabus.Include(s => s.Subject)
-                                   .Include(s => s.Subject.LearningMethod)
-                                   .ToList()
-                                   .Count();
+                var query = context.Syllabus.Include(s => s.Subject)
+                                            .Where(s => s.syllabus_status == true);
+
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
-                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_name.Contains(txtSearch)
-                    || sy.Subject.subject_code.Contains(txtSearch)
-                    || sy.Subject.english_subject_name.Contains(txtSearch)
-                    ).ToList().Count();
+                    query = query.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
+                                        || sy.Subject.subject_code.Contains(txtSearch)
+                                        || sy.Subject.english_subject_name.Contains(txtSearch));
                 }
+
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList().Count();
+                    query = query.Where(sy => sy.Subject.subject_code.Contains(subjectCode));
                 }
+
+                return query.Count();
             }
-            return rs;
         }
+
 
         public Syllabus GetSyllabusById(int id)
         {
