@@ -30,7 +30,6 @@ namespace BusinessObject
         public virtual DbSet<CLO> CLO { get; set; }
         public virtual DbSet<Combo> Combo { get; set; }
         public virtual DbSet<ComboCurriculum> ComboCurriculum { get; set; }
-        public virtual DbSet<ComboSubject> ComboSubject { get; set; }
         public virtual DbSet<Curriculum> Curriculum { get; set; }
         public virtual DbSet<CurriculumSubject> CurriculumSubject { get; set; }
         public virtual DbSet<GradingCLO> GradingCLO { get; set; }
@@ -48,6 +47,7 @@ namespace BusinessObject
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Semester> Semester { get; set; }
         public virtual DbSet<SemesterPlan> SemesterPlan { get; set; }
+        public virtual DbSet<SemesterBatch> SemesterBatch { get; set; }
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<Specialization> Specialization { get; set; }
         public virtual DbSet<SpecializationSubject> SpecializationSubject { get; set; }
@@ -60,9 +60,6 @@ namespace BusinessObject
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //create primary key
-            modelBuilder.Entity<ComboSubject>()
-               .HasKey(ba => new { ba.combo_id, ba.subject_id });
-
             modelBuilder.Entity<CurriculumSubject>()
                .HasKey(ba => new { ba.curriculum_id, ba.subject_id });
 
@@ -143,6 +140,12 @@ namespace BusinessObject
                 .HasOne(x => x.Curriculum)
                 .WithMany(y => y.ComboCurriculum)
                 .HasForeignKey(x => x.curriculum_id)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<SemesterBatch>()
+                .HasOne(x => x.Semester)
+                .WithMany(y => y.SemesterBatches)
+                .HasForeignKey(x => x.semester_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
 
