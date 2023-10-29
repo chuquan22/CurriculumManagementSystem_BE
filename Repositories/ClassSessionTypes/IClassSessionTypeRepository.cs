@@ -10,7 +10,7 @@ namespace Repositories.ClassSessionTypes
     public interface IClassSessionTypeRepository
     {
         public List<ClassSessionType> GetListClassSessionType();
-
+        List<ClassSessionType> PaginationClassSessionType(int page, int limit, string? txtSearch);
         public ClassSessionType GetClassSessionType(int id);
 
         bool CheckClassSessionTypeDuplicate(string name);

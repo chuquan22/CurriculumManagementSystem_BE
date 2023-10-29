@@ -28,7 +28,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var listAssessmentMethod = _repo.GetAllAssessmentMethod();
             var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
-            return Ok(new BaseResponse(false, "List Batch", listAssessmentMethodResponse));
+            return Ok(new BaseResponse(false, "List Assessment Method", listAssessmentMethodResponse));
+        }
+
+
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationAssessmentMethod(int page, int limit, [FromQuery] string? txtSearch)
+        {
+            var listAssessmentMethod = _repo.PaginationAssessmentMethod(page, limit, txtSearch);
+            if (listAssessmentMethod.Count == 0)
+            {
+                Ok(new BaseResponse(false, "Not Found Assessment Method!"));
+            }
+            var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
+            return Ok(new BaseResponse(false, "List Assessment Method", listAssessmentMethodResponse));
         }
 
         [HttpPost("CreateAssessmentMethod")]

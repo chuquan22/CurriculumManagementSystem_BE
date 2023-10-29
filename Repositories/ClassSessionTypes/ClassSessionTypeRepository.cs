@@ -42,6 +42,11 @@ namespace Repositories.ClassSessionTypes
             return db.GetListClassSessionType();
         }
 
+        public List<ClassSessionType> PaginationClassSessionType(int page, int limit, string? txtSearch)
+        {
+            return db.PaginationClassSessionType(page, limit, txtSearch);
+        }
+
         public string UpdateClassSessionType(ClassSessionType classSessionType)
         {
             return db.DeleteClassSessionType(classSessionType);

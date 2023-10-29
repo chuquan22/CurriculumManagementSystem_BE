@@ -12,5 +12,8 @@ namespace Repositories.Batchs
         List<Batch> GetAllBatch();
         int GetBatchIDByName(string batchName);
         List<Batch> GetBatchBySpe(int speId);
+
+        string CreateBatch(Batch batch);
+        string DeleteBatch(Batch batch);
     }
 }

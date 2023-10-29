@@ -45,6 +45,11 @@ namespace Repositories.AssessmentMethods
             return assessmentMethodDAO.GetAsssentMethodById(id);
         }
 
+        public List<AssessmentMethod> PaginationAssessmentMethod(int page, int limit, string? txtSearch)
+        {
+            return assessmentMethodDAO.PaginationAssessmentMethod(page, limit, txtSearch);
+        }
+
         public string UpdateAssessmentMethod(AssessmentMethod method)
         {
             return assessmentMethodDAO.DeleteAssessmentMethod(method);
