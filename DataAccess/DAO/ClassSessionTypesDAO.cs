@@ -25,6 +25,11 @@ namespace DataAccess.DAO
             return classSessionTyoe;
         }
 
+        public bool CheckClassSessionTypeDuplicate(string name)
+        {
+            return (_context.ClassSessionType?.Any(x => x.class_session_type_name.Equals(name))).GetValueOrDefault();
+        }
+
         public string CreateClassSessionType(ClassSessionType classSessionType)
         {
             try

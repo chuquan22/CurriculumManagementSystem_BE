@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,17 @@ namespace DataAccess.DAO
         {
             var ass = _context.AssessmentType.Where(x => x.assessment_type_name.Equals(name.Trim())).FirstOrDefault();
             return ass;
+        }
+
+        public AssessmentType GetAsssentTypeById(int id)
+        {
+            var rs = _context.AssessmentType.Where(x => x.assessment_type_id == id).FirstOrDefault();
+            return rs;
+        }
+
+        public bool CheckAssmentTypeDuplicate(string name)
+        {
+            return (_context.AssessmentType?.Any(x => x.assessment_type_name == name)).GetValueOrDefault();
         }
 
         public string CreateAssessmentType(AssessmentType type)

@@ -12,6 +12,11 @@ namespace Repositories.AssessmentMethods
     {
         private readonly AssessmentMethodDAO assessmentMethodDAO = new AssessmentMethodDAO();
 
+        public bool CheckAssmentMethodDuplicate(string assmentMethod)
+        {
+            return assessmentMethodDAO.CheckAssmentMethodDuplicate(assmentMethod);
+        }
+
         public string CreateAssessmentMethod(AssessmentMethod method)
         {
             return assessmentMethodDAO.CreateAssessmentMethod(method);
@@ -31,6 +36,11 @@ namespace Repositories.AssessmentMethods
         {
             return assessmentMethodDAO.GetAsssentMethodByName(name);
 
+        }
+
+        public AssessmentMethod GetAsssentMethodById(int id)
+        {
+            return assessmentMethodDAO.GetAsssentMethodById(id);
         }
 
         public string UpdateAssessmentMethod(AssessmentMethod method)

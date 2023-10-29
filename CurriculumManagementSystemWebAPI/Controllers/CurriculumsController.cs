@@ -147,6 +147,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             _mapper.Map(curriculumRequest, curriculum);
             curriculum.updated_date = DateTime.Today;
+            
+
             string updateResult = _curriculumRepository.UpdateCurriculum(curriculum);
 
             if (!updateResult.Equals("OK"))

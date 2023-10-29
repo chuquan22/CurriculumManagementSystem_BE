@@ -27,6 +27,17 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public AssessmentMethod GetAsssentMethodById(int id)
+        {
+            var rs = _context.AssessmentMethod.Include(a => a.AssessmentType).Where(x => x.assessment_method_id == id).FirstOrDefault();
+            return rs;
+        }
+
+        public bool CheckAssmentMethodDuplicate(string name)
+        {
+            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component == name)).GetValueOrDefault();
+        }
+
 
         public string CreateAssessmentMethod(AssessmentMethod method)
         {
