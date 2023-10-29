@@ -40,7 +40,15 @@ namespace DataAccess.DAO
             _cmsDbContext.SaveChanges();
             return oldCol;
         }
-
+        public bool IsClosExist(string name)
+        {
+            var col = _cmsDbContext.CLO.Where(c => c.CLO_name.Equals(name)).FirstOrDefault();
+            if(col != null)
+            {
+                return true;
+            }
+            return false;
+        }
         public CLO CreateCLOs(CLO clo)
         {
             _cmsDbContext.CLO.Add(clo);

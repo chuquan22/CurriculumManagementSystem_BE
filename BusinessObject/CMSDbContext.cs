@@ -230,11 +230,18 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<AssessmentMethod>().HasData(
-                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "ABC", assessment_type_id = 1 },
-                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "TEST", assessment_type_id = 2 },
-                       new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "AAAVBB", assessment_type_id = 1 });
+                new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "Lab", assessment_type_id = 3 },
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "Quiz", assessment_type_id = 3 },
+                new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "Assignment", assessment_type_id = 3 },
+                  new AssessmentMethod { assessment_method_id = 4, assessment_method_component = "Bài học online", assessment_type_id = 3 },
+                   new AssessmentMethod { assessment_method_id = 5, assessment_method_component = "Lab", assessment_type_id = 3 },
+                    new AssessmentMethod { assessment_method_id = 6, assessment_method_component = "Bảo vệ assignment", assessment_type_id = 4 },
+                    new AssessmentMethod { assessment_method_id = 7, assessment_method_component = "Quiz", assessment_type_id = 3 },
+                    new AssessmentMethod { assessment_method_id = 8, assessment_method_component = "Đánh giá Assignment GĐ 1", assessment_type_id = 3 }
 
-           
+                    );
+
+
 
             modelBuilder.Entity<Subject>().HasData(
                 new Subject { subject_id = 1, subject_code = "SEP490", subject_name = "Đồ án", assessment_method_id = 1, learning_method_id = 1, english_subject_name = "Project Capstone", credit = 3, total_time = 70, total_time_class = 40, exam_total = 3, is_active = true },

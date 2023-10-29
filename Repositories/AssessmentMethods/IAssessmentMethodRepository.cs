@@ -10,7 +10,7 @@ namespace Repositories.AssessmentMethods
     public interface IAssessmentMethodRepository
     {
         List<AssessmentMethod> GetAllAssessmentMethod();
-        public AssessmentMethod GetAssessmentMethodByName(string name);
+        public AssessmentMethod GetAssessmentMethodByNameAndTypeId(string name,int id);
         string CreateAssessmentMethod(AssessmentMethod method);
         string UpdateAssessmentMethod(AssessmentMethod method);
         string DeleteAssessmentMethod(AssessmentMethod method);

@@ -30,6 +30,13 @@ namespace DataAccess.DAO
             return (_context.ClassSessionType?.Any(x => x.class_session_type_name.Equals(name))).GetValueOrDefault();
         }
 
+        public ClassSessionType GetClassSessionTypeByName(string name)
+        {
+            var classSessionTyoe = _context.ClassSessionType.Where(x => x.class_session_type_name.Contains(name)).FirstOrDefault();
+            return classSessionTyoe;
+
+        }
+
         public string CreateClassSessionType(ClassSessionType classSessionType)
         {
             try

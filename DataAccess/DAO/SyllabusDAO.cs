@@ -71,27 +71,27 @@ namespace DataAccess.DAO
 
         public int GetTotalSyllabus(string txtSearch, string subjectCode)
         {
-            int rs = 0;
             using (var context = new CMSDbContext())
             {
-                rs = context.Syllabus.Include(s => s.Subject)
-                                   .Include(s => s.Subject.LearningMethod)
-                                   .ToList()
-                                   .Count();
+                var query = context.Syllabus.Include(s => s.Subject)
+                                            .Where(s => s.syllabus_status == true);
+
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
-                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_name.Contains(txtSearch)
-                    || sy.Subject.subject_code.Contains(txtSearch)
-                    || sy.Subject.english_subject_name.Contains(txtSearch)
-                    ).ToList().Count();
+                    query = query.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
+                                        || sy.Subject.subject_code.Contains(txtSearch)
+                                        || sy.Subject.english_subject_name.Contains(txtSearch));
                 }
+
                 if (!string.IsNullOrEmpty(subjectCode))
                 {
-                    rs = context.Syllabus.Include(s => s.Subject).Where(sy => sy.Subject.subject_code.Contains(subjectCode)).ToList().Count();
+                    query = query.Where(sy => sy.Subject.subject_code.Contains(subjectCode));
                 }
+
+                return query.Count();
             }
-            return rs;
         }
+
 
         public Syllabus GetSyllabusById(int id)
         {
@@ -165,7 +165,16 @@ namespace DataAccess.DAO
 
                     if (syllabus.syllabus_tool != null )
                         oldRs.syllabus_tool = syllabus.syllabus_tool;
-
+                    if(syllabus.time_allocation!=null)
+                        oldRs.time_allocation = syllabus.time_allocation;
+                    if (syllabus.student_task != null)
+                        oldRs.student_task = syllabus.student_task;
+                    if (syllabus.syllabus_note != null)
+                        oldRs.syllabus_note = syllabus.syllabus_note;
+                    if (syllabus.min_GPA_to_pass != null)
+                        oldRs.min_GPA_to_pass = syllabus.min_GPA_to_pass;
+                    if (syllabus.scoring_scale != null)
+                        oldRs.scoring_scale = syllabus.scoring_scale;
 
 
                     context.Syllabus.Update(oldRs);

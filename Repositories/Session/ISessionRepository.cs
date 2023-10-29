@@ -18,5 +18,7 @@ namespace Repositories.Session
 
         public BusinessObject.Session GetSessionById(int id);
         string UpdatePatchSession(BusinessObject.Session rs);
+
+        public BusinessObject.Session IsSessionNoExist(int sessionNo, int scheduleId);
     }
 }

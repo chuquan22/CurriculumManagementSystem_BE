@@ -35,8 +35,8 @@ namespace DataAccess.Models.DTO.Excel
         [DisplayName("Student's materials link")]
 
         public string student_material_link { get; set; }
-        [DisplayName("Lecturer's materials link")]
+        [DisplayName("Lecturer's Materials link")]
 
-        public string lecture_material_link { get; set; }
+        public string lecturer_material_link { get; set; }
     }
 }

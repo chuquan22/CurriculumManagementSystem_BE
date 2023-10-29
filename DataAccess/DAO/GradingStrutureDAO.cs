@@ -68,6 +68,11 @@ namespace DataAccess.DAO
             oldGra.syllabus_id = gra.syllabus_id;
             oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion; 
             oldGra.grading_duration = gra.grading_duration;
+            oldGra.type_of_questions = gra.type_of_questions;
+            oldGra.session_no = gra.session_no;
+            oldGra.references = gra.references;
+            oldGra.number_of_questions = gra.number_of_questions;
+            oldGra.scope_knowledge = oldGra.scope_knowledge;
             oldGra.how_granding_structure = gra.how_granding_structure;
             oldGra.assessment_method_id = gra.assessment_method_id;
             oldGra.grading_note = gra.grading_note;

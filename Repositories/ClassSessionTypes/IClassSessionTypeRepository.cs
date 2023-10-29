@@ -18,5 +18,9 @@ namespace Repositories.ClassSessionTypes
         string CreateClassSessionType(ClassSessionType classSessionType);
         string UpdateClassSessionType(ClassSessionType classSessionType);
         string DeleteClassSessionType(ClassSessionType classSessionType);
+
+        public ClassSessionType GetClassSessionTypeByName(string name);
+
+
     }
 }

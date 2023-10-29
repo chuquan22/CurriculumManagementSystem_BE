@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
 using Repositories.AssessmentMethods;
 using Repositories.AssessmentTypes;
+using Repositories.ClassSessionTypes;
 using Repositories.CLOS;
 using Repositories.GradingStruture;
 using Repositories.Materials;
@@ -34,7 +35,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IMaterialRepository repo6;
         private IGradingStrutureRepository repo7;
         private ISessionRepository repo8;
-
+        private IClassSessionTypeRepository repo9;
 
         private readonly HttpClient client = null;
 
@@ -57,6 +58,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo6 = new MaterialRepository();
             repo7 = new GradingStrutureRepository();
             repo8 = new SessionRepository();
+            repo9 = new ClassSessionTypeRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -204,7 +206,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 CLOs = listClo,
                             };
                             //Add to database
-
+                            
                             foreach (var item in listClo)
                             {
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
@@ -228,7 +230,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var scheduleExcel = GetScheduleExcel(row, syllabusExcel);
                             var value = new
                             {
-                                GradingStruture = scheduleExcel,
+                                GradingStruture = row,
                             };
                             foreach (var item in scheduleExcel)
                             {
@@ -238,9 +240,35 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 // Initialize the session_clo list
                                 dataSession.session_clo = new List<SessionCLOsRequest>();
 
+
+
+                                List<int> lst = new List<int>();
                                 foreach (var it in cloId)
                                 {
-                                    dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = it });
+                                  
+                                        string name = "null";
+                                        if (repo4.GetCLOsById(it) != null)
+                                        {
+                                            name = repo4.GetCLOsById(it).CLO_name;
+                                            if (item.CLO_name.Contains(name))
+                                            {
+                                                lst.Add(it);
+                                            }
+                                        }
+
+                                        if (item.CLO_name.Contains("All CLOs"))
+                                        {
+                                            lst = new List<int>();
+                                            lst.AddRange(cloId);
+                                        }
+
+                                    
+
+                                   
+                                }
+                                foreach (var idClo in lst)
+                                {
+                                    dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = idClo });
                                 }
                                 dataSession.session.syllabus_id = syllabusId;
                                 dataSession.session.class_session_type_id = 1;
@@ -314,7 +342,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             rs.Add(value);
                         }
                     }
-                    return Ok(new BaseResponse(true, "False", rs));
+                    return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 
                 }
                 return Ok(new BaseResponse(true, "False", null));
@@ -451,21 +479,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.scope_knowledge = r.scope;
                 g.how_granding_structure = r.how;
                 g.grading_note = r.Note;
-                //try
-                //{
+                try
+                {
+                    g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
 
-                //    if (GetAssessmentMethodByName(r.assessment_component) != null)
-                //    {
-                //        //g.assessment_method_id = GetAssessmentMethodByName(r.assessment_type).assessment_method_id;
-                //        g.assessment_method_id = 1;
-                //    }
-                //}
-                //catch (Exception)
-                //{
+                }
+                catch (Exception)
+                {
 
-                //    throw new Exception("Assesement Method not exist in system!");
-                //}
-                g.assessment_method_id = 1;
+                    throw new Exception("Wrong Grading Struture at " + r.assessment_component + " and " + r.assessment_type + ". One of this value not provide in database.");
+                }
                 g.clo_name = r.CLO;
                 result.Add(g);
 
@@ -473,14 +496,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return result;
         }
 
-        private AssessmentMethod GetAssessmentMethodByName(string assessment_type)
+        private AssessmentMethod GetAssessmentMethodByName(string assessment_type, int id)
         {
-            return repo5.GetAssessmentMethodByName(assessment_type);
+            return repo5.GetAssessmentMethodByNameAndTypeId(assessment_type, id);
         }
 
-        private AssessmentMethod GetAssessmentTypeByName(string assessment_type)
+        private AssessmentType GetAssessmentTypeByName(string assessment_type)
         {
-            return repo5.GetAssessmentMethodByName(assessment_type);
+            return repo3.GetAssessmentTypeByName(assessment_type);
         }
 
         private List<Session> GetScheduleExcel(IEnumerable<ScheduleExcel> row, Syllabus syllabus)
@@ -496,13 +519,30 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 se.ITU = r.ITU;
                 se.Syllabus = syllabus;
                 se.lecturer_material = r.lecture_materials;
+                se.student_material = r.student_materials;
                 se.schedule_lecturer_task = r.lecture_task;
                 se.schedule_student_task = r.student_task;
+                se.lecturer_material_link = r.lecturer_material_link;
+                se.student_material_link = r.student_material_link;
+                se.CLO_name = r.CLO;
+                try
+                {
+                    se.class_session_type_id = GetClassSessionTypeByName(r.leaning_teaching_method).class_session_type_id;
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Wrong value at " + r.leaning_teaching_method + " not in database.");
+                }
                 rs.Add(se);
             }
             return rs;
         }
-
+        private ClassSessionType GetClassSessionTypeByName(string name)
+        {
+            return repo9.GetClassSessionTypeByName(name);
+        }
         private List<CLO> GetClosExcel(IEnumerable<CLOsExcel> row)
         {
             List<CLO> result = new List<CLO>();
@@ -510,15 +550,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 if (r.CLO_Name == null) { }
                 CLO c = new CLO();
-                //   if(r.CLO_Name.Equals("All CLOs"))
-                //   {
                 c.CLO_id = 1;
-                //   }
-                //  else
-                //  {
-                //    c.CLO_id = GetCloIdByName(r.CLO_Name).CLO_id;
-
-                // }
                 c.CLO_name = r.CLO_Name;
                 c.CLO_description = r.CLO_Description;
                 result.Add(c);
@@ -546,7 +578,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 m.material_note = r.Note;
                 m.material_author = r.Author;
                 m.material_publisher = r.Publisher;
-                // m.material_published_date = DateTime.Parse(r.Published_Date);
+                if (!string.IsNullOrEmpty(r.Published_Date))
+                {
+                    if (int.TryParse(r.Published_Date, out int year))
+                    {
+                        m.material_published_date = new DateTime(year, 1, 1);
+                    }
+                    else
+                    {
+                        // Handle the case where the string is not a valid year.
+                    }
+                }
+
                 m.material_edition = r.Edition;
                 materials.Add(m);
 
@@ -628,9 +671,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {//
                         syllabus.min_GPA_to_pass = int.Parse(r.Details);
                     }
-                    else if (r.Title.Equals("Scoring Scale"))
+                    else if (r.Title.Equals("Scoring scale"))
                     {
-                        // syllabus.scoring_scale = int.Parse(r.Details);
+                        if (!string.IsNullOrEmpty(r.Details))
+                        {
+                            syllabus.scoring_scale = int.Parse(r.Details);
+
+                        }
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
@@ -660,8 +707,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
-
-                //   rs = repo.GetSession(syllabus_id);
                 string result = repo.UpdatePatchSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
@@ -674,17 +719,99 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
          // Post: Export Curriculum by Excel File
+        //[HttpPost("ExportSyllabus/{syllabus_id}")]
+        //public async Task<IActionResult> ExportSyllabus(int syllabus_id)
+        //{
+        //    string templatePath = "SyllabusExcel.xlsx";
+        //    var syllabus = repo.GetSyllabusById(syllabus_id);
+        //     var materials = repo6.GetMaterial(syllabus_id);
+        //     var clos = repo4.GetCLOs(syllabus_id);
+        //    var schedule = repo8.GetSession(syllabus_id);
+        //     var gradingStruture = repo7.GetGradingStruture(syllabus_id);
+
+
+
+        //    Dictionary<string, object> value = new Dictionary<string, object>()
+        //    {
+        //        //Tab Syllabus
+        //        ["document_type"] = syllabus.document_type,
+        //        ["program"] = syllabus.program,
+        //        ["decision_no"] = syllabus.decision_No,
+        //        ["course_name"] = syllabus.Subject.subject_name,
+        //        ["course_name_english"] = syllabus.Subject.english_subject_name,
+        //        ["course_code"] = syllabus.Subject.subject_code,
+        //        ["leaning-teaching_method"] = null,
+        //        ["credit"] = null,
+        //        ["degree_level"] = syllabus.degree_level,
+        //        ["time_allocation"] = syllabus.time_allocation,
+        //        ["description"] = syllabus.syllabus_description,
+        //        ["student_task"] = syllabus.student_task,
+        //        ["tools"] = syllabus.syllabus_tool,
+        //        ["note"] = syllabus.syllabus_note,
+        //        ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
+        //        ["scoring_scale"] = syllabus.scoring_scale,
+        //        ["approved_date"] = syllabus.approved_date,
+        //        //Tab Materials
+        //        ["materials"] = materials,
+        //        //Tab CLO
+        //        ["CLOs"] = clos,
+        //        //Tab Schedule
+        //        ["schedule"] = schedule,
+        //        //Tab GradingStruture
+        //        ["gradingStruture"] = gradingStruture
+        //    };
+
+
+        //    MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
+
+        //    byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
+        //    return Ok(fileContents);
+        //    //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
+        //}
+        // Post: Export Curriculum by Excel File
         [HttpPost("ExportSyllabus/{syllabus_id}")]
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)
         {
             string templatePath = "SyllabusExcel.xlsx";
             var syllabus = repo.GetSyllabusById(syllabus_id);
-             var materials = repo6.GetMaterial(syllabus_id);
-             var clos = repo4.GetCLOs(syllabus_id);
-            var schedule = repo8.GetSession(syllabus_id);
-             var gradingStruture = repo7.GetGradingStruture(syllabus_id);
+            var materials1 = repo6.GetMaterial(syllabus_id);
+            var clos1 = repo4.GetCLOs(syllabus_id);
+            var schedule1 = repo8.GetSession(syllabus_id);
+            var gradingStruture1 = repo7.GetGradingStruture(syllabus_id);
+            var gradingStruture = _mapper.Map<List<GradingStrutureExportExcel>>(gradingStruture1);
+            var materials = _mapper.Map<List<MaterialExportExcel>>(materials1);
+            var clos = _mapper.Map <List<CLOsExportExcel>>(clos1);
+            var schedule = _mapper.Map<List<SessionExcelExport>>(schedule1);
+            for (int i = 0; i < gradingStruture.Count - 1; i++)
+            {
+                int k = 0;
+                while (i + k + 1 < gradingStruture.Count && gradingStruture[i + k + 1].assessment_method_name.Contains(gradingStruture[i + k].assessment_method_name))
+                {
+                    k++;
+                }
 
+                for (int j = 1; j <= k; j++)
+                {
+                    gradingStruture[i + j].assessment_method_name = gradingStruture[i].assessment_method_name + " " + j;
+                }
+            }
 
+            for (int i = 0; i < gradingStruture.Count; i++)
+            {
+                gradingStruture[i].no = i + 1;
+            }
+            for (int i = 0; i < materials.Count; i++)
+            {
+                materials[i].no = i + 1;
+            }
+            for (int i = 0; i < clos.Count; i++)
+            {
+                clos[i].no = i + 1;
+            }
+            for (int i = 0; i < schedule.Count; i++)
+            {
+                schedule[i].no = i + 1;
+            }
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
@@ -711,16 +838,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 //Tab CLO
                 ["CLOs"] = clos,
                 //Tab Schedule
-                ["schedule"] = schedule,    
+                ["schedule"] = schedule,
                 //Tab GradingStruture
                 ["gradingStruture"] = gradingStruture
             };
 
-         
+
             MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
 
             byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
+            return Ok(fileContents);
+
+            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
         }
 
         [HttpPost("SetStatus")]

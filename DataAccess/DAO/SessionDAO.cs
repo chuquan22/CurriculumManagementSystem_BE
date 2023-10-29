@@ -18,6 +18,7 @@ namespace DataAccess.DAO
         public List<Session> GetSession(int id)
         {
             var rs = _cmsDbContext.Session
+                .Include(x => x.ClassSessionType)
                 .Include(x => x.SessionCLO).ThenInclude(g => g.CLO)
                 .Where(c => c.syllabus_id == id)
                 .ToList();
@@ -28,6 +29,12 @@ namespace DataAccess.DAO
         {
             _cmsDbContext.Session.Add(session); 
             _cmsDbContext.SaveChanges();
+            return session;
+        }
+
+        public Session IsSessionNoExist(int sessionNo, int scheduleId)
+        {
+            var session = _cmsDbContext.Session.Where(x =>( x.session_No == sessionNo && x.schedule_id == scheduleId)).FirstOrDefault();
             return session;
         }
 
@@ -123,6 +130,7 @@ namespace DataAccess.DAO
         public string UpdatePatchSession(Session session)
         {
             var oldRs = _cmsDbContext.Session
+                .Include(x => x.ClassSessionType)
                .Include(x => x.SessionCLO)
                .ThenInclude(g => g.CLO)
                .Where(s => s.schedule_id == session.schedule_id)
