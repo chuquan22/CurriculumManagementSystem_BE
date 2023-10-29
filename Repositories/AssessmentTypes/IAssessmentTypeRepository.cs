@@ -10,7 +10,12 @@ namespace Repositories.AssessmentTypes
     public interface IAssessmentTypeRepository
     {
         public List<AssessmentType> GetAllAssessmentType();
-
+        AssessmentType GetAsssentTypeById(int id);
         public AssessmentType GetAssessmentTypeByName(string name);
+        bool CheckAssmentTypeDuplicate(string name);
+        string CreateAssessmentType(AssessmentType type);
+        string UpdateAssessmentType(AssessmentType type);
+        string DeleteAssessmentType(AssessmentType type);
+
     }
 }
