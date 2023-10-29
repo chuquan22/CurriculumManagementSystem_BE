@@ -21,6 +21,23 @@ namespace DataAccess.DAO
             return listAssessmentMethod;
         }
 
+        public List<AssessmentMethod> PaginationAssessmentMethod(int page, int limit, string? txtSearch)
+        {
+            IQueryable<AssessmentMethod> query = _context.AssessmentMethod
+                .Include(x => x.AssessmentType);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.assessment_method_component.Contains(txtSearch));
+            }
+
+            var listAssessmentMethod = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+            return listAssessmentMethod;
+        }
+
         public AssessmentMethod GetAsssentMethodByName(string name, int id)
         {
             string[] name2 = name.Split(' ');

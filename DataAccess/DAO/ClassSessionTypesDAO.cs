@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,22 @@ namespace DataAccess.DAO
         {
             var listClassSessionType = _context.ClassSessionType
 
+                .ToList();
+            return listClassSessionType;
+        }
+
+        public List<ClassSessionType> PaginationClassSessionType(int page, int limit, string? txtSearch)
+        {
+            IQueryable<ClassSessionType> query = _context.ClassSessionType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.class_session_type_name.Contains(txtSearch));
+            }
+
+            var listClassSessionType = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
                 .ToList();
             return listClassSessionType;
         }

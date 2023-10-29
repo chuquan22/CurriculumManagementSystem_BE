@@ -11,6 +11,17 @@ namespace Repositories.Batchs
     public class BatchRepository : IBatchRepository
     {
         private readonly BatchDAO _batchDAO = new BatchDAO();
+
+        public string CreateBatch(Batch batch)
+        {
+            return _batchDAO.CreateBatch(batch);
+        }
+
+        public string DeleteBatch(Batch batch)
+        {
+            return _batchDAO.DeleteBatch(batch);
+        }
+
         public List<Batch> GetAllBatch()
         {
             return _batchDAO.GetAllBatch(); 
