@@ -206,7 +206,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 CLOs = listClo,
                             };
                             //Add to database
-
+                            
                             foreach (var item in listClo)
                             {
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
@@ -240,9 +240,35 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 // Initialize the session_clo list
                                 dataSession.session_clo = new List<SessionCLOsRequest>();
 
+
+
+                                List<int> lst = new List<int>();
                                 foreach (var it in cloId)
                                 {
-                                    dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = it });
+                                  
+                                        string name = "null";
+                                        if (repo4.GetCLOsById(it) != null)
+                                        {
+                                            name = repo4.GetCLOsById(it).CLO_name;
+                                            if (item.CLO_name.Contains(name))
+                                            {
+                                                lst.Add(it);
+                                            }
+                                        }
+
+                                        if (item.CLO_name.Contains("All CLOs"))
+                                        {
+                                            lst = new List<int>();
+                                            lst.AddRange(cloId);
+                                        }
+
+                                    
+
+                                   
+                                }
+                                foreach (var idClo in lst)
+                                {
+                                    dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = idClo });
                                 }
                                 dataSession.session.syllabus_id = syllabusId;
                                 dataSession.session.class_session_type_id = 1;
@@ -496,8 +522,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 se.student_material = r.student_materials;
                 se.schedule_lecturer_task = r.lecture_task;
                 se.schedule_student_task = r.student_task;
-                se.lecturer_material_link = r.lecture_material_link;
+                se.lecturer_material_link = r.lecturer_material_link;
                 se.student_material_link = r.student_material_link;
+                se.CLO_name = r.CLO;
                 try
                 {
                     se.class_session_type_id = GetClassSessionTypeByName(r.leaning_teaching_method).class_session_type_id;
@@ -729,12 +756,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 //Tab CLO
                 ["CLOs"] = clos,
                 //Tab Schedule
-                ["schedule"] = schedule,    
+                ["schedule"] = schedule,
                 //Tab GradingStruture
                 ["gradingStruture"] = gradingStruture
             };
 
-         
+
             MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
 
             byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
@@ -747,12 +774,44 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             string templatePath = "SyllabusExcel.xlsx";
             var syllabus = repo.GetSyllabusById(syllabus_id);
-            var materials = repo6.GetMaterial(syllabus_id);
-            var clos = repo4.GetCLOs(syllabus_id);
-            var schedule = repo8.GetSession(syllabus_id);
-            var gradingStruture = repo7.GetGradingStruture(syllabus_id);
+            var materials1 = repo6.GetMaterial(syllabus_id);
+            var clos1 = repo4.GetCLOs(syllabus_id);
+            var schedule1 = repo8.GetSession(syllabus_id);
+            var gradingStruture1 = repo7.GetGradingStruture(syllabus_id);
+            var gradingStruture = _mapper.Map<List<GradingStrutureExportExcel>>(gradingStruture1);
+            var materials = _mapper.Map<List<MaterialExportExcel>>(materials1);
+            var clos = _mapper.Map <List<CLOsExportExcel>>(clos1);
+            var schedule = _mapper.Map<List<SessionExcelExport>>(schedule1);
+            for (int i = 0; i < gradingStruture.Count - 1; i++)
+            {
+                int k = 0;
+                while (i + k + 1 < gradingStruture.Count && gradingStruture[i + k + 1].assessment_method_name.Contains(gradingStruture[i + k].assessment_method_name))
+                {
+                    k++;
+                }
 
+                for (int j = 1; j <= k; j++)
+                {
+                    gradingStruture[i + j].assessment_method_name = gradingStruture[i].assessment_method_name + " " + j;
+                }
+            }
 
+            for (int i = 0; i < gradingStruture.Count; i++)
+            {
+                gradingStruture[i].no = i + 1;
+            }
+            for (int i = 0; i < materials.Count; i++)
+            {
+                materials[i].no = i + 1;
+            }
+            for (int i = 0; i < clos.Count; i++)
+            {
+                clos[i].no = i + 1;
+            }
+            for (int i = 0; i < schedule.Count; i++)
+            {
+                schedule[i].no = i + 1;
+            }
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {

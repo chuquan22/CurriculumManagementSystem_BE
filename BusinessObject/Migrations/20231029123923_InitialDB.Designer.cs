@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231028162638_InitialDB")]
+    [Migration("20231029123923_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -403,7 +403,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 1,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -419,7 +419,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD",
                             curriculum_description = "",
@@ -435,7 +435,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 3,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -451,7 +451,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 4,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE",
                             curriculum_description = "",
@@ -467,7 +467,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 5,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM",
                             curriculum_description = "",
@@ -483,7 +483,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 6,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -499,7 +499,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 7,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SWP",
                             curriculum_description = "",
@@ -515,7 +515,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 8,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS",
                             curriculum_description = "",
@@ -1335,6 +1335,9 @@ namespace BusinessObject.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("schedule_id"), 1L, 1);
+
+                    b.Property<string>("CLO_name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ITU")
                         .HasColumnType("nvarchar(max)");

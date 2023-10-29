@@ -18,6 +18,7 @@ namespace DataAccess.DAO
         public List<Session> GetSession(int id)
         {
             var rs = _cmsDbContext.Session
+                .Include(x => x.ClassSessionType)
                 .Include(x => x.SessionCLO).ThenInclude(g => g.CLO)
                 .Where(c => c.syllabus_id == id)
                 .ToList();
@@ -123,6 +124,7 @@ namespace DataAccess.DAO
         public string UpdatePatchSession(Session session)
         {
             var oldRs = _cmsDbContext.Session
+                .Include(x => x.ClassSessionType)
                .Include(x => x.SessionCLO)
                .ThenInclude(g => g.CLO)
                .Where(s => s.schedule_id == session.schedule_id)

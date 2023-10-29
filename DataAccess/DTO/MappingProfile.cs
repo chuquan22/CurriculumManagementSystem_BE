@@ -29,6 +29,12 @@ namespace DataAccess.Models.DTO
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
             //Combo
             CreateMap<Combo, ComboResponse>().ReverseMap();
+            CreateMap<CLO, CLOsExportExcel>().ReverseMap();
+            //CLO
+            CreateMap<Session, SessionExcelExport>()
+    .ForMember(dest => dest.class_session_type_name, opt => opt.MapFrom(src => src.ClassSessionType.class_session_type_name))
+    .ReverseMap();
+
 
             //Major
 
@@ -42,10 +48,17 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.major_name, opt => opt.MapFrom(src => src.major_name.Trim()))
                 .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
                 .ReverseMap();
+            CreateMap<Material, MaterialExportExcel>().ReverseMap();
+
 
             //Excel Syllabus
             CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
             CreateMap<Syllabus, SyllabusRequest>().ReverseMap();
+            CreateMap<GradingStruture, GradingStrutureExportExcel>()
+            .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
+            .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
+
+                .ReverseMap();
 
             //
             CreateMap<GradingStruture, GradingStrutureExcel>()

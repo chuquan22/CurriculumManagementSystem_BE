@@ -49,6 +49,7 @@ namespace BusinessObject
         public float online_test { get; set; }
         [Required]
         public float assigment { get; set; }
+        public string? CLO_name { get; set; }
 
         public virtual Syllabus Syllabus { get; set; }
         public virtual ClassSessionType ClassSessionType { get; set; }

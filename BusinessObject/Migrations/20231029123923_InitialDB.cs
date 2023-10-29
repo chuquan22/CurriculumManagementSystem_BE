@@ -585,7 +585,8 @@ namespace BusinessObject.Migrations
                     IVQ = table.Column<float>(type: "real", nullable: false),
                     online_lab = table.Column<float>(type: "real", nullable: false),
                     online_test = table.Column<float>(type: "real", nullable: false),
-                    assigment = table.Column<float>(type: "real", nullable: false)
+                    assigment = table.Column<float>(type: "real", nullable: false),
+                    CLO_name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -990,14 +991,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "degree_level", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
-                    { 2, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
-                    { 3, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
-                    { 4, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
-                    { 5, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
-                    { 6, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
-                    { 7, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
-                    { 8, "formal education", new DateTime(2023, 10, 28, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
+                    { 1, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "associate", "Graphic Design", true, 1, 7, null },
+                    { 2, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "international associate ", "Graphic Design", true, 1, 7, null },
+                    { 3, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "associate", "Software Engineering", true, 4, 7, null },
+                    { 4, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "international associate ", "Software Engineering", true, 4, 7, null },
+                    { 5, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM", "", "quản lí học liệu", "360/QĐ-CĐFPL", "vocational diploma", "Curriculum Management", true, 2, 7, null },
+                    { 6, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null },
+                    { 7, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 3, "SWP", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "associate", "Skill Web Program", false, 1, 7, null },
+                    { 8, "formal education", new DateTime(2023, 10, 29, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "vocational diploma", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(
