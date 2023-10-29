@@ -316,7 +316,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             rs.Add(value);
                         }
                     }
-                    return Ok(new BaseResponse(true, "False", rs));
+                    return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 
                 }
                 return Ok(new BaseResponse(true, "False", null));
