@@ -32,6 +32,12 @@ namespace DataAccess.DAO
             return session;
         }
 
+        public Session IsSessionNoExist(int sessionNo, int scheduleId)
+        {
+            var session = _cmsDbContext.Session.Where(x =>( x.session_No == sessionNo && x.schedule_id == scheduleId)).FirstOrDefault();
+            return session;
+        }
+
         public string DeleteSession(int id)
         {
        

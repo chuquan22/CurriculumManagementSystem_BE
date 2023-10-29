@@ -56,6 +56,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var session = _mapper.Map<Session>(request.session);
+                var check = repo.IsSessionNoExist(session.session_No, session.schedule_id);
+                if(check != null)
+                {
+                    return BadRequest(new BaseResponse(false, "Session No already used in system.", rs));
+
+                }
                 rs = repo.CreateSession(session);
 
                 var session_clo = _mapper.Map<List<SessionCLO>>(request.session_clo);

@@ -34,6 +34,11 @@ namespace Repositories.Session
 
         }
 
+        public BusinessObject.Session IsSessionNoExist(int sessionNo, int scheduleId)
+        {
+             return db.IsSessionNoExist(sessionNo,scheduleId);
+        }
+
         public string UpdatePatchSession(BusinessObject.Session rs)
         {
             return db.UpdatePatchSession(rs);
