@@ -24,7 +24,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetSemesterPlan(int semester_id,string degree_level)
+        public ActionResult GetSemesterPlan (int semester_id,string degree_level)
         {
             var list = _repo.GetSemesterBatch(semester_id, degree_level);
             return Ok();
