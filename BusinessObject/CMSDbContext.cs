@@ -165,21 +165,21 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Batch>().HasData(
-                new Batch { batch_id = 1, batch_name = "19.3" },
-                new Batch { batch_id = 2, batch_name = "19.2" },
-                new Batch { batch_id = 3, batch_name = "19.1" },
-                new Batch { batch_id = 4, batch_name = "18.3" },
-                new Batch { batch_id = 5, batch_name = "18.2" },
-                new Batch { batch_id = 6, batch_name = "18.1" }
+                new Batch { batch_id = 1, batch_name = "18.1" },
+                new Batch { batch_id = 2, batch_name = "18.2" },
+                new Batch { batch_id = 3, batch_name = "18.3" },
+                new Batch { batch_id = 4, batch_name = "19.1" },
+                new Batch { batch_id = 5, batch_name = "19.2" },
+                new Batch { batch_id = 6, batch_name = "19.3" }
                 );
 
             modelBuilder.Entity<Semester>().HasData(
-                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, batch_id = 1 },
-                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/20/2023"), school_year = 2023, batch_id = 2 },
-                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/14/2023"), school_year = 2023, batch_id = 3 },
-                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, batch_id = 4 },
-                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, batch_id = 5 },
-                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, batch_id = 6 }
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, batch_id = 6 },
+                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/20/2023"), school_year = 2023, batch_id = 5 },
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/14/2023"), school_year = 2023, batch_id = 4 },
+                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, batch_id = 3 },
+                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, batch_id = 2 },
+                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, batch_id = 1 }
                 );
 
             modelBuilder.Entity<Major>().HasData(
@@ -312,10 +312,10 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Combo>().HasData(
-                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", combo_description = "lập trình web với ngôn ngữ C#", specialization_id = 4, is_active = true },
-                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", combo_description = "kĩ sư lập trình với ngôn ngữ Nhật", specialization_id = 3, is_active = true },
-                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", combo_description = "kĩ sư lập trình với ngôn ngữ Hàn", specialization_id = 2, is_active = false },
-                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", combo_description = "lập trình web với NodeJS", specialization_id = 1, is_active = true }
+                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing",  specialization_id = 4, is_active = true },
+                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", specialization_id = 3, is_active = true },
+                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", specialization_id = 2, is_active = false },
+                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", specialization_id = 1, is_active = true }
                 );
             modelBuilder.Entity<ClassSessionType>().HasData(
                 new ClassSessionType { class_session_type_id = 1, class_session_type_name = "Online"},
