@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Models\DTO\response\CurriculumSubjectResponse.cs~RF38110857.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.13" />
     <PackageReference Include="MiniExcel" Version="1.31.2" />
   </ItemGroup>
 

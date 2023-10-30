@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace DataAccess.DAO
 
         public List<Semester> GetSemesters()
         {
-            var listSemesters = _cmsDbContext.Semester.ToList();
+            var listSemesters = _cmsDbContext.Semester.Include(x => x.Batch).ToList();
             return listSemesters;
         }
 
@@ -23,6 +24,5 @@ namespace DataAccess.DAO
             return semester;
         }
 
-        //public string CreateSemester
     }
 }

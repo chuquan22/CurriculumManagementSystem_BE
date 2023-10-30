@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BusinessObject
 {
-    public class ComboSubject
+    public class ComboCurriculum
     {
-        [ForeignKey("Subject")]
-        public int subject_id { get; set; }
         [ForeignKey("Combo")]
         public int combo_id { get; set; }
+        [ForeignKey("Curriculum")]
+        public int curriculum_id { get; set; }
 
-        public virtual Subject Subject { get; set; }
         public virtual Combo Combo { get; set; }
+        public virtual Curriculum Curriculum { get; set; }
     }
 }

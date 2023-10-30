@@ -16,6 +16,36 @@ namespace Repositories.Major
             return db.AddMajor(major);
         }
 
+        public BusinessObject.Major CheckMajorbyMajorCode(string code)
+        {
+            return db.CheckMajorbyMajorCode(code);
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorEnglishName(string eng_name)
+        {
+            return db.CheckMajorbyMajorEnglishName(eng_name);
+        }
+
+        public BusinessObject.Major CheckMajorbyMajorName(string name)
+        {
+            return db.CheckMajorbyMajorName(name);
+        }
+
+        public void DeleteMajor(int id)
+        {
+            db.DeleteMajor(id);
+        }
+
+        public BusinessObject.Major EditMajor(BusinessObject.Major major)
+        {
+            return db.EditMajor(major);
+        }
+
+        public BusinessObject.Major FindMajorById(int majorId)
+        {
+            return db.FindMajorById(majorId);
+        }
+
         public List<BusinessObject.Major> GetAllMajor()
         {
             return db.GetAllMajor();

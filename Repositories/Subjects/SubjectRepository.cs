@@ -21,12 +21,26 @@ namespace Repositories.Subjects
        
 
         public List<Subject> GetAllSubject() => subjectDAO.GetAllSubjects();
-       
+
+        public List<Subject> GetListSubjectByTermNo(int term_no, int curriculumId) => subjectDAO.GetListSubjectByTermNo(term_no, curriculumId);
+      
+
+        public Subject GetSubjectByCode(string code)
+        {
+            return subjectDAO.GetSubjectByCode(code);
+        }
+
+        public List<Subject> GetSubjectByCurriculum(int curriculumId)
+        {
+            return subjectDAO.GetSubjectByCurriculum(curriculumId);
+        }
 
         public Subject GetSubjectById(int id) => subjectDAO.GetSubjectById(id);
        
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);
+
+        public Subject GetSubjectBySyllabus(int syllabus_id) => subjectDAO.GetSubjectBySyllabus(syllabus_id);
         
 
         public string UpdateSubject(Subject subject) => subjectDAO.UpdateSubject(subject);

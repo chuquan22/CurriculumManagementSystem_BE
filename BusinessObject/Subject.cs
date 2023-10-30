@@ -25,9 +25,6 @@ namespace BusinessObject
         public int assessment_method_id { get;set; }
         [Required]
         public int credit { get; set; }
-        
-        [Required]
-        public string option { get; set; }
         [Required]
         public int total_time { get; set; }
         [Required]
@@ -44,7 +41,6 @@ namespace BusinessObject
         public virtual ICollection<PreRequisite> PreRequisite { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
         public virtual ICollection<SpecializationSubject> SpecializationSubjects { get; set; }
-        public virtual ICollection<ComboSubject> ComboSubjects { get; set; }    
         public virtual ICollection<PLOMapping> PLOMappings { get; set; }    
     }
 }

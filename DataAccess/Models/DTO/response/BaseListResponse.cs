@@ -4,13 +4,21 @@
     {
         public int page { get; set; }
         public int limit { get; set; }
+        public int totalElement { get; set; }
         public object data { get; set; }
 
         public BaseListResponse()
         {
         }
 
-        public BaseListResponse(int page, int limit, Object data)
+        public BaseListResponse(int page, int limit, int total, object data)
+        {
+            this.page = page;
+            this.limit = limit;
+            this.totalElement = total;
+            this.data = data;
+        }
+        public BaseListResponse(int page, int limit, object data)
         {
             this.page = page;
             this.limit = limit;

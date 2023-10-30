@@ -21,14 +21,19 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.DeleteCurriculumSubject(curriculumSubject);
         }
 
-        public List<CurriculumSubject> GetAllCurriculumSubject()
-        {
-            return curriculumDAO.GetAll();
-        }
-
         public CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId)
         {
             return curriculumDAO.GetCurriculumSubjectById(curriculumId, subjectId);
+        }
+
+        public List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no)
+        {
+            return curriculumDAO.GetCurriculumSubjectByTermNo(term_no);
+        }
+
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId)
+        {
+            return curriculumDAO.GetCurriculumSubjectByTermNoAndSubjectGroup(term_no, subjectGroup, subjectId);
         }
 
         public List<CurriculumSubject> GetListCurriculumBySubject(int subjectId)
@@ -36,9 +41,19 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.GetCurriculumBySubject(subjectId);
         }
 
+        public List<CurriculumSubject> GetListCurriculumSubject(int curriculumId)
+        {
+            return curriculumDAO.GetListCurriculumSubject(curriculumId);
+        }
+
+        public List<Subject> GetListSubject(int curriculumId)
+        {
+           return curriculumDAO.GetListSubject(curriculumId);
+        }
+
         public List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId)
         {
-            return curriculumDAO.GetSubjectByCurriculum(curriculumId);
+            return curriculumDAO.GetListSubjectByCurriculum(curriculumId);
         }
 
         public string UpdateCurriculumSubject(CurriculumSubject curriculumSubject)

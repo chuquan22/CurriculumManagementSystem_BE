@@ -12,6 +12,7 @@ using Repositories.CurriculumSubjects;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Repositories.Combos;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -22,6 +23,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
+        private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
+        private readonly IComboRepository _comboRepository = new ComboRepository();
 
         public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
         {
@@ -29,34 +32,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
         }
 
-
-
-        // GET: api/CurriculumSubjects
-        [HttpGet("GetAllCurriculumSubject")]
-        public async Task<ActionResult<IEnumerable<CurriculumSubjectResponse>>> GetCurriculumSubject()
+        // GET: api/CurriculumSubjects/GetCurriculumSubjectByTermNo/3
+        [HttpGet("GetCurriculumSubjectByTermNo/{termNo}")]
+        public async Task<ActionResult<IEnumerable<CurriculumSubjectResponse>>> GetCurriculumSubjectByTermNo(int termNo)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
-            var curriculumSubject = _curriculumSubjectRepository.GetAllCurriculumSubject();
 
-            if(curriculumSubject == null)
+            var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectByTermNo(termNo);
+
+            if (curriculumSubject == null)
             {
-                return BadRequest(new BaseResponse(true, "List Curriculum Subject is empty. Please Create Curriculum Subject"));
+                return BadRequest(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
             }
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
             return Ok(new BaseResponse(false, "success!", curriculumSubjectResponse));
         }
 
-        // GET: api/CurriculumSubjects/5
+        // GET: api/CurriculumSubjects/GetCurriculumBySubject/5
         [HttpGet("GetCurriculumBySubject/{subjectId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetCurriculumBySubject(int subjectId)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
+
             var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumBySubject(subjectId);
 
             if (curriculumSubject == null)
@@ -69,88 +64,130 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
-        // GET: api/CurriculumSubjects/5
+        // GET: api/CurriculumSubjects/GetSubjectByCurriculum/5
         [HttpGet("GetSubjectByCurriculum/{curriculumId}")]
         public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectByCurriculum(int curriculumId)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
-            var curriculumSubject = _curriculumSubjectRepository.GetListSubjectByCurriculum(curriculumId);
+            var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumId);
+            var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
 
-            if (curriculumSubject == null)
+            var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
+
+            for (int semesterNo = 1; semesterNo <= curriculum.total_semester; semesterNo++)
             {
-                return NotFound();
+                var newCurriculumSubjectDTO = new CurriculumSubjectDTO
+                {
+                    total_all_credit = 0,
+                    total_all_time = 0,
+                    semester_no = semesterNo.ToString(),
+                    list = new List<CurriculumSubjectResponse>()
+                };
+                curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
             }
-            var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+
+            foreach (var curriSubject in curriculumSubject)
+            {
+                var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
+                if (curriSubject.combo_id == null)
+                {
+                    curriSubject.combo_id = 0;
+                }
+
+                if (curriSubject.combo_id != 0 && curriSubject.combo_id != null)
+                {
+                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
+                }
+
+                foreach (var curriSubjectResponse in curriculumSubjectResponse)
+                {
+                    if (curriSubject.term_no.ToString() == curriSubjectResponse.semester_no)
+                    {
+                        curriSubjectResponse.list.Add(curriculumSubjectMapper);
+                    }
+                    curriSubjectResponse.total_all_credit = curriSubjectResponse.list.Sum(x => x.credit);
+                    curriSubjectResponse.total_all_time = curriSubjectResponse.list.Sum(x => x.total_time);
+                }
+            }
+
+            // Sort by combo and option curriculumSubjectResponse
+            foreach (var curriSubjectResponse in curriculumSubjectResponse)
+            {
+                curriSubjectResponse.list = curriSubjectResponse.list
+                    .OrderBy(x => x.combo_id == 0 ? 0 : 1)
+                    .ThenBy(x => x.option == false ? 0 : 1)
+                    .ToList();
+
+
+            }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
 
-        
 
-        //[HttpPut("UpdateCurriculumSubject/{curriculumId}/{subjectId}")]
-        //public async Task<IActionResult> PutCurriculumSubject(int curriculumId, int subjectId, [FromForm]CurriculumSubjectRequest curriculumSubjectRequest)
-        //{
-        //    if(!CurriculumSubjectExists(curriculumId, subjectId))
-        //    {
-        //        return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
-        //    }
-        //    var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriculumId, subjectId);
-        //    _mapper.Map(curriculumSubjectRequest, curriculumSubject);
-        //    string updateResult = _curriculumSubjectRepository.UpdateCurriculumSubject(curriculumSubject);
-        //    if(!updateResult.Equals(Result.updateSuccessfull.ToString()))
-        //    {
-        //        return BadRequest(new BaseResponse(true, updateResult));
-        //    }
-        //    return Ok(new BaseResponse(false, "Update success!", curriculumSubjectRequest));
-        //}
-
-        // POST: api/CurriculumSubjects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("CreateCurriculumSubject")]
-        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromForm] CurriculumSubjectRequest curriculumSubjectRequest)
+        // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
+        [HttpGet("GetSubjectNotExsitCurriculum/{curriculumId}")]
+        public async Task<ActionResult<CurriculumSubjectResponse>> GetSubjectNotExistCurriculum(int curriculumId)
         {
-            if (_context.CurriculumSubject == null)
+            var subject = _curriculumSubjectRepository.GetListSubject(curriculumId);
+            if (subject.Count == 0)
             {
-                return Problem("Entity set 'CMSDbContext.CurriculumSubject'  is null.");
+                return Ok(new BaseResponse(false, "Not Found Subject!"));
             }
-            var curriculumSubject = _mapper.Map<CurriculumSubject>(curriculumSubjectRequest);
-            string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
-            if(createResult != Result.createSuccessfull.ToString())
-            {
-                return BadRequest(new BaseResponse(true, createResult));
-            }
+            var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
+            return Ok(new BaseResponse(false, "List Subject", subjectResponse));
+        }
 
+        // POST: api/CurriculumSubjects/CreateCurriculumSubject
+        [HttpPost("CreateCurriculumSubject")]
+        public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
+        {
+            foreach (var subject in curriculumSubjectRequest)
+            {
+                var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
+
+                string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
+
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createResult));
+                }
+            }
             return Ok(new BaseResponse(false, "Create success!", curriculumSubjectRequest));
         }
 
-        // DELETE: api/CurriculumSubjects/5
-        [HttpDelete("{id}")]
+        // Delete: api/CurriculumSubjects/DeleteCurriculum/1/2
+        [HttpDelete("DeleteCurriculum/{curriId}/{subId}")]
         public async Task<IActionResult> DeleteCurriculumSubject(int curriId, int subId)
         {
-            if (_context.CurriculumSubject == null)
-            {
-                return NotFound();
-            }
-            if(!CurriculumSubjectExists(curriId, subId))
+            if (!CurriculumSubjectExists(curriId, subId))
             {
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
+            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_group, subId);
+
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
-            if(deleteResult != Result.deleteSuccessfull.ToString())
+            if(curriculumSubject2 != null)
             {
-                return BadRequest(new BaseResponse(true, deleteResult));
+                string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
+                if (deleteResult2 != Result.deleteSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, "Remove Fail"));
+                }
+            }
+            if (deleteResult != Result.deleteSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, "Remove Fail"));
             }
 
-            return Ok(new BaseResponse(false, "delete successfull!", curriculumSubject));
+            return Ok(new BaseResponse(false, "delete successfull!"));
         }
 
         private bool CurriculumSubjectExists(int curriId, int subId)
         {
-            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id==subId)).GetValueOrDefault();
+            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id == subId)).GetValueOrDefault();
         }
+
+
     }
 }

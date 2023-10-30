@@ -20,9 +20,8 @@ namespace BusinessObject
         [Required]
         public string user_password { get; set; }
         [AllowNull]
-        public string? user_address { get; set;}
-        [Required, MaxLength(10)]
-        public int user_phone { get; set;}
+        public int? user_phone { get; set; }
+
         [Required, MaxLength(255)]
         public string full_name { get; set; }
         [ForeignKey("Role")]

@@ -23,8 +23,6 @@ namespace DataAccess.Models.DTO.request
         public int credit { get; set; }
 
         [Required]
-        public string option { get; set; }
-        [Required]
         public bool is_active { get; set; }
         [Required]
         public int total_time { get; set; }
@@ -34,5 +32,5 @@ namespace DataAccess.Models.DTO.request
         public int exam_total { get; set; }
     }
 
-   
+    
 }

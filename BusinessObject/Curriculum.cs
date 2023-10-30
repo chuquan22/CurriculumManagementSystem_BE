@@ -14,12 +14,13 @@ namespace BusinessObject
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int curriculum_id { get; set; }
         [Required]
-        [MaxLength(10)]
         public string curriculum_code { get; set; }
         [Required]
         public string curriculum_name { get; set; }
         [Required] 
         public string english_curriculum_name { get; set; }
+        [AllowNull]
+        public int total_semester { get; set; }
         [AllowNull]
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
@@ -29,17 +30,21 @@ namespace BusinessObject
         [Required]
         public string decision_No { get;set; }
         [Required]
-        public DateTime approved_date { get; set; }
+        public string degree_level { get; set; }
         [Required]
-        public int curriculum_status { get; set; }
+        public string Formality { get; set; }
+        [Required]
+        public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? updated_date { get; set; }
         [Required]
         public bool is_active { get; set; }
 
         public virtual Batch Batch { get; set; }
         public virtual Specialization Specialization { get; set; }
-        public virtual ICollection<Combo> Combos { get; set;}
         public virtual ICollection<PLOs> PLOs { get; set; }
         public virtual ICollection<SemesterPlan> Semesters { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
+        public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }
     }
 }

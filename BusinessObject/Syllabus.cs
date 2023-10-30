@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,9 +16,11 @@ namespace BusinessObject
         [Required]
         public string document_type { get; set; }
         [Required]
-        public int decision_No { get; set; }
+        public string program { get; set; }
         [Required]
-        public int degree_level { get; set; }
+        public string decision_No { get; set; }
+        [Required]
+        public string degree_level { get; set; }
         [Required]
         public string syllabus_description { get; set; }
         [ForeignKey("Subject")]
@@ -28,22 +30,24 @@ namespace BusinessObject
         [AllowNull]
         public string? syllabus_tool { get; set; }
         [AllowNull]
+        public string? time_allocation { get; set; }
+        [AllowNull]
         public string? syllabus_note { get; set; }
         [Required]
         public decimal min_GPA_to_pass { get; set; }
         [Required]
         public int scoring_scale { get; set; }
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
         [Required]
-        public DateTime approved_date { get; set; }
+        public bool syllabus_status { get; set; }
         [Required]
-        public int syllabus_status { get; set; }
-        [Required]
-        public bool is_active { get; set; }
+        public bool syllabus_approved { get; set; }
 
-        public virtual ICollection<CLO> CLOs { get; set; }
-        public virtual ICollection<GradingStruture> Gradings { get; set; }
-        public virtual ICollection<Material> Materials { get; set; }
-        public virtual Subject Subject { get; set; }
-        public virtual ICollection<Session> Sessions { get; set; }
+        public virtual ICollection<CLO>? CLOs { get; set; }
+        public virtual ICollection<GradingStruture>? Gradings { get; set; }
+        public virtual ICollection<Material>? Materials { get; set; }
+        public virtual Subject? Subject { get; set; }
+        public virtual ICollection<Session>? Sessions { get; set; }
     }
 }
