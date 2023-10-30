@@ -87,6 +87,18 @@ namespace DataAccess.DAO
             return total;
         }
 
+        public List<Curriculum> GetCurriculumByDegreeLevel(string degree_level)
+        {
+            var curriculum = _cmsDbContext.Curriculum
+                .Include(x => x.Batch)
+                .Include(x => x.Specialization)
+                .Include(x => x.Specialization.Major)
+                .Include(x => x.CurriculumSubjects)
+                .Where(x => x.degree_level.Equals(degree_level))
+                .ToList();
+            return curriculum;
+        }
+
 
         public Curriculum GetCurriculumById(int id)
         {
