@@ -32,9 +32,9 @@ namespace DataAccess.DAO
             return session;
         }
 
-        public Session IsSessionNoExist(int sessionNo, int scheduleId)
+        public Session IsSessionNoExist(int sessionNo, int syllabusId)
         {
-            var session = _cmsDbContext.Session.Where(x =>( x.session_No == sessionNo && x.schedule_id == scheduleId)).FirstOrDefault();
+            var session = _cmsDbContext.Session.Where(x =>( x.session_No == sessionNo && x.syllabus_id == syllabusId)).FirstOrDefault();
             return session;
         }
 
@@ -86,9 +86,12 @@ namespace DataAccess.DAO
             try
             {
                 var oldRs = _cmsDbContext.Session.Where(s => s.schedule_id == session.schedule_id).FirstOrDefault();
+                if (oldRs.session_No == session.session_No)
+                {
+                    
                 oldRs.schedule_content = session.schedule_content;
                 oldRs.syllabus_id = session.syllabus_id;
-                oldRs.session_No = session.session_No;
+                oldRs.session_No = oldRs.session_No;
                 oldRs.ITU = session.ITU;
                 oldRs.schedule_student_task = session.schedule_student_task;
                 oldRs.student_material = session.student_material;
@@ -119,6 +122,50 @@ namespace DataAccess.DAO
                     _cmsDbContext.SessionCLO.Add(sc);
                 }
                 _cmsDbContext.SaveChanges();
+                }
+                else
+                {
+                    if (IsSessionNoExist(session.session_No, session.syllabus_id) == null)
+                    {
+                        oldRs.schedule_content = session.schedule_content;
+                        oldRs.syllabus_id = session.syllabus_id;
+                        oldRs.session_No = session.session_No;
+                        oldRs.ITU = session.ITU;
+                        oldRs.schedule_student_task = session.schedule_student_task;
+                        oldRs.student_material = session.student_material;
+                        oldRs.lecturer_material = session.lecturer_material;
+                        oldRs.schedule_lecturer_task = session.schedule_lecturer_task;
+                        oldRs.student_material_link = session.student_material_link;
+                        oldRs.lecturer_material_link = session.lecturer_material_link;
+                        oldRs.class_session_type_id = session.class_session_type_id;
+                        oldRs.remote_learning = session.remote_learning;
+                        oldRs.ass_defense = session.ass_defense;
+                        oldRs.eos_exam = session.eos_exam;
+                        oldRs.video_learning = session.video_learning;
+                        oldRs.IVQ = session.IVQ;
+                        oldRs.online_lab = session.online_lab;
+                        oldRs.online_test = session.online_test;
+                        oldRs.assigment = session.assigment;
+                        _cmsDbContext.Session.Update(oldRs);
+                        var listSessionCLOsOld = _cmsDbContext.SessionCLO.Where(s => s.session_id == oldRs.schedule_id).ToList();
+                        foreach (var item in listSessionCLOsOld)
+                        {
+                            _cmsDbContext.SessionCLO.Remove(item);
+                        }
+                        foreach (var item in listClLOs)
+                        {
+                            SessionCLO sc = new SessionCLO();
+                            sc.session_id = oldRs.schedule_id;
+                            sc.CLO_id = item.CLO_id;
+                            _cmsDbContext.SessionCLO.Add(sc);
+                        }
+                        _cmsDbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        return "Session No already used in system!" ;
+                    }
+                }
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception)
