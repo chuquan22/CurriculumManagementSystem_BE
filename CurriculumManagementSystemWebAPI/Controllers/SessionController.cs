@@ -93,7 +93,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 //   rs = repo.GetSession(syllabus_id);
                 string result = repo.UpdateSession(rs, request.session_clo);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, result, null));
             }
             catch (Exception)
             {
