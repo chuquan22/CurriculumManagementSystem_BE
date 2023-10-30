@@ -20,5 +20,7 @@ namespace Repositories.Curriculums
         string CreateCurriculum(Curriculum curriculum);
         string UpdateCurriculum(Curriculum curriculum);
         string RemoveCurriculum(Curriculum curriculum);
+
+        List<Curriculum> GetCurriculumByDegreeLevel(string degree_level);   
     }
 }

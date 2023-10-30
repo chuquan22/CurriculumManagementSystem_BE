@@ -20,7 +20,11 @@ namespace Repositories.Curriculums
        
 
         public Curriculum GetCurriculum(string code, int batchId) => curriculumDAO.GetCurriculum(code, batchId);
-       
+
+        public List<Curriculum> GetCurriculumByDegreeLevel(string degree_level)
+        {
+            return curriculumDAO.GetCurriculumByDegreeLevel(degree_level);
+        }
 
         public Curriculum GetCurriculumById(int id) => curriculumDAO.GetCurriculumById(id);
 
