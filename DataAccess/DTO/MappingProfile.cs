@@ -36,9 +36,10 @@ namespace DataAccess.Models.DTO
     .ReverseMap();
 
             CreateMap<SemesterBatch, SemesterBatchResponse>()
-            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Semester.Batch.batch_name))
+            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
              .ReverseMap();
-            CreateMap<SemesterBatch, SemesterBatchRequest>().ReverseMap();
+            CreateMap<SemesterBatch, SemesterBatchRequest>()
+                .ReverseMap();
 
             //Major
 

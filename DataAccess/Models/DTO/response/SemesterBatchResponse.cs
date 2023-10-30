@@ -11,7 +11,7 @@ namespace DataAccess.Models.DTO.response
         public int semester_batch_id { get; set; }
         public int semester_id { get; set; }
         public int batch_id { get; set; }
-        public int batch_name { get; set; }
+        public string batch_name { get; set; }
 
         public int? term_no { get; set; }
         public string degree_level { get; set; }
