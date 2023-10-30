@@ -55,11 +55,9 @@ builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Configure the HTTP request pipeline.
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
 
 app.UseCors(builder =>
 {
