@@ -49,6 +49,11 @@ namespace DataAccess.Models.DTO
                     .ReverseMap();
                 CreateMap<Material, MaterialExportExcel>().ReverseMap();
 
+            CreateMap<SemesterBatch, SemesterBatchResponse>()
+            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+             .ReverseMap();
+            CreateMap<SemesterBatch, SemesterBatchRequest>()
+                .ReverseMap();
 
                 //Excel Syllabus
                 CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();

@@ -3,13 +3,16 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
 using Repositories.CLOS;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
-{
+{   
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BatchsController : ControllerBase
@@ -22,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             _repo = new BatchRepository();
         }
-
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
         {

@@ -20,6 +20,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             repo = new CLORepository();
         }
+
         [HttpGet]
         public ActionResult GetCLOs(int syllabus_id)
         {
