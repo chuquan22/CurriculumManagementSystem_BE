@@ -11,6 +11,8 @@ namespace DataAccess.Models.DTO.request
         public int CLO_id { get; set; }
 
         public int syllabus_id { get; set; }
+        public string CLO_name { get; set; }
+
         public string CLO_description { get; set; }
     }
 }

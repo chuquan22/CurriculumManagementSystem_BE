@@ -60,7 +60,10 @@ namespace DataAccess.DAO
 
         public List<SemesterBatch> GetSemesterBatch(int semester_id, string degree_level)
         { 
-            var list = _context.SemesterBatch.Where(x => (x.semester_id == semester_id && x.degree_level.Equals(degree_level))).ToList();
+            var list = _context.SemesterBatch
+                .Include(s => s.Semester)
+                .Include(s => s.Batch)
+                .Where(x => (x.semester_id == semester_id && x.degree_level.Equals(degree_level))).ToList();
             return list;
         }
 

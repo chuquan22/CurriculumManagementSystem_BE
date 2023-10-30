@@ -88,10 +88,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = repo.DeleteCLOs(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }

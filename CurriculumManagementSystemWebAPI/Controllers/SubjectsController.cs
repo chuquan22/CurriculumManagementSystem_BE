@@ -62,7 +62,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
             }
 
-            var totalElements = subjectQuery.Count(); 
+            var totalElements = subjectQuery.Count();
             var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
                 .Include(x => x.PreRequisite)
                 .Include(x => x.AssessmentMethod.AssessmentType)
@@ -71,7 +71,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
-            foreach(var subjectRespones in subjectResponse)
+            foreach (var subjectRespones in subjectResponse)
             {
                 var prerequisites = _preRequisiteRepository.GetPreRequisitesBySubject(subjectRespones.subject_id);
                 subjectRespones.prerequisites = _mapper.Map<List<PreRequisiteResponse>>(prerequisites);
@@ -137,6 +137,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
+
             var preRequisite = _mapper.Map<List<PreRequisite>>(subjectPreRequisitesRequest.PreRequisiteRequest);
 
             foreach (PreRequisite prere in preRequisite)
@@ -156,11 +157,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("EditSubjectWithPrerequisites/{id}")]
         public async Task<ActionResult<Subject>> EditSubjectWithPrerequisites(int id, [FromBody] SubjectPreRequisiteRequest subjectPreRequisitesRequest)
         {
-            if(!CheckIdExist(id))
+            if (!CheckIdExist(id))
             {
                 return NotFound(new BaseResponse(true, "Cannot Found this subject"));
             }
-           
+
             var subject = _subjectRepository.GetSubjectById(id);
             _mapper.Map(subjectPreRequisitesRequest.SubjectRequest, subject);
 
@@ -169,13 +170,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, updateResult));
             }
-            
+
             var listPreRequisite = _preRequisiteRepository.GetPreRequisitesBySubject(id);
-            if(listPreRequisite.Count > 0)
+            if (listPreRequisite.Count > 0)
             {
                 foreach (var prere in listPreRequisite)
                 {
-                     _preRequisiteRepository.DeletePreRequisite(prere);
+                    _preRequisiteRepository.DeletePreRequisite(prere);
                 }
             }
 
@@ -183,7 +184,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var prere in preRequisite)
             {
                 prere.subject_id = id;
-                 _preRequisiteRepository.CreatePreRequisite(prere);
+                _preRequisiteRepository.CreatePreRequisite(prere);
             }
 
 
@@ -197,7 +198,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteSubject/{id}")]
         public async Task<IActionResult> DeleteSubject(int id)
         {
-            
+
             var subject = _subjectRepository.GetSubjectById(id);
             var subjectRespone = _mapper.Map<SubjectResponse>(subject);
             // if subject not exsit
@@ -232,7 +233,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
             }
-            
+
 
             return Ok(new BaseResponse(false, "Delete successfull!", subjectRespone));
         }

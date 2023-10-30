@@ -24,9 +24,9 @@ namespace DataAccess.DAO
                                    .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
-                    rs = rs.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
-                    || sy.Subject.subject_code.Contains(txtSearch)
-                    || sy.Subject.english_subject_name.Contains(txtSearch)
+                    rs = rs.Where(sy => sy.Subject.subject_name.ToLower().Trim().Contains(txtSearch.ToLower().Trim())
+                    || sy.Subject.subject_code.ToLower().Trim().Contains(txtSearch.ToLower().Trim())
+                    || sy.Subject.english_subject_name.ToLower().Trim().Contains(txtSearch.ToLower().Trim())
 
                     ).OrderByDescending(x => x.approved_date).ToList();                
                 }
@@ -78,9 +78,9 @@ namespace DataAccess.DAO
 
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
-                    query = query.Where(sy => sy.Subject.subject_name.Contains(txtSearch)
-                                        || sy.Subject.subject_code.Contains(txtSearch)
-                                        || sy.Subject.english_subject_name.Contains(txtSearch));
+                    query = query.Where(sy => sy.Subject.subject_name.ToLower().Trim().Contains(txtSearch.ToLower().Trim())
+                                        || sy.Subject.subject_code.ToLower().Trim().Contains(txtSearch.ToLower().Trim())
+                                        || sy.Subject.english_subject_name.ToLower().Trim().Contains(txtSearch.ToLower().Trim()));
                 }
 
                 if (!string.IsNullOrEmpty(subjectCode))

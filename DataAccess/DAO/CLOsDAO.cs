@@ -40,9 +40,9 @@ namespace DataAccess.DAO
             _cmsDbContext.SaveChanges();
             return oldCol;
         }
-        public bool IsClosExist(string name)
+        public bool IsClosExist(string name,int syllabus_id)
         {
-            var col = _cmsDbContext.CLO.Where(c => c.CLO_name.Equals(name)).FirstOrDefault();
+            var col = _cmsDbContext.CLO.Where(c => c.CLO_name.ToLower().Trim().Equals(name.ToLower().Trim()) && c.syllabus_id==syllabus_id).FirstOrDefault();
             if(col != null)
             {
                 return true;
@@ -59,11 +59,31 @@ namespace DataAccess.DAO
         public CLO UpdateCOLs(CLO clo)
         {
             var oldCol = _cmsDbContext.CLO.Where(c => c.CLO_id == clo.CLO_id).FirstOrDefault();
+            if (oldCol.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()))
+            {
+
             oldCol.syllabus_id = clo.syllabus_id;
-            oldCol.CLO_name = clo.CLO_name;
+            oldCol.CLO_name = oldCol.CLO_name;
             oldCol.CLO_description = clo.CLO_description;
             _cmsDbContext.CLO.Update(oldCol);
             _cmsDbContext.SaveChanges();
+            }
+            else
+            {
+                var check = IsClosExist(clo.CLO_name,clo.syllabus_id);
+                if (!check)
+                {
+                    oldCol.syllabus_id = clo.syllabus_id;
+                    oldCol.CLO_name = clo.CLO_name;
+                    oldCol.CLO_description = clo.CLO_description;
+                    _cmsDbContext.CLO.Update(oldCol);
+                    _cmsDbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("CLO name already exist in system.");
+                }
+            }
             return clo;
         }
     }
