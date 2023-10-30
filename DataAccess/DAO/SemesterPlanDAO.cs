@@ -18,7 +18,14 @@ namespace DataAccess.DAO
             var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).ToList();
             return listSemesterPlan;
         }
-
+        public List<SemesterPlan> GetAllSemesterPlanByBatch(int semester_id,string degree_level)
+        {
+            var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum)
+          
+                
+                .ToList();
+            return listSemesterPlan;
+        }
         public SemesterPlan GetSemesterPlan(int curriId, int semestId)
         {
             var semesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).FirstOrDefault(x => x.curriculum_id == curriId && x.semester_id == semestId);
