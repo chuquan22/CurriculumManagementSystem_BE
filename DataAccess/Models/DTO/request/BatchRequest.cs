@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.DTO.request
 {
-    public class ClassSessionTypeRequest
+    public class BatchRequest
     {
         [Required]
-        public string class_session_type_name { get; set; }
+        public string batch_name { get; set; }
     }
 }

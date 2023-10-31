@@ -74,11 +74,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Can't Found Assessment Method"));
             }
 
-            if (_repo.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
-            {
-                return BadRequest(new BaseResponse(true, "Assessment Method Duplicate!"));
-            }
-
             _mapper.Map(assessmentMethodRequest, assessmentMethod);
 
             string updateResult = _repo.UpdateAssessmentMethod(assessmentMethod);
@@ -104,7 +99,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             string createResult = _repo.DeleteAssessmentMethod(assessmentMethod);
 
-            if (!createResult.Equals(Result.createSuccessfull.ToString()))
+            if (!createResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
