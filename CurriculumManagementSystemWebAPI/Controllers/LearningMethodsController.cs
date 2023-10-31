@@ -34,7 +34,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetLearningMethodByID/{id}")]
         public ActionResult GetLearningMethod(int id)
         {
-            var learningMethod = _repo.GetLearningMethodById(id);
+            var learningMethod = learningMethodRepository.GetLearningMethodById(id);
             var learningMethodResponse = _mapper.Map<LearningMethodDTOResponse>(learningMethod);
             return Ok(new BaseResponse(false, "Success!", learningMethodResponse));
         }
@@ -42,12 +42,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationLearningMethod(int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listLearningMethod = _repo.PaginationLearningMethod(page, limit, txtSearch);
+            var listLearningMethod = learningMethodRepository.PaginationLearningMethod(page, limit, txtSearch);
             if (listLearningMethod.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Learning Method!"));
             }
-            var total = _repo.GetTotalLearningMethod(txtSearch);
+            var total = learningMethodRepository.GetTotalLearningMethod(txtSearch);
             return Ok(new BaseResponse(false, "List Learning Method", new BaseListResponse(page, limit, total, listLearningMethod)));
         }
 
@@ -55,14 +55,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateLearningMethod")]
         public ActionResult CreateLearningMethod([FromBody] LearningMethodRequest learningMethodRequest)
         {
-            if (_repo.CheckLearningMethodDuplicate(0, learningMethodRequest.learning_method_name))
+            if (learningMethodRepository.CheckLearningMethodDuplicate(0, learningMethodRequest.learning_method_name))
             {
                 return BadRequest(new BaseResponse(true, "Learning Method is Duplicate!"));
             }
 
             var learningMethod = _mapper.Map<LearningMethod>(learningMethodRequest);
 
-            string createResult = _repo.CreateLearningMethod(learningMethod);
+            string createResult = learningMethodRepository.CreateLearningMethod(learningMethod);
             if (!createResult.Equals(Result.createSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, createResult));
@@ -74,20 +74,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("UpdateLearningMethod/{id}")]
         public ActionResult UpdateLearningMethod(int id,[FromBody] LearningMethodRequest learningMethodRequest)
         {
-            var learningMethod = _repo.GetLearningMethodById(id);
+            var learningMethod = learningMethodRepository.GetLearningMethodById(id);
             if(learningMethod == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Method!"));
             }
 
-            if (_repo.CheckLearningMethodDuplicate(id, learningMethodRequest.learning_method_name))
+            if (learningMethodRepository.CheckLearningMethodDuplicate(id, learningMethodRequest.learning_method_name))
             {
                 return BadRequest(new BaseResponse(true, "Learning Method is Duplicate!"));
             }
 
              _mapper.Map(learningMethodRequest, learningMethod);
 
-            string updateResult = _repo.UpdateLearningMethod(learningMethod);
+            string updateResult = learningMethodRepository.UpdateLearningMethod(learningMethod);
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, updateResult));
@@ -99,18 +99,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteLearningMethod/{id}")]
         public ActionResult DeleteLearningMethod(int id)
         {
-            var learningMethod = _repo.GetLearningMethodById(id);
+            var learningMethod = learningMethodRepository.GetLearningMethodById(id);
             if (learningMethod == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Method!"));
             }
 
-            if (_repo.CheckLearningMethodExsit(id))
+            if (learningMethodRepository.CheckLearningMethodExsit(id))
             {
                 return BadRequest(new BaseResponse(true, $"Learning Method {learningMethod.learning_method_name} used by Subject. Can't Delete!"));
             }
 
-            string deleteResult = _repo.DeleteLearningMethod(learningMethod);
+            string deleteResult = learningMethodRepository.DeleteLearningMethod(learningMethod);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
