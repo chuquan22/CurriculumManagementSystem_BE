@@ -52,7 +52,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateLearningResource")]
         public ActionResult CreateLearningResource([FromBody] LearningResourceRequest learningResourceRequest)
         {
-            if(learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if(learningResourceRepository.CheckLearningResourceDuplicate(0, learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
@@ -77,7 +77,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
             }
 
-            if (learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if (learningResourceRepository.CheckLearningResourceDuplicate(id, learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }

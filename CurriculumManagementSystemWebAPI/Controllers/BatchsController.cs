@@ -52,6 +52,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
+        [HttpGet("GetBatchById/{Id}")]
+        public ActionResult GetBatchById(int Id)
+        {
+            var Batch = batchRepository.GetBatchById(Id);
+            return Ok(new BaseResponse(false, "Batch", Batch));
+        }
+
         [HttpPost("CreateBatch")]
         public ActionResult CreateBatch([FromBody] BatchRequest batchRequest)
         {

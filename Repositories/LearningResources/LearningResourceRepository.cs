@@ -12,9 +12,9 @@ namespace Repositories.LearningResources
     {
         public LearningResourceDAO db = new LearningResourceDAO();
 
-        public bool CheckLearningResourceDuplicate(string type)
+        public bool CheckLearningResourceDuplicate(int id, string type)
         {
-            return db.CheckLearningResourceDuplicate(type);
+            return db.CheckLearningResourceDuplicate(id, type);
         }
 
         public bool CheckLearningResourceExsit(int id)
