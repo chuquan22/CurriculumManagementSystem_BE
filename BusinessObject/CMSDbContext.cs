@@ -148,6 +148,10 @@ namespace BusinessObject
                 .HasForeignKey(x => x.semester_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<Semester>()
+        .HasMany(s => s.SemesterBatches)
+        .WithOne(sb => sb.Semester)
+        .HasForeignKey(sb => sb.semester_id);
 
             //create new Data in table
             modelBuilder.Entity<Role>().HasData(
