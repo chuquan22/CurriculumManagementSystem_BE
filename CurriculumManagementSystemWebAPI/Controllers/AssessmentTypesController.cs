@@ -5,6 +5,7 @@ using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.AssessmentMethods;
 using Repositories.AssessmentTypes;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -28,6 +29,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listAssessmentType = assessmentTyoeRepository.GetAllAssessmentType();
             var listAssessmentTypeResponse = _mapper.Map<List<AssessmentTypeResponse>>(listAssessmentType);
             return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
+        }
+
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationAssessmentType(int page, int limit, [FromQuery] string? txtSearch)
+        {
+            var listAssessmentType = assessmentTyoeRepository.PaginationAssessmentType(page, limit, txtSearch);
+            if (listAssessmentType.Count == 0)
+            {
+                Ok(new BaseResponse(false, "Not Found Assessment Method!"));
+            }
+            var total = assessmentTyoeRepository.GetTotalAssessmentType(txtSearch);
+            var listAssessmentTypeResponse = _mapper.Map<List<AssessmentTypeResponse>>(listAssessmentType);
+            return Ok(new BaseResponse(false, "List Assessment Method", new BaseListResponse(page, limit, total, listAssessmentTypeResponse)));
         }
 
         [HttpGet("GetAssessmentTypeById/{id}")]
@@ -102,7 +116,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, deleteResult));
             }
 
-            return Ok(new BaseResponse(false, "Create Success!", assessmentType));
+            return Ok(new BaseResponse(false, "Delete Success!", assessmentType));
         }
     }
 }

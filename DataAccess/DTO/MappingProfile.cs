@@ -124,6 +124,9 @@ namespace DataAccess.Models.DTO
                     .ReverseMap();
                 //AssessmentType
                 CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
+                CreateMap<AssessmentTypeRequest, AssessmentType>()
+                    .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.assessment_type_name.Trim()))
+                    .ReverseMap();
                 //Session
                 CreateMap<BusinessObject.Session, SessionRequest>().ReverseMap();
                 CreateMap<BusinessObject.Session, SessionUpdate>().ReverseMap();
@@ -253,6 +256,8 @@ namespace DataAccess.Models.DTO
             CreateMap<LearningMethodRequest, LearningMethod>()
                 .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.learning_method_name.Trim()))
                 .ReverseMap();
+
+
         }
     }
 }
