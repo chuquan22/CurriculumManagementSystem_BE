@@ -15,28 +15,28 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SessionController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ISessionRepository repo;
-        private ISessionCLOsRepository repo2;
-        private IClassSessionTypeRepository repo3;
+        private ISessionRepository sessionRepository;
+        private ISessionCLOsRepository sessionCLOsRepository;
+        private IClassSessionTypeRepository classSessionTypeRepository;
 
         public SessionController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new SessionRepository();
-            repo2 = new SessionCLOsRepository();
-            repo3 = new ClassSessionTypeRepository();
+            sessionRepository = new SessionRepository();
+            sessionCLOsRepository = new SessionCLOsRepository();
+            classSessionTypeRepository = new ClassSessionTypeRepository();
         }
-        [HttpGet]
+        [HttpGet("{syllabus_id}")]
         public ActionResult GetSession(int syllabus_id)
         {
             List < Session> rs = new List<Session>();
             try
             {
-                rs = repo.GetSession(syllabus_id);
+                rs = sessionRepository.GetSession(syllabus_id);
                 List<SessionResponse> result = _mapper.Map < List<SessionResponse>>(rs);
                 foreach (SessionResponse rs2 in result)
                 {
-                    var class_session_type = repo3.GetClassSessionType(rs2.class_session_type_id);
+                    var class_session_type = classSessionTypeRepository.GetClassSessionType(rs2.class_session_type_id);
                     rs2.class_session_type_name = class_session_type.class_session_type_name;
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", result));
@@ -56,13 +56,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var session = _mapper.Map<Session>(request.session);
-                var check = repo.IsSessionNoExist(session.session_No, session.schedule_id);
+                var check = sessionRepository.IsSessionNoExist(session.session_No, session.schedule_id);
                 if(check != null)
                 {
                     return BadRequest(new BaseResponse(false, "Session No already used in system.", rs));
 
                 }
-                rs = repo.CreateSession(session);
+                rs = sessionRepository.CreateSession(session);
 
                 var session_clo = _mapper.Map<List<SessionCLO>>(request.session_clo);
                 if(rs != null)
@@ -70,7 +70,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     foreach (var item in session_clo)
                     {
                         item.session_id = rs.schedule_id;
-                        var rs2 = repo2.CreateSessionCLO(item);
+                        var rs2 = sessionCLOsRepository.CreateSessionCLO(item);
 
                     }
 
@@ -92,7 +92,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Session rs = _mapper.Map<Session>(request.session);
 
                 //   rs = repo.GetSession(syllabus_id);
-                string result = repo.UpdateSession(rs, request.session_clo);
+                string result = sessionRepository.UpdateSession(rs, request.session_clo);
                 return Ok(new BaseResponse(false, result, null));
             }
             catch (Exception)
@@ -113,7 +113,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     Session rs = _mapper.Map<Session>(item);
 
                     //   rs = repo.GetSession(syllabus_id);
-                    string result = repo.UpdatePatchSession(rs);
+                    string result = sessionRepository.UpdatePatchSession(rs);
                 }
 
 
@@ -127,13 +127,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteSession(int id)
         {
  
             try
             {
-                string rs = repo.DeleteSession(id);
+                string rs = sessionRepository.DeleteSession(id);
                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
@@ -150,7 +150,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Session rs = new Session();
             try
             {
-                 rs = repo.GetSessionById(id);
+                 rs = sessionRepository.GetSessionById(id);
                 var result = _mapper.Map<SessionResponse>(rs);
 
                 return Ok(new BaseResponse(false, "Sucessfully", result));

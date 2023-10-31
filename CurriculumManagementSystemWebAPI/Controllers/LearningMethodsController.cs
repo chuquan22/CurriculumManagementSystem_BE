@@ -12,18 +12,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class LearningMethodsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ILearnningMethodRepository _repo;
+        private ILearnningMethodRepository learningMethodRepository;
 
         public LearningMethodsController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new LearningMethodRepository();
+            learningMethodRepository = new LearningMethodRepository();
         }
 
         [HttpGet("GetAllLearningMethod")]
         public ActionResult GetAllLearningMethod()
         {
-            var listLearningMethod = _repo.GetAllLearningMethods();
+            var listLearningMethod = learningMethodRepository.GetAllLearningMethods();
             var listLearningMethodResponse = _mapper.Map<List<LearningMethodDTOResponse>>(listLearningMethod);
             return Ok(new BaseResponse(false, "List Batch", listLearningMethodResponse));
         }

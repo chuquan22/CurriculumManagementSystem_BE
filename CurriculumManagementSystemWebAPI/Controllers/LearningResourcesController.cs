@@ -12,12 +12,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class LearningResourcesController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ILearningResourceRepository repo;
+        private ILearningResourceRepository learningResourceRepository;
 
         public LearningResourcesController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new LearningResourceRepository();
+            learningResourceRepository = new LearningResourceRepository();
         }
         [HttpGet]
         public ActionResult GetLearningResource()
@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<LearningResource> rs = new List<LearningResource>();
             try
             {
-                rs = repo.GetLearningResource();
+                rs = learningResourceRepository.GetLearningResource();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

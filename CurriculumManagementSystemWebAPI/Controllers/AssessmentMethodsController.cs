@@ -15,18 +15,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class AssessmentMethodsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IAssessmentMethodRepository _repo;
+        private IAssessmentMethodRepository assessmentMethodRepository;
 
         public AssessmentMethodsController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new AssessmentMethodRepository();
+            assessmentMethodRepository = new AssessmentMethodRepository();
         }
 
         [HttpGet("GetAllAssessmentMethod")]
         public ActionResult GetAllAssessmentMethod()
         {
-            var listAssessmentMethod = _repo.GetAllAssessmentMethod();
+            var listAssessmentMethod = assessmentMethodRepository.GetAllAssessmentMethod();
             var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
             return Ok(new BaseResponse(false, "List Assessment Method", listAssessmentMethodResponse));
         }
@@ -35,7 +35,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationAssessmentMethod(int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listAssessmentMethod = _repo.PaginationAssessmentMethod(page, limit, txtSearch);
+            var listAssessmentMethod = assessmentMethodRepository.PaginationAssessmentMethod(page, limit, txtSearch);
             if (listAssessmentMethod.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Assessment Method!"));
@@ -47,14 +47,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateAssessmentMethod")]
         public ActionResult CreateAssessmentMethod([FromBody] AssessmentMethodRequest assessmentMethodRequest)
         {
-            if (_repo.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
+            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Method Duplicate!"));
             }
 
             var assessmentMethod = _mapper.Map<AssessmentMethod>(assessmentMethodRequest);
 
-            string createResult = _repo.CreateAssessmentMethod(assessmentMethod);
+            string createResult = assessmentMethodRepository.CreateAssessmentMethod(assessmentMethod);
 
             if (!createResult.Equals(Result.createSuccessfull.ToString()))
             {
@@ -67,21 +67,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("updateAssessmentMethod/{id}")]
         public ActionResult UpdateAssessmentMethod(int id,[FromBody] AssessmentMethodRequest assessmentMethodRequest)
         {
-            var assessmentMethod = _repo.GetAsssentMethodById(id);
+            var assessmentMethod = assessmentMethodRepository.GetAsssentMethodById(id);
 
             if (assessmentMethod == null)
             {
                 return NotFound(new BaseResponse(true, "Can't Found Assessment Method"));
             }
 
-            if (_repo.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
+            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Method Duplicate!"));
             }
 
             _mapper.Map(assessmentMethodRequest, assessmentMethod);
 
-            string updateResult = _repo.UpdateAssessmentMethod(assessmentMethod);
+            string updateResult = assessmentMethodRepository.UpdateAssessmentMethod(assessmentMethod);
 
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
@@ -95,14 +95,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteAssessmentMethod/{id}")]
         public ActionResult DeleteAssessmentMethod(int id)
         {
-            var assessmentMethod = _repo.GetAsssentMethodById(id);
+            var assessmentMethod = assessmentMethodRepository.GetAsssentMethodById(id);
 
             if (assessmentMethod == null)
             {
                 return NotFound(new BaseResponse(true, "Can't Found Assessment Method"));
             }
 
-            string createResult = _repo.DeleteAssessmentMethod(assessmentMethod);
+            string createResult = assessmentMethodRepository.DeleteAssessmentMethod(assessmentMethod);
 
             if (!createResult.Equals(Result.createSuccessfull.ToString()))
             {

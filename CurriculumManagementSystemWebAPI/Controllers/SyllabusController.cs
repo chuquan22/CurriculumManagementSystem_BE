@@ -27,38 +27,37 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SyllabusController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ISyllabusRepository repo;
-        private ISubjectRepository repo2;
-        private IAssessmentTypeRepository repo3;
-        private ICLORepository repo4;
-        private IAssessmentMethodRepository repo5;
-        private IMaterialRepository repo6;
-        private IGradingStrutureRepository repo7;
-        private ISessionRepository repo8;
-        private IClassSessionTypeRepository repo9;
-
         private readonly HttpClient client = null;
-
         public static string API_PORT = "https://localhost:8080";
         public static string API_SYLLABUS = "/api/Syllabus";
         public static string API_MATERIALS = "/api/Materials";
         public static string API_GRADING_STRUTURE = "/api/GradingStruture";
         public static string API_CLO = "/api/CLOs";
         public static string API_SCHEDULE = "/api/Session";
+        private ISyllabusRepository syllabusRepository;
+        private ISubjectRepository subjectRepository;
+        private IAssessmentTypeRepository assessmentTypeRepository;
+        private ICLORepository cloRepository;
+        private IAssessmentMethodRepository assessmentMethodRepository;
+        private IMaterialRepository materialsRepository;
+        private IGradingStrutureRepository gradingStrutureRepository;
+        private ISessionRepository sessionRepository;
+        private IClassSessionTypeRepository classSessionTypeRepository;
+       
 
 
         public SyllabusController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new SyllabusRepository();
-            repo2 = new SubjectRepository();
-            repo3 = new AssessmentTypeRepository();
-            repo4 = new CLORepository();
-            repo5 = new AssessmentMethodRepository();
-            repo6 = new MaterialRepository();
-            repo7 = new GradingStrutureRepository();
-            repo8 = new SessionRepository();
-            repo9 = new ClassSessionTypeRepository();
+            syllabusRepository = new SyllabusRepository();
+            subjectRepository = new SubjectRepository();
+            assessmentTypeRepository = new AssessmentTypeRepository();
+            cloRepository = new CLORepository();
+            assessmentMethodRepository = new AssessmentMethodRepository();
+            materialsRepository = new MaterialRepository();
+            gradingStrutureRepository = new GradingStrutureRepository();
+            sessionRepository = new SessionRepository();
+            classSessionTypeRepository = new ClassSessionTypeRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -70,8 +69,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Syllabus> rs = new List<Syllabus>();
             try
             {
-                int limit2 = repo.GetTotalSyllabus(txtSearch, subjectCode);
-                List<Syllabus> list = repo.GetListSyllabus(page, limit, txtSearch, subjectCode);
+                int limit2 = syllabusRepository.GetTotalSyllabus(txtSearch, subjectCode);
+                List<Syllabus> list = syllabusRepository.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
                 return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
             }
@@ -90,7 +89,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
 
-                var result = repo.CreateSyllabus(rs);
+                var result = syllabusRepository.CreateSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucess", rs));
             }
             catch (Exception)
@@ -105,9 +104,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                Syllabus rs1 = repo.GetSyllabusById(syllabus_id);
+                Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
-                List<PreRequisite> pre = repo.GetPre(rs1.subject_id);
+                List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
 
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
                 return Ok(new BaseResponse(true, "False", result));
@@ -247,9 +246,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 {
                                   
                                         string name = "null";
-                                        if (repo4.GetCLOsById(it) != null)
+                                        if (cloRepository.GetCLOsById(it) != null)
                                         {
-                                            name = repo4.GetCLOsById(it).CLO_name;
+                                            name = cloRepository.GetCLOsById(it).CLO_name;
                                             if (item.CLO_name.Contains(name))
                                             {
                                                 lst.Add(it);
@@ -303,9 +302,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 foreach (var cl in cloId)
                                 {
                                     string name = "null";
-                                    if (repo4.GetCLOsById(cl) != null)
+                                    if (cloRepository.GetCLOsById(cl) != null)
                                     {
-                                        name = repo4.GetCLOsById(cl).CLO_name;
+                                        name = cloRepository.GetCLOsById(cl).CLO_name;
                                         if (gra.clo_name.Contains(name))
                                         {
                                             lst.Add(cl);
@@ -498,12 +497,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private AssessmentMethod GetAssessmentMethodByName(string assessment_type, int id)
         {
-            return repo5.GetAssessmentMethodByNameAndTypeId(assessment_type, id);
+            return assessmentMethodRepository.GetAssessmentMethodByNameAndTypeId(assessment_type, id);
         }
 
         private AssessmentType GetAssessmentTypeByName(string assessment_type)
         {
-            return repo3.GetAssessmentTypeByName(assessment_type);
+            return assessmentTypeRepository.GetAssessmentTypeByName(assessment_type);
         }
 
         private List<Session> GetScheduleExcel(IEnumerable<ScheduleExcel> row, Syllabus syllabus)
@@ -541,7 +540,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         private ClassSessionType GetClassSessionTypeByName(string name)
         {
-            return repo9.GetClassSessionTypeByName(name);
+            return classSessionTypeRepository.GetClassSessionTypeByName(name);
         }
         private List<CLO> GetClosExcel(IEnumerable<CLOsExcel> row)
         {
@@ -560,7 +559,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private CLO GetCloIdByName(string cLO_Name)
         {
-            return repo4.GetCLOByName(cLO_Name);
+            return cloRepository.GetCLOByName(cLO_Name);
         }
 
         private List<Material> GetMaterialExcel(IEnumerable<MaterialExcel> row, Syllabus syllabus)
@@ -698,7 +697,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private Subject GetSubjectByCode(string name)
         {
-            return repo2.GetSubjectByCode(name);
+            return subjectRepository.GetSubjectByCode(name);
         }
 
         [HttpPatch]
@@ -707,7 +706,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
-                string result = repo.UpdatePatchSyllabus(rs);
+                string result = syllabusRepository.UpdatePatchSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)
@@ -773,11 +772,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)
         {
             string templatePath = "SyllabusExcel.xlsx";
-            var syllabus = repo.GetSyllabusById(syllabus_id);
-            var materials1 = repo6.GetMaterial(syllabus_id);
-            var clos1 = repo4.GetCLOs(syllabus_id);
-            var schedule1 = repo8.GetSession(syllabus_id);
-            var gradingStruture1 = repo7.GetGradingStruture(syllabus_id);
+            var syllabus = syllabusRepository.GetSyllabusById(syllabus_id);
+            var materials1 = materialsRepository.GetMaterial(syllabus_id);
+            var clos1 = cloRepository.GetCLOs(syllabus_id);
+            var schedule1 = sessionRepository.GetSession(syllabus_id);
+            var gradingStruture1 = gradingStrutureRepository.GetGradingStruture(syllabus_id);
             var gradingStruture = _mapper.Map<List<GradingStrutureExportExcel>>(gradingStruture1);
             var materials = _mapper.Map<List<MaterialExportExcel>>(materials1);
             var clos = _mapper.Map <List<CLOsExportExcel>>(clos1);
@@ -858,7 +857,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                
-                var result = repo.SetStatusSyllabus(id);
+                var result = syllabusRepository.SetStatusSyllabus(id);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)
@@ -874,7 +873,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                
-                var result = repo.SetApproved(id);
+                var result = syllabusRepository.SetApproved(id);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)

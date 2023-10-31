@@ -14,18 +14,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class AssessmentTypesController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IAssessmentTypeRepository _repo;
+        private IAssessmentTypeRepository assessmentTyoeRepository;
 
         public AssessmentTypesController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new AssessmentTypeRepository();
+            assessmentTyoeRepository = new AssessmentTypeRepository();
         }
 
         [HttpGet("GetAllAssessmentType")]
         public ActionResult GetAllAssessmentType()
         {
-            var listAssessmentType = _repo.GetAllAssessmentType();
+            var listAssessmentType = assessmentTyoeRepository.GetAllAssessmentType();
             var listAssessmentTypeResponse = _mapper.Map<List<AssessmentTypeResponse>>(listAssessmentType);
             return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
         }
@@ -33,14 +33,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateAssessmentType")]
         public ActionResult CreateAssessmentType([FromBody] AssessmentTypeRequest assessmentTypeRequest)
         {
-            if (_repo.CheckAssmentTypeDuplicate(assessmentTypeRequest.assessment_type_name))
+            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(assessmentTypeRequest.assessment_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Type is duplicate!"));
             }
 
             var assessmentType = _mapper.Map<AssessmentType>(assessmentTypeRequest);
 
-            string createResult = _repo.CreateAssessmentType(assessmentType);
+            string createResult = assessmentTyoeRepository.CreateAssessmentType(assessmentType);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, createResult));
@@ -52,13 +52,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteAssessmentType/{id}")]
         public ActionResult DeleteAssessmentType(int id)
         {
-            var assessmentType = _repo.GetAsssentTypeById(id);
+            var assessmentType = assessmentTyoeRepository.GetAsssentTypeById(id);
             if(assessmentType == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Assessment Type!"));
             }
 
-            string deleteResult = _repo.DeleteAssessmentType(assessmentType);
+            string deleteResult = assessmentTyoeRepository.DeleteAssessmentType(assessmentType);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
