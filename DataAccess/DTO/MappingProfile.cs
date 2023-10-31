@@ -60,9 +60,8 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
                  .ForMember(dest => dest.semester, opt => opt.MapFrom(src => src.Semester.semester_name))
                  .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Semester.SemesterBatches))
-
-
                 .ReverseMap();
+
                 //Excel Syllabus
                 CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
                 CreateMap<Syllabus, SyllabusRequest>().ReverseMap();
@@ -99,7 +98,7 @@ namespace DataAccess.Models.DTO
                   .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
                   .ForMember(dest => dest.decision_No, opt => opt.MapFrom(src => src.decision_No))
                   .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
-                  .ForMember(dest => dest.learning_teaching_method, opt => opt.MapFrom(src => src.Subject.LearningMethod.learning_method_name))>>>>>>> Test_Env
+                  .ForMember(dest => dest.learning_teaching_method, opt => opt.MapFrom(src => src.Subject.LearningMethod.learning_method_name))
                   .ForMember(dest => dest.time_allocation, opt => opt.MapFrom(src => src.time_allocation))
 
                   .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))
