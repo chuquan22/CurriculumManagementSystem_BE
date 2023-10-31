@@ -283,7 +283,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
             return Ok(fileContents);
-            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
+           // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
         }
 
 
@@ -315,6 +315,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
 
                             var curriculumExcel = GetCurriculumInExcel(row);
+                            curriculumExcel.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumExcel.batch_id, curriculumExcel.specialization_id, curriculumExcel.degree_level);
+                            var curri = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
+                            if (curri != null)
+                            {
+                                return BadRequest(new BaseResponse(true, $"Curriculum {curriculumExcel.curriculum_code} Duplicate!"));
+                            }
+
                             string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
                             if (curriculumExcel.curriculum_id == 0)
                             {
@@ -366,8 +373,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         var combo = _comboRepository.FindComboByCode(item.combo_code);
                                         curriculumSubject.combo_id = combo.combo_id;
                                     }
-                                    curriculumSubject.option = (item.option == null || item.option.Equals("")) ? false : true;
-
+                                    curriculumSubject.option = (item.option == null || item.option.Equals("") || item.option.Equals("False")) ? false : true;
 
                                     listCurriSubject.Add(curriculumSubject);
                                 }
@@ -492,11 +498,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 return $"Batch {batch_name} Not Exsit";
                             }
-                            var curri = _curriculumRepository.GetCurriculum(r.Details, _batchRepository.GetBatchIDByName(batch_name));
-                            if (curri != null)
-                            {
-                                return $"Curriculum {r.Details} Duplicate!";
-                            }
+                            
                         }
                         // Check Major Exsit
                         else if (r.Title.Equals("Vocational Code"))
@@ -526,6 +528,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
 
                         }
+                        
+                        
 
                     }
                 }
@@ -757,8 +761,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return ArraySubject;
         }
-
-
         private bool CurriculumExists(int id)
         {
             return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
@@ -773,9 +775,5 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             return (_context.CurriculumSubject?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
-
-
-
-
     }
 }

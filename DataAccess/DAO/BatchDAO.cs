@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.Contains(txtSearch));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower()));
             }
 
             var listBatch = query
