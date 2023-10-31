@@ -111,11 +111,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Assessment Method is Used! Can't Delete"));
             }
 
-            string createResult = assessmentMethodRepository.DeleteAssessmentMethod(assessmentMethod);
 
-            if (!createResult.Equals(Result.deleteSuccessfull.ToString()))
+            string deleteResult = assessmentMethodRepository.DeleteAssessmentMethod(assessmentMethod);
+
+
+            if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
-                return BadRequest(new BaseResponse(true, createResult));
+                return BadRequest(new BaseResponse(true, deleteResult));
             }
 
             var assessMethodRespone = _mapper.Map<AssessmentMethodDTOResponse>(assessmentMethod);
