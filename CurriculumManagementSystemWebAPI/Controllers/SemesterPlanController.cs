@@ -13,21 +13,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SemesterPlanController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ISemesterBatchRepository _repo;
-        private ISemesterPlanRepository _repo2;
+        private ISemesterPlanRepository _repo;
+        private ISemesterBatchRepository _repo2;
 
         public SemesterPlanController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new SemesterBatchRepository();
-            _repo2 = new SemesterPlanRepository();
+            _repo = new SemesterPlanRepository();
+            _repo2 = new SemesterBatchRepository();
+
         }
 
         [HttpGet]
         public ActionResult GetSemesterPlan (int semester_id,string degree_level)
         {
-            var list = _repo.GetSemesterBatch(semester_id, degree_level);
-            return Ok();
+            var list = _repo.GetSemesterPlan(semester_id, degree_level);
+            var rs = _mapper.Map<List<SemesterPlanResponse>>(list);
+            return Ok(new BaseResponse(false, "Get List", rs));
         }
 
     }

@@ -15,5 +15,10 @@ namespace Repositories.SemesterPlans
         {
             return db.CreateSemesterPlan(semesterPlans);
         }
+
+        public List<SemesterPlan> GetSemesterPlan(int semesterId, string degree_level)
+        {
+            return db.GetAllSemesterPlan(semesterId, degree_level);
+        }
     }
 }

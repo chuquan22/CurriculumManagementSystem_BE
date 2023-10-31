@@ -18,11 +18,16 @@ namespace DataAccess.DAO
             var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).ToList();
             return listSemesterPlan;
         }
-        public List<SemesterPlan> GetAllSemesterPlanByBatch(int semester_id,string degree_level)
+        public List<SemesterPlan> GetAllSemesterPlan(int semester_id, string degree_level)
         {
-            var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum)
-          
-                
+            var listSemesterPlan = _cmsDbContext.SemesterPlan
+                                    .Include(x => x.Semester)
+                                    .Include(x => x.Curriculum)
+                                    .Include(x => x.Curriculum.Specialization)
+                                    .Include(x => x.Semester.SemesterBatches)
+                                    .Include(x => x.Semester.Batch)
+
+                .Where(s => s.semester_id == semester_id && s.degree_level.EndsWith(degree_level))
                 .ToList();
             return listSemesterPlan;
         }
@@ -39,7 +44,8 @@ namespace DataAccess.DAO
                 _cmsDbContext.SemesterPlan.Add(semesterPlan);
                 _cmsDbContext.SaveChanges();
                 return Result.createSuccessfull.ToString();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return ex.Message;
             }

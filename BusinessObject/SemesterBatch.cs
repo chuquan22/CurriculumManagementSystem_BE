@@ -22,7 +22,7 @@ namespace BusinessObject
         public int? term_no { get; set; }
         [Required]
         public string degree_level { get; set; }
-        public virtual Batch Batch { get; set; }
-        public virtual Semester Semester { get; set; }
+        public virtual Batch? Batch { get; set; }
+        public virtual Semester? Semester { get; set; }
     }
 }

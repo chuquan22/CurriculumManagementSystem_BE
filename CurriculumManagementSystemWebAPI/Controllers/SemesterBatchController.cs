@@ -54,6 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 sp.curriculum_id = curriculum.curriculum_id;
                 sp.semester_id = list[0].semester_id;
+                sp.degree_level = list[0].degree_level;
                 _repo3.CreateSemesterPlan(sp);
 
             }
