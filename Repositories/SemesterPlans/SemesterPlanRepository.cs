@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.DAO;
+using DataAccess.Models.DTO.response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Repositories.SemesterPlans
             return db.CreateSemesterPlan(semesterPlans);
         }
 
-        public List<SemesterPlan> GetSemesterPlan(int semesterId, string degree_level)
+        public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level)
         {
             return db.GetAllSemesterPlan(semesterId, degree_level);
         }

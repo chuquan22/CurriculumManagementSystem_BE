@@ -91,6 +91,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Batch is Used. Can't Delete"));
             }
 
+
             string deleteResult = batchRepository.DeleteBatch(batch);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
