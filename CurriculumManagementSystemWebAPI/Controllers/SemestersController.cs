@@ -12,18 +12,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SemestersController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ISemestersRepository _repo;
+        private ISemestersRepository semesterRepository;
 
         public SemestersController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new SemestersRepository();
+            semesterRepository = new SemestersRepository();
         }
 
         [HttpGet("GetAllSemester")]
         public ActionResult GetAllBatch()
         {
-            var listSemester = _repo.GetSemesters();
+            var listSemester = semesterRepository.GetSemesters();
             return Ok(new BaseResponse(false, "List Semester", listSemester));
         }
     }

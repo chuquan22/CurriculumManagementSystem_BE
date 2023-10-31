@@ -15,27 +15,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SemesterBatchController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ISemesterBatchRepository _repo;
-        private ICurriculumRepository _repo2;
-        private ISemesterPlanRepository _repo3;
+        private ISemesterBatchRepository semesterBatchRepository;
+        private ICurriculumRepository curriculumRepositoryu;
+        private ISemesterPlanRepository semesterPlanRepository;
         public SemesterBatchController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new SemesterBatchRepository();
-            _repo2 = new CurriculumRepository();
-            _repo3 = new SemesterPlanRepository();
+            semesterBatchRepository = new SemesterBatchRepository();
+            curriculumRepositoryu = new CurriculumRepository();
+            semesterPlanRepository = new SemesterPlanRepository();
         }
-        [HttpGet]
+        [HttpGet("{semester_id}/{degree_level}")]
         public ActionResult GetSemesterBatch(int semester_id, string degree_level)
         {
-            var list = _repo.GetSemesterBatch(semester_id, degree_level);
+            var list = semesterBatchRepository.GetSemesterBatch(semester_id, degree_level);
             var rs = _mapper.Map<List<SemesterBatchResponse>>(list);
             return Ok(new BaseResponse(false,"Get List ",rs));
         }
         [HttpPost]
         public ActionResult CreateSemesterBatch(int semester_id, string degree_level)
         {
-            var rs2 = _repo.CreateSemesterBatch(new SemesterBatch() { semester_id = semester_id, degree_level = degree_level });
+            var rs2 = semesterBatchRepository.CreateSemesterBatch(new SemesterBatch() { semester_id = semester_id, degree_level = degree_level });
             var rs = _mapper.Map<List<SemesterBatchResponse>>(rs2);
             return Ok(rs);
         }
@@ -43,7 +43,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut]
         public ActionResult UpdateSemesterBatch(List<SemesterBatchRequest> list)
         {
-            List<Curriculum> curriculumList = _repo2.GetCurriculumByDegreeLevel(list[0].degree_level);
+            List<Curriculum> curriculumList = curriculumRepositoryu.GetCurriculumByDegreeLevel(list[0].degree_level);
             if( curriculumList == null || curriculumList.Count == 0)
             {
                 return BadRequest(new BaseResponse(false, "No curriculum equal that degree level", null));
@@ -54,7 +54,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 sp.curriculum_id = curriculum.curriculum_id;
                 sp.semester_id = list[0].semester_id;
-                _repo3.CreateSemesterPlan(sp);
+                sp.degree_level = list[0].degree_level;
+                semesterPlanRepository.CreateSemesterPlan(sp);
 
             }
 
@@ -63,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var item in list)
             {
                 var semester = _mapper.Map<SemesterBatch>(item);
-                result = _repo.UpdateSemesterBatch(semester);
+                result = semesterBatchRepository.UpdateSemesterBatch(semester);
             }
 
             return Ok(new BaseResponse(false, result, null));

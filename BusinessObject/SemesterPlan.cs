@@ -14,8 +14,9 @@ namespace BusinessObject
         public int curriculum_id { get; set; }
         [ForeignKey("Semester")]
         public int semester_id { get; set; }
+        public string degree_level { get; set; }
 
-        public virtual Curriculum Curriculum { get; set; }
-        public virtual Semester Semester { get; set; }
+        public virtual Curriculum? Curriculum { get; set; }
+        public virtual Semester? Semester { get; set; }
     }
 }

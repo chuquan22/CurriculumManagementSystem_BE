@@ -13,20 +13,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class CLOsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ICLORepository repo;
+        private ICLORepository cloRepository;
 
         public CLOsController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new CLORepository();
+            cloRepository = new CLORepository();
         }
-        [HttpGet]
+        [HttpGet("{syllabus_id}")]
         public ActionResult GetCLOs(int syllabus_id)
         {
             List<CLO> rs = new List<CLO>();
             try
             {
-                rs = repo.GetCLOs(syllabus_id);
+                rs = cloRepository.GetCLOs(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -44,7 +44,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 CLO rs =  _mapper.Map<CLO>(clo);
+
+                var checkNameClo = cloRepository.GetCLOByName(rs.CLO_name);
+                if(checkNameClo != null)
+                {
+                    return BadRequest(new BaseResponse(false, "CLOs Name already used in system.", rs));
+
+                }
+                rs = cloRepository.CreateCLOs(rs);
+
                 rs = repo.CreateCLOs(rs);
+
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)
@@ -62,7 +72,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 CLO rs = _mapper.Map<CLO>(clo);
-                rs = repo.UpdateCLOs(rs);
+                rs = cloRepository.UpdateCLOs(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)
@@ -73,13 +83,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteCLOs(int id)
         {
             CLO rs = new CLO();
             try
             {
-                rs = repo.DeleteCLOs(id);
+                rs = cloRepository.DeleteCLOs(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)
@@ -96,7 +106,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             CLO rs = new CLO();
             try
             {
-                rs = repo.GetCLOsById(id);
+                rs = cloRepository.GetCLOsById(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

@@ -9,5 +9,7 @@ namespace Repositories.SemesterPlans
     public interface ISemesterPlanRepository
     {
         public string CreateSemesterPlan(SemesterPlan semesterPlans);
+
+        public List<SemesterPlan> GetSemesterPlan(int semesterId, string degree_level);
     }
 }
