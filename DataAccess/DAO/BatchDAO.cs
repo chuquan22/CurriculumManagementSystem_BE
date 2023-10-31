@@ -21,6 +21,22 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
+        public List<Batch> PaginationBatch(int page, int limit, string? txtSearch)
+        {
+            IQueryable<Batch> query = _context.Batch;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower()));
+            }
+
+            var listBatch = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+            return listBatch;
+        }
+
         public int GetBatchIDByName(string batchName)
         {
             
@@ -32,6 +48,17 @@ namespace DataAccess.DAO
             }
            
             return batch_id;
+        }
+
+        public Batch GetBatchById(int id)
+        {
+            var batch = _context.Batch.Where(x => x.batch_id == id).FirstOrDefault();
+            return batch;
+        }
+
+        public bool CheckBatchDuplicate(string batch_name)
+        {
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
         }
 
         public List<Batch> GetBatchBySpe(int speId)

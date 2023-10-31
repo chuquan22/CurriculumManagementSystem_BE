@@ -44,6 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 CLO rs =  _mapper.Map<CLO>(clo);
+
                 var checkNameClo = cloRepository.GetCLOByName(rs.CLO_name);
                 if(checkNameClo != null)
                 {
@@ -51,12 +52,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 }
                 rs = cloRepository.CreateCLOs(rs);
+
+                rs = repo.CreateCLOs(rs);
+
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true,ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }

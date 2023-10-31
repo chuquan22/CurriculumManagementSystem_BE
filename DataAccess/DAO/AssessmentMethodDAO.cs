@@ -28,7 +28,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.assessment_method_component.Contains(txtSearch));
+                query = query.Where(x => x.assessment_method_component.ToLower().Contains(txtSearch.ToLower()));
             }
 
             var listAssessmentMethod = query

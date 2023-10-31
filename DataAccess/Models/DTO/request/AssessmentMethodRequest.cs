@@ -10,7 +10,9 @@ namespace DataAccess.Models.DTO.request
 {
     public class AssessmentMethodRequest
     {
+        [Required]
         public string assessment_method_component { get; set; }
+        [Required]
         public int assessment_type_id { get; set; }
     }
 }

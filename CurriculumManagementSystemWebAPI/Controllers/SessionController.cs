@@ -77,10 +77,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
@@ -95,10 +95,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 string result = sessionRepository.UpdateSession(rs, request.session_clo);
                 return Ok(new BaseResponse(false, result, null));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }

@@ -24,7 +24,7 @@ namespace Repositories.AssessmentMethods
 
         public string DeleteAssessmentMethod(AssessmentMethod method)
         {
-            return assessmentMethodDAO.UpdateAssessmentMethod(method);
+            return assessmentMethodDAO.DeleteAssessmentMethod(method);
         }
 
         public List<AssessmentMethod> GetAllAssessmentMethod()
@@ -52,7 +52,7 @@ namespace Repositories.AssessmentMethods
 
         public string UpdateAssessmentMethod(AssessmentMethod method)
         {
-            return assessmentMethodDAO.DeleteAssessmentMethod(method);
+            return assessmentMethodDAO.UpdateAssessmentMethod(method);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace DataAccess.Models.DTO.request
     public class SubjectPreRequisiteRequest
     {
         public SubjectRequest SubjectRequest { get; set; }
-        public List<PreRequisiteRequest> PreRequisiteRequest { get; set; }
+        public List<PreRequisiteRequest>? PreRequisiteRequest { get; set; }
     }
 }

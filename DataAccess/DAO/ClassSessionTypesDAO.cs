@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.class_session_type_name.Contains(txtSearch));
+                query = query.Where(x => x.class_session_type_name.ToLower().Contains(txtSearch.ToLower()));
             }
 
             var listClassSessionType = query
