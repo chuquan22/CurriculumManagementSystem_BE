@@ -40,8 +40,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Assessment Method!"));
             }
+            var total = _repo.GetTotalAssessmentMethod(txtSearch);
             var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
-            return Ok(new BaseResponse(false, "List Assessment Method", listAssessmentMethodResponse));
+            return Ok(new BaseResponse(false, "List Assessment Method", new BaseListResponse(page, limit, total, listAssessmentMethodResponse)));
         }
 
         [HttpPost("CreateAssessmentMethod")]
@@ -95,6 +96,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (assessmentMethod == null)
             {
                 return NotFound(new BaseResponse(true, "Can't Found Assessment Method"));
+            }
+
+            if (_repo.CheckAssmentMethodExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Assessment Method is Used! Can't Delete"));
             }
 
             string createResult = _repo.DeleteAssessmentMethod(assessmentMethod);

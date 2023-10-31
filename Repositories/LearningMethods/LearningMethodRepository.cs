@@ -12,9 +12,14 @@ namespace Repositories.LearningMethods
     {
         private readonly LearningMethodDAO _learningMethodDAO = new LearningMethodDAO();
 
-        public bool CheckLearningMethodDuplicate(string learning_method_name)
+        public bool CheckLearningMethodDuplicate(int id, string learning_method_name)
         {
-            return _learningMethodDAO.CheckLearningMethodDuplicate(learning_method_name);
+            return _learningMethodDAO.CheckLearningMethodDuplicate(id, learning_method_name);
+        }
+
+        public bool CheckLearningMethodExsit(int id)
+        {
+            return _learningMethodDAO.CheckLearningMethodExsit(id);
         }
 
         public string CreateLearningMethod(LearningMethod learningMethod)
@@ -35,6 +40,11 @@ namespace Repositories.LearningMethods
         public LearningMethod GetLearningMethodById(int id)
         {
             return _learningMethodDAO.GetLearningMethodById(id);
+        }
+
+        public int GetTotalLearningMethod(string? txtSearch)
+        {
+            return _learningMethodDAO.GetTotalLearningMethod(txtSearch);
         }
 
         public List<LearningMethod> PaginationLearningMethod(int page, int limit, string? txtSearch)

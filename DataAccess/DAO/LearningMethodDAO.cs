@@ -24,7 +24,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.learning_method_name.ToLower().Contains(txtSearch.ToLower()));
+                query = query.Where(x => x.learning_method_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningMethod = query
@@ -34,15 +34,34 @@ namespace DataAccess.DAO
             return listLearningMethod;
         }
 
+        public int GetTotalLearningMethod(string? txtSearch)
+        {
+            IQueryable<LearningMethod> query = _cmsDbContext.LearningMethod;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.learning_method_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listLearningMethod = query
+                .ToList();
+            return listLearningMethod.Count;
+        }
+
         public LearningMethod GetLearningMethodById(int id)
         {
             var learningMethod = _cmsDbContext.LearningMethod.Find(id);
             return learningMethod;
         }
 
-        public bool CheckLearningMethodDuplicate(string learning_method_name)
+        public bool CheckLearningMethodDuplicate(int id,string learning_method_name)
         {
-            return (_cmsDbContext.LearningMethod?.Any(x => x.learning_method_name.Equals(learning_method_name))).GetValueOrDefault();
+            return (_cmsDbContext.LearningMethod?.Any(x => x.learning_method_name.Equals(learning_method_name) && x.learning_method_id != id)).GetValueOrDefault();
+        }
+
+        public bool CheckLearningMethodExsit(int id)
+        {
+            return (_cmsDbContext.Subject?.Any(x => x.learning_method_id == id)).GetValueOrDefault();
         }
 
         public string CreateLearningMethod(LearningMethod learningMethod)

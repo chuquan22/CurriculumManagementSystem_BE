@@ -17,6 +17,11 @@ namespace Repositories.LearningResources
             return db.CheckLearningResourceDuplicate(type);
         }
 
+        public bool CheckLearningResourceExsit(int id)
+        {
+            return db.CheckLearningResourceExsit(id);
+        }
+
         public string CreateLearningResource(LearningResource learningResource)
         {
             return db.CreateLearningResource(learningResource);
@@ -35,6 +40,11 @@ namespace Repositories.LearningResources
         public LearningResource GetLearningResource(int id)
         {
             return db.GetLearningResource(id);
+        }
+
+        public int GetTotalLearningResource(string? txtSearch)
+        {
+            return db.GetTotalLearningResource(txtSearch);
         }
 
         public List<LearningResource> PaginationLearningResource(int page, int limit, string? txtSearch)

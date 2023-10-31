@@ -239,6 +239,13 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.batch_name.Trim()))
                 .ReverseMap();
 
+            CreateMap<LearningResourceRequest, LearningResource>()
+                .ForMember(dest => dest.learning_resource_type, opt => opt.MapFrom(src => src.learning_resource_type.Trim()))
+                .ReverseMap();
+
+            CreateMap<LearningMethodRequest, LearningMethod>()
+                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.learning_method_name.Trim()))
+                .ReverseMap();
         }
     }
 }

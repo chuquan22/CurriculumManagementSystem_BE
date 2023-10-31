@@ -55,7 +55,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var assessmentType = _repo.GetAsssentTypeById(id);
             if(assessmentType == null)
             {
-                return BadRequest(new BaseResponse(true, "Not Found Assessment Type!"));
+                return NotFound(new BaseResponse(true, "Not Found Assessment Type!"));
+            }
+
+            if (_repo.CheckAssmentTypeExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Assessment Type is Used by Assessment Method. Can't Delete!"));
             }
 
             string deleteResult = _repo.DeleteAssessmentType(assessmentType);

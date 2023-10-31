@@ -38,6 +38,11 @@ namespace DataAccess.DAO
             return (_context.AssessmentType?.Any(x => x.assessment_type_name == name)).GetValueOrDefault();
         }
 
+        public bool CheckAssmentTypeExsit(int id)
+        {
+            return (_context.AssessmentMethod?.Any(x => x.assessment_type_id == id)).GetValueOrDefault();
+        }
+
         public string CreateAssessmentType(AssessmentType type)
         {
             try
