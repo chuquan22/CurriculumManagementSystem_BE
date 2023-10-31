@@ -10,5 +10,11 @@ namespace Repositories.LearningMethods
     public interface ILearnningMethodRepository
     {
         List<LearningMethod> GetAllLearningMethods();
+        List<LearningMethod> PaginationLearningMethod(int page, int limit, string? txtSearch);
+        LearningMethod GetLearningMethodById(int id);
+        bool CheckLearningMethodDuplicate(string learning_method_name);
+        string CreateLearningMethod(LearningMethod learningMethod);
+        string UpdateLearningMethod(LearningMethod learningMethod);
+        string DeleteLearningMethod(LearningMethod learningMethod);
     }
 }

@@ -67,7 +67,47 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Create Learning Resource Success!", learningResourceRequest));
         }
 
+        [HttpPut("UpdateLearningResource/{id}")]
+        public ActionResult UpdateLearningResource(int id,[FromBody] LearningResourceRequest learningResourceRequest)
+        {
+            var learningResource = repo.GetLearningResource(id);
+            if(learningResource == null)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
+            }
 
+            if (repo.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            {
+                return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
+            }
 
+            _mapper.Map(learningResourceRequest, learningResource);
+
+            string updateResult = repo.UpdateLearningResource(learningResource);
+            if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
+            }
+
+            return Ok(new BaseResponse(false, "Update Learning Resource Success!", learningResourceRequest));
+        }
+
+        [HttpDelete("RemoveLearningResource/{id}")]
+        public ActionResult RemoveLearningResource(int id)
+        {
+            var learningResource = repo.GetLearningResource(id);
+            if (learningResource == null)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
+            }
+
+            string deleteResult = repo.DeleteLearningResource(learningResource);
+            if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
+            }
+
+            return Ok(new BaseResponse(false, $"Remove Learning Resource {learningResource.learning_resource_type} Success!", learningResource));
+        }
     }
 }
