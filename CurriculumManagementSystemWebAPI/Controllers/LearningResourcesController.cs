@@ -45,7 +45,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Learning Resource!"));
             }
-            return Ok(new BaseResponse(false, "List Learning Resource", listLearningResource));
+            var total = repo.GetTotalLearningResource(txtSearch);
+            return Ok(new BaseResponse(false, "List Learning Resource", new BaseListResponse(page, limit, total, listLearningResource)));
         }
 
         [HttpPost("CreateLearningResource")]
@@ -99,6 +100,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (learningResource == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
+            }
+
+            if (repo.CheckLearningResourceExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Learning Resource Used by Material. Can't Delete!"));
             }
 
             string deleteResult = repo.DeleteLearningResource(learningResource);

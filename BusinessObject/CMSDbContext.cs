@@ -212,8 +212,8 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
-               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing", learning_method_description = "" },
-               new LearningMethod { learning_method_id = 2, learning_method_name = "Balence", learning_method_description = "" }
+               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing" },
+               new LearningMethod { learning_method_id = 2, learning_method_name = "Balence" }
                 );
 
             modelBuilder.Entity<LearningResource>().HasData(

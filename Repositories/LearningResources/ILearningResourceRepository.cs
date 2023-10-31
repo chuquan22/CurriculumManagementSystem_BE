@@ -12,7 +12,9 @@ namespace Repositories.LearningResources
         public List<LearningResource> GetLearningResource();
         List<LearningResource> PaginationLearningResource(int page, int limit, string? txtSearch);
         bool CheckLearningResourceDuplicate(string type);
+        int GetTotalLearningResource(string? txtSearch);
         LearningResource GetLearningResource(int id);
+        bool CheckLearningResourceExsit(int id);
         string CreateLearningResource(LearningResource learningResource);
         string UpdateLearningResource(LearningResource learningResource);
         string DeleteLearningResource(LearningResource learningResource);

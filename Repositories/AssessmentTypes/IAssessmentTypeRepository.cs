@@ -13,6 +13,7 @@ namespace Repositories.AssessmentTypes
         AssessmentType GetAsssentTypeById(int id);
         public AssessmentType GetAssessmentTypeByName(string name);
         bool CheckAssmentTypeDuplicate(string name);
+        bool CheckAssmentTypeExsit(int id);
         string CreateAssessmentType(AssessmentType type);
         string UpdateAssessmentType(AssessmentType type);
         string DeleteAssessmentType(AssessmentType type);

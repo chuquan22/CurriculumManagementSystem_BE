@@ -36,6 +36,21 @@ namespace DataAccess.DAO
                 .ToList();
             return listClassSessionType;
         }
+
+        public int GetTotalClassSessionType(string? txtSearch)
+        {
+            IQueryable<ClassSessionType> query = _context.ClassSessionType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.class_session_type_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var total = query
+                .ToList().Count;
+            return total;
+        }
+
         public ClassSessionType GetClassSessionType(int id)
         {
             var classSessionTyoe = _context.ClassSessionType.Where(x => x.class_session_type_id == id).FirstOrDefault();
