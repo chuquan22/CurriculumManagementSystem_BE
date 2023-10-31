@@ -53,7 +53,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 rs = cloRepository.CreateCLOs(rs);
 
-                rs = repo.CreateCLOs(rs);
 
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }

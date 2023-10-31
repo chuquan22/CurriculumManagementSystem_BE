@@ -31,7 +31,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationLearningMethod(int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listLearningMethod = _repo.PaginationLearningMethod(page, limit, txtSearch);
+            var listLearningMethod = learningMethodRepository.PaginationLearningMethod(page, limit, txtSearch);
             if (listLearningMethod.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Learning Method!"));

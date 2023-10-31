@@ -36,7 +36,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationBatch(int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listBatch = _repo.PaginationBatch(page, limit, txtSearch);
+            var listBatch = batchRepository.PaginationBatch(page, limit, txtSearch);
             if (listBatch.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Batch!"));
@@ -54,13 +54,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateBatch")]
         public ActionResult CreateBatch([FromBody] BatchRequest batchRequest)
         {
-            if (_repo.CheckBatchDuplicate(batchRequest.batch_name))
+            if (batchRepository.CheckBatchDuplicate(batchRequest.batch_name))
             {
                 return BadRequest(new BaseResponse(true, "Batch is duplicate!"));
             }
 
             var batch = _mapper.Map<Batch>(batchRequest);
-            string createResult = _repo.CreateBatch(batch);
+            string createResult = batchRepository.CreateBatch(batch);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, $"Fail to create Batch {batch.batch_name}"));
@@ -72,13 +72,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteBatch/{id}")]
         public ActionResult DeleteBatch(int id)
         {
-            var batch = _repo.GetBatchById(id);
+            var batch = batchRepository.GetBatchById(id);
             if(batch == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Batch"));
             }
 
-            string deleteResult = _repo.DeleteBatch(batch);
+            string deleteResult = batchRepository.DeleteBatch(batch);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, $"Fail to remove Batch {batch.batch_name}"));

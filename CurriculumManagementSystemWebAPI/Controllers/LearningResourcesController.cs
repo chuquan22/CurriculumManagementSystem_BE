@@ -40,7 +40,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationLearningResource(int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listLearningResource = repo.PaginationLearningResource(page, limit, txtSearch);
+            var listLearningResource = learningResourceRepository.PaginationLearningResource(page, limit, txtSearch);
             if (listLearningResource.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Learning Resource!"));
@@ -51,14 +51,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateLearningResource")]
         public ActionResult CreateLearningResource([FromBody] LearningResourceRequest learningResourceRequest)
         {
-            if(repo.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if(learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
 
             var learningResource = _mapper.Map<LearningResource>(learningResourceRequest); 
 
-            string createResult = repo.CreateLearningResource(learningResource);
+            string createResult = learningResourceRepository.CreateLearningResource(learningResource);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, createResult));
@@ -70,20 +70,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("UpdateLearningResource/{id}")]
         public ActionResult UpdateLearningResource(int id,[FromBody] LearningResourceRequest learningResourceRequest)
         {
-            var learningResource = repo.GetLearningResource(id);
+            var learningResource = learningResourceRepository.GetLearningResource(id);
             if(learningResource == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
             }
 
-            if (repo.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if (learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
 
             _mapper.Map(learningResourceRequest, learningResource);
 
-            string updateResult = repo.UpdateLearningResource(learningResource);
+            string updateResult = learningResourceRepository.UpdateLearningResource(learningResource);
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, updateResult));
@@ -95,13 +95,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("RemoveLearningResource/{id}")]
         public ActionResult RemoveLearningResource(int id)
         {
-            var learningResource = repo.GetLearningResource(id);
+            var learningResource = learningResourceRepository.GetLearningResource(id);
             if (learningResource == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
             }
 
-            string deleteResult = repo.DeleteLearningResource(learningResource);
+            string deleteResult = learningResourceRepository.DeleteLearningResource(learningResource);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
