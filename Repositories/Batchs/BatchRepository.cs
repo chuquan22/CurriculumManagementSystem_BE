@@ -17,6 +17,11 @@ namespace Repositories.Batchs
             return _batchDAO.CheckBatchDuplicate(batch_name);
         }
 
+        public bool CheckBatchExsit(int id)
+        {
+            return _batchDAO.CheckBatchExsit(id);
+        }
+
         public string CreateBatch(Batch batch)
         {
             return _batchDAO.CreateBatch(batch);
@@ -45,6 +50,11 @@ namespace Repositories.Batchs
         public int GetBatchIDByName(string batchName)
         {
             return _batchDAO.GetBatchIDByName(batchName);
+        }
+
+        public int GetTotalBatch(string? txtSearch)
+        {
+            return _batchDAO.GetTotalBatch(txtSearch);
         }
 
         public List<Batch> PaginationBatch(int page, int limit, string? txtSearch)

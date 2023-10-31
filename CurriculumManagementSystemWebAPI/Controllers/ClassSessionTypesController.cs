@@ -39,8 +39,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Class Session Type!"));
             }
+            var total = classSessionTypeRepository.GetTotalClassSessionType(txtSearch);
             var listAssessmentTypeResponse = _mapper.Map<List<ClassSessionTypeResponse>>(listClassSessionType);
-            return Ok(new BaseResponse(false, "List Class Session Type", listAssessmentTypeResponse));
+            return Ok(new BaseResponse(false, "List Class Session Type", new BaseListResponse(page, limit, total, listAssessmentTypeResponse)));
         }
 
 

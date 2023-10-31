@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.learning_resource_type.ToLower().Contains(txtSearch.ToLower()));
+                query = query.Where(x => x.learning_resource_type.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningResource = query
@@ -37,9 +37,28 @@ namespace DataAccess.DAO
             return listLearningResource;
         }
 
-        public bool CheckLearningResourceDuplicate(string type)
+        public int GetTotalLearningResource(string? txtSearch)
         {
-            return (_cmsDbContext.LearningResource?.Any(x => x.learning_resource_type.Equals(type))).GetValueOrDefault();
+            IQueryable<LearningResource> query = _cmsDbContext.LearningResource;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.learning_resource_type.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listLearningResource = query
+                .ToList();
+            return listLearningResource.Count;
+        }
+
+        public bool CheckLearningResourceDuplicate(int id, string type)
+        {
+            return (_cmsDbContext.LearningResource?.Any(x => x.learning_resource_type.Equals(type) && x.learning_resource_id != id)).GetValueOrDefault();
+        }
+
+        public bool CheckLearningResourceExsit(int id)
+        {
+            return (_cmsDbContext.Material?.Any(x => x.learning_resource_id == id)).GetValueOrDefault();
         }
 
         public LearningResource GetLearningResource(int id) 

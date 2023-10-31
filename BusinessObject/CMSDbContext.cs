@@ -164,7 +164,8 @@ namespace BusinessObject
 
                 new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 1, user_email = "chuquan2k1@gmail.com", user_password = "quan123", user_name = "QuanCQ", is_active = true },
                 new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_password = "quan123", user_name = "ThuNT", is_active = true },
-                new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_password = "quan123", user_name = "admin", is_active = true }
+                new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_password = "quan123", user_name = "admin", is_active = true },
+                new User { user_id = 4, full_name = "Lam", role_id = 3, user_email = "lam@gmail.com", user_password = "lam123", user_name = "lam", is_active = true }
 
                 );
 
@@ -216,8 +217,8 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
-               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing", learning_method_description = "" },
-               new LearningMethod { learning_method_id = 2, learning_method_name = "Balence", learning_method_description = "" }
+               new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing" },
+               new LearningMethod { learning_method_id = 2, learning_method_name = "Balence" }
                 );
 
             modelBuilder.Entity<LearningResource>().HasData(

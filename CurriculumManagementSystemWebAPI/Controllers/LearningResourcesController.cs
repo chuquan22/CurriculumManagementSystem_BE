@@ -45,13 +45,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Learning Resource!"));
             }
-            return Ok(new BaseResponse(false, "List Learning Resource", listLearningResource));
+            var total = learningResourceRepository.GetTotalLearningResource(txtSearch);
+            return Ok(new BaseResponse(false, "List Learning Resource", new BaseListResponse(page, limit, total, listLearningResource)));
         }
 
         [HttpPost("CreateLearningResource")]
         public ActionResult CreateLearningResource([FromBody] LearningResourceRequest learningResourceRequest)
         {
-            if(learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if(learningResourceRepository.CheckLearningResourceDuplicate(0, learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
@@ -76,7 +77,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
             }
 
-            if (learningResourceRepository.CheckLearningResourceDuplicate(learningResourceRequest.learning_resource_type))
+            if (learningResourceRepository.CheckLearningResourceDuplicate(id, learningResourceRequest.learning_resource_type))
             {
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
@@ -99,6 +100,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (learningResource == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Learning Resource!"));
+            }
+
+            if (learningResourceRepository.CheckLearningResourceExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Learning Resource Used by Material. Can't Delete!"));
             }
 
             string deleteResult = learningResourceRepository.DeleteLearningResource(learningResource);

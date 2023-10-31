@@ -28,7 +28,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.assessment_method_component.ToLower().Contains(txtSearch.ToLower()));
+                query = query.Where(x => x.assessment_method_component.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listAssessmentMethod = query
@@ -36,6 +36,20 @@ namespace DataAccess.DAO
                 .Take(limit)
                 .ToList();
             return listAssessmentMethod;
+        }
+
+        public int GetTotalAssessmentMethod(string? txtSearch)
+        {
+            IQueryable<AssessmentMethod> query = _context.AssessmentMethod
+                .Include(x => x.AssessmentType);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.assessment_method_component.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+            var total = query
+                .ToList().Count;
+            return total;
         }
 
         public AssessmentMethod GetAsssentMethodByName(string name, int id)
@@ -59,12 +73,22 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public bool CheckAssmentMethodDuplicate(string name)
+        public bool CheckAssmentMethodDuplicate(int id,string name)
         {
-            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component == name)).GetValueOrDefault();
+            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.Equals(name) && x.assessment_method_id != id)).GetValueOrDefault();
         }
 
+        public bool CheckAssmentMethodExsit(int id)
+        {
+            var isExsitInSubject = _context.Subject.Where(x => x.assessment_method_id == id).FirstOrDefault();
+            var isExsitInGradingStructure = _context.GradingStruture.Where(x => x.assessment_method_id == id).FirstOrDefault();
+            if(isExsitInSubject == null &&  isExsitInGradingStructure == null)
+            {
+                return false;
+            }
+            return true;
 
+        }
 
         public string CreateAssessmentMethod(AssessmentMethod method)
         {

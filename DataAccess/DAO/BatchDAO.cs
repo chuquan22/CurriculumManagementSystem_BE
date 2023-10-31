@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower()));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listBatch = query
@@ -35,6 +35,20 @@ namespace DataAccess.DAO
                 .Take(limit)
                 .ToList();
             return listBatch;
+        }
+
+        public int GetTotalBatch(string? txtSearch)
+        {
+            IQueryable<Batch> query = _context.Batch;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listBatch = query
+                .ToList();
+            return listBatch.Count;
         }
 
         public int GetBatchIDByName(string batchName)
@@ -59,6 +73,17 @@ namespace DataAccess.DAO
         public bool CheckBatchDuplicate(string batch_name)
         {
             return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
+        }
+
+        public bool CheckBatchExsit(int id)
+        {
+            var exsitInCurri = _context.Curriculum.FirstOrDefault(x => x.batch_id == id);
+            var exsitInSemesterBatch = _context.SemesterBatch.FirstOrDefault(x => x.batch_id == id);
+            if(exsitInCurri == null && exsitInSemesterBatch == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public List<Batch> GetBatchBySpe(int speId)

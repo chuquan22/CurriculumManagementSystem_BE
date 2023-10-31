@@ -12,9 +12,14 @@ namespace Repositories.AssessmentMethods
     {
         private readonly AssessmentMethodDAO assessmentMethodDAO = new AssessmentMethodDAO();
 
-        public bool CheckAssmentMethodDuplicate(string assmentMethod)
+        public bool CheckAssmentMethodDuplicate(int id, string assmentMethod)
         {
-            return assessmentMethodDAO.CheckAssmentMethodDuplicate(assmentMethod);
+            return assessmentMethodDAO.CheckAssmentMethodDuplicate(id,assmentMethod);
+        }
+
+        public bool CheckAssmentMethodExsit(int id)
+        {
+            return assessmentMethodDAO.CheckAssmentMethodExsit(id);
         }
 
         public string CreateAssessmentMethod(AssessmentMethod method)
@@ -43,6 +48,11 @@ namespace Repositories.AssessmentMethods
         public AssessmentMethod GetAsssentMethodById(int id)
         {
             return assessmentMethodDAO.GetAsssentMethodById(id);
+        }
+
+        public int GetTotalAssessmentMethod(string? txtSearch)
+        {
+            return assessmentMethodDAO.GetTotalAssessmentMethod(txtSearch);
         }
 
         public List<AssessmentMethod> PaginationAssessmentMethod(int page, int limit, string? txtSearch)

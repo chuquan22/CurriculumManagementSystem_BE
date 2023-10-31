@@ -12,9 +12,14 @@ namespace Repositories.LearningResources
     {
         public LearningResourceDAO db = new LearningResourceDAO();
 
-        public bool CheckLearningResourceDuplicate(string type)
+        public bool CheckLearningResourceDuplicate(int id, string type)
         {
-            return db.CheckLearningResourceDuplicate(type);
+            return db.CheckLearningResourceDuplicate(id, type);
+        }
+
+        public bool CheckLearningResourceExsit(int id)
+        {
+            return db.CheckLearningResourceExsit(id);
         }
 
         public string CreateLearningResource(LearningResource learningResource)
@@ -35,6 +40,11 @@ namespace Repositories.LearningResources
         public LearningResource GetLearningResource(int id)
         {
             return db.GetLearningResource(id);
+        }
+
+        public int GetTotalLearningResource(string? txtSearch)
+        {
+            return db.GetTotalLearningResource(txtSearch);
         }
 
         public List<LearningResource> PaginationLearningResource(int page, int limit, string? txtSearch)

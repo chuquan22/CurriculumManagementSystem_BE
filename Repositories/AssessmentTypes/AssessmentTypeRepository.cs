@@ -17,6 +17,11 @@ namespace Repositories.AssessmentTypes
             return db.CheckAssmentTypeDuplicate(name);
         }
 
+        public bool CheckAssmentTypeExsit(int id)
+        {
+            return db.CheckAssmentTypeExsit(id);
+        }
+
         public string CreateAssessmentType(AssessmentType type)
         {
             return db.CreateAssessmentType(type);

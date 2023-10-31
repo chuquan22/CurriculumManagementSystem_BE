@@ -41,7 +41,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Batch!"));
             }
-            return Ok(new BaseResponse(false, "List Batch", listBatch));
+            var total = batchRepository.GetTotalBatch(txtSearch);
+            return Ok(new BaseResponse(false, "List Batch", new BaseListResponse(page, limit, total, listBatch)));
         }
 
         [HttpGet("GetBatchBySpe/{speId}")]
@@ -49,6 +50,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var listBatch = batchRepository.GetBatchBySpe(speId);
             return Ok(new BaseResponse(false, "List Batch", listBatch));
+        }
+
+        [HttpGet("GetBatchById/{Id}")]
+        public ActionResult GetBatchById(int Id)
+        {
+            var Batch = batchRepository.GetBatchById(Id);
+            return Ok(new BaseResponse(false, "Batch", Batch));
         }
 
         [HttpPost("CreateBatch")]
@@ -77,6 +85,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Not Found Batch"));
             }
+
+            if (batchRepository.CheckBatchExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Batch is Used. Can't Delete"));
+            }
+
 
             string deleteResult = batchRepository.DeleteBatch(batch);
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
