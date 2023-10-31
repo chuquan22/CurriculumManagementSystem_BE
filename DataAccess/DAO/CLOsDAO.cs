@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.Models.DTO.response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,9 +52,18 @@ namespace DataAccess.DAO
         }
         public CLO CreateCLOs(CLO clo)
         {
+            var rs = _cmsDbContext.CLO.Where(c => c.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()) && c.syllabus_id == clo.syllabus_id).FirstOrDefault();
+            if (rs == null)
+            {
+
             _cmsDbContext.CLO.Add(clo);
             _cmsDbContext.SaveChanges();
             return clo;
+            }
+            else
+            {
+                throw new Exception("CLO name already exist in system.");
+            }
         }
 
         public CLO UpdateCOLs(CLO clo)

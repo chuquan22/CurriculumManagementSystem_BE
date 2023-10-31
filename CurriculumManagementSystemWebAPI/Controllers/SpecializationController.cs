@@ -14,13 +14,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private IConfiguration config;
         private readonly IMapper _mapper;
-        private readonly ISpecializationRepository repo;
+        private readonly ISpecializationRepository specializationRepository;
 
         public SpecializationController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
             _mapper = mapper;
-            repo = new SpecializationRepository();
+            specializationRepository = new SpecializationRepository();
         }
         
         [HttpGet]
@@ -29,7 +29,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Specialization> rs = new List<Specialization>();
             try
             {
-                rs = repo.GetSpecialization();
+                rs = specializationRepository.GetSpecialization();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -45,8 +45,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Specialization> rs = new List<Specialization>();
             try
             {
-                int limit2 = repo.GetTotalSpecialization(txtSearch, major_id);
-                rs = repo.GetListSpecialization(page,limit,txtSearch,major_id);
+                int limit2 = specializationRepository.GetTotalSpecialization(txtSearch, major_id);
+                rs = specializationRepository.GetListSpecialization(page,limit,txtSearch,major_id);
                 var result = _mapper.Map<List<Specialization>>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", new BaseListResponse(page,limit2,rs)));
             }
@@ -64,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 
-                rs = repo.GetSpeById(id);
+                rs = specializationRepository.GetSpeById(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -80,10 +80,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);
-                bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
+                bool checkCodeExist = specializationRepository.IsCodeExist(rs.specialization_code);
                 if (checkCodeExist != true)
                 {
-                    rs = repo.CreateSpecialization(rs);
+                    rs = specializationRepository.CreateSpecialization(rs);
                     return Ok(new BaseResponse(false, "Create specialization successfully.", rs));
                 }
                 else
@@ -108,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                // bool checkCodeExist = repo.IsCodeExist(rs.specialization_code);
 
               
-                    rs = repo.UpdateSpecialization(rs);
+                    rs = specializationRepository.UpdateSpecialization(rs);
                     return Ok(new BaseResponse(false, "Sucessfully", rs));
 
             
@@ -130,7 +130,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
 
-                rs = repo.DeleteSpecialization(id);
+                rs = specializationRepository.DeleteSpecialization(id);
                 if(rs == null)
                 {
                     return BadRequest(new BaseResponse(true, "Can't Delete This Specialization!"));

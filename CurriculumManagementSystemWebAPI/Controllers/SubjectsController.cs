@@ -137,16 +137,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
-
-            var preRequisite = _mapper.Map<List<PreRequisite>>(subjectPreRequisitesRequest.PreRequisiteRequest);
-
-            foreach (PreRequisite prere in preRequisite)
+            if (subjectPreRequisitesRequest.PreRequisiteRequest.Count != 0)
             {
-                prere.subject_id = subject.subject_id;
-                string createPreResult = _preRequisiteRepository.CreatePreRequisite(prere);
-                if (!createPreResult.Equals(Result.createSuccessfull.ToString()))
+                var preRequisite = _mapper.Map<List<PreRequisite>>(subjectPreRequisitesRequest.PreRequisiteRequest);
+
+                foreach (PreRequisite prere in preRequisite)
                 {
-                    return BadRequest(new BaseResponse(true, createPreResult));
+                    prere.subject_id = subject.subject_id;
+                    string createPreResult = _preRequisiteRepository.CreatePreRequisite(prere);
+                    if (!createPreResult.Equals(Result.createSuccessfull.ToString()))
+                    {
+                        return BadRequest(new BaseResponse(true, createPreResult));
+                    }
                 }
             }
 
@@ -213,6 +215,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
+            if(CheckIdExist(id))
+            {
+                return BadRequest(new BaseResponse(true, "Subject used by Syllabus. Can't Delete!"));
+            }
+
             // Delete foreign key of subject
             var preRequisite = _preRequisiteRepository.GetPreRequisitesBySubject(id);
             if (preRequisite != null)
@@ -250,7 +257,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public bool CheckCodeExist(string code)
         {
             var subject = _context.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
-            if (subject == null) return false;
+            var subject2 = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.Subject.subject_code.Equals(code));
+            if (subject == null && subject2 == null) return false;
+            return true;
+        }
+
+        [NonAction]
+        public bool CheckSubjectExist(int subject_id)
+        {
+            var subject = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.subject_id == subject_id);
+            if (subject == null ) return false;
             return true;
         }
     }

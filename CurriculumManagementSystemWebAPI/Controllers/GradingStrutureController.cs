@@ -2,7 +2,6 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.GradingCLOs;
 using Repositories.GradingStruture;
@@ -14,23 +13,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class GradingStrutureController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IGradingStrutureRepository repo;
-        private IGradingCLOsRepository repo2;
+        private IGradingStrutureRepository gradingStrutureRepository;
+        private IGradingCLOsRepository gradingCLOsRepository;
 
 
         public GradingStrutureController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new GradingStrutureRepository();
-            repo2 = new GradingCLOsRepository();
+            gradingStrutureRepository = new GradingStrutureRepository();
+            gradingCLOsRepository = new GradingCLOsRepository();
 
         }
-        [HttpGet]
+        [HttpGet("syllabus_id")]
         public ActionResult GetGradingStruture(int syllabus_id)
         {
             try
             {
-                List<GradingStruture> rs = repo.GetGradingStruture(syllabus_id);
+                List<GradingStruture> rs = gradingStrutureRepository.GetGradingStruture(syllabus_id);
                 var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", response));
             }
@@ -47,7 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             GradingStruture rs = new GradingStruture();
             try
             {
-                rs = repo.GetGradingStrutureById(id);
+                rs = gradingStrutureRepository.GetGradingStrutureById(id);
                 var response = _mapper.Map<GradingStrutureResponse>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", response));
             }
@@ -78,7 +77,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     rs.number_of_questions = "";
                 }
-                rs = repo.CreateGradingStruture(rs);
+                rs = gradingStrutureRepository.CreateGradingStruture(rs);
                 if(rs != null)
                 {
                     foreach(var g in gra.gradingCLORequest.CLO_id)
@@ -86,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         GradingCLO rs2 = new GradingCLO();
                         rs2.CLO_id = g;
                         rs2.grading_id = rs.grading_id;
-                        var rs3 = repo2.CreateGradingCLO(rs2);
+                        var rs3 = gradingCLOsRepository.CreateGradingCLO(rs2);
                     }                 
                 }              
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
@@ -103,7 +102,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
             try
             {
-                string ressult = repo.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
+                string ressult = gradingStrutureRepository.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
                 return Ok(new BaseResponse(false, "Sucessfully", ressult));
             }
             catch (Exception)
@@ -114,13 +113,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteStruture(int id)
         {
             GradingStruture rs = new GradingStruture();
             try
             {
-                rs = repo.DeleteGradingStruture(id);
+                rs = gradingStrutureRepository.DeleteGradingStruture(id);
                 return Ok(new BaseResponse(false, "Sucessfully", true));
             }
             catch (Exception)

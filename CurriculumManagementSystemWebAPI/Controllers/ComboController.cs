@@ -13,20 +13,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class ComboController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IComboRepository repo;
+        private IComboRepository comboRepository;
 
         public ComboController(IMapper mapper)
         {
             _mapper = mapper;
-            repo = new ComboRepository();
+            comboRepository = new ComboRepository();
         }
-        [HttpGet]
+        [HttpGet("{specialization_id}")]
         public ActionResult GetListCombo(int specialization_id)
         {
             List<ComboResponse> rs = new List<ComboResponse>();
             try
             {
-                var result = repo.GetListCombo(specialization_id);
+                var result = comboRepository.GetListCombo(specialization_id);
                 rs = _mapper.Map<List<ComboResponse>>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
@@ -43,7 +43,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             ComboResponse rs = new ComboResponse();
             try
             {
-                var result = repo.FindComboById(id);
+                var result = comboRepository.FindComboById(id);
                 rs = _mapper.Map<ComboResponse>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
@@ -61,7 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Combo> rs = new List<Combo>();
             try
             {
-                rs = repo.GetListComboByCurriId(curri_Id);
+                rs = comboRepository.GetListComboByCurriId(curri_Id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -79,10 +79,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Combo rs = _mapper.Map<Combo>(cb);
-                bool checkCode = repo.IsCodeExist(rs.combo_code);
+                bool checkCode = comboRepository.IsCodeExist(rs.combo_code);
                 if (checkCode == false)
                 {
-                    rs = repo.CreateCombo(rs);
+                    rs = comboRepository.CreateCombo(rs);
                     return Ok(new BaseResponse(false, "Sucessfully", rs));
                 }
                 else
@@ -105,7 +105,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
               
-                bool rs = repo.DisableCombo(id);
+                bool rs = comboRepository.DisableCombo(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -120,9 +120,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                var combo = repo.FindComboById(cb.combo_id);
+                var combo = comboRepository.FindComboById(cb.combo_id);
                 _mapper.Map(cb, combo);
-                combo = repo.UpdateCombo(combo);
+                combo = comboRepository.UpdateCombo(combo);
                 return Ok(new BaseResponse(false, "Sucessfully", combo));
             }
             catch (Exception)
@@ -138,7 +138,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string rs = null;
             try
             {
-                rs = repo.DeleteCombo(id);
+                rs = comboRepository.DeleteCombo(id);
                 if(rs != "Delete sucessfully.")
                 {
                     return BadRequest(new BaseResponse(true, "Can't Delete Combo Used"));

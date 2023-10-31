@@ -54,61 +54,13 @@ namespace DataAccess.Models.DTO
              .ReverseMap();
             CreateMap<SemesterBatch, SemesterBatchRequest>()
                 .ReverseMap();
-
-
-            //Major
-
-            CreateMap<MajorRequest, BusinessObject.Major>()
-                .ForMember(dest => dest.major_code, opt => opt.MapFrom(src => src.major_code.Trim().ToUpper()))
-                .ForMember(dest => dest.major_name, opt => opt.MapFrom(src => src.major_name.Trim()))
-                .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
-                .ReverseMap();
-
-            CreateMap<MajorEditRequest, BusinessObject.Major>()
-                .ForMember(dest => dest.major_name, opt => opt.MapFrom(src => src.major_name.Trim()))
-                .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
-                .ReverseMap();
-            CreateMap<Material, MaterialExportExcel>().ReverseMap();
-            //SemesterBatchResponse
+ //SemesterBatchResponse
             CreateMap<SemesterPlan, SemesterPlanResponse>()
                .ForMember(dest => dest.spe, opt => opt.MapFrom(src => src.Curriculum.Specialization.specialization_english_name))
                 .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
                  .ForMember(dest => dest.semester, opt => opt.MapFrom(src => src.Semester.semester_name))
                  .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Semester.SemesterBatches))
-
-
                 .ReverseMap();
-
-
-            //Excel Syllabus
-            CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
-            CreateMap<Syllabus, SyllabusRequest>().ReverseMap();
-            CreateMap<GradingStruture, GradingStrutureExportExcel>()
-            .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
-            .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
-
-                .ReverseMap();
-
-            //
-            CreateMap<GradingStruture, GradingStrutureExcel>()
-     .ForMember(dest => dest.type_of_questions, opt => opt.MapFrom(src => src.type_of_questions))
-     .ForMember(dest => dest.number_of_questions, opt => opt.MapFrom(src => src.number_of_questions))
-     .ForMember(dest => dest.SessionNo, opt => opt.MapFrom(src => src.session_no))
-     .ForMember(dest => dest.Reference, opt => opt.MapFrom(src => src.references))
-     .ForMember(dest => dest.weight, opt => opt.MapFrom(src => src.grading_weight))
-     .ForMember(dest => dest.Part, opt => opt.MapFrom(src => src.grading_part))
-     .ForMember(dest => dest.minimun_value_to_meet, opt => opt.MapFrom(src => src.minimum_value_to_meet_completion))
-     .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.grading_duration))
-     .ForMember(dest => dest.scope, opt => opt.MapFrom(src => src.scope_knowledge))
-     .ForMember(dest => dest.how, opt => opt.MapFrom(src => src.how_granding_structure))
-     .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_method_id))
-     .ReverseMap();
-
-            //Syllabus
-            CreateMap<Syllabus, SyllabusResponse>()
-                .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.Subject.subject_code))
-                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.Subject.subject_name))
-                .ForMember(dest => dest.approved_date, opt => opt.MapFrom(src => src.approved_date))
 
                 //Excel Syllabus
                 CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
@@ -147,7 +99,6 @@ namespace DataAccess.Models.DTO
                   .ForMember(dest => dest.decision_No, opt => opt.MapFrom(src => src.decision_No))
                   .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
                   .ForMember(dest => dest.learning_teaching_method, opt => opt.MapFrom(src => src.Subject.LearningMethod.learning_method_name))
-
                   .ForMember(dest => dest.time_allocation, opt => opt.MapFrom(src => src.time_allocation))
 
                   .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))

@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.learning_resource_type.Contains(txtSearch));
+                query = query.Where(x => x.learning_resource_type.ToLower().Contains(txtSearch.ToLower()));
             }
 
             var listLearningResource = query

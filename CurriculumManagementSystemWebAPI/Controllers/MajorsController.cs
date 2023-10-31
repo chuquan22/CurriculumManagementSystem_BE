@@ -12,12 +12,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class MajorsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IMajorRepository repo;
+        private IMajorRepository majorRepository;
 
         public MajorsController( IMapper mapper)
         {
             _mapper = mapper;
-            repo = new MajorRepository();
+            majorRepository = new MajorRepository();
         }
         [HttpGet]
         public ActionResult GetAllMajor()
@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             List<Major> rs = new List<Major>();
             try
             {
-                rs = repo.GetAllMajor();
+                rs = majorRepository.GetAllMajor();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -42,9 +42,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Major rs = _mapper.Map<Major>(major);
-                Major checkCode = repo.CheckMajorbyMajorCode(rs.major_code);
-                Major checkName = repo.CheckMajorbyMajorName(rs.major_name);
-                Major checkEngName = repo.CheckMajorbyMajorEnglishName(rs.major_english_name);
+                Major checkCode = majorRepository.CheckMajorbyMajorCode(rs.major_code);
+                Major checkName = majorRepository.CheckMajorbyMajorName(rs.major_name);
+                Major checkEngName = majorRepository.CheckMajorbyMajorEnglishName(rs.major_english_name);
                 if(checkCode != null)
                 {
                     return BadRequest(new BaseResponse(true, "Major Code Duplicate!.", null));
@@ -57,7 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 else
                 {
-                    rs = repo.AddMajor(rs);
+                    rs = majorRepository.AddMajor(rs);
                     return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", rs));
                 }
             }
@@ -76,8 +76,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Major rs = _mapper.Map<Major>(major);
-                Major checkName = repo.CheckMajorbyMajorName(rs.major_name);
-                Major checkEngName = repo.CheckMajorbyMajorEnglishName(rs.major_english_name);
+                Major checkName = majorRepository.CheckMajorbyMajorName(rs.major_name);
+                Major checkEngName = majorRepository.CheckMajorbyMajorEnglishName(rs.major_english_name);
                 if (checkName != null)
                 {
                     return BadRequest(new BaseResponse(true, "Major Name Duplicate.", null));
@@ -88,7 +88,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 else
                 {
-                    rs = repo.EditMajor(rs);
+                    rs = majorRepository.EditMajor(rs);
                     return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
                 }
             }
@@ -107,12 +107,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Major rs = new Major();
             try
             {
-                var major = repo.FindMajorById(id);
+                var major = majorRepository.FindMajorById(id);
                 if(major != null)
                 {
                     Ok(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
                 }
-                repo.DeleteMajor(id);
+                majorRepository.DeleteMajor(id);
                 return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
             }
             catch (Exception ex)

@@ -18,18 +18,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class BatchsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private IBatchRepository _repo;
+        private IBatchRepository batchRepository;
 
         public BatchsController(IMapper mapper)
         {
             _mapper = mapper;
-            _repo = new BatchRepository();
+            batchRepository = new BatchRepository();
         }
         //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
         {
-            var listBatch = _repo.GetAllBatch();
+            var listBatch = batchRepository.GetAllBatch();
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
@@ -47,7 +47,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
         {
-            var listBatch = _repo.GetBatchBySpe(speId);
+            var listBatch = batchRepository.GetBatchBySpe(speId);
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
