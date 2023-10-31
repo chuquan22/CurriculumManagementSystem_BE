@@ -16,7 +16,7 @@ namespace Repositories.AssessmentMethods
         string CreateAssessmentMethod(AssessmentMethod method);
         string UpdateAssessmentMethod(AssessmentMethod method);
         string DeleteAssessmentMethod(AssessmentMethod method);
-        bool CheckAssmentMethodDuplicate(string assmentMethod);
+        bool CheckAssmentMethodDuplicate(int id, string name);
         bool CheckAssmentMethodExsit(int id);
         AssessmentMethod GetAsssentMethodById(int id);
 

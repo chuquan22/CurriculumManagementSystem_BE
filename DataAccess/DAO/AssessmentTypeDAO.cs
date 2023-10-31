@@ -21,6 +21,36 @@ namespace DataAccess.DAO
             return listAssessmentType;
         }
 
+        public List<AssessmentType> PaginationAssessmentType(int page, int limit, string? txtSearch)
+        {
+            IQueryable<AssessmentType> query = _context.AssessmentType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.assessment_type_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listAssessmentType = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+            return listAssessmentType;
+        }
+
+        public int GetTotalAssessmentType(string? txtSearch)
+        {
+            IQueryable<AssessmentType> query = _context.AssessmentType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.assessment_type_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listAssessmentType = query
+                .ToList();
+            return listAssessmentType.Count;
+        }
+
         public AssessmentType GetAssessmentTypeByName(string name)
         {
             var ass = _context.AssessmentType.Where(x => x.assessment_type_name.Equals(name.Trim())).FirstOrDefault();

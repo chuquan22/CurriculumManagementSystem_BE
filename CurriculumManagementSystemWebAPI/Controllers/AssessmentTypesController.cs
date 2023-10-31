@@ -30,6 +30,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
         }
 
+        [HttpGet("GetAssessmentTypeById/{id}")]
+        public ActionResult GetAssessmentType(int id)
+        {
+            var assessmentType = assessmentTyoeRepository.GetAsssentTypeById(id);
+            var assessmentTypeResponse = _mapper.Map<AssessmentTypeResponse>(assessmentType);
+            return Ok(new BaseResponse(false, "Sucessfully", assessmentTypeResponse));
+        }
+
         [HttpPost("CreateAssessmentType")]
         public ActionResult CreateAssessmentType([FromBody] AssessmentTypeRequest assessmentTypeRequest)
         {
@@ -47,6 +55,31 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             return Ok(new BaseResponse(false, "Create Success!", assessmentTypeRequest));
+        }
+
+        [HttpPut("UpdateAssessmentType/{id}")]
+        public ActionResult UpdateAssessmentType(int id, [FromBody] AssessmentTypeRequest assessmentTypeRequest)
+        {
+            var assessmentType = assessmentTyoeRepository.GetAsssentTypeById(id);
+            if (assessmentType == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Assessment Type!"));
+            }
+
+            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(assessmentTypeRequest.assessment_type_name))
+            {
+                return BadRequest(new BaseResponse(true, "Assessment Type is duplicate!"));
+            }
+
+            _mapper.Map(assessmentTypeRequest, assessmentType);
+
+            string updateResult = assessmentTyoeRepository.UpdateAssessmentType(assessmentType);
+            if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
+            }
+
+            return Ok(new BaseResponse(false, "Create Success!", assessmentType));
         }
 
         [HttpDelete("DeleteAssessmentType/{id}")]

@@ -12,9 +12,9 @@ namespace Repositories.AssessmentMethods
     {
         private readonly AssessmentMethodDAO assessmentMethodDAO = new AssessmentMethodDAO();
 
-        public bool CheckAssmentMethodDuplicate(string assmentMethod)
+        public bool CheckAssmentMethodDuplicate(int id, string assmentMethod)
         {
-            return assessmentMethodDAO.CheckAssmentMethodDuplicate(assmentMethod);
+            return assessmentMethodDAO.CheckAssmentMethodDuplicate(id,assmentMethod);
         }
 
         public bool CheckAssmentMethodExsit(int id)

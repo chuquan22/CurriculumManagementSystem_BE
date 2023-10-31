@@ -31,6 +31,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Assessment Method", listAssessmentMethodResponse));
         }
 
+        [HttpGet("GetAssessmentMethodById/{id}")]
+        public ActionResult GetAssessmentMethod(int id)
+        {
+            var assessmentMethod = assessmentMethodRepository.GetAsssentMethodById(id);
+            var assessmentMethodResponse = _mapper.Map<AssessmentMethodDTOResponse>(assessmentMethod);
+            return Ok(new BaseResponse(false, "Assessment Method", assessmentMethodResponse));
+        }
+
 
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationAssessmentMethod(int page, int limit, [FromQuery] string? txtSearch)
@@ -48,7 +56,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateAssessmentMethod")]
         public ActionResult CreateAssessmentMethod([FromBody] AssessmentMethodRequest assessmentMethodRequest)
         {
-            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
+            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(0,assessmentMethodRequest.assessment_method_component))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Method Duplicate!"));
             }
@@ -76,7 +84,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
 
-            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(assessmentMethodRequest.assessment_method_component))
+            if (assessmentMethodRepository.CheckAssmentMethodDuplicate(id, assessmentMethodRequest.assessment_method_component))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Method Duplicate!"));
             }
@@ -113,7 +121,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
             string deleteResult = assessmentMethodRepository.DeleteAssessmentMethod(assessmentMethod);
-
 
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
