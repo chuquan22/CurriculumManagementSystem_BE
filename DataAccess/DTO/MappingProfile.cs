@@ -54,6 +54,15 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
                 .ReverseMap();
             CreateMap<Material, MaterialExportExcel>().ReverseMap();
+            //SemesterBatchResponse
+            CreateMap<SemesterPlan, SemesterPlanResponse>()
+               .ForMember(dest => dest.spe, opt => opt.MapFrom(src => src.Curriculum.Specialization.specialization_english_name))
+                .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
+                 .ForMember(dest => dest.semester, opt => opt.MapFrom(src => src.Semester.semester_name))
+                 .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Semester.SemesterBatches))
+
+
+                .ReverseMap();
 
 
             //Excel Syllabus
