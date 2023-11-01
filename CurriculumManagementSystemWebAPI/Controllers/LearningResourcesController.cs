@@ -21,6 +21,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             learningResourceRepository = new LearningResourceRepository();
         }
+
         [HttpGet]
         public ActionResult GetLearningResource()
         {
@@ -35,6 +36,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, "error"));
             }
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetLearningResourceById(int id)
+        {
+            var learningResource = learningResourceRepository.GetLearningResource(id);
+            if(learningResource == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Learning Resource!"));
+            }
+            return Ok(new BaseResponse(false, "Success", learningResource));
         }
 
         [HttpGet("Pagination/{page}/{limit}")]

@@ -40,6 +40,8 @@ namespace DataAccess.DAO
             }
         }
 
+      
+
         public PreRequisite GetPreRequisite(int subjectId, int preSubjectId)
         {
             var preRequisite = _cmsDbContext.PreRequisite

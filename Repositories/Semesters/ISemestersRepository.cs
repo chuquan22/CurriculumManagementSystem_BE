@@ -10,5 +10,13 @@ namespace Repositories.Semesters
     public interface ISemestersRepository
     {
         public List<Semester> GetSemesters();
+        List<Semester> PaginationSemester(int page, int limit, string? txtSearch);
+        int GetTotalSemester(string? txtSearch);
+        Semester GetSemester(int id);
+        bool CheckSemesterDuplicate(int id, string name, int schoolYear);
+        bool CheckSemesterExsit(int id);
+        string CreateSemester(Semester semester);
+        string UpdateSemester(Semester semester);
+        string DeleteSemester(Semester semester);
     }
 }

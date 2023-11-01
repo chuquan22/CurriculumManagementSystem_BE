@@ -11,6 +11,17 @@ namespace Repositories.PreRequisiteTypes
     public class PreRequisiteRepository : IPreRequisiteTypeRepository
     {
         public readonly PreRequisiteTypeDAO _preRequisiteTypeDAO = new PreRequisiteTypeDAO();
+
+        public bool CheckPreRequisiteTypeDuplicate(int id, string name)
+        {
+            return _preRequisiteTypeDAO.CheckPreRequisiteTypeDuplicate(id, name);
+        }
+
+        public bool CheckPreRequisiteTypeExsit(int id)
+        {
+            return _preRequisiteTypeDAO.CheckPreRequisiteTypeExsit(id);
+        }
+
         public string CreatePreRequisiteType(PreRequisiteType preRequisiteType)
         {
             return _preRequisiteTypeDAO.CreatePreRequisiteType(preRequisiteType);
@@ -29,6 +40,16 @@ namespace Repositories.PreRequisiteTypes
         public PreRequisiteType GetPreRequisiteType(int id)
         {
             return _preRequisiteTypeDAO.GetPreRequisiteType(id);
+        }
+
+        public int GetTotalPreRequisite(string? txtSearch)
+        {
+            return _preRequisiteTypeDAO.GetTotalPreRequisite(txtSearch);
+        }
+
+        public List<PreRequisiteType> PaginationPreRequisiteType(int page, int limit, string? txtSearch)
+        {
+            return _preRequisiteTypeDAO.PaginationPreRequisiteType(page, limit, txtSearch);
         }
 
         public string UpdatePreRequisiteType(PreRequisiteType preRequisiteType)

@@ -19,6 +19,46 @@ namespace DataAccess.DAO
             return listPreRequisiteType;
         }
 
+        public List<PreRequisiteType> PaginationPreRequisiteType(int page, int limit, string? txtSearch)
+        {
+            IQueryable<PreRequisiteType> query = _cmsDbContext.PreRequisiteType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.pre_requisite_type_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listPreRequisiteType = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+            return listPreRequisiteType;
+        }
+
+        public int GetTotalPreRequisite(string? txtSearch)
+        {
+            IQueryable<PreRequisiteType> query = _cmsDbContext.PreRequisiteType;
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.pre_requisite_type_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listPreRequisiteType = query
+                .ToList();
+            return listPreRequisiteType.Count;
+        }
+
+        public bool CheckPreRequisiteTypeDuplicate(int id,string name)
+        {
+            return (_cmsDbContext.PreRequisiteType?.Any(x => x.pre_requisite_type_name.Equals(name) && x.pre_requisite_type_id != id)).GetValueOrDefault();
+        }
+
+        public bool CheckPreRequisiteTypeExsit(int id)
+        {
+            return (_cmsDbContext.PreRequisite?.Any(x => x.pre_requisite_type_id == id)).GetValueOrDefault();
+        }
+
         public PreRequisiteType GetPreRequisiteType(int id)
         {
             var preRequisiteType = _cmsDbContext.PreRequisiteType.Find(id);

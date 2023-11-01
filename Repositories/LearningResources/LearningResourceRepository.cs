@@ -54,7 +54,7 @@ namespace Repositories.LearningResources
 
         public string UpdateLearningResource(LearningResource learningResource)
         {
-            return db.DeleteLearningResource(learningResource);
+            return db.UpdateLearningResource(learningResource);
         }
     }
 }
