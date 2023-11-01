@@ -21,5 +21,10 @@ namespace Repositories.SemesterPlans
         {
             return db.GetAllSemesterPlan(semesterId, degree_level);
         }
+
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level)
+        {
+            return db.GetSemesterPlanDetails(semesterId, degree_level);
+        }
     }
 }

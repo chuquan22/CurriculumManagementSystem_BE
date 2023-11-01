@@ -19,89 +19,129 @@ namespace DataAccess.DAO
             var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).ToList();
             return listSemesterPlan;
         }
-        //public List<SemesterPlan> GetAllSemesterPlan(int semester_id, string degree_level)
-        //{
-        //    var listSemesterPlan = _cmsDbContext.SemesterPlan
-        //        .Include(x => x.Semester)
-        //        .Include(x => x.Curriculum)
-        //        .Include(x => x.Curriculum.Specialization)
-        //        .Include(x => x.Semester.Batch.SemesterBatches)
-        //        .Where(s => s.semester_id == semester_id && s.degree_level.EndsWith(degree_level))
-        //        .ToList();
-
-
-
-        //    return listSemesterPlan;
-        //}
         public List<SemesterPlanResponse> GetAllSemesterPlan(int semester_id, string degree_level)
         {
             var listSemesterPlan = _cmsDbContext.SemesterPlan
-    .Include(x => x.Curriculum)
-    .Include(x => x.Curriculum.Specialization)
-    .Include(x => x.Semester.SemesterBatches) // Include SemesterBatches
-    .Where(s => s.semester_id == semester_id && s.degree_level.Equals(degree_level))
-    .ToList();
+                .Include(x => x.Curriculum)
+                .Include(x => x.Curriculum.Specialization)
+                .Include(x => x.Semester.SemesterBatches)
+                .Where(s => s.semester_id == semester_id && s.degree_level.Equals(degree_level))
+                .ToList();
 
             var responseList = new List<SemesterPlanResponse>();
 
-            foreach (var semesterPlan in listSemesterPlan)
+            var uniqueCurriculumIds = listSemesterPlan.Select(sp => sp.Curriculum.specialization_id).Distinct().ToList();
+
+            foreach (var curriculumId in uniqueCurriculumIds)
             {
-                var spe = semesterPlan.Curriculum.Specialization.specialization_english_name;
-                var totalSemester = semesterPlan.Curriculum.total_semester;
-                var semester = semesterPlan.Semester.semester_name;
+                var semesterPlanForCurriculum = listSemesterPlan.FirstOrDefault(sp => sp.Curriculum.specialization_id == curriculumId);
 
-                // Get the list of SemesterBatch with Batch data
-                var semesterBatches = _cmsDbContext.SemesterBatch
-                    .Include(sb => sb.Batch) // Include Batch data
-                    .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level))
-                    .ToList();
-
-                // Convert the list of SemesterBatch to SemesterBatchResponse
-                var batchResponses = semesterBatches.Select(sb => new SemesterBatchResponse
+                if (semesterPlanForCurriculum != null)
                 {
-                    semester_batch_id = sb.semester_batch_id,
-                    semester_id = sb.semester_id,
-                    batch_id = sb.batch_id,
-                    batch_name = sb.Batch.batch_name, // Access Batch data
-                    term_no = sb.term_no,
-                    degree_level = sb.degree_level
-                }).ToList();
+                    var spe = semesterPlanForCurriculum.Curriculum.Specialization.specialization_english_name;
+                    var totalSemester = semesterPlanForCurriculum.Curriculum.total_semester;
+                    var semester = semesterPlanForCurriculum.Semester.semester_name;
 
-                var semesterPlanResponse = new SemesterPlanResponse
-                {
-                    spe = spe,
-                    totalSemester = totalSemester,
-                    semester = semester,
-                    batch = batchResponses
-                };
+                    var semesterBatches = _cmsDbContext.SemesterBatch
+                        .Include(sb => sb.Batch)
+                        .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level))
+                        .ToList();
 
-                responseList.Add(semesterPlanResponse);
+                    var batchResponses = semesterBatches.Select(sb => new SemesterBatchResponse
+                    {
+                        semester_batch_id = sb.semester_batch_id,
+                        semester_id = sb.semester_id,
+                        batch_id = sb.batch_id,
+                        batch_name = sb.Batch.batch_name,
+                        term_no = sb.term_no,
+                        degree_level = sb.degree_level
+                    }).ToList();
+
+                    var semesterPlanResponse = new SemesterPlanResponse
+                    {
+                        spe = spe,
+                        totalSemester = totalSemester,
+                        semester = semester,
+                        batch = batchResponses
+                    };
+
+                    responseList.Add(semesterPlanResponse);
+                }
             }
 
             return responseList;
-
-            //public List<SemesterBatch> GetAllSemesterPlan(int semester_id, string degree_level)
-            //{
-            //    // Lấy SemesterPlan dựa trên semester_id và degree_level
-            //    var semesterPlan = _cmsDbContext.SemesterPlan
-            //        .Include(sp => sp.Curriculum)
-            //            .ThenInclude(c => c.Specialization)
-            //        .Single(sp => sp.semester_id == semester_id && sp.degree_level == degree_level);
-
-            //    // Lấy Specialization từ Curriculum
-            //    var specialization = semesterPlan.Curriculum.Specialization;
-
-            //    // Lấy danh sách các SemesterBatch dựa trên điều kiện
-            //    var relatedSemesterBatches = _cmsDbContext.SemesterBatch
-            //        .Where(sb => sb.semester_id == specialization.semester_id
-            //                    && sb.degree_level == degree_level
-            //                    && sb.batch_id < specialization.semester_id)
-            //        .ToList();
-
-            //    return relatedSemesterBatches;
-            //}
-
         }
+
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id, string degree_level)
+        {
+            var semesterBatches = _cmsDbContext.SemesterBatch
+                .Include(sb => sb.Semester)
+                .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level))
+                .ToList();
+
+            var responseList = new SemesterPlanDetailsResponse();
+
+            foreach (var semesterBatch in semesterBatches)
+            {
+                var curriculumIds = _cmsDbContext.SemesterPlan
+                    .Where(sp => sp.semester_id == semester_id && sp.degree_level.Equals(degree_level))
+                    .Select(sp => sp.curriculum_id)
+                    .Distinct()
+                    .ToList();
+                responseList.semesterName = semesterBatch.Semester.semester_name;
+                responseList.spe = new List<SemesterPlanDetailsTermResponse>();
+                foreach (var curriculumId in curriculumIds)
+                {
+                    var curriculum = _cmsDbContext.Curriculum
+                        .Include(c => c.Specialization)
+                        .ThenInclude(s => s.Major)
+                        .Include(c => c.CurriculumSubjects)
+                        .ThenInclude(cs => cs.Subject)
+                        .ThenInclude(subject => subject.AssessmentMethod)
+                        .ThenInclude(assessmentMethod => assessmentMethod.AssessmentType)
+                        .FirstOrDefault(c => c.curriculum_id == curriculumId);
+
+                    if (curriculum != null)
+                    {
+                        var specializationName = curriculum.Specialization.specialization_english_name;
+                        var majorName = curriculum.Specialization.Major.major_english_name;
+
+
+                        responseList.spe.Add(new SemesterPlanDetailsTermResponse
+                        {
+                            specialization_name = specializationName,
+                            major_name = majorName,
+                            courses = new List<DataTermNoResponse> { new DataTermNoResponse() {
+                                                                                                term_no = semesterBatch.term_no,
+                                                                                                subjectData = curriculum.CurriculumSubjects
+                                                                                                    .Where(cs => cs.term_no == semesterBatch.term_no)
+                                                                                                    .Select(cs => new DataSubjectReponse
+                                                                                                    {
+                                                                                                        subject_code = cs.Subject.subject_code,
+                                                                                                        subject_name = cs.Subject.subject_name,
+                                                                                                        credit = cs.Subject.credit,
+                                                                                                        total = cs.Subject.total_time,
+                                                                                                        @class = cs.Subject.total_time_class,
+                                                                                                        @exam = cs.Subject.exam_total,
+                                                                                                        method = cs.Subject.AssessmentMethod.assessment_method_component,
+                                                                                                        assessment = cs.Subject.AssessmentMethod.AssessmentType.assessment_type_name
+                                                                                                    })
+                                                                                                    .Where(ds => ds.subject_code != null)
+                                                                                                    .ToList()
+                                                                                                } }
+                        });
+                    }
+
+                }
+            }
+
+            return responseList;
+        }
+
+
+
+
+
 
         public SemesterPlan GetSemesterPlan(int curriId, int semestId)
         {

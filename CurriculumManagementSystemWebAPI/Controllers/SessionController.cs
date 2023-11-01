@@ -144,7 +144,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
-        [HttpGet("{id}")]
+        [HttpGet("GetSessionById/{id}")]
         public ActionResult GetSessionById(int id)
         {
             Session rs = new Session();
