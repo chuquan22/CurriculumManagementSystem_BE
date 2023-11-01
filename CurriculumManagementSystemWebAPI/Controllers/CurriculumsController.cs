@@ -428,7 +428,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             var plo_name = worksheet.Cells[2, col].Text;
 
                                             var subject = _subjectRepository.GetSubjectByCode(subject_code);
-                                            var plo = _ploRepository.GetPLOsByName(plo_name);
+                                            var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
 
                                             var ploMapping = new PLOMapping()
                                             {
@@ -468,6 +468,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             List<Subject> listSubject = new List<Subject>();
             List<PLOs> listPLO = new List<PLOs>();
+            if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
+            {
+                return "Please using file import template";
+            }
             for (int i = 0; i < sheetNames.Count; i++)
             {
                 // validate data sheet 1
@@ -475,11 +479,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     var major = new Major();
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                    
                     foreach (var r in row)
                     {
                         if(r.Title != null && r.Details == null)
                         {
-                            return $"sheet Curriculum {r.Title} must not be null";
+                            return $"{r.Title} in sheet Curriculum must not be null";
                         }
                         // Check format of curriculum code
                         string pattern = @"^([A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
@@ -537,6 +542,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var item in row)
                     {
+                        if(item.No != null && item.PLO_name == null || item.PLO_description == null)
+                        {
+                            return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
+                        }
                         var plo = new PLOs();
                         plo.PLO_name = item.PLO_name;
 
@@ -558,10 +567,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // validate data sheet 3
                 if (i == 2)
                 {
+
                     // Check Subject Exsit
-                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null) ;
                     foreach (var item in row)
                     {
+                       if(item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
+                        {
+                            return "Must be fill all data in sheet Curriculum Subject";
+                        }
                         if (item.subject_code != null && item.subject_code != "")
                         {
                             var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
