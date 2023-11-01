@@ -14,7 +14,7 @@ namespace Repositories.SemesterPlans
 
         public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level);
 
-        public List<SemesterPlanDetailsResponse> GetSemesterPlanDetails(int semesterId, string degree_level);
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
 
     }
 }

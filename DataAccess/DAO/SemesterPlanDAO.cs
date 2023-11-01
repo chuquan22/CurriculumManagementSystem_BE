@@ -72,14 +72,14 @@ namespace DataAccess.DAO
             return responseList;
         }
 
-            public List<SemesterPlanDetailsResponse> GetSemesterPlanDetails(int semester_id, string degree_level)
+            public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id, string degree_level)
             {
                 var semesterBatches = _cmsDbContext.SemesterBatch
                     .Include(sb => sb.Semester)
                     .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level))
                     .ToList();
 
-                var responseList = new List<SemesterPlanDetailsResponse>();
+                var responseList = new SemesterPlanDetailsResponse();
 
                 foreach (var semesterBatch in semesterBatches)
                 {
@@ -105,16 +105,12 @@ namespace DataAccess.DAO
                             var specializationName = curriculum.Specialization.specialization_english_name;
                             var majorName = curriculum.Specialization.Major.major_english_name;
 
-                            var semesterPlanDetailsResponse = new SemesterPlanDetailsResponse
-                            {
-                                semesterName = semesterBatch.Semester.semester_name,
-                                spe = new List<SemesterPlanDetailsTermResponse>
-                                                          {
-                                                                new SemesterPlanDetailsTermResponse
-                                                                {
-                                                                    specialization_name = specializationName,
-                                                                    major_name = majorName,
-                                                                    courses = new List<DataTermNoResponse> { new DataTermNoResponse() {
+                        var semesterPlanDetailsResponse = new List<SemesterPlanDetailsTermResponse>();
+                        semesterPlanDetailsResponse.Add(new SemesterPlanDetailsTermResponse
+                        {
+                            specialization_name = specializationName,
+                            major_name = majorName,
+                            courses = new List<DataTermNoResponse> { new DataTermNoResponse() {
                                                                     term_no = semesterBatch.term_no,
                                                                     subjectData = curriculum.CurriculumSubjects
                                                                         .Where(cs => cs.term_no == semesterBatch.term_no)
@@ -132,10 +128,12 @@ namespace DataAccess.DAO
                                                                         .Where(ds => ds.subject_code != null)
                                                                         .ToList()
                                                                     } }
-                                                                
-                                                                } }
-                            };
-                            responseList.Add(semesterPlanDetailsResponse);
+
+                        });
+                        responseList = new SemesterPlanDetailsResponse() {
+                            semesterName = semesterBatch.Semester.semester_name,
+                            spe = semesterPlanDetailsResponse
+                        };
                         }
                     }
                 }

@@ -35,7 +35,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult GetSemesterPlanDetails(int semester_id, string degree_level)
         {
             var list = _repo.GetSemesterPlanDetails(semester_id, degree_level);
-            var rs = _mapper.Map<List<SemesterPlanDetailsResponse>>(list);
+            var rs = _mapper.Map<SemesterPlanDetailsResponse>(list);
             return Ok(new BaseResponse(false, "Get List", rs));
         }
     }

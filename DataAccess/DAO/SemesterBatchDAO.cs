@@ -23,13 +23,38 @@ namespace DataAccess.DAO
                 return null;
             }
 
-            var batches = _context.Batch.ToList(); // Fetch all batches into memory
+            // Fetch all batches into memory
+            var batches = _context.Batch
+                .OrderByDescending(x => x.batch_name)
+                .ToList();
 
-            var listBatch = batches.Where(x => double.Parse(x.batch_name) <= double.Parse(semester.Batch.batch_name)).OrderByDescending(x => x.batch_name).ToList();
+            List<Batch> recentBatches = new List<Batch>();
+
+            if (double.TryParse(semester.Batch.batch_name, out double semesterBatch))
+            {
+                foreach (var batch in batches)
+                {
+                    if (double.TryParse(batch.batch_name, out double batchValue))
+                    {
+                        if (batchValue >= semesterBatch)
+                        {
+                            recentBatches.Add(batch);
+                        }
+                        if (recentBatches.Count == 7)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                recentBatches = batches;
+            }
 
             List<SemesterBatch> list = new List<SemesterBatch>();
 
-            foreach (var item in listBatch)
+            foreach (var item in recentBatches)
             {
                 var newSemesterBatch = new SemesterBatch
                 {
@@ -46,6 +71,7 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return list;
         }
+
 
 
         public string UpdateSemesterBatch(SemesterBatch semesterBatch)
