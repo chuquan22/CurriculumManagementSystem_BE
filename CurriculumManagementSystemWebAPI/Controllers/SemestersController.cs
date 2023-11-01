@@ -66,6 +66,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }
 
+
+
             string createResult = semesterRepository.CreateSemester(semester);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {

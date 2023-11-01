@@ -37,9 +37,11 @@ namespace Repositories.PLOS
             return _plosDAO.GetPLOsById(id);
         }
 
-        public PLOs GetPLOsByName(string ploName)
+       
+
+        public PLOs GetPLOsByName(string ploName, int curriId)
         {
-            return _plosDAO.GetPLOsByName(ploName);
+            return _plosDAO.GetPLOsByName(ploName, curriId);
         }
 
         public string UpdatePLOs(PLOs plo)
