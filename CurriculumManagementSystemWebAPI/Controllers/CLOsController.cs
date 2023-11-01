@@ -34,7 +34,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, "error", null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]

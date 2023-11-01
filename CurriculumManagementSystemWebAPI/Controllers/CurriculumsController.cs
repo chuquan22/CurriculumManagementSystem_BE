@@ -313,8 +313,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         if (i == 0)
                         {
                             var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-
                             var curriculumExcel = GetCurriculumInExcel(row);
+                            if(curriculumExcel == null)
+                            {
+                                return BadRequest(new BaseResponse(true, "Can't Read Data Curriculum. PLease Check File Import!"));
+                            }
                             curriculumExcel.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumExcel.batch_id, curriculumExcel.specialization_id, curriculumExcel.degree_level);
                             var curri = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
                             if (curri != null)
@@ -470,18 +473,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // validate data sheet 1
                 if (i == 0)
                 {
-                    string[] expectedOrder = { "Curriculum Code", "Curriculum Name", "English Curriculum Name", "Curriculum Description", "Vocational Code", "Vocational Name", "English Vocational Name", "Decision No.", "Approved date", "Degree level", "Formality", "Specialization Code", "Specialization Name", "English Specialization Name" };
-                    int index = 0;
                     var major = new Major();
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var r in row)
                     {
-                        // Check information in coloumn title
-                        if (!r.Title.Equals(expectedOrder[index]))
+                        if(r.Title != null && r.Details == null)
                         {
-                            return "Can't change title in sheet curriculum";
+                            return $"sheet Curriculum {r.Title} must not be null";
                         }
-                        index++;
                         // Check format of curriculum code
                         string pattern = @"^([A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
                         if (r.Title.Equals("Curriculum Code"))
@@ -528,9 +527,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
 
                         }
-                        
-                        
-
                     }
                 }
 

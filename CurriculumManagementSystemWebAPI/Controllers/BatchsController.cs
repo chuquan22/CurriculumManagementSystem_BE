@@ -33,18 +33,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
-        [HttpGet("Pagination/{page}/{limit}")]
-        public ActionResult PaginationBatch(int page, int limit, [FromQuery] string? txtSearch)
-        {
-            var listBatch = batchRepository.PaginationBatch(page, limit, txtSearch);
-            if (listBatch.Count == 0)
-            {
-                Ok(new BaseResponse(false, "Not Found Batch!"));
-            }
-            var total = batchRepository.GetTotalBatch(txtSearch);
-            return Ok(new BaseResponse(false, "List Batch", new BaseListResponse(page, limit, total, listBatch)));
-        }
-
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
         {
