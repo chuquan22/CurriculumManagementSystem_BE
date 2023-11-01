@@ -56,8 +56,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 sp.semester_id = list[0].semester_id;
                 sp.degree_level = list[0].degree_level;
                 semesterPlanRepository.CreateSemesterPlan(sp);
-
-
             }
 
             //Update Semester Batch

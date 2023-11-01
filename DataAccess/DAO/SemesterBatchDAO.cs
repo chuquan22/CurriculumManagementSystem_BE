@@ -14,14 +14,18 @@ namespace DataAccess.DAO
         private readonly CMSDbContext _context = new CMSDbContext();
         public List<SemesterBatch> CreateSemesterBatch(SemesterBatch se)
         {
-            var semester = _context.Semester.FirstOrDefault(x => x.semester_id == se.semester_id);
+            var semester = _context.Semester
+                .Include(x => x.Batch)
+                .FirstOrDefault(x => x.semester_id == se.semester_id);
 
             if (semester == null)
             {
                 return null;
             }
 
-            var listBatch = _context.Batch.Where(x => x.batch_id >= semester.batch_id).ToList();
+            var batches = _context.Batch.ToList(); // Fetch all batches into memory
+
+            var listBatch = batches.Where(x => double.Parse(x.batch_name) <= double.Parse(semester.Batch.batch_name)).OrderByDescending(x => x.batch_name).ToList();
 
             List<SemesterBatch> list = new List<SemesterBatch>();
 
@@ -42,6 +46,7 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return list;
         }
+
 
         public string UpdateSemesterBatch(SemesterBatch semesterBatch)
         {
