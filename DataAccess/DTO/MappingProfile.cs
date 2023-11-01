@@ -59,7 +59,7 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.spe, opt => opt.MapFrom(src => src.Curriculum.Specialization.specialization_english_name))
                 .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
                  .ForMember(dest => dest.semester, opt => opt.MapFrom(src => src.Semester.semester_name))
-                 .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Semester.SemesterBatches))
+                .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Curriculum.Batch))
                 .ReverseMap();
 
                 //Excel Syllabus

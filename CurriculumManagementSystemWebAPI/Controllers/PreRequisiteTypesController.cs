@@ -12,6 +12,7 @@ using Repositories.PreRequisiteTypes;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Repositories.LearningMethods;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -45,6 +46,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var preRequisiteType = _mapper.Map<List<PreRequisiteTypeResponse>>(preRequisite);
             return Ok(new BaseResponse(false, "List Pre-Requisite-Type", preRequisiteType));
+        }
+
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationPreRequisiteType(int page, int limit, [FromQuery] string? txtSearch)
+        {
+            var listPreRequisiteType = _preRequisiteType.PaginationPreRequisiteType(page, limit, txtSearch);
+            if (listPreRequisiteType.Count == 0)
+            {
+                Ok(new BaseResponse(false, "Not Found Learning Method!"));
+            }
+            var total = _preRequisiteType.GetTotalPreRequisite(txtSearch);
+            return Ok(new BaseResponse(false, "List Learning Method", new BaseListResponse(page, limit, total, listPreRequisiteType)));
         }
 
         // GET: api/PreRequisiteTypes/5

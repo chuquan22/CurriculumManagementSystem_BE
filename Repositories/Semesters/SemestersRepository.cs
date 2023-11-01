@@ -11,9 +11,50 @@ namespace Repositories.Semesters
     public class SemestersRepository : ISemestersRepository
     {
         public SemesterDAO db = new SemesterDAO();
+
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
+        {
+            return db.CheckSemesterDuplicate(id, name, schoolYear);
+        }
+
+        public bool CheckSemesterExsit(int id)
+        {
+            return db.CheckSemesterExsit(id);
+        }
+
+        public string CreateSemester(Semester semester)
+        {
+            return db.CreateSemester(semester);
+        }
+
+        public string DeleteSemester(Semester semester)
+        {
+            return db.DeleteSemester(semester);
+        }
+
+        public Semester GetSemester(int id)
+        {
+            return db.GetSemester(id);
+        }
+
         public List<Semester> GetSemesters()
         {
             return db.GetSemesters();
+        }
+
+        public int GetTotalSemester(string? txtSearch)
+        {
+            return db.GetTotalSemester(txtSearch);
+        }
+
+        public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
+        {
+            return db.PaginationSemester(page, limit, txtSearch);
+        }
+
+        public string UpdateSemester(Semester semester)
+        {
+            return db.UpdateSemester(semester);
         }
     }
 }
