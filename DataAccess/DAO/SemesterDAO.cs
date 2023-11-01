@@ -21,7 +21,8 @@ namespace DataAccess.DAO
 
         public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
         {
-            IQueryable<Semester> query = _cmsDbContext.Semester;
+            IQueryable<Semester> query = _cmsDbContext.Semester
+                .Include(x => x.Batch);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -37,7 +38,8 @@ namespace DataAccess.DAO
 
         public int GetTotalSemester(string? txtSearch)
         {
-            IQueryable<Semester> query = _cmsDbContext.Semester;
+            IQueryable<Semester> query = _cmsDbContext.Semester
+                .Include(x => x.Batch);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -51,7 +53,7 @@ namespace DataAccess.DAO
 
         public Semester GetSemester(int id)
         {
-            var semester = _cmsDbContext.Semester.FirstOrDefault(x => x.semester_id == id);
+            var semester = _cmsDbContext.Semester.Include(x => x.Batch).FirstOrDefault(x => x.semester_id == id);
             return semester;
         }
 

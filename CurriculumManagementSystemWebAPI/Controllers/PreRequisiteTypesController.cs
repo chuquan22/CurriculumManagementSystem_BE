@@ -102,7 +102,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // POST: api/PreRequisiteTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromForm]PreRequisiteTypeRequest preRequisiteTypeRequest)
+        public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromBody]PreRequisiteTypeRequest preRequisiteTypeRequest)
         {
             
             var preRequisiteType = _mapper.Map<PreRequisiteType>(preRequisiteTypeRequest);
@@ -124,7 +124,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var preRequisiteType = _preRequisiteType.GetPreRequisiteType(id);
             if (preRequisiteType == null)
             {
-                return NotFound();
+                return NotFound(new BaseResponse(true, "Not Found PreRequisite Type"));
+            }
+
+            if (_preRequisiteType.CheckPreRequisiteTypeExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "PreRequisite Type Used by PreRequisite. Can't Delete!"));
             }
 
             string deleteResult = _preRequisiteType.DeletePreRequisiteType(preRequisiteType);

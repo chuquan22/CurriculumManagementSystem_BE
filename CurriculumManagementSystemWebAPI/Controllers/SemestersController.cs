@@ -27,7 +27,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult GetAllSemester()
         {
             var listSemester = semesterRepository.GetSemesters();
-            return Ok(new BaseResponse(false, "List Semester", listSemester));
+            var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
+            return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
         }
 
         [HttpGet("Pagination/{page}/{limit}")]
@@ -39,7 +40,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Ok(new BaseResponse(false, "Not Found Semester!"));
             }
             var total = semesterRepository.GetTotalSemester(txtSearch);
-            return Ok(new BaseResponse(false, "List Semester", new BaseListResponse(page, limit, total, listSemester)));
+            var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
+            return Ok(new BaseResponse(false, "List Semester", new BaseListResponse(page, limit, total, listSemesterResponse)));
         }
 
         [HttpGet("GetSemesterById/{Id}")]
@@ -50,7 +52,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
-            return Ok(new BaseResponse(false, "Semester", semester));
+            var semesterResponse = _mapper.Map<SemesterResponse>(semester);
+            return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
 
         [HttpPost("CreateSemester")]
@@ -72,7 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Create Success!", semesterRequest));
         }
 
-        [HttpPost("UpdateSemester/{id}")]
+        [HttpPut("UpdateSemester/{id}")]
         public ActionResult UpdateSemester(int id,[FromBody] SemesterRequest semesterRequest)
         {
             var semester = semesterRepository.GetSemester(id);
@@ -94,9 +97,30 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, updateResult));
             }
 
-            return Ok(new BaseResponse(false, "Create Success!", semesterRequest));
+            return Ok(new BaseResponse(false, "Update Success!", semesterRequest));
         }
 
+        [HttpDelete("DeleteSemester/{id}")]
+        public ActionResult DeleteSemester(int id)
+        {
+            var semester = semesterRepository.GetSemester(id);
+            if (semester == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Semester!"));
+            }
 
+            if (semesterRepository.CheckSemesterExsit(id))
+            {
+                return NotFound(new BaseResponse(true, "Semester Used. Can't Delete!"));
+            }
+
+            string deleteResult = semesterRepository.DeleteSemester(semester);
+            if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, deleteResult));
+            }
+
+            return Ok(new BaseResponse(false, "Delete Success!", semester));
+        }
     }
 }

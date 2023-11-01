@@ -54,7 +54,7 @@ namespace DataAccess.Models.DTO
              .ReverseMap();
             CreateMap<SemesterBatch, SemesterBatchRequest>()
                 .ReverseMap();
- //SemesterBatchResponse
+            //SemesterBatchResponse
             CreateMap<SemesterPlan, SemesterPlanResponse>()
                .ForMember(dest => dest.spe, opt => opt.MapFrom(src => src.Curriculum.Specialization.specialization_english_name))
                 .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
@@ -256,7 +256,14 @@ namespace DataAccess.Models.DTO
             CreateMap<LearningMethodRequest, LearningMethod>()
                 .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.learning_method_name.Trim()))
                 .ReverseMap();
+            //Semester
+            CreateMap<SemesterRequest, Semester>()
+                .ForMember(dest => dest.semester_name, opt => opt.MapFrom(src => src.semester_name.ToUpper().Trim()))
+                .ReverseMap();
 
+            CreateMap<Semester, SemesterResponse>()
+                .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+                .ReverseMap();
 
         }
     }

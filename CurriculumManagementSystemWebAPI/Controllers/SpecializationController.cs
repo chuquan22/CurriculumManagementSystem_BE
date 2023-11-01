@@ -133,7 +133,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = specializationRepository.DeleteSpecialization(id);
                 if(rs == null)
                 {
-                    return BadRequest(new BaseResponse(true, "Can't Delete This Specialization!"));
+                    return BadRequest(new BaseResponse(true, "Specialization used in the system, can’t delete specialization"));
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
 
