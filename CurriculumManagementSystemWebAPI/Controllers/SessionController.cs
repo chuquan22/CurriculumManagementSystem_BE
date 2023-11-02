@@ -29,11 +29,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("{syllabus_id}")]
         public ActionResult GetSession(int syllabus_id)
         {
-            List < Session> rs = new List<Session>();
+            List<Session> rs = new List<Session>();
             try
             {
                 rs = sessionRepository.GetSession(syllabus_id);
-                List<SessionResponse> result = _mapper.Map < List<SessionResponse>>(rs);
+                List<SessionResponse> result = _mapper.Map<List<SessionResponse>>(rs);
                 foreach (SessionResponse rs2 in result)
                 {
                     var class_session_type = classSessionTypeRepository.GetClassSessionType(rs2.class_session_type_id);
@@ -57,7 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 var session = _mapper.Map<Session>(request.session);
                 var check = sessionRepository.IsSessionNoExist(session.session_No, session.schedule_id);
-                if(check != null)
+                if (check != null)
                 {
                     return BadRequest(new BaseResponse(false, "Session No already used in system.", rs));
 
@@ -65,7 +65,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = sessionRepository.CreateSession(session);
 
                 var session_clo = _mapper.Map<List<SessionCLO>>(request.session_clo);
-                if(rs != null)
+                if (rs != null)
                 {
                     foreach (var item in session_clo)
                     {
@@ -83,6 +83,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
+
         }
         [HttpPut]
         public ActionResult UpdateSesion(SessionUpdateRequest request)
@@ -95,6 +96,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 string result = sessionRepository.UpdateSession(rs, request.session_clo);
                 return Ok(new BaseResponse(false, result, null));
             }
+
             catch (Exception ex)
             {
 
@@ -117,7 +119,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
 
 
-               
+
                 return Ok(new BaseResponse(false, "Sucessfully", null));
             }
             catch (Exception)
@@ -130,11 +132,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteSession(int id)
         {
- 
+
             try
             {
                 string rs = sessionRepository.DeleteSession(id);
-               // rs = repo.GetSession(syllabus_id);
+                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -150,7 +152,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Session rs = new Session();
             try
             {
-                 rs = sessionRepository.GetSessionById(id);
+                rs = sessionRepository.GetSessionById(id);
                 var result = _mapper.Map<SessionResponse>(rs);
 
                 return Ok(new BaseResponse(false, "Sucessfully", result));
@@ -162,5 +164,5 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
-    } 
+    }
 }
