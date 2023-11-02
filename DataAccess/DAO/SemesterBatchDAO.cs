@@ -14,18 +14,47 @@ namespace DataAccess.DAO
         private readonly CMSDbContext _context = new CMSDbContext();
         public List<SemesterBatch> CreateSemesterBatch(SemesterBatch se)
         {
-            var semester = _context.Semester.FirstOrDefault(x => x.semester_id == se.semester_id);
+            var semester = _context.Semester
+                .Include(x => x.Batch)
+                .FirstOrDefault(x => x.semester_id == se.semester_id);
 
             if (semester == null)
             {
                 return null;
             }
 
-            var listBatch = _context.Batch.Where(x => x.batch_id >= semester.batch_id).ToList();
+            // Fetch all batches into memory
+            var batches = _context.Batch
+                .OrderByDescending(x => x.batch_name)
+                .ToList();
+
+            List<Batch> recentBatches = new List<Batch>();
+
+            if (double.TryParse(semester.Batch.batch_name, out double semesterBatch))
+            {
+                foreach (var batch in batches)
+                {
+                    if (double.TryParse(batch.batch_name, out double batchValue))
+                    {
+                        if (batchValue >= semesterBatch)
+                        {
+                            recentBatches.Add(batch);
+                        }
+                        if (recentBatches.Count == 7)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                recentBatches = batches;
+            }
 
             List<SemesterBatch> list = new List<SemesterBatch>();
 
-            foreach (var item in listBatch)
+            foreach (var item in recentBatches)
             {
                 var newSemesterBatch = new SemesterBatch
                 {
@@ -42,6 +71,8 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return list;
         }
+
+
 
         public string UpdateSemesterBatch(SemesterBatch semesterBatch)
         {

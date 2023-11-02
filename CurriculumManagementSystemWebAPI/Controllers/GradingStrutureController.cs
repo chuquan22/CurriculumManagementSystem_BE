@@ -40,7 +40,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(true, "False", null));
         }
-        [HttpGet("{id}")]
+        [HttpGet("GetGradingStrutureById/{id}")]
         public ActionResult GetGradingStrutureById(int id)
         {
             GradingStruture rs = new GradingStruture();

@@ -97,7 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCLOsById/{id}")]
         public ActionResult GetCLOsById(int id)
         {
             CLO rs = new CLO();
