@@ -55,7 +55,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateAssessmentType")]
         public ActionResult CreateAssessmentType([FromBody] AssessmentTypeRequest assessmentTypeRequest)
         {
-            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(assessmentTypeRequest.assessment_type_name))
+            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(0, assessmentTypeRequest.assessment_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Type is duplicate!"));
             }
@@ -80,7 +80,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not Found Assessment Type!"));
             }
 
-            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(assessmentTypeRequest.assessment_type_name))
+            if (assessmentTyoeRepository.CheckAssmentTypeDuplicate(id, assessmentTypeRequest.assessment_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Assessment Type is duplicate!"));
             }
@@ -93,7 +93,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, updateResult));
             }
 
-            return Ok(new BaseResponse(false, "Create Success!", assessmentType));
+            return Ok(new BaseResponse(false, "Update Success!", assessmentType));
         }
 
         [HttpDelete("DeleteAssessmentType/{id}")]
