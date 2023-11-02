@@ -63,9 +63,9 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public bool CheckAssmentTypeDuplicate(string name)
+        public bool CheckAssmentTypeDuplicate(int id,string name)
         {
-            return (_context.AssessmentType?.Any(x => x.assessment_type_name == name)).GetValueOrDefault();
+            return (_context.AssessmentType?.Any(x => x.assessment_type_name == name && x.assessment_type_id != id)).GetValueOrDefault();
         }
 
         public bool CheckAssmentTypeExsit(int id)

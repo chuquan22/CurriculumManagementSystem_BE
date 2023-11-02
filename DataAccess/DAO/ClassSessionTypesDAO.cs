@@ -57,9 +57,9 @@ namespace DataAccess.DAO
             return classSessionTyoe;
         }
 
-        public bool CheckClassSessionTypeDuplicate(string name)
+        public bool CheckClassSessionTypeDuplicate(int id,string name)
         {
-            return (_context.ClassSessionType?.Any(x => x.class_session_type_name.Equals(name))).GetValueOrDefault();
+            return (_context.ClassSessionType?.Any(x => x.class_session_type_name.Equals(name) && x.class_session_type_id != id)).GetValueOrDefault();
         }
 
         public bool CheckClassSessionTypeExsit(int id)
