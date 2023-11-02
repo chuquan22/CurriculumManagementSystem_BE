@@ -39,28 +39,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult CreateCLOs(CLOsRequest clo)
         {
-          
+
             try
             {
-                CLO rs =  _mapper.Map<CLO>(clo);
-
-                var checkNameClo = cloRepository.GetCLOByName(rs.CLO_name);
-                if(checkNameClo != null)
-                {
-                    return BadRequest(new BaseResponse(false, "CLOs Name already used in system.", rs));
-
-                }
+                CLO rs = _mapper.Map<CLO>(clo);
                 rs = cloRepository.CreateCLOs(rs);
-
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true,ex.Message, null));
+                return BadRequest(new BaseResponse(true, ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
+    
 
         [HttpPut]
         public ActionResult UpdateCLOs(CLOsUpdateRequest clo)
