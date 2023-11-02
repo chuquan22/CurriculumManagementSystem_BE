@@ -12,6 +12,7 @@ using Repositories.PreRequisiteTypes;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Repositories.LearningMethods;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -45,6 +46,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var preRequisiteType = _mapper.Map<List<PreRequisiteTypeResponse>>(preRequisite);
             return Ok(new BaseResponse(false, "List Pre-Requisite-Type", preRequisiteType));
+        }
+
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationPreRequisiteType(int page, int limit, [FromQuery] string? txtSearch)
+        {
+            var listPreRequisiteType = _preRequisiteType.PaginationPreRequisiteType(page, limit, txtSearch);
+            if (listPreRequisiteType.Count == 0)
+            {
+                Ok(new BaseResponse(false, "Not Found Learning Method!"));
+            }
+            var total = _preRequisiteType.GetTotalPreRequisite(txtSearch);
+            return Ok(new BaseResponse(false, "List Learning Method", new BaseListResponse(page, limit, total, listPreRequisiteType)));
         }
 
         // GET: api/PreRequisiteTypes/5
@@ -89,7 +102,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // POST: api/PreRequisiteTypes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromForm]PreRequisiteTypeRequest preRequisiteTypeRequest)
+        public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromBody]PreRequisiteTypeRequest preRequisiteTypeRequest)
         {
             
             var preRequisiteType = _mapper.Map<PreRequisiteType>(preRequisiteTypeRequest);
@@ -111,7 +124,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var preRequisiteType = _preRequisiteType.GetPreRequisiteType(id);
             if (preRequisiteType == null)
             {
-                return NotFound();
+                return NotFound(new BaseResponse(true, "Not Found PreRequisite Type"));
+            }
+
+            if (_preRequisiteType.CheckPreRequisiteTypeExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "PreRequisite Type Used by PreRequisite. Can't Delete!"));
             }
 
             string deleteResult = _preRequisiteType.DeletePreRequisiteType(preRequisiteType);

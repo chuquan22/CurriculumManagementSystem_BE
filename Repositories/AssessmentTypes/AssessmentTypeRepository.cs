@@ -47,6 +47,16 @@ namespace Repositories.AssessmentTypes
             return db.GetAsssentTypeById(id);
         }
 
+        public int GetTotalAssessmentType(string? txtSearch)
+        {
+            return db.GetTotalAssessmentType(txtSearch);
+        }
+
+        public List<AssessmentType> PaginationAssessmentType(int page, int limit, string? txtSearch)
+        {
+            return db.PaginationAssessmentType(page, limit, txtSearch);
+        }
+
         public string UpdateAssessmentType(AssessmentType type)
         {
             return db.UpdateAssessmentType(type);

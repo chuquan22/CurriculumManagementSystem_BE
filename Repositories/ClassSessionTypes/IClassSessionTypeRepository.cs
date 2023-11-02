@@ -14,7 +14,7 @@ namespace Repositories.ClassSessionTypes
         public ClassSessionType GetClassSessionType(int id);
         int GetTotalClassSessionType(string? txtSearch);
         bool CheckClassSessionTypeDuplicate(string name);
-
+        bool CheckClassSessionTypeExsit(int id);
         string CreateClassSessionType(ClassSessionType classSessionType);
         string UpdateClassSessionType(ClassSessionType classSessionType);
         string DeleteClassSessionType(ClassSessionType classSessionType);

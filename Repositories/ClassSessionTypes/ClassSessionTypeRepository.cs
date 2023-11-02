@@ -17,6 +17,11 @@ namespace Repositories.ClassSessionTypes
             return db.CheckClassSessionTypeDuplicate(name);
         }
 
+        public bool CheckClassSessionTypeExsit(int id)
+        {
+            return db.CheckClassSessionTypeExsit(id);
+        }
+
         public string CreateClassSessionType(ClassSessionType classSessionType)
         {
             return db.CreateClassSessionType(classSessionType);
@@ -24,7 +29,7 @@ namespace Repositories.ClassSessionTypes
 
         public string DeleteClassSessionType(ClassSessionType classSessionType)
         {
-            return db.UpdateClassSessionType(classSessionType);
+            return db.DeleteClassSessionType(classSessionType);
         }
 
         public ClassSessionType GetClassSessionType(int id)
@@ -54,7 +59,7 @@ namespace Repositories.ClassSessionTypes
 
         public string UpdateClassSessionType(ClassSessionType classSessionType)
         {
-            return db.DeleteClassSessionType(classSessionType);
+            return db.UpdateClassSessionType(classSessionType);
         }
     }
 }

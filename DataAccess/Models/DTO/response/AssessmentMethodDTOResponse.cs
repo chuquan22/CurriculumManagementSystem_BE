@@ -14,6 +14,7 @@ namespace DataAccess.Models.DTO.response
        
         public string assessment_method_component { get; set; }
        
+        public int assessment_type_id { get; set; }
         public string assessment_type_name { get; set; }
     }
 }

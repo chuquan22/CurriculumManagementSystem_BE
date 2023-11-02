@@ -27,8 +27,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult GetListClassSessionType()
         {
             var listClassSessionType = classSessionTypeRepository.GetListClassSessionType();
-            var listAssessmentTypeResponse = _mapper.Map<List<ClassSessionTypeResponse>>(listClassSessionType);
-            return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
+            var listClassTypeResponse = _mapper.Map<List<ClassSessionTypeResponse>>(listClassSessionType);
+            return Ok(new BaseResponse(false, "Sucessfully", listClassTypeResponse));
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetClassSessionTypeById(int id)
+        {
+            var classSessionType = classSessionTypeRepository.GetClassSessionType(id);
+            if (classSessionType == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Class Session Type!"));
+            }
+            var classSessionTypeResponse = _mapper.Map<ClassSessionTypeResponse>(classSessionType);
+            return Ok(new BaseResponse(false, "Sucessfully", classSessionTypeResponse));
         }
 
         [HttpGet("Pagination/{page}/{limit}")]
@@ -95,6 +107,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (classSessionType == null)
             {
                 return BadRequest(new BaseResponse(true, "Not Found Class Session Type !"));
+            }
+
+            if (classSessionTypeRepository.CheckClassSessionTypeExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, "Class Session Type Used by Session. Can't Delete!"));
             }
 
             string deleteResult = classSessionTypeRepository.DeleteClassSessionType(classSessionType);
