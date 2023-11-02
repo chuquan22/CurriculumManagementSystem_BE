@@ -265,6 +265,21 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
                 .ReverseMap();
 
+
+            //User
+            CreateMap<UserCreateRequest, User>()
+                .ForMember(dest => dest.user_email, opt => opt.MapFrom(src => src.user_email.Trim()))
+                .ForMember(dest => dest.user_name, opt => opt.MapFrom(src => src.user_name.Trim()))
+                .ForMember(dest => dest.full_name, opt => opt.MapFrom(src => src.full_name.Trim()))
+                .ReverseMap();
+
+            CreateMap<UserUpdateRequest, User>().ReverseMap();
+
+            CreateMap<User, UserResponse>()
+                .ForMember(dest => dest.role_name, opt => opt.MapFrom(src => src.Role.role_name))
+                .ReverseMap();
+
+
         }
     }
 }
