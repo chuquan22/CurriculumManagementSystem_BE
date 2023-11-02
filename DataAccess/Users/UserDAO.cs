@@ -46,7 +46,8 @@ namespace DataAccess.Users
 
         public List<User> PaginationUser(int page, int limit, string? txtSearch)
         {
-            IQueryable<User> query = _cmsDbContext.User;
+            IQueryable<User> query = _cmsDbContext.User
+                .Include(x => x.Role);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
