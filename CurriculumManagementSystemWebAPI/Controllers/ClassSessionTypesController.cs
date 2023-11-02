@@ -60,7 +60,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateClassSessionType")]
         public ActionResult CreateClassSessionType([FromBody] ClassSessionTypeRequest classSessionTypeRequest)
         {
-            if(classSessionTypeRepository.CheckClassSessionTypeDuplicate(classSessionTypeRequest.class_session_type_name))
+            if(classSessionTypeRepository.CheckClassSessionTypeDuplicate(0, classSessionTypeRequest.class_session_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Class Session Type is Duplicate!"));
             }
@@ -84,7 +84,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found Class Session Type !"));
             }
 
-            if (classSessionTypeRepository.CheckClassSessionTypeDuplicate(classSessionTypeRequest.class_session_type_name))
+            if (classSessionTypeRepository.CheckClassSessionTypeDuplicate(id, classSessionTypeRequest.class_session_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Class Session Type is Duplicate!"));
             }
