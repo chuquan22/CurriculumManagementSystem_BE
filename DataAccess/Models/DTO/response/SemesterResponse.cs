@@ -10,6 +10,7 @@ namespace DataAccess.Models.DTO.response
 {
     public class SemesterResponse
     {
+
         public int semester_id { get; set; }
         public string semester_name { get; set; }
         public DateTime semester_start_date { get; set; }

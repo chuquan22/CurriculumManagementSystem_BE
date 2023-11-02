@@ -33,8 +33,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Ok(new BaseResponse(false, "Not Found User!"));
             }
             var total = _usersRepository.GetTotalUser(txtSearch);
+
             var listUserResponse = _mapper.Map<List<UserResponse>>(listUser);
             return Ok(new BaseResponse(false, "List User", new BaseListResponse(page, limit, total, listUserResponse)));
+
         }
 
         [HttpGet("GetUserById/{id}")]
@@ -47,6 +49,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var userResponse = _mapper.Map<UserResponse>(user);
             return Ok(new BaseResponse(false, "User", userResponse));
+
         }
 
         [HttpPost("CreateUser")]
