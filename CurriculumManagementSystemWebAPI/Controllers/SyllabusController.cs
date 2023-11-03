@@ -437,7 +437,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 catch (Exception)
                 {
-
                     throw new Exception("Error: Grading Struture " + r.assessment_component + " and " + r.assessment_type + ". One of this value not provide 'Assessment Method' in database.");
                 }
                 g.clo_name = r.CLO;

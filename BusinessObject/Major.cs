@@ -26,5 +26,7 @@ namespace BusinessObject
         public virtual ICollection<Specialization>? Specialization { get; set; }
         public virtual DegreeLevel? DegreeLevel { get; set; }
 
+
+
     }
 }

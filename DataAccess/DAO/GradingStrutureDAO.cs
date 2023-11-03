@@ -32,6 +32,24 @@ namespace DataAccess.DAO
             return gra;
         }
 
+        public bool CheckCreate(string reference, int? sessionNo)
+        {
+            var fatherGrading = _cmsDbContext.GradingStruture.Where(g => (g.session_no == 0 || g.session_no == null) && g.references.Equals(reference)).FirstOrDefault();
+            var weight = fatherGrading.grading_weight;
+            var listGrading = _cmsDbContext.GradingStruture.Where(g => (g.session_no == 0 || g.session_no == null) && g.references.Contains(reference));
+            decimal weight_son = 0;
+            foreach (var g in listGrading)
+            {
+                weight_son += g.grading_weight;
+            }
+            if(weight_son > weight)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public GradingStruture GetGradingStrutureById(int id)
         {
             var oldGra = _cmsDbContext.GradingStruture

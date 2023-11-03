@@ -70,14 +70,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
-
+            
         [HttpDelete("{id}")]
         public ActionResult DeleteCLOs(int id)
         {
-            CLO rs = new CLO();
             try
             {
-                rs = cloRepository.DeleteCLOs(id);
+                CLO rs = cloRepository.DeleteCLOs(id);
                 return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)

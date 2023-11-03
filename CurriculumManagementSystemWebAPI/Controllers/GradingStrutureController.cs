@@ -77,7 +77,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     rs.number_of_questions = "";
                 }
+                bool check = gradingStrutureRepository.CheckCreate(rs.references, rs.session_no);
+                if(check != false)
+                {
+                    return BadRequest("Over % weight" + rs.references);
+                }
+
                 rs = gradingStrutureRepository.CreateGradingStruture(rs);
+
                 if(rs != null)
                 {
                     foreach(var g in gra.gradingCLORequest.CLO_id)
@@ -88,7 +95,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         var rs3 = gradingCLOsRepository.CreateGradingCLO(rs2);
                     }                 
                 }              
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {

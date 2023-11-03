@@ -11,6 +11,11 @@ namespace Repositories.GradingStruture
     {
         public GradingStrutureDAO db = new GradingStrutureDAO();
 
+        public bool CheckCreate(string reference, int? sessionNo)
+        {
+            return db.CheckCreate(reference, sessionNo);
+        }
+
         public BusinessObject.GradingStruture CreateGradingStruture(BusinessObject.GradingStruture gra)
         {
             return db.CreateGradingStruture(gra);
