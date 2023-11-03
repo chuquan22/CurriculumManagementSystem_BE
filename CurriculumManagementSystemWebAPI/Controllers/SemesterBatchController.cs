@@ -26,16 +26,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             semesterPlanRepository = new SemesterPlanRepository();
         }
         [HttpGet("{semester_id}/{degree_level}")]
-        public ActionResult GetSemesterBatch(int semester_id, string degree_level)
+        public ActionResult GetSemesterBatch(int semester_id, int degree_level)
         {
             var list = semesterBatchRepository.GetSemesterBatch(semester_id, degree_level);
             var rs = _mapper.Map<List<SemesterBatchResponse>>(list);
             return Ok(new BaseResponse(false,"Get List ",rs));
         }
         [HttpPost]
-        public ActionResult CreateSemesterBatch(int semester_id, string degree_level)
+        public ActionResult CreateSemesterBatch(int semester_id, int degree_level_id)
         {
-            var rs2 = semesterBatchRepository.CreateSemesterBatch(new SemesterBatch() { semester_id = semester_id, degree_level = degree_level });
+            var rs2 = semesterBatchRepository.CreateSemesterBatch(new SemesterPlanBatch() { semester_id = semester_id, degree_level_id = degree_level_id });
             var rs = _mapper.Map<List<SemesterBatchResponse>>(rs2);
             return Ok(rs);
         }

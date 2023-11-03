@@ -17,14 +17,14 @@ namespace Repositories.SemesterPlans
             return db.CreateSemesterPlan(semesterPlans);
         }
 
-        //public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level)
-        //{
-        //   // return db.GetAllSemesterPlan(semesterId, degree_level);
-        //}
+        public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, int degree_level)
+        {
+            return db.GetAllSemesterPlan(semesterId, degree_level);
+        }
 
-        //public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level)
-        //{
-        //   // return db.GetSemesterPlanDetails(semesterId, degree_level);
-        //}
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, int degree_level)
+        {
+            return db.GetSemesterPlanDetails(semesterId, degree_level);
+        }
     }
 }

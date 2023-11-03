@@ -12,7 +12,7 @@ namespace DataAccess.DAO
     public class SemesterBatchDAO
     {
         private readonly CMSDbContext _context = new CMSDbContext();
-        public List<SemesterBatch> CreateSemesterBatch(SemesterBatch se)
+        public List<SemesterPlanBatch> CreateSemesterBatch(SemesterPlanBatch se)
         {
             var semester = _context.Semester
                 .Include(x => x.Batch)
@@ -25,6 +25,7 @@ namespace DataAccess.DAO
 
             // Fetch all batches into memory
             var batches = _context.Batch
+            
                 .OrderByDescending(x => x.batch_name)
                 .ToList();
 
@@ -47,20 +48,21 @@ namespace DataAccess.DAO
                     }
                 }
             }
+            
             else
             {
                 recentBatches = batches;
             }
 
-            List<SemesterBatch> list = new List<SemesterBatch>();
+            List<SemesterPlanBatch> list = new List<SemesterPlanBatch>();
 
             foreach (var item in recentBatches)
             {
-                var newSemesterBatch = new SemesterBatch
+                var newSemesterBatch = new SemesterPlanBatch
                 {
                     semester_id = se.semester_id,
                     batch_id = item.batch_id,
-                    degree_level = se.degree_level,
+                    degree_level_id = se.degree_level_id,
                     term_no = null
                 };
 
@@ -74,11 +76,11 @@ namespace DataAccess.DAO
 
 
 
-        public string UpdateSemesterBatch(SemesterBatch semesterBatch)
+        public string UpdateSemesterBatch(SemesterPlanBatch semesterBatch)
         {
            
             //Update Batch
-            var oldSeBa = _context.SemesterBatch.Where(s => (s.semester_id == semesterBatch.semester_id && s.batch_id == semesterBatch.batch_id && s.degree_level.Equals(semesterBatch.degree_level))).FirstOrDefault();
+            var oldSeBa = _context.SemesterBatch.Where(s => (s.semester_id == semesterBatch.semester_id && s.batch_id == semesterBatch.batch_id && s.degree_level_id == semesterBatch.degree_level_id)).FirstOrDefault();
             if(oldSeBa == null)
             {
                 return "Semester Batch not in dataabase";
@@ -89,13 +91,13 @@ namespace DataAccess.DAO
             return Result.updateSuccessfull.ToString();
         }
 
-        public List<SemesterBatch> GetSemesterBatch(int semester_id, string degree_level)
+        public List<SemesterPlanBatch> GetSemesterBatch(int semester_id, int degree_level_id)
         { 
             var list = _context.SemesterBatch
                
                 .Include(s => s.Semester)
                 .Include(s => s.Batch)
-                .Where(x => (x.semester_id == semester_id && x.degree_level.Equals(degree_level))).ToList();
+                .Where(x => (x.semester_id == semester_id && x.degree_level_id == degree_level_id)).ToList();
             return list;
         }
 

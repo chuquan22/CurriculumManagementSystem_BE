@@ -14,6 +14,6 @@ namespace DataAccess.Models.DTO.response
         public string? batch_name { get; set; }
 
         public int? term_no { get; set; }
-        public string degree_level { get; set; }
+        public int degree_level_id { get; set; }
     }
 }

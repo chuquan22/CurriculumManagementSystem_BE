@@ -11,17 +11,17 @@ namespace Repositories.SemesterBatchs
     public class SemesterBatchRepository : ISemesterBatchRepository
     {
         public SemesterBatchDAO db = new SemesterBatchDAO();
-        public List<SemesterBatch> CreateSemesterBatch(SemesterBatch semesterBatchs)
+        public List<SemesterPlanBatch> CreateSemesterBatch(SemesterPlanBatch semesterBatchs)
         {
             return db.CreateSemesterBatch(semesterBatchs);
         }
 
-        public List<SemesterBatch> GetSemesterBatch(int semesterId, string degree_level)
+        public List<SemesterPlanBatch> GetSemesterBatch(int semesterId, int degree_level)
         {
             return db.GetSemesterBatch(semesterId, degree_level);
         }
 
-        public string UpdateSemesterBatch(SemesterBatch semesterBatch)
+        public string UpdateSemesterBatch(SemesterPlanBatch semesterBatch)
         {
             return db.UpdateSemesterBatch(semesterBatch);
         }

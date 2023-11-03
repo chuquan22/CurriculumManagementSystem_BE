@@ -48,7 +48,7 @@ namespace BusinessObject
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<Semester> Semester { get; set; }
         public virtual DbSet<SemesterPlan> SemesterPlan { get; set; }
-        public virtual DbSet<SemesterBatch> SemesterBatch { get; set; }
+        public virtual DbSet<SemesterPlanBatch> SemesterBatch { get; set; }
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<Specialization> Specialization { get; set; }
         public virtual DbSet<SpecializationSubject> SpecializationSubject { get; set; }
@@ -143,7 +143,7 @@ namespace BusinessObject
                 .HasForeignKey(x => x.curriculum_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-            modelBuilder.Entity<SemesterBatch>()
+            modelBuilder.Entity<SemesterPlanBatch>()
                 .HasOne(x => x.Semester)
                 .WithMany(y => y.SemesterBatches)
                 .HasForeignKey(x => x.semester_id)

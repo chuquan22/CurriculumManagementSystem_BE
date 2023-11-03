@@ -9,10 +9,10 @@ namespace Repositories.SemesterBatchs
 {
     public interface ISemesterBatchRepository
     {
-        public List<SemesterBatch> CreateSemesterBatch(SemesterBatch semesterBatchs);
+        public List<SemesterPlanBatch> CreateSemesterBatch(SemesterPlanBatch semesterBatchs);
 
-        public List<SemesterBatch> GetSemesterBatch(int semesterId, string degree_level);
+        public List<SemesterPlanBatch> GetSemesterBatch(int semesterId, int degree_level);
 
-        public string UpdateSemesterBatch(SemesterBatch semesterBatch);
+        public string UpdateSemesterBatch(SemesterPlanBatch semesterBatch);
     }
 }

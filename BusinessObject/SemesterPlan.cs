@@ -11,6 +11,7 @@ namespace BusinessObject
 {
     public class SemesterPlan
     {
+
         [ForeignKey("Curriculum")]
         public int curriculum_id { get; set; }
         [ForeignKey("Semester")]

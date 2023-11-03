@@ -27,7 +27,7 @@ namespace BusinessObject
 
         public virtual ICollection<SemesterPlan> Semesters { get; set; }
         public virtual ICollection<Specialization> Specializations { get; set; }
-        public virtual ICollection<SemesterBatch> SemesterBatches { get; set; }
+        public virtual ICollection<SemesterPlanBatch> SemesterBatches { get; set; }
         public virtual Batch Batch { get; set; }
         public virtual DegreeLevel DegreeLevel { get; set; }
     }

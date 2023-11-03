@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessObject
 {
-    public class SemesterBatch
+    public class SemesterPlanBatch
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int semester_batch_id { get; set; }
@@ -21,7 +21,7 @@ namespace BusinessObject
         [AllowNull]
         public int? term_no { get; set; }
         [Required]
-        public string degree_level { get; set; }
+        public int degree_level_id { get; set; }
         public virtual Batch Batch { get; set; }
         public virtual Semester? Semester { get; set; }
     }
