@@ -27,14 +27,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return Ok(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -45,15 +45,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Material rs = _mapper.Map<Material>(material);
 
                 rs = repo.CreateMaterial(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
                 
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPut]
@@ -64,14 +63,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 Material rs = _mapper.Map<Material>(material);
                 rs = repo.EditMaterial(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpDelete]
         public ActionResult DeleteMaterial(int id)
@@ -80,13 +78,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.DeleteMaterial(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("id")]
         public ActionResult GetMaterialById(int id)
@@ -95,13 +92,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterialById(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

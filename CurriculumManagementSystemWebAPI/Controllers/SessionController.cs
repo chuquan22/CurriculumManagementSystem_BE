@@ -39,15 +39,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var class_session_type = classSessionTypeRepository.GetClassSessionType(rs2.class_session_type_id);
                     rs2.class_session_type_name = class_session_type.class_session_type_name;
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Sucessfully!", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: "+ ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
         public ActionResult CreateSession(SessionCreateRequest request)
@@ -80,10 +78,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true, "Error: "+ ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
-
         }
         [HttpPut]
         public ActionResult UpdateSesion(SessionUpdateRequest request)
@@ -91,8 +87,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Session rs = _mapper.Map<Session>(request.session);
-
-                //   rs = repo.GetSession(syllabus_id);
                 string result = sessionRepository.UpdateSession(rs, request.session_clo);
                 return Ok(new BaseResponse(false, result, null));
             }
@@ -100,9 +94,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPatch]
 
@@ -113,19 +106,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 foreach (var item in request)
                 {
                     Session rs = _mapper.Map<Session>(item);
-
-                    //   rs = repo.GetSession(syllabus_id);
                     string result = sessionRepository.UpdatePatchSession(rs);
                 }
-
-
-
-                return Ok(new BaseResponse(false, "Sucessfully", null));
+                return Ok(new BaseResponse(false, "Successfully!", null));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(false, "Error: " +ex.Message, null));
+
             }
 
         }
@@ -136,15 +125,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string rs = sessionRepository.DeleteSession(id);
-                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("GetSessionById/{id}")]
         public ActionResult GetSessionById(int id)
@@ -154,15 +141,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = sessionRepository.GetSessionById(id);
                 var result = _mapper.Map<SessionResponse>(rs);
-
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return Ok(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

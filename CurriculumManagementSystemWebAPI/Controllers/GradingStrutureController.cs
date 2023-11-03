@@ -31,14 +31,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 List<GradingStruture> rs = gradingStrutureRepository.GetGradingStruture(syllabus_id);
                 var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", response));
+                return Ok(new BaseResponse(false, "Successfully!", response));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("GetGradingStrutureById/{id}")]
         public ActionResult GetGradingStrutureById(int id)
@@ -48,14 +48,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = gradingStrutureRepository.GetGradingStrutureById(id);
                 var response = _mapper.Map<GradingStrutureResponse>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", response));
+                return Ok(new BaseResponse(false, "Successfully!", response));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
         public ActionResult CreateGradingStruture(GradingStrutureCreateRequest gra)
@@ -93,7 +93,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return StatusCode(500, "An error occurred: " + ex.Message);
+                return StatusCode(500, "500 Error server: " + ex.Message);
             }
         }
         [HttpPut]
@@ -105,12 +105,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 string ressult = gradingStrutureRepository.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
                 return Ok(new BaseResponse(false, "Sucessfully", ressult));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpDelete("{id}")]
@@ -120,14 +120,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = gradingStrutureRepository.DeleteGradingStruture(id);
-                return Ok(new BaseResponse(false, "Sucessfully", true));
+                return Ok(new BaseResponse(false, "Successfully!", true));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

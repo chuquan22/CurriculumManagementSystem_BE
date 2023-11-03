@@ -26,14 +26,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = majorRepository.GetAllMajor();
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -58,15 +57,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 else
                 {
                     rs = majorRepository.AddMajor(rs);
-                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", rs));
+                    return Ok(new BaseResponse(false, "Add " +rs.major_name+ " successfully!", rs));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "Add major false.", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "Add major False", null));
         }
 
         [HttpPut]
@@ -92,13 +90,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
             }
-            return Ok(new BaseResponse(true, "Edit False", null));
         }
 
         [HttpDelete]
@@ -110,7 +107,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var major = majorRepository.FindMajorById(id);
                 if(major != null)
                 {
-                    Ok(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
+                    return BadRequest(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
                 }
                 majorRepository.DeleteMajor(id);
                 return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
@@ -119,7 +116,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Cant not delete this major. Major already used in system!", null));
             }
-            return Ok(new BaseResponse(true, "Delete False", null));
         }
     }
 }

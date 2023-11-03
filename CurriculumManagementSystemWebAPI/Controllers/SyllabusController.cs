@@ -61,7 +61,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             classSessionTypeRepository = new ClassSessionTypeRepository();
             degreeLevelRepository = new DegreeLevelRepository();
             client = new HttpClient();
-
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
         }
@@ -74,13 +73,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 int limit2 = syllabusRepository.GetTotalSyllabus(txtSearch, subjectCode);
                 List<Syllabus> list = syllabusRepository.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
+                return Ok(new BaseResponse(false, "Successfully", new BaseListResponse(page, limit2, result)));
             }
             catch (Exception)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error when get list syllabus.", null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -92,13 +90,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Syllabus rs = _mapper.Map<Syllabus>(request);
 
                 var result = syllabusRepository.CreateSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucess", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error when create syllabus! Msg: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpGet("GetSyllabusDetails")]
@@ -109,15 +106,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
-
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
-                return Ok(new BaseResponse(true, "False", result));
+                return Ok(new BaseResponse(true, "Successfully!", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error when get syllabus details! Msg: " +ex.Message, null));
             }
 
         }
@@ -300,15 +296,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                     }
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
-
                 }
-                return Ok(new BaseResponse(true, "False", null));
 
             }
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true,"Import False!!! Msg:" + ex.Message, null));
             }
 
         }
@@ -444,7 +438,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 catch (Exception)
                 {
 
-                    throw new Exception("Wrong Grading Struture at " + r.assessment_component + " and " + r.assessment_type + ". One of this value not provide in database.");
+                    throw new Exception("Error: Grading Struture " + r.assessment_component + " and " + r.assessment_type + ". One of this value not provide 'Assessment Method' in database.");
                 }
                 g.clo_name = r.CLO;
                 result.Add(g);
@@ -490,7 +484,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 catch (Exception ex)
                 {
 
-                    throw new Exception("Wrong value at " + r.leaning_teaching_method + " not in database.");
+                    throw new Exception("Error: Class Session Type Name '" + r.leaning_teaching_method + "' not provide in database.");
                 }
                 rs.Add(se);
             }
@@ -541,10 +535,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         m.material_published_date = new DateTime(year, 1, 1);
                     }
-                    else
-                    {
-                        // Handle the case where the string is not a valid year.
-                    }
                 }
 
                 m.material_edition = r.Edition;
@@ -585,7 +575,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                         else
                         {
-                            throw new Exception("Subject code not exist in system!");
+                            throw new Exception("Error: Subject code not exist in system!");
                         }
                     }
                     else if (r.Title.Equals("Leaning-Teaching Method"))
@@ -607,7 +597,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         catch (Exception ex)
                         {
 
-                            throw new Exception("No Degree Level Enlish Name found in system:" + r.Details);
+                            throw new Exception("Error: Degree Level Vietnamese Name not provide in system: " + r.Details);
                         }
                     }
                     else if (r.Title.Equals("Time Allocation"))
@@ -677,65 +667,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 string result = syllabusRepository.UpdatePatchSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
-                throw;
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
-         // Post: Export Curriculum by Excel File
-        //[HttpPost("ExportSyllabus/{syllabus_id}")]
-        //public async Task<IActionResult> ExportSyllabus(int syllabus_id)
-        //{
-        //    string templatePath = "SyllabusExcel.xlsx";
-        //    var syllabus = repo.GetSyllabusById(syllabus_id);
-        //     var materials = repo6.GetMaterial(syllabus_id);
-        //     var clos = repo4.GetCLOs(syllabus_id);
-        //    var schedule = repo8.GetSession(syllabus_id);
-        //     var gradingStruture = repo7.GetGradingStruture(syllabus_id);
-
-
-
-        //    Dictionary<string, object> value = new Dictionary<string, object>()
-        //    {
-        //        //Tab Syllabus
-        //        ["document_type"] = syllabus.document_type,
-        //        ["program"] = syllabus.program,
-        //        ["decision_no"] = syllabus.decision_No,
-        //        ["course_name"] = syllabus.Subject.subject_name,
-        //        ["course_name_english"] = syllabus.Subject.english_subject_name,
-        //        ["course_code"] = syllabus.Subject.subject_code,
-        //        ["leaning-teaching_method"] = null,
-        //        ["credit"] = null,
-        //        ["degree_level"] = syllabus.degree_level,
-        //        ["time_allocation"] = syllabus.time_allocation,
-        //        ["description"] = syllabus.syllabus_description,
-        //        ["student_task"] = syllabus.student_task,
-        //        ["tools"] = syllabus.syllabus_tool,
-        //        ["note"] = syllabus.syllabus_note,
-        //        ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
-        //        ["scoring_scale"] = syllabus.scoring_scale,
-        //        ["approved_date"] = syllabus.approved_date,
-        //        //Tab Materials
-        //        ["materials"] = materials,
-        //        //Tab CLO
-        //        ["CLOs"] = clos,
-        //        //Tab Schedule
-        //        ["schedule"] = schedule,
-        //        //Tab GradingStruture
-        //        ["gradingStruture"] = gradingStruture
-        //    };
-
-
-        //    MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
-
-        //    byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
-        //    return Ok(fileContents);
-        //    //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
-        //}
-        // Post: Export Curriculum by Excel File
+       
         [HttpPost("ExportSyllabus/{syllabus_id}")]
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)
         {
@@ -779,7 +718,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 schedule[i].no = i + 1;
             }
-
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
                 //Tab Syllabus
@@ -809,47 +747,36 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 //Tab GradingStruture
                 ["gradingStruture"] = gradingStruture
             };
-
-
             MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
-
             byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
             return Ok(fileContents);
-
-            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
         }
 
         [HttpPost("SetStatus")]
         public ActionResult SetStatusSyllabus(int id)
         {
             try
-            {
-               
+            {             
                 var result = syllabusRepository.SetStatusSyllabus(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("SetApproved")]
         public ActionResult SetApproved(int id)
         {
             try
-            {
-               
+            {              
                 var result = syllabusRepository.SetApproved(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }
