@@ -166,7 +166,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id, curriculum.degree_level);
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id);
             curriculum.is_active = true;
             if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
             {
@@ -246,7 +246,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["specialization_english_name"] = specialization.specialization_english_name,
 
                 ["curriculum_code"] = curriculum.curriculum_code,
-                ["degree_level"] = curriculum.degree_level,
+                ["degree_level"] = major.DegreeLevel.degree_level_english_name,
                 ["formality"] = curriculum.Formality,
 
                 ["Combo"] = comboExcel,
@@ -318,7 +318,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 return BadRequest(new BaseResponse(true, "Can't Read Data Curriculum. PLease Check File Import!"));
                             }
-                            curriculumExcel.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumExcel.batch_id, curriculumExcel.specialization_id, curriculumExcel.degree_level);
+                            curriculumExcel.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumExcel.batch_id, curriculumExcel.specialization_id);
                             var curri = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
                             if (curri != null)
                             {
@@ -699,10 +699,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     // set major_code = value in coloum detail
                     major.major_code = r.Details;
-                }
-                else if (r.Title.Equals("Degree level"))
-                {
-                    curriculum.degree_level = r.Details;
                 }
                 else if (r.Title.Equals("Formality"))
                 {

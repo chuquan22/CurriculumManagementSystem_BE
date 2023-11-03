@@ -24,19 +24,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         }
 
-        [HttpGet("{semester_id}/{degree_level}")]
-        public ActionResult GetSemesterPlan (int semester_id,string degree_level)
-        {
-            var list = _repo.GetSemesterPlan(semester_id, degree_level);
-            var rs = _mapper.Map<List<SemesterPlanResponse>>(list);
-            return Ok(new BaseResponse(false, "Get List", rs));
-        }
-        [HttpGet("GetSemesterPlanDetails/{semester_id}/{degree_level}")]
-        public ActionResult GetSemesterPlanDetails(int semester_id, string degree_level)
-        {
-            var list = _repo.GetSemesterPlanDetails(semester_id, degree_level);
-            var rs = _mapper.Map<SemesterPlanDetailsResponse>(list);
-            return Ok(new BaseResponse(false, "Get List", rs));
-        }
+        //[HttpGet("{semester_id}/{degree_level}")]
+        //public ActionResult GetSemesterPlan (int semester_id,string degree_level)
+        //{
+        //    var list = _repo.GetSemesterPlan(semester_id, degree_level);
+        //    var rs = _mapper.Map<List<SemesterPlanResponse>>(list);
+        //    return Ok(new BaseResponse(false, "Get List", rs));
+        //}
+        //[HttpGet("GetSemesterPlanDetails/{semester_id}/{degree_level}")]
+        //public ActionResult GetSemesterPlanDetails(int semester_id, string degree_level)
+        //{
+        //    var list = _repo.GetSemesterPlanDetails(semester_id, degree_level);
+        //    var rs = _mapper.Map<SemesterPlanDetailsResponse>(list);
+        //    return Ok(new BaseResponse(false, "Get List", rs));
+        //}
     }
 }

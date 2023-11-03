@@ -14,7 +14,7 @@ namespace BusinessObject
         [ForeignKey("Curriculum")]
         public int curriculum_id { get; set; }
 
-        public virtual Combo Combo { get; set; }
-        public virtual Curriculum Curriculum { get; set; }
+        public virtual Combo? Combo { get; set; }
+        public virtual Curriculum? Curriculum { get; set; }
     }
 }

@@ -40,33 +40,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(rs);
         }
 
-        [HttpPut]
-        public ActionResult UpdateSemesterBatch(List<SemesterBatchRequest> list)
-        {
-            List<Curriculum> curriculumList = curriculumRepositoryu.GetCurriculumByDegreeLevel(list[0].degree_level);
-            if( curriculumList == null || curriculumList.Count == 0)
-            {
-                return BadRequest(new BaseResponse(false, "No curriculum equal that degree level", null));
-            }
-            //Create SemesterPlan
-            SemesterPlan sp = new SemesterPlan();
-            foreach(Curriculum curriculum in curriculumList)
-            {
-                sp.curriculum_id = curriculum.curriculum_id;
-                sp.semester_id = list[0].semester_id;
-                sp.degree_level = list[0].degree_level;
-                semesterPlanRepository.CreateSemesterPlan(sp);
-            }
+        //[HttpPut]
+        //public ActionResult UpdateSemesterBatch(List<SemesterBatchRequest> list)
+        //{
+        //   // List<Curriculum> curriculumList = curriculumRepositoryu.GetCurriculumByDegreeLevel(list[0].degree_level);
+        //    if( curriculumList == null || curriculumList.Count == 0)
+        //    {
+        //        return BadRequest(new BaseResponse(false, "No curriculum equal that degree level", null));
+        //    }
+        //    //Create SemesterPlan
+        //    SemesterPlan sp = new SemesterPlan();
+        //    foreach(Curriculum curriculum in curriculumList)
+        //    {
+        //        sp.curriculum_id = curriculum.curriculum_id;
+        //        sp.semester_id = list[0].semester_id;
+        //        //sp.degree_level = list[0].degree_level;
+        //        semesterPlanRepository.CreateSemesterPlan(sp);
+        //    }
 
-            //Update Semester Batch
-            string result = null;
-            foreach (var item in list)
-            {
-                var semester = _mapper.Map<SemesterBatch>(item);
-                result = semesterBatchRepository.UpdateSemesterBatch(semester);
-            }
+        //    //Update Semester Batch
+        //    string result = null;
+        //    foreach (var item in list)
+        //    {
+        //        var semester = _mapper.Map<SemesterBatch>(item);
+        //        result = semesterBatchRepository.UpdateSemesterBatch(semester);
+        //    }
 
-            return Ok(new BaseResponse(false, result, null));
-        }
+        //    return Ok(new BaseResponse(false, result, null));
+        //}
     }
 }

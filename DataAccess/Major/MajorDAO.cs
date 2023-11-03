@@ -48,7 +48,7 @@ namespace DataAccess.Major
 
         public BusinessObject.Major FindMajorById(int id)
         {
-            BusinessObject.Major major = db.Major.Where(x => x.major_id == id).FirstOrDefault();
+            BusinessObject.Major major = db.Major.Include(x => x.DegreeLevel).Where(x => x.major_id == id).FirstOrDefault();
             return major;
         }
 

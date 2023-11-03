@@ -24,7 +24,7 @@ namespace BusinessObject
         [Required]
         public bool option { get; set; }
 
-        public virtual Curriculum Curriculum { get; set; }
-        public virtual Subject Subject { get; set; }
+        public virtual Curriculum? Curriculum { get; set; }
+        public virtual Subject? Subject { get; set; }
     }
 }

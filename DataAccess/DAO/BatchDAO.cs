@@ -70,6 +70,13 @@ namespace DataAccess.DAO
             return batch;
         }
 
+        public List<Batch> GetBatchByDegreeLevel(int degreeId)
+        {
+            var listBatch = _context.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == degreeId).Select(x => x.Batch).ToList(); ;
+            return listBatch;
+        }
+
+
         public bool CheckBatchDuplicate(string batch_name)
         {
             return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
@@ -88,16 +95,24 @@ namespace DataAccess.DAO
 
         public List<Batch> GetBatchBySpe(int speId)
         {
-            var specialization = _context.Specialization.Include(x => x.Semester.Batch).FirstOrDefault(x => x.specialization_id == speId);
+            var specialization = _context.Specialization
+                .Include(x => x.Major)
+                .Include(x => x.Semester.Batch)
+                .FirstOrDefault(x => x.specialization_id == speId);
             var batch_name = specialization.Semester.Batch.batch_name;
             var listBatch = new List<Batch>();
-            foreach(var batch in GetAllBatch())
+            foreach (var batch in GetBatchByDegreeLevel(specialization.Major.degree_level_id))
             {
-                if(double.Parse(batch.batch_name) >= double.Parse(batch_name))
+                double batchValue;
+                if (double.TryParse(batch.batch_name, out batchValue))
                 {
-                    listBatch.Add(batch);
+                    if (batchValue >= double.Parse(batch_name))
+                    {
+                        listBatch.Add(batch);
+                    }
                 }
             }
+
             return listBatch;
         }
 

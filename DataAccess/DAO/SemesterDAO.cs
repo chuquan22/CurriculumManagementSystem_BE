@@ -57,6 +57,29 @@ namespace DataAccess.DAO
             return semester;
         }
 
+        public List<Semester> GetSemesterBySpe(int speId)
+        {
+            var specialization = _cmsDbContext.Specialization
+               .Include(x => x.Major)
+               .Include(x => x.Semester.Batch)
+               .FirstOrDefault(x => x.specialization_id == speId);
+            var batch_name = specialization.Semester.Batch.batch_name;
+            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == specialization.Major.degree_level_id).ToList();
+            var listSemester = new List<Semester>();
+            foreach(var s in semester)
+            {
+                double batchValue;
+                if (double.TryParse(s.Batch.batch_name, out batchValue))
+                {
+                    if (batchValue >= double.Parse(batch_name))
+                    {
+                        listSemester.Add(s);
+                    }
+                }
+            }
+            return listSemester;
+        }
+
         public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
         {
             return (_cmsDbContext.Semester?.Any(x => x.semester_name.Equals(name) && x.school_year == schoolYear && x.semester_id != id)).GetValueOrDefault();
