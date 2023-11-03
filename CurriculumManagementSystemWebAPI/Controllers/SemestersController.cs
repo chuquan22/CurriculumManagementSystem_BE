@@ -16,11 +16,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private ISemestersRepository semesterRepository;
+        private IBatchRepository batchRepository;
 
         public SemestersController(IMapper mapper)
         {
             _mapper = mapper;
             semesterRepository = new SemestersRepository();
+            batchRepository = new BatchRepository();
         }
 
         [HttpGet("GetAllSemester")]
@@ -74,13 +76,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var semester = _mapper.Map<Semester>(semesterRequest); 
 
-            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year))
+            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year, semester.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }
+            var batch = new Batch();
+            batch.batch_name = semesterRequest.batch_name;
+            batch.batch_term_no = semesterRequest.batch_term_no;
 
+            if(batchRepository.CheckBatchDuplicate(batch.batch_name, batch.batch_term_no))
+            {
+                return BadRequest(new BaseResponse(true, "Batch Duplicate!"));
+            }
 
-
+            string batchCreateResult = batchRepository.CreateBatch(batch);
+            if (!batchCreateResult.Equals(Result.createSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, batchCreateResult));
+            }
+            semester.batch_id = batch.batch_id;
             string createResult = semesterRepository.CreateSemester(semester);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {
@@ -94,14 +108,31 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public ActionResult UpdateSemester(int id,[FromBody] SemesterRequest semesterRequest)
         {
             var semester = semesterRepository.GetSemester(id);
+            
             if(semester == null)
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
 
-            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year))
+            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year, semester.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
+            }
+
+            var batch = batchRepository.GetBatchById(semester.batch_id);
+
+            if(batchRepository.CheckBatchUpdateDuplicate(batch.batch_id, batch.batch_name, batch.batch_term_no))
+            {
+                return BadRequest(new BaseResponse(true, "Batch Duplicate!"));
+            }
+
+            batch.batch_name = semesterRequest.batch_name;
+            batch.batch_term_no = semesterRequest.batch_term_no;
+
+            string updateBatch = batchRepository.UpdateBatch(batch);
+            if (!updateBatch.Equals(Result.updateSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, updateBatch));
             }
 
             _mapper.Map(semesterRequest, semester);
@@ -123,7 +154,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
-
+            var batch = batchRepository.GetBatchById(semester.batch_id);
             if (semesterRepository.CheckSemesterExsit(id))
             {
                 return NotFound(new BaseResponse(true, "Semester Used. Can't Delete!"));
@@ -133,6 +164,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
+            }
+
+            string deleteBatchResult = batchRepository.DeleteBatch(batch);
+            if (!deleteBatchResult.Equals(Result.deleteSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, deleteBatchResult));
             }
 
             return Ok(new BaseResponse(false, "Delete Success!", semester));

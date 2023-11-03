@@ -173,12 +173,12 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Batch>().HasData(
-                new Batch { batch_id = 1, batch_name = "7.1" },
-                new Batch { batch_id = 2, batch_name = "17" },
-                new Batch { batch_id = 3, batch_name = "18" },
-                new Batch { batch_id = 4, batch_name = "19.1" },
-                new Batch { batch_id = 5, batch_name = "19.2" },
-                new Batch { batch_id = 6, batch_name = "19.3" }
+                new Batch { batch_id = 1, batch_name = "7.1", batch_term_no = 1 },
+                new Batch { batch_id = 2, batch_name = "17", batch_term_no = 1 },
+                new Batch { batch_id = 3, batch_name = "18", batch_term_no = 2 },
+                new Batch { batch_id = 4, batch_name = "19.1", batch_term_no = 1 },
+                new Batch { batch_id = 5, batch_name = "19.2", batch_term_no = 2 },
+                new Batch { batch_id = 6, batch_name = "19.3", batch_term_no = 3 }
                 );
 
             modelBuilder.Entity<DegreeLevel>().HasData(

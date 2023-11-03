@@ -47,23 +47,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Batch", Batch));
         }
 
-        [HttpPost("CreateBatch")]
-        public ActionResult CreateBatch([FromBody] BatchRequest batchRequest)
-        {
-            if (batchRepository.CheckBatchDuplicate(batchRequest.batch_name))
-            {
-                return BadRequest(new BaseResponse(true, "Batch is duplicate!"));
-            }
-
-            var batch = _mapper.Map<Batch>(batchRequest);
-            string createResult = batchRepository.CreateBatch(batch);
-            if(!createResult.Equals(Result.createSuccessfull.ToString()))
-            {
-                return BadRequest(new BaseResponse(true, $"Fail to create Batch {batch.batch_name}"));
-            }
-
-            return Ok(new BaseResponse(false, $"Create Batch {batch.batch_name} Success!", batchRequest));
-        }
 
         [HttpDelete("DeleteBatch/{id}")]
         public ActionResult DeleteBatch(int id)

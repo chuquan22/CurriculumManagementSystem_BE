@@ -90,8 +90,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, updateResult));
             }
-
-            return Ok(new BaseResponse(false, "Update SuccessFull!", user));
+            var userResponse = _mapper.Map<UserResponse>(user);
+            return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
         }
 
         [HttpDelete("DeleteUser/{id}")]
