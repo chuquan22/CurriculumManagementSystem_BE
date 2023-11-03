@@ -11,6 +11,7 @@ using Repositories.AssessmentMethods;
 using Repositories.AssessmentTypes;
 using Repositories.ClassSessionTypes;
 using Repositories.CLOS;
+using Repositories.DegreeLevels;
 using Repositories.GradingStruture;
 using Repositories.Materials;
 using Repositories.Session;
@@ -43,7 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IGradingStrutureRepository gradingStrutureRepository;
         private ISessionRepository sessionRepository;
         private IClassSessionTypeRepository classSessionTypeRepository;
-       
+        private IDegreeLevelRepository degreeLevelRepository;
 
 
         public SyllabusController(IMapper mapper)
@@ -58,6 +59,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             gradingStrutureRepository = new GradingStrutureRepository();
             sessionRepository = new SessionRepository();
             classSessionTypeRepository = new ClassSessionTypeRepository();
+            degreeLevelRepository = new DegreeLevelRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -599,6 +601,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private Syllabus GetSyllabusExel(IEnumerable<SyllabusExcel> row)
         {
             var syllabus = new Syllabus();
+            syllabus.Subject = new Subject();
             try
             {
                 foreach (var r in row)
@@ -636,12 +639,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("No of credits"))
                     {
-                        // syllabus.Subject.credit = int.Parse(r.Details);
+                        syllabus.Subject.credit = int.Parse(r.Details);
                     }
-                    //else if (r.Title.Equals("Degree Level"))
-                    //{
-                    //    syllabus.degree_level = r.Details;
-                    //}
+                    else if (r.Title.Equals("Degree Level"))
+                    {
+                        try
+                        {
+                            syllabus.degree_level_id = degreeLevelRepository.GetDegreeLevelByVietnameseName(r.Details).degree_level_id;
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw new Exception("No Degree Level Enlish Name found in system:" + r.Details);
+                        }
+                    }
                     else if (r.Title.Equals("Time Allocation"))
                     {
                         syllabus.time_allocation = r.Details;
@@ -823,7 +835,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["course_code"] = syllabus.Subject.subject_code,
                 ["leaning-teaching_method"] = null,
                 ["credit"] = null,
-               // ["degree_level"] = syllabus.degree_level,
+                ["degree_level"] = syllabus.DegreeLevel.degree_level_english_name,
                 ["time_allocation"] = syllabus.time_allocation,
                 ["description"] = syllabus.syllabus_description,
                 ["student_task"] = syllabus.student_task,

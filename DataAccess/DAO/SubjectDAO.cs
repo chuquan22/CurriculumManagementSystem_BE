@@ -18,7 +18,12 @@ namespace DataAccess.DAO
 
         public List<Subject> GetAllSubjects()
         {
-            var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true).ToList();
+            var list = CMSDbContext.Subject
+                .Include(x => x.AssessmentMethod)
+                .Include(x => x.LearningMethod)
+               
+                .Where(x => x.is_active == true)
+                .ToList();
             return list;
         }
 
