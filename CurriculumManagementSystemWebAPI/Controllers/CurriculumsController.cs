@@ -118,6 +118,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            curriculumResponse.Semester = _context.Semester.Where(x => x.batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
         }
 
