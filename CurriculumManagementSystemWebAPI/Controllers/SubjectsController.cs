@@ -215,7 +215,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
-            if(CheckIdExist(id))
+            if(CheckIdExistInSyllabus(id))
             {
                 return BadRequest(new BaseResponse(true, "Subject used by Syllabus. Can't Delete!"));
             }
@@ -245,11 +245,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete successfull!", subjectRespone));
         }
 
+        private bool CheckIdExistInSyllabus(int id)
+        {
+            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
+            return true;
+        }
 
         [NonAction]
         public bool CheckIdExist(int id)
         {
-            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
+            if (_context.Subject.FirstOrDefault(x => x.subject_id == id) == null) return false;
             return true;
         }
 
