@@ -16,5 +16,20 @@ namespace DataAccess.DAO
             var listDegreeLevel = _cmsDbContext.DegreeLevel.ToList();
             return listDegreeLevel;
         }
+
+        public DegreeLevel GetDegreeLevelByID(int id)
+        {
+            return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_id == id).FirstOrDefault();
+        }
+
+        public DegreeLevel GetDegreeLevelByEnglishName(string name)
+        {
+            return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_english_name.Equals(name)).FirstOrDefault();
+        }
+
+        public DegreeLevel GetDegreeLevelByVietnameseName(string name)
+        {
+            return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_name.Equals(name)).FirstOrDefault();
+        }
     }
 }

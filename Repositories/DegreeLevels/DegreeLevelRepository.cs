@@ -15,5 +15,20 @@ namespace Repositories.DegreeLevels
         {
             return degreeLevelDAO.GetAllDegreeLevel();
         }
+
+        public DegreeLevel GetDegreeLevelByEnglishName(string name)
+        {
+            return degreeLevelDAO.GetDegreeLevelByEnglishName(name);
+        }
+
+        public DegreeLevel GetDegreeLevelByID(int name)
+        {
+            return degreeLevelDAO.GetDegreeLevelByID(name);
+        }
+
+        public DegreeLevel GetDegreeLevelByVietnameseName(string name)
+        {
+            return degreeLevelDAO.GetDegreeLevelByVietnameseName(name);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace DataAccess.Models.DTO.request
         public string document_type { get; set; }
         public string program { get; set; }
         public string decision_No { get; set; }
-        public string degree_level { get; set; }
+        public int degree_level_id { get; set; }
         public string syllabus_description { get; set; }
         public int subject_id { get; set; }
         public string student_task { get; set; }

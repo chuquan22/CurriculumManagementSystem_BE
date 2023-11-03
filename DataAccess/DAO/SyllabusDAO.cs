@@ -20,6 +20,7 @@ namespace DataAccess.DAO
                 rs = context.Syllabus
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                   .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_status == true)
                                    .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
@@ -63,6 +64,7 @@ namespace DataAccess.DAO
                 rs = context.PreRequisite
                     .Include(x => x.Subject)
                     .Include(x => x.PreRequisiteType)
+
                     .Where(x => x.subject_id == id )
                     .ToList();  
             }
@@ -74,6 +76,7 @@ namespace DataAccess.DAO
             using (var context = new CMSDbContext())
             {
                 var query = context.Syllabus.Include(s => s.Subject)
+                                            .Include(s => s.DegreeLevel)
                                             .Where(s => s.syllabus_status == true);
 
                 if (!string.IsNullOrEmpty(txtSearch))
@@ -100,6 +103,7 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
             }
@@ -112,6 +116,7 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
                 if(rs.syllabus_status == true)
@@ -132,6 +137,7 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
                 rs.syllabus_approved = true;
@@ -151,6 +157,7 @@ namespace DataAccess.DAO
             {
                 var oldRs = context.Syllabus
                .Include(s => s.Subject)
+                .Include(s => s.DegreeLevel)
                .Include(s => s.Subject.LearningMethod)
                .Where(s => s.syllabus_id == syllabus.syllabus_id)
                .FirstOrDefault();
@@ -160,8 +167,8 @@ namespace DataAccess.DAO
                     if (syllabus.syllabus_description != null)
                         oldRs.syllabus_description = syllabus.syllabus_description;
 
-                    //if (syllabus.degree_level != null)
-                    //    oldRs.degree_level = syllabus.degree_level;
+                    if (syllabus.degree_level_id != null)
+                        oldRs.degree_level_id = syllabus.degree_level_id;
 
                     if (syllabus.syllabus_tool != null )
                         oldRs.syllabus_tool = syllabus.syllabus_tool;
