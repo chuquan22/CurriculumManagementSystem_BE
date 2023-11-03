@@ -160,8 +160,8 @@ namespace DataAccess.DAO
                     if (syllabus.syllabus_description != null)
                         oldRs.syllabus_description = syllabus.syllabus_description;
 
-                    if (syllabus.degree_level != null)
-                        oldRs.degree_level = syllabus.degree_level;
+                    //if (syllabus.degree_level != null)
+                    //    oldRs.degree_level = syllabus.degree_level;
 
                     if (syllabus.syllabus_tool != null )
                         oldRs.syllabus_tool = syllabus.syllabus_tool;

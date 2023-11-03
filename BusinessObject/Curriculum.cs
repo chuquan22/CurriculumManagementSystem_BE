@@ -30,8 +30,6 @@ namespace BusinessObject
         [Required]
         public string decision_No { get;set; }
         [Required]
-        public string degree_level { get; set; }
-        [Required]
         public string Formality { get; set; }
         [Required]
         public DateTime approved_date { get; set; }
@@ -40,11 +38,11 @@ namespace BusinessObject
         [Required]
         public bool is_active { get; set; }
 
-        public virtual Batch Batch { get; set; }
-        public virtual Specialization Specialization { get; set; }
-        public virtual ICollection<PLOs> PLOs { get; set; }
-        public virtual ICollection<SemesterPlan> Semesters { get; set; }
-        public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
-        public virtual ICollection<ComboCurriculum> ComboCurriculum { get; set; }
+        public virtual Batch? Batch { get; set; }
+        public virtual Specialization? Specialization { get; set; }
+        public virtual ICollection<PLOs>? PLOs { get; set; }
+        public virtual ICollection<SemesterPlan>? Semesters { get; set; }
+        public virtual ICollection<CurriculumSubject>? CurriculumSubjects { get; set; }
+        public virtual ICollection<ComboCurriculum>? ComboCurriculum { get; set; }
     }
 }

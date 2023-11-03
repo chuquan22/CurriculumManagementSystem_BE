@@ -12,9 +12,9 @@ namespace Repositories.SemesterPlans
     {
         public string CreateSemesterPlan(SemesterPlan semesterPlans); 
 
-        public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level);
+        //public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level);
 
-        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
+        //public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
 
     }
 }

@@ -20,8 +20,6 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public int batch_id { get; set; }
         [Required]
-        public string degree_level { get; set; }
-        [Required]
         public string Formality { get; set; }
         [Required]
         public string decision_No { get; set; }

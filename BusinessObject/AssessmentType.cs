@@ -15,6 +15,6 @@ namespace BusinessObject
         [Required]
         public string assessment_type_name { get; set; }
 
-        public virtual ICollection<AssessmentMethod> assessment_methods { get; set;}
+        public virtual ICollection<AssessmentMethod>? assessment_methods { get; set;}
     }
 }

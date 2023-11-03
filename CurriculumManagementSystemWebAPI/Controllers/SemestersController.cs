@@ -56,6 +56,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
 
+
+        [HttpGet("GetSemesterBySpeId/{speId}")]
+        public ActionResult GetSemesterBy(int speId)
+        {
+            var semester = semesterRepository.GetSemesterBySpe(speId);
+            if (semester == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Semester!"));
+            }
+            var semesterResponse = _mapper.Map<List<SemesterResponse>>(semester);
+            return Ok(new BaseResponse(false, "Semester", semesterResponse));
+        }
+
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {

@@ -87,18 +87,6 @@ namespace DataAccess.DAO
             return total;
         }
 
-        public List<Curriculum> GetCurriculumByDegreeLevel(string degree_level)
-        {
-            var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
-                .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major)
-                .Include(x => x.CurriculumSubjects)
-                .Where(x => x.degree_level.Equals(degree_level))
-                .ToList();
-            return curriculum;
-        }
-
 
         public Curriculum GetCurriculumById(int id)
         {
@@ -156,26 +144,13 @@ namespace DataAccess.DAO
             return curriculum;
         }
 
-        public string GetCurriculumCode(int batchId, int speId, string degree_level)
+        public string GetCurriculumCode(int batchId, int speId)
         {
             var specialization = _cmsDbContext.Specialization.Find(speId);
-            var major = _cmsDbContext.Major.Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
+            var major = _cmsDbContext.Major.Include(x => x.DegreeLevel).Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
-            var abbreviationDgree = "";
-            if(degree_level.ToLower().Equals("associate degree"))
-            {
-                abbreviationDgree = "CD";
-            }else if(degree_level.ToLower().Equals("international associate degree"))
-            {
-                abbreviationDgree = "IC";
-            }
-            else if (degree_level.ToLower().Equals("vocational secondary"))
-            {
-                abbreviationDgree = "TC";
-            }
 
-
-            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + abbreviationDgree + "-" + batch.batch_name;
+            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + major.DegreeLevel.degree_level_code + "-" + batch.batch_name;
 
             return curriCode;
         }

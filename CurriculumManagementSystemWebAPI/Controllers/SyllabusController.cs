@@ -638,10 +638,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         // syllabus.Subject.credit = int.Parse(r.Details);
                     }
-                    else if (r.Title.Equals("Degree Level"))
-                    {
-                        syllabus.degree_level = r.Details;
-                    }
+                    //else if (r.Title.Equals("Degree Level"))
+                    //{
+                    //    syllabus.degree_level = r.Details;
+                    //}
                     else if (r.Title.Equals("Time Allocation"))
                     {
                         syllabus.time_allocation = r.Details;
@@ -823,7 +823,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["course_code"] = syllabus.Subject.subject_code,
                 ["leaning-teaching_method"] = null,
                 ["credit"] = null,
-                ["degree_level"] = syllabus.degree_level,
+               // ["degree_level"] = syllabus.degree_level,
                 ["time_allocation"] = syllabus.time_allocation,
                 ["description"] = syllabus.syllabus_description,
                 ["student_task"] = syllabus.student_task,

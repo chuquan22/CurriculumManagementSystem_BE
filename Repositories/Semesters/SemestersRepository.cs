@@ -37,6 +37,11 @@ namespace Repositories.Semesters
             return db.GetSemester(id);
         }
 
+        public List<Semester> GetSemesterBySpe(int speId)
+        {
+            return db.GetSemesterBySpe(speId);
+        }
+
         public List<Semester> GetSemesters()
         {
             return db.GetSemesters();

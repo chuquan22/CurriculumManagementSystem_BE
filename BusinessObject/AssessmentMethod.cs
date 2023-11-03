@@ -18,9 +18,9 @@ namespace BusinessObject
         [ForeignKey("AssessmentType")]
         public int assessment_type_id { get; set; }
         
-        public virtual AssessmentType AssessmentType { get; set; }
-        public virtual ICollection<Subject> Subjects { get; set; }
-        public virtual ICollection<GradingStruture> GradingStrutures { get; set; }
+        public virtual AssessmentType? AssessmentType { get; set; }
+        public virtual ICollection<Subject>? Subjects { get; set; }
+        public virtual ICollection<GradingStruture>? GradingStrutures { get; set; }
 
 
     }

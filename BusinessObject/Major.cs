@@ -18,10 +18,13 @@ namespace BusinessObject
         public string major_name { get; set;}
         [Required, MaxLength(100)]
         public string major_english_name { get; set; }
+        [ForeignKey("DegreeLevel")]
+        public int degree_level_id { get; set; }
         [Required]
         public bool is_active { get; set;}
 
         public virtual ICollection<Specialization>? Specialization { get; set; }
+        public virtual DegreeLevel? DegreeLevel { get; set; }
 
     }
 }
