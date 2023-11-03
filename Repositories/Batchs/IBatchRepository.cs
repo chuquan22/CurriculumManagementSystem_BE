@@ -15,9 +15,11 @@ namespace Repositories.Batchs
         int GetTotalBatch(string? txtSearch);
         List<Batch> GetBatchBySpe(int speId);
         Batch GetBatchById(int id);
-        bool CheckBatchDuplicate(string batch_name);
+        bool CheckBatchDuplicate(string batch_name, int batch_no);
+        bool CheckBatchUpdateDuplicate(int id, string batch_name, int batch_no);
         bool CheckBatchExsit(int id);
         string CreateBatch(Batch batch);
+        string UpdateBatch(Batch batch);
         string DeleteBatch(Batch batch);
     }
 }

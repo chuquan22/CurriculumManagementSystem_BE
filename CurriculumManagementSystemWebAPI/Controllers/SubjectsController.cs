@@ -249,7 +249,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [NonAction]
         public bool CheckIdExist(int id)
         {
-            if (_context.Subject.Find(id) == null) return false;
+            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
             return true;
         }
 

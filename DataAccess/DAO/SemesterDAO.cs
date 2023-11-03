@@ -80,9 +80,9 @@ namespace DataAccess.DAO
             return listSemester;
         }
 
-        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int degreeId)
         {
-            return (_cmsDbContext.Semester?.Any(x => x.semester_name.Equals(name) && x.school_year == schoolYear && x.semester_id != id)).GetValueOrDefault();
+            return (_cmsDbContext.Semester?.Any(x => x.semester_name.ToLower().Equals(name.ToLower().Trim()) && x.school_year == schoolYear && x.semester_id != id && x.degree_level_id == degreeId)).GetValueOrDefault();
         }
 
         public bool CheckSemesterExsit(int id)

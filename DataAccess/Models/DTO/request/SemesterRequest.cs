@@ -19,6 +19,10 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public int school_year { get; set; }
         [Required]
-        public int batch_id { get; set; }
+        public int degree_level_id { get; set; }
+        [Required]
+        public string batch_name { get; set; }
+        [Required]
+        public int batch_term_no { get; set; }
     }
 }

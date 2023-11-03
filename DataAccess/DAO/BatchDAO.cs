@@ -77,9 +77,14 @@ namespace DataAccess.DAO
         }
 
 
-        public bool CheckBatchDuplicate(string batch_name)
+        public bool CheckBatchDuplicate(string batch_name, int batch_no)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_term_no == batch_no)).GetValueOrDefault();
+        }
+
+        public bool CheckBatchUpdateDuplicate(int id,string batch_name, int batch_no)
+        {
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_term_no == batch_no && x.batch_id != id)).GetValueOrDefault();
         }
 
         public bool CheckBatchExsit(int id)
@@ -124,6 +129,20 @@ namespace DataAccess.DAO
                 _context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
+            {
+                return ex.InnerException.Message;
+            }
+        }
+
+        public string UpdateBatch(Batch batch)
+        {
+            try
+            {
+                _context.Batch.Update(batch);
+                _context.SaveChanges();
+                return Result.updateSuccessfull.ToString();
+            }
+            catch (Exception ex)
             {
                 return ex.InnerException.Message;
             }

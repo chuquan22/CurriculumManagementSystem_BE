@@ -176,7 +176,7 @@ namespace DataAccess.Models.DTO
             CreateMap<PreRequisite, PreRequisiteRequest>().ReverseMap();
 
             CreateMap<PreRequisite, PreRequisiteResponse2>()
-             .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name.Trim()))
+              .ForMember(dest => dest.prequisite_subject_name, opt => opt.MapFrom(src => src.Subject.subject_name.Trim()))
               .ForMember(dest => dest.prequisite_name, opt => opt.MapFrom(src => src.PreRequisiteType.pre_requisite_type_name.Trim()))
               .ReverseMap();
 
@@ -218,6 +218,7 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.total_time, opt => opt.MapFrom(src => src.Subject.total_time))
               .ForMember(dest => dest.specialization_id, opt => opt.MapFrom(src => src.Curriculum.specialization_id))
               .ReverseMap();
+
             CreateMap<CurriculumSubject, CurriculumSubjectRequest>()
                 .ReverseMap();
 
