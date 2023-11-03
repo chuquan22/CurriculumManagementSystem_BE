@@ -134,23 +134,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     int syllabusId = 0;
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    List<object> rs = new List<object>();
                     List<CLO> listClo = new List<CLO>();
                     Syllabus syllabusExcel = new Syllabus();
                     GradingStrutureCreateRequest gradingStrutureCreate;
                     List<int> cloId = new List<int>();
 
+                    //Loop for each sheet in syllabus
                     for (int i = 0; i < sheetNames.Count; i++)
                     {
                         gradingStrutureCreate = new GradingStrutureCreateRequest();
-                        if (i == 0)
+                        if (i == 0) //1. Import Syllabus
                         {
                             var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             syllabusExcel = GetSyllabusExel(row);
-                            var value = new
-                            {
-                                Syllabus = syllabusExcel,
-                            };
+                            
                             try
                             {
                                 syllabusId = await CreateSyllabusAPI(syllabusExcel);
@@ -161,18 +158,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                 return BadRequest("False when craete syllabus.");
                             }
-                            rs.Add(value);
                         }
-                        else if (i == 1)
+                        else if (i == 1) // 2. Import Materials
                         {
                             var row = MiniExcel.Query<MaterialExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                            var materialExcel = GetMaterialExcel(row, syllabusExcel);
-                            var value = new
-                            {
-                                Materials = materialExcel,
-                            };
-
-
+                            var materialExcel = GetMaterialExcel(row, syllabusExcel);                      
                             foreach (var item in materialExcel)
                             {
                                 if (item.material_type != null)
@@ -194,20 +184,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
 
                             }
-
-                            rs.Add(value);
-
                         }
-                        else if (i == 2)
+                        else if (i == 2) // 3. Import CLOs
                         {
                             var row = MiniExcel.Query<CLOsExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             listClo = GetClosExcel(row);
-                            var value = new
-                            {
-                                CLOs = listClo,
-                            };
-                            //Add to database
-                            
                             foreach (var item in listClo)
                             {
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
@@ -220,33 +201,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 cloId.Add(idClo);
 
                             }
-
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
-                            rs.Add(value);
                         }
-                        else if (i == 4)
+                        else if (i == 4) // 4. Import Schedule Excel
                         {
                             var row = MiniExcel.Query<ScheduleExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             var scheduleExcel = GetScheduleExcel(row, syllabusExcel);
-                            var value = new
-                            {
-                                GradingStruture = row,
-                            };
                             foreach (var item in scheduleExcel)
                             {
                                 SessionCreateRequest dataSession = new SessionCreateRequest();
                                 dataSession.session = _mapper.Map<SessionRequest>(item);
-
-                                // Initialize the session_clo list
                                 dataSession.session_clo = new List<SessionCLOsRequest>();
-
-
-
                                 List<int> lst = new List<int>();
                                 foreach (var it in cloId)
-                                {
-                                  
+                                {                                  
                                         string name = "null";
                                         if (cloRepository.GetCLOsById(it) != null)
                                         {
@@ -261,11 +230,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         {
                                             lst = new List<int>();
                                             lst.AddRange(cloId);
-                                        }
-
-                                    
-
-                                   
+                                        }                                                                
                                 }
                                 foreach (var idClo in lst)
                                 {
@@ -284,10 +249,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     return BadRequest("False when saving schudule.");
                                 }
                             }
-
-                            rs.Add(value);
                         }
-                        else if (i == 5)
+                        else if (i == 5) // 5. Import Grading Struture
                         {
                             var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             List<GradingStruture> gradingStrutureExcel = GetGradingStrutureExcel(row, syllabusExcel);
@@ -313,13 +276,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
                                     }
 
-                                    if (gra.clo_name.Contains("All CLOs"))
+                                    if (gra.clo_name.Contains("All CLOs") || gra.clo_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
                                     {
                                         lst = new List<int>();
                                         lst.AddRange(cloId);
                                         gra.number_of_questions = "";
                                     }
-
                                 }
 
                                 gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
@@ -335,12 +297,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
 
                             }
-
-                            var value = new
-                            {
-                                GradingStruture = list,
-                            };
-                            rs.Add(value);
                         }
                     }
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
@@ -352,7 +308,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", ex.Message));
+                return BadRequest(new BaseResponse(true, ex.Message, null));
             }
 
         }
