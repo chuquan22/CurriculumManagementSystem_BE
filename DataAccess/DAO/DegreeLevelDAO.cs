@@ -16,5 +16,11 @@ namespace DataAccess.DAO
             var listDegreeLevel = _cmsDbContext.DegreeLevel.ToList();
             return listDegreeLevel;
         }
+
+        public int GetDegreeIdByBatch(int bacthId)
+        {
+            var id = _cmsDbContext.Semester.FirstOrDefault(x => x.batch_id == bacthId).degree_level_id;
+            return id;
+        }
     }
 }

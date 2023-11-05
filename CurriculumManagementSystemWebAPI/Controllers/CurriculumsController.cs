@@ -317,11 +317,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     await fileCurriculum.CopyToAsync(stream);
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    //string validation = ValidationDataExcel(filePath, sheetNames, stream);
-                    //if (validation != "Success")
-                    //{
-                    //    return BadRequest(new BaseResponse(true, validation));
-                    //}
+                    string validation = ValidationDataExcel(filePath, sheetNames, stream);
+                    if (validation != "Success")
+                    {
+                        return BadRequest(new BaseResponse(true, validation));
+                    }
                     for (int i = 0; i < sheetNames.Count; i++)
                     {
 
@@ -398,57 +398,56 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         if (i == 3)
                         {
                             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-                            var groupMappings = new Dictionary<string, string>
+                            var group_name = "";
+                            var groupNames = new Dictionary<string, string>
                                 {
                                     { "Khối Kiến thức chung", "General Subject" },
                                     { "Khối kiến thức ngành", "Basic Subject" },
                                     { "Khối kiến thức chọn theo chuyên ngành hẹp", "Specialization Subject" }
                                 };
-
                             using (var package = new ExcelPackage(stream))
                             {
                                 var worksheet = package.Workbook.Worksheets[3];
 
-                                int subjectCodeColumnIndex = 1;
-                                int ploNameStartRow = 2;
-
                                 for (int row = 1; row <= worksheet.Dimension.End.Row; row++)
                                 {
-                                    var cellValue = worksheet.Cells[row, subjectCodeColumnIndex].Text;
-
-                                    if (groupMappings.TryGetValue(cellValue, out var subjectGroup))
+                                    for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
                                     {
-                                        //group_name = subjectGroup;
-                                    }
-
-                                    if (cellValue.Equals("ü"))
-                                    {
-                                        var subjectCode = worksheet.Cells[row, subjectCodeColumnIndex].Text;
-
-                                        for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                                        var cell = worksheet.Cells[row, col];
+                                        string cellValue = cell.Text;
+                                        if (groupNames.ContainsKey(cellValue))
                                         {
-                                            var ploName = worksheet.Cells[ploNameStartRow, col].Text;
+                                            group_name = groupNames[cellValue];
+                                        }
 
-                                            if (!string.IsNullOrEmpty(ploName))
+                                        var subjectCode = worksheet.Cells[row, 1].Text;
+                                        foreach (var subject in listCurriSubject)
+                                        {
+                                            var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
+                                            if (subjects != null && subject.subject_id == subjects.subject_id)
                                             {
-                                                var subject = _subjectRepository.GetSubjectByCode(subjectCode);
-                                                var plo = _ploRepository.GetPLOsByName(ploName, curriculum_id);
+                                                subject.subject_group = group_name;
+                                                break;
+                                            }
+                                        }
 
-                                                if (subject != null && plo != null)
-                                                {
-                                                    var ploMapping = new PLOMapping
-                                                    {
-                                                        PLO_id = plo.PLO_id,
-                                                        subject_id = subject.subject_id
-                                                    };
+                                        if (cellValue.Equals("ü"))
+                                        {
+                                            var subject_code = worksheet.Cells[row, 1].Text;
+                                            var plo_name = worksheet.Cells[2, col].Text;
 
-                                                    string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
+                                            var subject = _subjectRepository.GetSubjectByCode(subject_code);
+                                            var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
 
-                                                    if (!createResult.Equals(Result.createSuccessfull.ToString()))
-                                                    {
-                                                        return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
-                                                    }
-                                                }
+                                            var ploMapping = new PLOMapping()
+                                            {
+                                                PLO_id = plo.PLO_id,
+                                                subject_id = subject.subject_id
+                                            };
+                                            string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
+                                            if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                                            {
+                                                return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
                                             }
                                         }
                                     }
@@ -546,186 +545,202 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private string ValidationDataExcel(string path, List<string> sheetNames, FileStream stream)
         {
-            List<Subject> listSubject = new List<Subject>();
-            List<PLOs> listPLO = new List<PLOs>();
-            if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
+            try
             {
-                return "Please using file import template";
-            }
-            for (int i = 0; i < sheetNames.Count; i++)
-            {
-                // validate data sheet 1
-                if (i == 0)
+                List<Subject> listSubject = new List<Subject>();
+                List<PLOs> listPLO = new List<PLOs>();
+                if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
                 {
-                    var major = new Major();
-                    var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-
-                    foreach (var r in row)
-                    {
-                        if (r.Title != null && r.Details == null)
-                        {
-                            return $"{r.Title} in sheet Curriculum must not be null";
-                        }
-                        // Check format of curriculum code
-                        string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
-                        if (r.Title.Equals("Curriculum Code"))
-                        {
-                            if (!Regex.IsMatch(r.Details, pattern))
-                            {
-                                return "Curriculum Code must format ex:GD-GD-19.3 (GD: Graphic Design)";
-                            }
-                            string[] parts = r.Details.Split('-');
-                            // get part have index 2 in array string ex: 19.4
-                            var batch_name = parts[3];
-                            // get batch_id by batch_name
-                            if (_batchRepository.GetBatchIDByName(batch_name) == 0)
-                            {
-                                return $"Batch {batch_name} Not Exsit";
-                            }
-
-                        }
-                        // Check Major Exsit
-                        else if (r.Title.Equals("Vocational Code"))
-                        {
-                            major = _majorRepository.CheckMajorbyMajorCode(r.Details);
-                            //if major not exsit in database
-                            if (major == null)
-                            {
-                                return $"Major not Exsit. Please Create Major {r.Details}";
-                            }
-                        }
-                        // Check Spe exsit
-                        else if (r.Title.Equals("Specialization Code"))
-                        {
-                            var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
-                            var spe = _specializationRepository.GetSpeById(spe_id);
-
-                            //if major not exsit in database
-                            if (spe_id == 0)
-                            {
-                                return $"Specialization not Exsit. Please Create Specialization {r.Details}";
-                            }
-
-                            if (spe.major_id != major.major_id)
-                            {
-                                return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
-                            }
-
-                        }
-                    }
+                    return "File is not in a supported format.";
                 }
-
-                // validate data sheet 2
-                if (i == 1)
+                for (int i = 0; i < sheetNames.Count; i++)
                 {
-                    // check PLO Exsit
-                    var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                    foreach (var item in row)
+                    // validate data sheet 1
+                    if (i == 0)
                     {
-                        if (item.No != null && item.PLO_name == null || item.PLO_description == null)
-                        {
-                            return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
-                        }
-                        var plo = new PLOs();
-                        plo.PLO_name = item.PLO_name;
+                        var major = new Major();
+                        var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
 
-                        foreach (var PLO in listPLO)
+                        foreach (var r in row)
                         {
-                            if (plo.PLO_name.Equals(PLO.PLO_name))
+                            if (r.Title != null && r.Details == null)
                             {
-                                return $"Only one {plo.PLO_name} in Sheet PLO";
+                                return $"{r.Title} in sheet Curriculum must not be null";
                             }
-                            if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
+                            // Check format of curriculum code
+                            string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
+                            if (r.Title.Equals("Curriculum Code"))
                             {
-                                return "PLO must start with 'PLO' and no cointain space ";
-                            }
-                        }
-                        listPLO.Add(plo);
-                    }
-                }
-
-                // validate data sheet 3
-                if (i == 2)
-                {
-
-                    // Check Subject Exsit
-                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null);
-                    foreach (var item in row)
-                    {
-                        if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
-                        {
-                            return "Must be fill all data in sheet Curriculum Subject";
-                        }
-                        if (item.subject_code != null && item.subject_code != "")
-                        {
-                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
-                            if (subject == null)
-                            {
-                                return $"Subject {item.subject_code} Not Found. Please Create Subject";
-                            }
-                            listSubject.Add(new Subject { subject_code = item.subject_code });
-                        }
-                        string combo_code = item.combo_code;
-                        if (combo_code != null && combo_code != "")
-                        {
-                            var combo = _comboRepository.FindComboByCode(item.combo_code);
-                            if (combo == null)
-                            {
-                                return $"Combo {item.combo_code} Not Found. Please Create Combo";
-                            }
-                        }
-
-                    }
-                }
-                // validate data sheet 4
-                if (i == 3)
-                {
-                    using (var package = new ExcelPackage(stream))
-                    {
-                        var worksheet = package.Workbook.Worksheets[3];
-
-                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                        {
-                            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
-                            {
-                                var celplo = worksheet.Cells[2, col];
-                                bool found_plo = false;
-                                bool found_subject = false;
-                                foreach (var plo in listPLO)
+                                if (!Regex.IsMatch(r.Details, pattern))
                                 {
-                                    if (plo.PLO_name.Equals(celplo.Text))
+                                    return "Curriculum Code must format ex:GD-GD-CD-19.3";
+                                }
+                                string[] parts = r.Details.Split('-');
+                                // get part have index 2 in array string ex: 19.4
+                                var batch_name = parts[3];
+                                // get batch_id by batch_name
+                                if (_batchRepository.GetBatchIDByName(batch_name) == 0)
+                                {
+                                    return $"Batch {batch_name} Not Exsit";
+                                }
+
+                            }
+                            // Check Major Exsit
+                            else if (r.Title.Equals("Vocational Code"))
+                            {
+                                major = _majorRepository.CheckMajorbyMajorCode(r.Details);
+                                //if major not exsit in database
+                                if (major == null)
+                                {
+                                    return $"Major not Exsit. Please Create Major {r.Details}";
+                                }
+                            }
+                            // Check Spe exsit
+                            else if (r.Title.Equals("Specialization Code"))
+                            {
+                                var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
+                                var spe = _specializationRepository.GetSpeById(spe_id);
+
+                                //if major not exsit in database
+                                if (spe_id == 0)
+                                {
+                                    return $"Specialization not Exsit. Please Create Specialization {r.Details}";
+                                }
+
+                                if (spe.major_id != major.major_id)
+                                {
+                                    return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
+                                }
+
+                            }
+                        }
+
+
+                    }
+
+                    // validate data sheet 2
+                    if (i == 1)
+                    {
+                        // check PLO Exsit
+                        var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                        foreach (var item in row)
+                        {
+                            if (item.No != null && item.PLO_name == null || item.PLO_description == null)
+                            {
+                                return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
+                            }
+                            var plo = new PLOs();
+                            plo.PLO_name = item.PLO_name;
+
+                            foreach (var PLO in listPLO)
+                            {
+                                if (plo.PLO_name.Equals(PLO.PLO_name))
+                                {
+                                    return $"Only one {plo.PLO_name} in Sheet PLO";
+                                }
+                                if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
+                                {
+                                    return "PLO must start with 'PLO' and no cointain space ";
+                                }
+                            }
+                            listPLO.Add(plo);
+                        }
+                    }
+
+                    // validate data sheet 3
+                    if (i == 2)
+                    {
+                        // Check Subject Exsit
+                        var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null);
+                        foreach (var item in row)
+                        {
+                            if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
+                            {
+                                return "Must be fill all data in sheet Curriculum Subject";
+                            }
+                            if (item.subject_code != null && item.subject_code != "")
+                            {
+                                var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                                if (subject == null)
+                                {
+                                    return $"Subject {item.subject_code} Not Found. Please Create Subject";
+                                }
+                                listSubject.Add(new Subject { subject_code = item.subject_code });
+                            }
+                            string combo_code = item.combo_code;
+                            if (combo_code != null && combo_code != "")
+                            {
+                                var combo = _comboRepository.FindComboByCode(item.combo_code);
+                                if (combo == null)
+                                {
+                                    return $"Combo {item.combo_code} Not Found. Please Create Combo";
+                                }
+                            }
+
+                            int count = row.Count(data => data.option != null && data.option.Equals("True") && data.term_no == item.term_no);
+                            if (count % 2 != 0)
+                            {
+                                return $"Subject have option in term no {item.term_no} must even number";
+                            }
+
+                        }
+
+
+                    }
+                    // validate data sheet 4
+                    if (i == 3)
+                    {
+                        using (var package = new ExcelPackage(stream))
+                        {
+                            var worksheet = package.Workbook.Worksheets[3];
+
+                            for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                            {
+                                for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                                {
+                                    var celplo = worksheet.Cells[2, col];
+                                    bool found_plo = false;
+                                    bool found_subject = false;
+                                    foreach (var plo in listPLO)
                                     {
-                                        found_plo = true;
+                                        if (plo.PLO_name.Equals(celplo.Text))
+                                        {
+                                            found_plo = true;
+
+                                        }
+                                    }
+                                    if (!found_plo)
+                                    {
+                                        return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                    }
+
+                                    var subjectCode = worksheet.Cells[row, 1];
+                                    foreach (var subject in listSubject)
+                                    {
+                                        if (subject.subject_code.Equals(subjectCode.Text))
+                                        {
+                                            found_subject = true;
+                                        }
 
                                     }
-                                }
-                                if (!found_plo)
-                                {
-                                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
-                                }
-
-                                var subjectCode = worksheet.Cells[row, 1];
-                                foreach (var subject in listSubject)
-                                {
-                                    if (subject.subject_code.Equals(subjectCode.Text))
+                                    if (!found_subject && !subjectCode.Text.Contains(" "))
                                     {
-                                        found_subject = true;
+                                        return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
                                     }
 
                                 }
-                                if (!found_subject && !subjectCode.Text.Contains(" "))
-                                {
-                                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
-                                }
-
                             }
                         }
                     }
+
                 }
 
+                return "Success";
             }
-
-            return "Success";
+            catch (Exception)
+            {
+                return "File import cancelled due to errors";
+            }
         }
 
 

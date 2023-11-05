@@ -50,5 +50,10 @@ namespace Repositories.Major
         {
             return db.GetAllMajor();
         }
+
+        public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
+        {
+            return db.GetMajorByDegreeLevel(degreeId);
+        }
     }
 }

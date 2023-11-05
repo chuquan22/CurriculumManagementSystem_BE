@@ -15,5 +15,10 @@ namespace Repositories.DegreeLevels
         {
             return degreeLevelDAO.GetAllDegreeLevel();
         }
+
+        public int GetDegreeIdByBatch(int bacthId)
+        {
+            return degreeLevelDAO.GetDegreeIdByBatch(bacthId);
+        }
     }
 }

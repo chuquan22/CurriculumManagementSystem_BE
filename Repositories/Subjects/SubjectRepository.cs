@@ -36,9 +36,14 @@ namespace Repositories.Subjects
         }
 
         public Subject GetSubjectById(int id) => subjectDAO.GetSubjectById(id);
+
+        public List<Subject> GetSubjectByLearningMethod(int learningMethodId) => subjectDAO.GetSubjectByLearningMethod(learningMethodId);
        
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);
+
+        public List<Subject> GetSubjectBySpecialization(int speId, int batchId) => subjectDAO.GetSubjectBySpecialization(speId, batchId);
+        
 
         public Subject GetSubjectBySyllabus(int syllabus_id) => subjectDAO.GetSubjectBySyllabus(syllabus_id);
         

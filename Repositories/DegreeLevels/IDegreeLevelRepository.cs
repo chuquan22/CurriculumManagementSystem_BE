@@ -10,5 +10,6 @@ namespace Repositories.DegreeLevels
     public interface IDegreeLevelRepository
     {
         List<DegreeLevel> GetAllDegreeLevel();
+        int GetDegreeIdByBatch(int bacthId);
     }
 }
