@@ -14,15 +14,12 @@ namespace DataAccess.Users
     public class UserDAO
     {
         public readonly CMSDbContext _cmsDbContext = new CMSDbContext();
-        public User Login(string email, string password)
+        public User Login(string email)
         {
-            UserLoginRequest request = new UserLoginRequest();
-            request.email = email;
-            request.password = password;
             User response = new User();
             try
             {
-                response = _cmsDbContext.User.Where(u => u.user_email.Equals(email) && u.user_password.Equals(password)).FirstOrDefault();
+                response = _cmsDbContext.User.Where(u => u.user_email.Equals(email)).FirstOrDefault();
             }
             catch (Exception)
             {
