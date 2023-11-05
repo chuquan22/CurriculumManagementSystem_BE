@@ -19,6 +19,13 @@ namespace DataAccess.Major
             return list;
         }
 
+        public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
+        {
+            List<BusinessObject.Major> list = new List<BusinessObject.Major>();
+            list = db.Major.Where(x => x.degree_level_id == degreeId).ToList();
+            return list;
+        }
+
         public BusinessObject.Major AddMajor(BusinessObject.Major major)
         {
             major.major_english_name = major.major_english_name.Trim();
