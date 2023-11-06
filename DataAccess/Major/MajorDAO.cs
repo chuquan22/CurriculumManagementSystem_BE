@@ -33,6 +33,7 @@ namespace DataAccess.Major
             editMajor.major_name = major.major_name;
             editMajor.is_active = major.is_active;
             //editMajor.major_code = major.major_code;
+            editMajor.degree_level_id = major.degree_level_id;
             editMajor.major_english_name = major.major_english_name;
             db.Major.Update(editMajor); 
             db.SaveChanges();
