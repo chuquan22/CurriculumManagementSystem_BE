@@ -30,5 +30,11 @@ namespace Repositories.DegreeLevels
         {
             return degreeLevelDAO.GetDegreeLevelByVietnameseName(name);
         }
+
+        public int GetDegreeIdByBatch(int bacthId)
+        {
+            return degreeLevelDAO.GetDegreeIdByBatch(bacthId);
+
+        }
     }
 }

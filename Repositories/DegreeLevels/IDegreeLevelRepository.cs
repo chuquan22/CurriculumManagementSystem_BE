@@ -15,7 +15,7 @@ namespace Repositories.DegreeLevels
         DegreeLevel GetDegreeLevelByEnglishName(string name);
 
         DegreeLevel GetDegreeLevelByVietnameseName(string name);
-
+        int GetDegreeIdByBatch(int bacthId);
 
     }
 }

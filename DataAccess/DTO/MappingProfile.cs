@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObject;
 using DataAccess.Models.DTO.Excel;
+using DataAccess.Models.DTO.Report;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using System;

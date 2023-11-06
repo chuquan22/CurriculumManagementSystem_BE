@@ -18,6 +18,8 @@ namespace Repositories.Subjects
         Subject GetSubjectByCode(string code);
         List<Subject> GetListSubjectByTermNo(int term_no, int curriculum_id);
         List<Subject> GetSubjectByCurriculum(int curriculumId);
+        List<Subject> GetSubjectByLearningMethod(int learningMethodId);
+        List<Subject> GetSubjectBySpecialization(int speId, int batchId);
         string CreateNewSubject(Subject subject);
         string UpdateSubject(Subject subject);
         string DeleteSubject(Subject subject);

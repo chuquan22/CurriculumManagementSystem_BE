@@ -10,7 +10,7 @@ namespace Repositories.Major
     public interface IMajorRepository
     {
         public List<BusinessObject.Major> GetAllMajor();
-
+        List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId);
         public BusinessObject.Major AddMajor(BusinessObject.Major major);
 
         public BusinessObject.Major EditMajor(BusinessObject.Major major);
