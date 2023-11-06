@@ -27,12 +27,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = majorRepository.GetAllMajor();
                 var result = _mapper.Map<List<MajorResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true,"Error: " + ex.Message, null));
             }
             return Ok(new BaseResponse(true, "False", null));
         }
