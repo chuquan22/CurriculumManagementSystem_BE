@@ -27,21 +27,34 @@ namespace DataAccess.DAO
 
         public GradingStruture CreateGradingStruture(GradingStruture gra)
         {
-            _cmsDbContext.GradingStruture.Add(gra);
-            _cmsDbContext.SaveChanges();
+            bool check = CheckGrading(gra);
+            if (check == true)
+            {
+                _cmsDbContext.GradingStruture.Add(gra);
+                _cmsDbContext.SaveChanges();
+            }
             return gra;
+
         }
-        //public bool CheckGrading(GradingStruture gra)
-        //{
-        //    var father = _cmsDbContext.GradingStruture.Where(x => x.AssessmentMethod.assessment_method_id == gra.assessment_method_id && (x.session_no == 0 || x.session_no == null)).FirstOrDefault();
-        //    decimal weightAll = father.grading_weight;
-        //    var listReferences = _cmsDbContext.GradingStruture.Where(x => x.assessment_method_id == gra.assessment_method_id && x.references == gra.references);
-        //    decimal weightSon = 0;
-        //    foreach (var reference in listReferences)
-        //    {
-        //        weightSon += reference.grading_weight;
-        //    }
-        //}
+        public bool CheckGrading(GradingStruture gra)
+        {
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && (x.session_no == 0 || x.session_no == null)).FirstOrDefault();
+            decimal weightAll = father.grading_weight;
+            var listReferences = _cmsDbContext.GradingStruture.Where(x => x.assessment_method_id == gra.assessment_method_id && x.references == gra.references);
+            decimal weightSon = 0;
+            foreach (var reference in listReferences)
+            {
+                weightSon += reference.grading_weight;
+            }
+            if(weightSon > weightAll)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         public GradingStruture GetGradingStrutureById(int id)
         {

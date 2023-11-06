@@ -38,7 +38,7 @@ namespace BusinessObject
         [Required]
         public int scoring_scale { get; set; }
         [AllowNull]
-        public DateTime approved_date { get; set; }
+        public DateTime? approved_date { get; set; }
         [Required]
         public bool syllabus_status { get; set; }
         [Required]
