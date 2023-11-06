@@ -16,7 +16,7 @@ namespace DataAccess.DAO
         public List<LearningResource> GetLearningResource()
         {
             var rs = _cmsDbContext.LearningResource
-               
+                .Include(x => x.Material)
                 .ToList();
             return rs;
         }

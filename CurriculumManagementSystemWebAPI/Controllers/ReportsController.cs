@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
 using Repositories.DegreeLevels;
 using Repositories.LearningMethods;
+using Repositories.LearningResources;
 using Repositories.Major;
+using Repositories.Materials;
 using Repositories.Specialization;
 using Repositories.Subjects;
 using Repositories.Users;
@@ -23,6 +25,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ISpecializationRepository _specializationRepository;
         private IDegreeLevelRepository _degreeLevelRepository;
         private IBatchRepository _batchRepository;
+        private IMaterialRepository _materialRepository;
+        private ILearningResourceRepository _learningResourceRepository;
 
         public ReportsController()
         {
@@ -32,6 +36,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _specializationRepository = new SpecializationRepository();
             _degreeLevelRepository = new DegreeLevelRepository();
             _batchRepository = new BatchRepository();
+            _materialRepository = new MaterialRepository();
+            _learningResourceRepository = new LearningResourceRepository();
         }
 
         [HttpGet("ReportTKOLTable/{batchId}")]
@@ -82,23 +88,59 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
-        [HttpGet("ReportTextBook/{batchId}")]
+        [HttpGet("ReportTextBookTable/{batchId}")]
         public IActionResult ReportTextBook(int batchId)
         {
-            var ListTextBookReport = new List<TextBookDTOReport>();
+            var listTextBookReport = new List<TextBookDTOReport>();
             var batch = _batchRepository.GetBatchById(batchId);
             var degreeId = _degreeLevelRepository.GetDegreeIdByBatch(batchId);
             var listMajor = _majorRepository.GetMajorByDegreeLevel(degreeId);
+
             foreach (var major in listMajor)
             {
                 var spe = _specializationRepository.GetSpeByMajorId(major.major_id);
-                var textbook = new TextBookDTOReport { batch_name = batch.batch_name, major_name = major.major_name, textBookReports = new List<TextBookReport>() };
+                var textbook = new TextBookDTOReport
+                {
+                    batch_name = batch.batch_name,
+                    major_name = major.major_name,
+                    textBookReports = new List<TextBookReport>()
+                };
 
+                foreach (var s in spe)
+                {
+                    var listSubject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batchId);
+                    var textBookReport = new TextBookReport
+                    {
+                        specialization_name = s.specialization_english_name,
+                        total_subject = listSubject.Count(),
+                        LearningResource = new List<LearningResourceReport>()  
+                    };
 
+                    foreach (var subject in listSubject)
+                    {
+                        var listMaterial = _materialRepository.GetMaterialListBysubject(subject.subject_id);
+                        var listLearningResource = _learningResourceRepository.GetLearningResource();
+
+                        foreach (var learningResource in listLearningResource)
+                        {
+                            var learningResourceReport = new LearningResourceReport();
+                            var number = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            learningResourceReport.learning_resouce_name = learningResource.learning_resource_type;
+                            learningResourceReport.number_subject = number;
+
+                            textBookReport.LearningResource.Add(learningResourceReport);
+                        }
+                    }
+
+                    textbook.textBookReports.Add(textBookReport);
+                }
+
+                listTextBookReport.Add(textbook);
             }
 
-            return Ok();
+            return Ok(new BaseResponse(false, "Text Book Table Report", listTextBookReport));
         }
+
 
         [HttpGet("ReportSubject")]
         public IActionResult ReportSubject()
@@ -120,6 +162,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Subject Report", listSubjectReport));
         }
 
-        
+
     }
 }

@@ -36,5 +36,10 @@ namespace Repositories.Materials
         {
             return db.GetMaterialById(id);
         }
+
+        public List<Material> GetMaterialListBysubject(int sid)
+        {
+            return db.GetMaterialListBysubject(sid);
+        }
     }
 }

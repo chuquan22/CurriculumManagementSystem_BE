@@ -21,6 +21,7 @@ namespace BusinessObject
                                                .Build();
             string? con = connectionString.GetConnectionString("CMSDb");
             optionsBuilder.UseSqlServer(con);
+            //optionsBuilder.UseMySql(con, ServerVersion.AutoDetect(con));
         }
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }
@@ -229,7 +230,7 @@ namespace BusinessObject
                new LearningMethod { learning_method_id = 1, learning_method_name = "Online Learing" },
                new LearningMethod { learning_method_id = 2, learning_method_name = "Balence" }
                 );
-
+                
             modelBuilder.Entity<LearningResource>().HasData(
              new LearningResource { learning_resource_id = 1, learning_resource_type = "Self-edited" },
              new LearningResource { learning_resource_id = 2, learning_resource_type = "Open source Internet" },
