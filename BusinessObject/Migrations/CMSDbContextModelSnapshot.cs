@@ -145,6 +145,9 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("batch_term_no")
+                        .HasColumnType("int");
+
                     b.HasKey("batch_id");
 
                     b.ToTable("Batch");
@@ -153,32 +156,38 @@ namespace BusinessObject.Migrations
                         new
                         {
                             batch_id = 1,
-                            batch_name = "7.1"
+                            batch_name = "7.1",
+                            batch_term_no = 1
                         },
                         new
                         {
                             batch_id = 2,
-                            batch_name = "17"
+                            batch_name = "17",
+                            batch_term_no = 1
                         },
                         new
                         {
                             batch_id = 3,
-                            batch_name = "18"
+                            batch_name = "18",
+                            batch_term_no = 2
                         },
                         new
                         {
                             batch_id = 4,
-                            batch_name = "19.1"
+                            batch_name = "19.1",
+                            batch_term_no = 1
                         },
                         new
                         {
                             batch_id = 5,
-                            batch_name = "19.2"
+                            batch_name = "19.2",
+                            batch_term_no = 2
                         },
                         new
                         {
                             batch_id = 6,
-                            batch_name = "19.3"
+                            batch_name = "19.3",
+                            batch_term_no = 3
                         });
                 });
 
@@ -389,7 +398,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 1,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 1,
                             curriculum_code = "GD-IED-CD-18.1",
                             curriculum_description = "",
@@ -404,7 +413,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 4,
                             curriculum_code = "GD-IED-IC-19.1",
                             curriculum_description = "",
@@ -419,7 +428,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 3,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SE-SE-IC-18.3",
                             curriculum_description = "",
@@ -434,7 +443,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 4,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SE-SE-CD-18.2",
                             curriculum_description = "",
@@ -449,7 +458,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 5,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "CM-FMA-TC-18.3",
                             curriculum_description = "",
@@ -464,7 +473,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 6,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS-IED-TC-18.3",
                             curriculum_description = "",
@@ -479,7 +488,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 7,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 2,
                             curriculum_code = "SWP-WP-TC-18.2",
                             curriculum_description = "",
@@ -494,7 +503,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 8,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             batch_id = 3,
                             curriculum_code = "SS-IED-TC-18.3",
                             curriculum_description = "",
@@ -753,12 +762,32 @@ namespace BusinessObject.Migrations
                         new
                         {
                             learning_resource_id = 1,
-                            learning_resource_type = "Lab"
+                            learning_resource_type = "Self-edited"
                         },
                         new
                         {
                             learning_resource_id = 2,
-                            learning_resource_type = "Assessment"
+                            learning_resource_type = "Open source Internet"
+                        },
+                        new
+                        {
+                            learning_resource_id = 3,
+                            learning_resource_type = "Free e-book"
+                        },
+                        new
+                        {
+                            learning_resource_id = 4,
+                            learning_resource_type = "Official publication books"
+                        },
+                        new
+                        {
+                            learning_resource_id = 5,
+                            learning_resource_type = "Books bought outside"
+                        },
+                        new
+                        {
+                            learning_resource_id = 6,
+                            learning_resource_type = "None"
                         });
                 });
 
@@ -2511,10 +2540,6 @@ namespace BusinessObject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("user_password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("user_phone")
                         .HasColumnType("int");
 
@@ -2532,8 +2557,7 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 1,
                             user_email = "chuquan2k1@gmail.com",
-                            user_name = "QuanCQ",
-                            user_password = "quan123"
+                            user_name = "QuanCQ"
                         },
                         new
                         {
@@ -2542,8 +2566,7 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 2,
                             user_email = "nguyenthu120801@gmail.com",
-                            user_name = "ThuNT",
-                            user_password = "quan123"
+                            user_name = "ThuNT"
                         },
                         new
                         {
@@ -2552,8 +2575,7 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 1,
                             user_email = "haotest@gmail.com",
-                            user_name = "admin",
-                            user_password = "quan123"
+                            user_name = "admin"
                         },
                         new
                         {
@@ -2562,8 +2584,7 @@ namespace BusinessObject.Migrations
                             is_active = true,
                             role_id = 3,
                             user_email = "lam@gmail.com",
-                            user_name = "lam",
-                            user_password = "lam123"
+                            user_name = "lam"
                         });
                 });
 
