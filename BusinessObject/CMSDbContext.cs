@@ -234,7 +234,7 @@ namespace BusinessObject
              new LearningResource { learning_resource_id = 1, learning_resource_type = "Self-edited" },
              new LearningResource { learning_resource_id = 2, learning_resource_type = "Open source Internet" },
              new LearningResource { learning_resource_id = 3, learning_resource_type = "Free e-book" },
-             new LearningResource { learning_resource_id = 4, learning_resource_type = "Official publication books" },
+             new LearningResource { learning_resource_id = 4, learning_resource_type = "Official_publication_books" },
              new LearningResource { learning_resource_id = 5, learning_resource_type = "Books bought outside" },
              new LearningResource { learning_resource_id = 6, learning_resource_type = "None" }
               );

@@ -34,7 +34,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _batchRepository = new BatchRepository();
         }
 
-        [HttpGet("ReportTKOL/{batchId}")]
+        [HttpGet("ReportTKOLTable/{batchId}")]
         public IActionResult ReportTKOL(int batchId)
         {
             try
@@ -46,12 +46,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 foreach (var m in major)
                 {
                     var spe = _specializationRepository.GetSpeByMajorId(m.major_id);
-                    var tkolDTOReport = new TKOL_DTOReport { batch_name = batch.batch_name, major_name = m.major_name, tkol = new List<TKOLReport>() };
+                    var tkolDTOReport = new TKOL_DTOReport { batch_name = batch.batch_name, major_name = m.major_english_name, tkol = new List<TKOLReport>() };
 
                     foreach (var s in spe)
                     {
                         var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batchId);
-                        var tkolReport = new TKOLReport { specialization_name = s.specialization_name, total_subject = subject.Count(), subjects = new List<SubjectDTOReport>() };
+                        var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count(), subjects = new List<SubjectDTOReport>() };
 
                         var learningMethod = _learningMethodRepository.GetAllLearningMethods();
                         foreach (var item in learningMethod)
@@ -73,7 +73,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     listTKOLReport.Add(tkolDTOReport);
                 }
 
-                return Ok(new BaseResponse(false, "TKOL Report", listTKOLReport));
+                return Ok(new BaseResponse(false, "TKOL Table Report", listTKOLReport));
 
             }
             catch (Exception ex)
