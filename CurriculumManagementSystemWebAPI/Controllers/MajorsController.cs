@@ -26,6 +26,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = majorRepository.GetAllMajor();
+                var result = _mapper.Map<List<MajorResponse>>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)
@@ -58,7 +59,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 else
                 {
                     rs = majorRepository.AddMajor(rs);
-                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", rs));
+                    var result = _mapper.Map<MajorResponse>(rs);
+
+                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", result));
                 }
             }
             catch (Exception)
