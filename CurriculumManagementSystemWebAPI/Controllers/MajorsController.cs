@@ -78,27 +78,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             try
             {
-                Major rs = _mapper.Map<Major>(major);
-                Major checkName = majorRepository.CheckMajorbyMajorName(rs.major_name);
-                Major checkEngName = majorRepository.CheckMajorbyMajorEnglishName(rs.major_english_name);
-                if (checkName != null)
-                {
-                    return BadRequest(new BaseResponse(true, "Major Name Duplicate.", null));
-                }
-                else if (checkEngName != null)
-                {
-                    return BadRequest(new BaseResponse(true, "Major English Name Duplicate.", null));
-                }
-                else
-                {
-                    rs = majorRepository.EditMajor(rs);
-                    return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
-                }
+                Major rs = _mapper.Map<Major>(major);            
+                rs = majorRepository.EditMajor(rs);
+                return Ok(new BaseResponse(false, "Edit major sucessfully.", rs));
+                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
             }
             return Ok(new BaseResponse(true, "Edit False", null));
