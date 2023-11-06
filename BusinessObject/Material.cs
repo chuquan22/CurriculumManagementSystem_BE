@@ -39,4 +39,7 @@ namespace BusinessObject
         public virtual Syllabus? Syllabus { get; set; }
         public virtual LearningResource? LearningResource { get; set; }
     }
+
+  
 }
+

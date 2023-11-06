@@ -42,9 +42,9 @@ namespace Repositories.Users
             return userDAO.GetUserById(id);
         }
 
-        public User Login(string username, string password)
+        public User Login(string email)
         {
-            return userDAO.Login(username, password);
+            return userDAO.Login(email);
         }
 
         public List<User> PaginationUser(int page, int limit, string? txtSearch)

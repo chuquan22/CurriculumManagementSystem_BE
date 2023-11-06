@@ -31,7 +31,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
         {
-            User user = AuthenticateUser(userLoginRequest);
+            User user = AuthenticateUser(userLoginRequest.email);
             if (user != null)
             {
                 UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
@@ -48,9 +48,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Unauthorized(new BaseResponse(false, "Login False", null));
         }
 
-        private User AuthenticateUser(UserLoginRequest request)
+        private User AuthenticateUser(string email)
         {
-            User userLogged = repo.Login(request.email, request.password);
+            User userLogged = repo.Login(email);
             if (userLogged == null)
             {
                 return null;
