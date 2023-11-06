@@ -58,7 +58,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
-        public ActionResult CreateGradingStruture(GradingStrutureCreateRequest gra)
+        public ActionResult CreateGradingStructure(GradingStrutureCreateRequest gra)
         {
             if (gra == null)
             {
@@ -73,29 +73,34 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
-                if(rs.number_of_questions == null)
+                if (rs.number_of_questions == null)
                 {
                     rs.number_of_questions = "";
                 }
                 rs = gradingStrutureRepository.CreateGradingStruture(rs);
-                if(rs != null)
+
+                if (rs != null)
                 {
-                    foreach(var g in gra.gradingCLORequest.CLO_id)
+                    foreach (var g in gra.gradingCLORequest.CLO_id)
                     {
-                        GradingCLO rs2 = new GradingCLO();
-                        rs2.CLO_id = g;
-                        rs2.grading_id = rs.grading_id;
+                        GradingCLO rs2 = new GradingCLO
+                        {
+                            CLO_id = g,
+                            grading_id = rs.grading_id 
+                        };
+
                         var rs3 = gradingCLOsRepository.CreateGradingCLO(rs2);
-                    }                 
-                }              
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                    }
+                }
+
+                return Ok(new BaseResponse(false, "Successfully", rs));
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+
         [HttpPut]
         public ActionResult UpdateStruture(GradingStrutureUpdateRequest gra)
         {
