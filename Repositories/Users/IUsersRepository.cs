@@ -9,7 +9,7 @@ namespace Repositories.Users
 {
     public interface IUsersRepository
     {
-        public User Login(string username, string password);
+        public User Login(string email);
         List<User> GetAllUser();
         User GetUserById(int id);
         List<User> PaginationUser(int page, int limit, string? txtSearch);

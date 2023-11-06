@@ -61,7 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             var user = _mapper.Map<User>(userCreateRequest);
-            user.user_password = "123@";
+
             user.is_active = true;
             
             string createResult = _usersRepository.CreateUser(user);
