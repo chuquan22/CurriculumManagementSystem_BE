@@ -1,11 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.DAO
 {
@@ -33,6 +28,13 @@ namespace DataAccess.DAO
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
+            return listSemester;
+        }
+
+        public List<Semester> GetAllSemestersByMajorId(int id)
+        {
+            var major = _cmsDbContext.Major.Where(x => x.major_id == id).FirstOrDefault();
+            var listSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == major.degree_level_id).ToList();
             return listSemester;
         }
 
