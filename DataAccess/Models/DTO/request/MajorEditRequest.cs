@@ -13,5 +13,6 @@ namespace DataAccess.Models.DTO.request
         public string major_name { get; set; }
         public string major_english_name { get; set; }
         public bool is_active { get; set; }
+
     }
 }

@@ -32,6 +32,11 @@ namespace Repositories.Semesters
             return db.DeleteSemester(semester);
         }
 
+        public List<Semester> GetAllSemestersByMajorId(int id)
+        {
+            return db.GetAllSemestersByMajorId(id);
+        }
+
         public Semester GetSemester(int id)
         {
             return db.GetSemester(id);

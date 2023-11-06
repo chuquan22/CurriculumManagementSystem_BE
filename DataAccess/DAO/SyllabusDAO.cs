@@ -176,16 +176,30 @@ namespace DataAccess.DAO
                     if (syllabus.syllabus_tool != null )
                         oldRs.syllabus_tool = syllabus.syllabus_tool;
                     if(syllabus.time_allocation!=null)
+
                         oldRs.time_allocation = syllabus.time_allocation;
                     if (syllabus.student_task != null)
+
                         oldRs.student_task = syllabus.student_task;
                     if (syllabus.syllabus_note != null)
+
                         oldRs.syllabus_note = syllabus.syllabus_note;
                     if (syllabus.min_GPA_to_pass != null)
+
                         oldRs.min_GPA_to_pass = syllabus.min_GPA_to_pass;
                     if (syllabus.scoring_scale != null)
                         oldRs.scoring_scale = syllabus.scoring_scale;
 
+                    if (syllabus.approved_date != null)
+                    {
+                        oldRs.approved_date = syllabus.approved_date;
+                        oldRs.syllabus_approved = true;
+
+                    }else if(syllabus.approved_date == null){
+                        oldRs.approved_date = null;
+                        oldRs.syllabus_approved = false;
+
+                    }
 
                     context.Syllabus.Update(oldRs);
                     context.SaveChanges();

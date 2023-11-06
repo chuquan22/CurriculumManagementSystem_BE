@@ -36,6 +36,17 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.class_session_type_name, opt => opt.MapFrom(src => src.ClassSessionType.class_session_type_name))
                 .ReverseMap();
 
+            //MajorReponse
+
+            CreateMap<BusinessObject.Major, MajorResponse>()
+             .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+             .ReverseMap();
+
+            //MaterialsResponse
+            CreateMap<Material, MaterialsResponse>()
+             .ForMember(dest => dest.learning_resource_name, opt => opt.MapFrom(src => src.LearningResource.learning_resource_type))
+             .ReverseMap();
+
             //Major
 
             CreateMap<MajorRequest, BusinessObject.Major>()
@@ -101,6 +112,8 @@ namespace DataAccess.Models.DTO
               .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.Subject.english_subject_name))
               .ForMember(dest => dest.learning_teaching_method, opt => opt.MapFrom(src => src.Subject.LearningMethod.learning_method_name))
               .ForMember(dest => dest.time_allocation, opt => opt.MapFrom(src => src.time_allocation))
+              .ForMember(dest => dest.degree_level_id, opt => opt.MapFrom(src => src.degree_level_id))
+
               .ForMember(dest => dest.degree_level, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_name))
               .ForMember(dest => dest.credit, opt => opt.MapFrom(src => src.Subject.credit))
               .ReverseMap();
