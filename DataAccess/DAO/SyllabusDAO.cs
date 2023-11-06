@@ -186,8 +186,17 @@ namespace DataAccess.DAO
                         oldRs.min_GPA_to_pass = syllabus.min_GPA_to_pass;
                     if (syllabus.scoring_scale != null)
                         oldRs.scoring_scale = syllabus.scoring_scale;
+
                     if (syllabus.approved_date != null)
+                    {
                         oldRs.approved_date = syllabus.approved_date;
+                        oldRs.syllabus_approved = true;
+
+                    }else if(syllabus.approved_date == null){
+                        oldRs.approved_date = null;
+                        oldRs.syllabus_approved = false;
+
+                    }
 
                     context.Syllabus.Update(oldRs);
                     context.SaveChanges();
