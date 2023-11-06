@@ -28,7 +28,8 @@ namespace BusinessObject.Migrations
                 {
                     batch_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    batch_name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    batch_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    batch_term_no = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -196,7 +197,6 @@ namespace BusinessObject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     user_email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    user_password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     user_phone = table.Column<int>(type: "int", nullable: true),
                     full_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role_id = table.Column<int>(type: "int", nullable: false),
@@ -816,15 +816,15 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "Batch",
-                columns: new[] { "batch_id", "batch_name" },
+                columns: new[] { "batch_id", "batch_name", "batch_term_no" },
                 values: new object[,]
                 {
-                    { 1, "7.1" },
-                    { 2, "17" },
-                    { 3, "18" },
-                    { 4, "19.1" },
-                    { 5, "19.2" },
-                    { 6, "19.3" }
+                    { 1, "7.1", 1 },
+                    { 2, "17", 1 },
+                    { 3, "18", 2 },
+                    { 4, "19.1", 1 },
+                    { 5, "19.2", 2 },
+                    { 6, "19.3", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -861,8 +861,12 @@ namespace BusinessObject.Migrations
                 columns: new[] { "learning_resource_id", "learning_resource_type" },
                 values: new object[,]
                 {
-                    { 1, "Lab" },
-                    { 2, "Assessment" }
+                    { 1, "Self-edited" },
+                    { 2, "Open source Internet" },
+                    { 3, "Free e-book" },
+                    { 4, "Official publication books" },
+                    { 5, "Books bought outside" },
+                    { 6, "None" }
                 });
 
             migrationBuilder.InsertData(
@@ -927,13 +931,13 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "user_id", "full_name", "is_active", "role_id", "user_email", "user_name", "user_password", "user_phone" },
+                columns: new[] { "user_id", "full_name", "is_active", "role_id", "user_email", "user_name", "user_phone" },
                 values: new object[,]
                 {
-                    { 1, "Chu Quang Quan", true, 1, "chuquan2k1@gmail.com", "QuanCQ", "quan123", null },
-                    { 2, "Nguyen Thi Thu", true, 2, "nguyenthu120801@gmail.com", "ThuNT", "quan123", null },
-                    { 3, "Nguyen Phong Hao", true, 1, "haotest@gmail.com", "admin", "quan123", null },
-                    { 4, "Lam", true, 3, "lam@gmail.com", "lam", "lam123", null }
+                    { 1, "Chu Quang Quan", true, 1, "chuquan2k1@gmail.com", "QuanCQ", null },
+                    { 2, "Nguyen Thi Thu", true, 2, "nguyenthu120801@gmail.com", "ThuNT", null },
+                    { 3, "Nguyen Phong Hao", true, 1, "haotest@gmail.com", "admin", null },
+                    { 4, "Lam", true, 3, "lam@gmail.com", "lam", null }
                 });
 
             migrationBuilder.InsertData(
@@ -1035,14 +1039,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "Formality", "approved_date", "batch_id", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester", "updated_date" },
                 values: new object[,]
                 {
-                    { 1, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD-IED-CD-18.1", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 2, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD-IED-IC-19.1", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
-                    { 3, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE-SE-IC-18.3", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 4, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE-SE-CD-18.2", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
-                    { 5, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM-FMA-TC-18.3", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
-                    { 6, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS-IED-TC-18.3", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
-                    { 7, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 2, "SWP-WP-TC-18.2", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 5, 7, null },
-                    { 8, "formal education", new DateTime(2023, 11, 3, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS-IED-TC-18.3", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
+                    { 1, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 1, "GD-IED-CD-18.1", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 2, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 4, "GD-IED-IC-19.1", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7, null },
+                    { 3, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 3, "SE-SE-IC-18.3", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 4, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 2, "SE-SE-CD-18.2", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7, null },
+                    { 5, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 3, "CM-FMA-TC-18.3", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 7, null },
+                    { 6, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS-IED-TC-18.3", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null },
+                    { 7, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 2, "SWP-WP-TC-18.2", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 5, 7, null },
+                    { 8, "formal education", new DateTime(2023, 11, 6, 0, 0, 0, 0, DateTimeKind.Local), 3, "SS-IED-TC-18.3", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7, null }
                 });
 
             migrationBuilder.InsertData(

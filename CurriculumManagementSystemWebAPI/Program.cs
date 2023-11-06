@@ -1,6 +1,8 @@
 
 using BusinessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Google;
+
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
@@ -21,6 +23,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = "780549906802-4k5phhf2h582rbhfc55qqn9tmi3ir24k.apps.googleusercontent.com"; 
+        options.ClientSecret = "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";
     });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddCors(options =>

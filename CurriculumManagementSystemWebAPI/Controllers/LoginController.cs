@@ -9,6 +9,8 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Repositories.Users;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -95,7 +97,35 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return null;
         }
+        [HttpGet("login-with-google")]
+        [AllowAnonymous]
+        public IActionResult LoginWithGoogle()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
 
+        [HttpGet("google-response")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync("Cookies");
+
+            if (!result.Succeeded)
+            {
+                // Handle authentication failure...
+                return BadRequest("Google Authentication failed.");
+            }
+
+            // Access user information from result.Principal and process it as needed.
+            // Create or update a user's account in your database and sign them in.
+
+            // Redirect or return to your application's main page.
+            return Redirect("/"); // Replace with your desired URL.
+        }
 
     }
 }
