@@ -35,6 +35,10 @@ namespace DataAccess.Models.DTO
             CreateMap<Session, SessionExcelExport>()
                 .ForMember(dest => dest.class_session_type_name, opt => opt.MapFrom(src => src.ClassSessionType.class_session_type_name))
                 .ReverseMap();
+            //MaterialsResponse
+            CreateMap<Material, MaterialsResponse>()
+             .ForMember(dest => dest.learning_resource_name, opt => opt.MapFrom(src => src.LearningResource.learning_resource_type))
+             .ReverseMap();
 
             //Major
 

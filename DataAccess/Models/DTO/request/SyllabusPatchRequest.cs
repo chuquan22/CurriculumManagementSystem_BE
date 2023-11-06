@@ -12,7 +12,7 @@ namespace DataAccess.Models.DTO.request
 
         public int? syllabus_id { get; set; }
         public string? syllabus_description { get; set; }
-        public string? degree_level { get; set; }
+        public int? degree_level_id { get; set; }
 
         public string? syllabus_tool { get; set; }
 
@@ -21,6 +21,7 @@ namespace DataAccess.Models.DTO.request
         public string? syllabus_note { get; set; }
         public decimal? min_GPA_to_pass { get; set; }
         public int? scoring_scale { get; set; }
+        public DateTime? approved_date { get; set; }
 
     }
 }
