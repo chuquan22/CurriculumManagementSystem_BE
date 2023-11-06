@@ -15,14 +15,14 @@ namespace DataAccess.Major
         public List<BusinessObject.Major> GetAllMajor()
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            list = db.Major.ToList();
+            list = db.Major.Include(x => x.DegreeLevel).ToList();
             return list;
         }
 
         public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            list = db.Major.Where(x => x.degree_level_id == degreeId).ToList();
+            list = db.Major.Include(x => x.DegreeLevel).Where(x => x.degree_level_id == degreeId).ToList();
             return list;
         }
 
