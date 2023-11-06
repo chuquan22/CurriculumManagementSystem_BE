@@ -19,5 +19,7 @@ namespace Repositories.Semesters
         string CreateSemester(Semester semester);
         string UpdateSemester(Semester semester);
         string DeleteSemester(Semester semester);
+
+        List<Semester> GetAllSemestersByMajorId(int id);
     }
 }

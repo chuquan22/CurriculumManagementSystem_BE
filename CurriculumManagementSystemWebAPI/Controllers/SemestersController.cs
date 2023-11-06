@@ -22,13 +22,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             _mapper = mapper;
             semesterRepository = new SemestersRepository();
-            batchRepository = new BatchRepository();
+            batchRepository = new BatchRepository(); 
         }
 
         [HttpGet("GetAllSemester")]
         public ActionResult GetAllSemester()
         {
             var listSemester = semesterRepository.GetSemesters();
+            var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
+            return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
+        }
+
+        [HttpGet("GetAllSemesterByMajorId/{major_id}")]
+        public ActionResult GetAllSemesterByMajorId(int major_id)
+        {
+            var listSemester = semesterRepository.GetAllSemestersByMajorId(major_id);
             var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
             return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
         }
