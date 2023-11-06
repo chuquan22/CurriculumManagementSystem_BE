@@ -27,7 +27,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var result = _mapper.Map<List<MaterialsResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
             catch (Exception)
             {

@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,9 @@ namespace DataAccess.DAO
 
         public List<BusinessObject.Material> GetMaterial(int id)
         {
-            List<BusinessObject.Material> mt = _context.Material.Where(x => x.syllabus_id == id).ToList();
+            List<BusinessObject.Material> mt = _context.Material
+                .Include(x => x.LearningResource)
+                .Where(x => x.syllabus_id == id).ToList();
             return mt;
         }
 
@@ -54,7 +57,9 @@ namespace DataAccess.DAO
 
         public Material GetMaterialById(int id)
         {
-            var oldMate = _context.Material.Where(a => a.material_id == id).FirstOrDefault();
+            var oldMate = _context.Material
+                 .Include(x => x.LearningResource)
+                .Where(a => a.material_id == id).FirstOrDefault();
             if(oldMate == null)
             {
                 return null;

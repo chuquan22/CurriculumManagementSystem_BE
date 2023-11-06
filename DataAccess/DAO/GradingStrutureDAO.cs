@@ -31,6 +31,17 @@ namespace DataAccess.DAO
             _cmsDbContext.SaveChanges();
             return gra;
         }
+        //public bool CheckGrading(GradingStruture gra)
+        //{
+        //    var father = _cmsDbContext.GradingStruture.Where(x => x.AssessmentMethod.assessment_method_id == gra.assessment_method_id && (x.session_no == 0 || x.session_no == null)).FirstOrDefault();
+        //    decimal weightAll = father.grading_weight;
+        //    var listReferences = _cmsDbContext.GradingStruture.Where(x => x.assessment_method_id == gra.assessment_method_id && x.references == gra.references);
+        //    decimal weightSon = 0;
+        //    foreach (var reference in listReferences)
+        //    {
+        //        weightSon += reference.grading_weight;
+        //    }
+        //}
 
         public GradingStruture GetGradingStrutureById(int id)
         {
