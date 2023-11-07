@@ -45,8 +45,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult ReportTKOLChart(int batchId, int SpeId)
         {
             var spe = _specializationRepository.GetSpeById(SpeId);
-            var tkolDTOReport = new TKOL_DTOReport { tkol = new List<TKOLReport>() };
-
             var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id, batchId);
             var tkolReport = new TKOLReport { specialization_name = spe.specialization_english_name, total_subject = subject.Count() };
 
@@ -88,8 +86,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
 
             }
-            tkolDTOReport.tkol.Add(tkolReport);
-            return Ok(tkolDTOReport);
+            return Ok(new BaseResponse(false, "TKOL Chart Report", tkolReport));
         }
 
         [HttpGet("ReportTKOLTable/{batchId}")]
