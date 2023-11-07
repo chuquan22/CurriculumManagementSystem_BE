@@ -11,6 +11,9 @@ using Repositories.Users;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -21,38 +24,101 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
-
+        private static string ClientId = "780549906802-4k5phhf2h582rbhfc55qqn9tmi3ir24k.apps.googleusercontent.com";
+        private static string ClientSecret = "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";
+        private static string ApplicationName = "Web client 1";
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
             repo = new UsersRepository();
             _mapper = mapper;  
         }
+        public static string[] Scopes =
+        {
+            GmailService.Scope.GmailCompose,
+            GmailService.Scope.GmailSend
+        };
        
+        public static UserCredential GetUserCredential(out string error)
+        {
+            UserCredential credential = null;
+            error = null;
+            try
+            {
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    new ClientSecrets
+                    {
+                        ClientId = "780549906802-4k5phhf2h582rbhfc55qqn9tmi3ir24k.apps.googleusercontent.com",
+                        ClientSecret = "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",
+                    },
+            
+                    Scopes,
+                    Environment.UserName,
+                    CancellationToken.None,
+                    new FileDataStore("Google Oauth2 Client")).Result;
+                
+
+
+            }
+            catch (Exception ex)
+            {
+
+                credential = null;
+                error = "Failed to UserCredential Intilization: " + ex.Message;
+            }
+            return credential; 
+
+        }
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
+        //{
+        //    User user = AuthenticateUser(userLoginRequest.email);
+     
+        //    if (user != null)
+        //    {
+        //        UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
+        //        var token = GenerateToken(user);
+        //        var data = new[]
+        //        {
+        //           new {
+        //               Token = token,
+        //               UserData = userResponse
+        //               },
+        //         };
+        //        if(userResponse.is_active == false)
+        //        {
+        //            return BadRequest(new BaseResponse(true, "Your account has been locked for violating system policies. You can send an unlock request to the system adminstrator via email at admin-cms@fpoly.fpt.edu.vn!", null));
+        //        }
+        //        return Ok(new BaseResponse(false, "Login Successful", data));
+        //    }
+        //    return Unauthorized(new BaseResponse(false, "Your account is not allowed to log into the system!", null));
+        //}
+
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
+        public ActionResult Login()
         {
-            User user = AuthenticateUser(userLoginRequest.email);
-            if (user != null)
-            {
-                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
-                var token = GenerateToken(user);
+            string credentialError = null;
+            string refreshToken = null;
+            
+                UserCredential credential = GetUserCredential(out credentialError);
+                if(credential != null && string.IsNullOrEmpty(credentialError))
+                {
+                    refreshToken = credential.Token.RefreshToken;
+                }
                 var data = new[]
                 {
                    new {
-                       Token = token,
-                       UserData = userResponse
+                       Token = refreshToken,
+                       UserData = credential
                        },
                  };
-                if(userResponse.is_active == false)
-                {
-                    return BadRequest(new BaseResponse(true, "Your account has been locked for violating system policies. You can send an unlock request to the system adminstrator via email at admin-cms@fpoly.fpt.edu.vn!", null));
-                }
+                
                 return Ok(new BaseResponse(false, "Login Successful", data));
-            }
-            return Unauthorized(new BaseResponse(false, "Your account is not allowed to log into the system!", null));
+            
         }
+
 
         private User AuthenticateUser(string email)
         {
