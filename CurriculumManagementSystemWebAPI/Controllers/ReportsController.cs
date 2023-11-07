@@ -126,9 +126,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var learningResourceReport = new LearningResourceReport();
                             var number = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
                             learningResourceReport.learning_resouce_name = learningResource.learning_resource_type;
-                            learningResourceReport.number_subject = number;
+                            if(textBookReport.LearningResource.FirstOrDefault(x => x.learning_resouce_name.Equals(learningResourceReport.learning_resouce_name)) == null)
+                            {
+                                learningResourceReport.number_subject = number;
+                                textBookReport.LearningResource.Add(learningResourceReport);
+                            }
+                            else
+                            {
+                                textBookReport.LearningResource.FirstOrDefault(x => x.learning_resouce_name.Equals(learningResourceReport.learning_resouce_name)).number_subject += number;
+                            }
+                            
 
-                            textBookReport.LearningResource.Add(learningResourceReport);
+                            
                         }
                     }
 

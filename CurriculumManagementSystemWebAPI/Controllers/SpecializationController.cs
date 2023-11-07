@@ -141,7 +141,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception)
             {
 
-                return BadRequest(new BaseResponse(false, "Delete Specialization False. Specialization is already using in system!", null));
+                return BadRequest(new BaseResponse(true, "Delete Specialization False. Specialization is already using in system!", null));
 
             }
             return Ok(new BaseResponse(true, "Delete specialization false", null));

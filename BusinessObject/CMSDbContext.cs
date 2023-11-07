@@ -250,10 +250,10 @@ namespace BusinessObject
 
             modelBuilder.Entity<AssessmentMethod>().HasData(
                 new AssessmentMethod { assessment_method_id = 1, assessment_method_component = "Lab", assessment_type_id = 3 },
-                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "Quiz", assessment_type_id = 3 },
-                new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "Assignment", assessment_type_id = 3 },
+                new AssessmentMethod { assessment_method_id = 2, assessment_method_component = "Quiz", assessment_type_id = 4 },
+                new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "Assignment", assessment_type_id = 2 },
                 new AssessmentMethod { assessment_method_id = 4, assessment_method_component = "Bài học online", assessment_type_id = 3 },
-                new AssessmentMethod { assessment_method_id = 5, assessment_method_component = "Lab", assessment_type_id = 3 },
+                new AssessmentMethod { assessment_method_id = 5, assessment_method_component = "Lab", assessment_type_id = 1 },
                 new AssessmentMethod { assessment_method_id = 6, assessment_method_component = "Bảo vệ assignment", assessment_type_id = 4 },
                 new AssessmentMethod { assessment_method_id = 7, assessment_method_component = "Quiz", assessment_type_id = 3 },
                 new AssessmentMethod { assessment_method_id = 8, assessment_method_component = "Đánh giá Assignment GĐ 1", assessment_type_id = 3 }

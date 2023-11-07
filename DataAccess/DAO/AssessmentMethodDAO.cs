@@ -73,9 +73,9 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public bool CheckAssmentMethodDuplicate(int id,string name)
+        public bool CheckAssmentMethodDuplicate(int id,string name, int type)
         {
-            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.Equals(name) && x.assessment_method_id != id)).GetValueOrDefault();
+            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.ToLower().Equals(name.ToLower()) && x.assessment_type_id == type && x.assessment_method_id != id)).GetValueOrDefault();
         }
 
         public bool CheckAssmentMethodExsit(int id)

@@ -87,6 +87,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Pre-Requisite-Type Not Found"));
             }
+
+            if(_preRequisiteType.CheckPreRequisiteTypeDuplicate(id, preRequisiteTypeRequest.pre_requisite_type_name))
+            {
+                return BadRequest(new BaseResponse(true, $"Pre-Requisite-Type {preRequisiteTypeRequest.pre_requisite_type_name} is Duplicate!"));
+            }
+
             var preRequisiteType = _preRequisiteType.GetPreRequisiteType(id);
             _mapper.Map(preRequisiteTypeRequest, preRequisiteType);
 
@@ -104,7 +110,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromBody]PreRequisiteTypeRequest preRequisiteTypeRequest)
         {
-            
+            if (_preRequisiteType.CheckPreRequisiteTypeDuplicate(0, preRequisiteTypeRequest.pre_requisite_type_name))
+            {
+                return BadRequest(new BaseResponse(true, $"Pre-Requisite-Type {preRequisiteTypeRequest.pre_requisite_type_name} is Duplicate!"));
+            }
+
             var preRequisiteType = _mapper.Map<PreRequisiteType>(preRequisiteTypeRequest);
 
             string createResult = _preRequisiteType.CreatePreRequisiteType(preRequisiteType);
