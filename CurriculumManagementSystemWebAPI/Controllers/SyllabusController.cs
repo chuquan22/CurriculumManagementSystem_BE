@@ -76,11 +76,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
                 return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -94,11 +93,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = syllabusRepository.CreateSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucess", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpGet("GetSyllabusDetails")]
@@ -109,15 +107,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
-
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
                 return Ok(new BaseResponse(true, "False", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
 
         }
@@ -293,66 +290,68 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             List<GradingStruture> gradingStrutureExcel = GetGradingStrutureExcel(row, syllabusExcel);
                             gradingStrutureCreate.gradingStruture = new GradingStrutureRequest();
                             var list = _mapper.Map<List<GradingStrutureRequest>>(gradingStrutureExcel);
-
-                            foreach (var gra in list)
+                            decimal? weightAll = 0;
+                            try
                             {
-                                gradingStrutureCreate.gradingStruture = gra;
-                                gradingStrutureCreate.gradingStruture.syllabus_id = syllabusId;
-                                gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
-                                List<int> lst = new List<int>();
 
-                                foreach (var cl in cloId)
+
+                                foreach (var gra in list)
                                 {
-                                    string name = "null";
-                                    if (cloRepository.GetCLOsById(cl) != null)
+                                    gradingStrutureCreate.gradingStruture = gra;
+                                    gradingStrutureCreate.gradingStruture.syllabus_id = syllabusId;
+                                    gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
+                                    List<int> lst = new List<int>();
+
+                                    foreach (var cl in cloId)
                                     {
-                                        name = cloRepository.GetCLOsById(cl).CLO_name;
-                                        if (gra.clo_name.Contains(name))
+                                        string name = "null";
+                                        if (cloRepository.GetCLOsById(cl) != null)
                                         {
-                                            lst.Add(cl);
+                                            name = cloRepository.GetCLOsById(cl).CLO_name;
+                                            if (gra.clo_name.Contains(name))
+                                            {
+                                                lst.Add(cl);
+                                            }
+                                        }
+
+                                        if (gra.clo_name.Contains("All CLOs"))
+                                        {
+                                            lst = new List<int>();
+                                            lst.AddRange(cloId);
+                                            gra.number_of_questions = "";
+                                        }
+
+                                    }
+                                    if (gra.session_no == null)
+                                    {
+                                        weightAll += gra.grading_weight;
+                                        if (weightAll > 100)
+                                        {
+                                            throw new Exception("Weight of grading over 100%");
                                         }
                                     }
-
-                                    if (gra.clo_name.Contains("All CLOs"))
-                                    {
-                                        lst = new List<int>();
-                                        lst.AddRange(cloId);
-                                        gra.number_of_questions = "";
-                                    }
-
-                                }
-
-                                gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
-                                try
-                                {
+                                    gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
                                     await CreateGradingStrutureAPI(gradingStrutureCreate);
 
-                                }
-                                catch (Exception ex)
-                                {
 
-                                    throw new Exception("Error when saving Grading Struture");
                                 }
+                            }
+                            catch (Exception ex)
+                            {
 
+                                throw new Exception("Error when create grading struture.");
                             }
 
-                            var value = new
-                            {
-                                GradingStruture = list,
-                            };
-                            rs.Add(value);
                         }
                     }
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 
                 }
-                return Ok(new BaseResponse(true, "False", null));
-
             }
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", ex.Message));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
 
         }

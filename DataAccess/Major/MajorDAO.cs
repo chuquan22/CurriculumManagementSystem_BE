@@ -37,19 +37,13 @@ namespace DataAccess.Major
         public BusinessObject.Major EditMajor(BusinessObject.Major major)
         {
             // Check for duplicate major_name or major_english_name
-            var isDuplicateName = db.Major.Any(x => x.major_id != major.major_id && x.major_name == major.major_name);
-            var isDuplicateEnglishName = db.Major.Any(x => x.major_id != major.major_id && x.major_english_name == major.major_english_name);
             var isDuplicateCode = db.Major.Any(x => x.major_id != major.major_id && x.major_code == major.major_code);
 
             if (isDuplicateCode)
             {
-                throw new Exception("Duplicate major code found.");
+                throw new Exception("Duplicate major code!");
             }
 
-            if (isDuplicateName || isDuplicateEnglishName)
-            {
-                throw new Exception("Duplicate name or English name found.");
-            }
 
             var editMajor = db.Major.FirstOrDefault(x => x.major_id == major.major_id);
 
@@ -58,8 +52,7 @@ namespace DataAccess.Major
                 // Update the Major object if it exists
                 editMajor.major_name = major.major_name;
                 editMajor.is_active = major.is_active;
-                editMajor.major_english_name = major.major_english_name;
-            
+                editMajor.major_english_name = major.major_english_name;          
                 db.Major.Update(editMajor);
                 db.SaveChanges();
             }

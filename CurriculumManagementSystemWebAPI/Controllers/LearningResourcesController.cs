@@ -31,10 +31,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = learningResourceRepository.GetLearningResource();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error"));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
         }
 

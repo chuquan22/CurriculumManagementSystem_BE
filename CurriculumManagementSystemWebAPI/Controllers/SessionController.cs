@@ -42,12 +42,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return Ok(new BaseResponse(false, "Sucessfully", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
         public ActionResult CreateSession(SessionCreateRequest request)
@@ -82,7 +82,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
 
         }
         [HttpPut]
@@ -102,7 +101,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPatch]
 
@@ -122,10 +120,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Sucessfully", null));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
 
         }
@@ -136,15 +135,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string rs = sessionRepository.DeleteSession(id);
-                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("GetSessionById/{id}")]
         public ActionResult GetSessionById(int id)
@@ -157,12 +155,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

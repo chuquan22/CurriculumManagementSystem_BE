@@ -33,12 +33,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", response));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("GetGradingStrutureById/{id}")]
         public ActionResult GetGradingStrutureById(int id)
@@ -50,12 +50,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var response = _mapper.Map<GradingStrutureResponse>(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", response));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
         public ActionResult CreateGradingStructure(GradingStrutureCreateRequest gra)
@@ -110,12 +108,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 string ressult = gradingStrutureRepository.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
                 return Ok(new BaseResponse(false, "Sucessfully", ressult));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpDelete("{id}")]
@@ -127,12 +123,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = gradingStrutureRepository.DeleteGradingStruture(id);
                 return Ok(new BaseResponse(false, "Sucessfully", true));
             }
-            catch (Exception)
-            {
-
-                throw;
+            catch (Exception ex)
+            {             
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }
