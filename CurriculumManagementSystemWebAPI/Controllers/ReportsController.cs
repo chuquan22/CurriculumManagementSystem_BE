@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessObject;
 using DataAccess.Models.DTO.Report;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,57 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _learningResourceRepository = new LearningResourceRepository();
         }
 
+        [HttpGet("ReportTKOLChart/{batchId}/{SpeId}")]
+        public IActionResult ReportTKOLChart(int batchId, int SpeId)
+        {
+            var spe = _specializationRepository.GetSpeById(SpeId);
+            var tkolDTOReport = new TKOL_DTOReport { tkol = new List<TKOLReport>() };
+
+            var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id, batchId);
+            var tkolReport = new TKOLReport { specialization_name = spe.specialization_english_name, total_subject = subject.Count() };
+
+            var learningMethod = _learningMethodRepository.GetAllLearningMethods();
+            foreach (var item in learningMethod)
+            {
+                if (item.learning_method_name.ToLower().Contains("online"))
+                {
+                    tkolReport.learning_method_onl_name = item.learning_method_name;
+                    tkolReport.total_subject_onl = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                    if (!double.IsInfinity(tkolReport.total_subject_onl) && !double.IsNaN(tkolReport.total_subject_onl) && subject.Count() != 0)
+                    {
+                        tkolReport.ratio_onl = ((double)tkolReport.total_subject_onl / (double)subject.Count()) * 100;
+                        tkolReport.ratio_onl = Math.Round(tkolReport.ratio_onl, 2);
+                    }
+                }
+                else if (item.learning_method_name.ToLower().Equals("blended"))
+                {
+                    tkolReport.learning_method_blended_name = item.learning_method_name;
+                    tkolReport.total_subject_blended = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                    if (!double.IsInfinity(tkolReport.total_subject_blended) && !double.IsNaN(tkolReport.total_subject_blended) && subject.Count() != 0)
+                    {
+                        tkolReport.ratio_blended = ((double)tkolReport.total_subject_blended / (double)subject.Count()) * 100;
+                        tkolReport.ratio_blended = Math.Round(tkolReport.ratio_blended, 2);
+                    }
+                }
+                else if (item.learning_method_name.ToLower().Equals("traditional"))
+                {
+                    tkolReport.learning_method_traditional_name = item.learning_method_name;
+                    tkolReport.total_subject_traditional = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                    if (!double.IsInfinity(tkolReport.total_subject_traditional) && !double.IsNaN(tkolReport.total_subject_traditional) && subject.Count() != 0)
+                    {
+                        tkolReport.ratio_traditional = ((double)tkolReport.total_subject_traditional / (double)subject.Count()) * 100;
+                        tkolReport.ratio_traditional = Math.Round(tkolReport.ratio_traditional, 2);
+                    }
+                }
+
+            }
+            tkolDTOReport.tkol.Add(tkolReport);
+            return Ok(tkolDTOReport);
+        }
+
         [HttpGet("ReportTKOLTable/{batchId}")]
         public IActionResult ReportTKOL(int batchId)
         {
@@ -57,23 +109,46 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     foreach (var s in spe)
                     {
                         var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batchId);
-                        var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count(), subjects = new List<SubjectDTOReport>() };
+                        var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count() };
 
                         var learningMethod = _learningMethodRepository.GetAllLearningMethods();
                         foreach (var item in learningMethod)
                         {
-                            var subjectReport = new SubjectDTOReport { learning_method_name = item.learning_method_name };
-                            subjectReport.total_subject = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
-
-                            if (!double.IsInfinity(subjectReport.total_subject) && !double.IsNaN(subjectReport.total_subject) && subject.Count() != 0)
+                            if (item.learning_method_name.ToLower().Contains("online"))
                             {
-                                subjectReport.ratio = ((double)subjectReport.total_subject / (double)subject.Count()) * 100;
-                                subjectReport.ratio = Math.Round(subjectReport.ratio, 2);
+                                tkolReport.learning_method_onl_name = item.learning_method_name;
+                                tkolReport.total_subject_onl = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                                if (!double.IsInfinity(tkolReport.total_subject_onl) && !double.IsNaN(tkolReport.total_subject_onl) && subject.Count() != 0)
+                                {
+                                    tkolReport.ratio_onl = ((double)tkolReport.total_subject_onl / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_onl = Math.Round(tkolReport.ratio_onl, 2);
+                                }
+                            }
+                            else if (item.learning_method_name.ToLower().Equals("blended"))
+                            {
+                                tkolReport.learning_method_blended_name = item.learning_method_name;
+                                tkolReport.total_subject_blended = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                                if (!double.IsInfinity(tkolReport.total_subject_blended) && !double.IsNaN(tkolReport.total_subject_blended) && subject.Count() != 0)
+                                {
+                                    tkolReport.ratio_blended = ((double)tkolReport.total_subject_blended / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_blended = Math.Round(tkolReport.ratio_blended, 2);
+                                }
+                            }
+                            else if (item.learning_method_name.ToLower().Equals("traditional"))
+                            {
+                                tkolReport.learning_method_traditional_name = item.learning_method_name;
+                                tkolReport.total_subject_traditional = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+
+                                if (!double.IsInfinity(tkolReport.total_subject_traditional) && !double.IsNaN(tkolReport.total_subject_traditional) && subject.Count() != 0)
+                                {
+                                    tkolReport.ratio_traditional = ((double)tkolReport.total_subject_traditional / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_traditional = Math.Round(tkolReport.ratio_traditional, 2);
+                                }
                             }
 
-                            tkolReport.subjects.Add(subjectReport);
                         }
-
                         tkolDTOReport.tkol.Add(tkolReport);
                     }
                     listTKOLReport.Add(tkolDTOReport);
@@ -113,7 +188,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         specialization_name = s.specialization_english_name,
                         total_subject = listSubject.Count(),
-                        LearningResource = new List<LearningResourceReport>()  
+                        LearningResource = new List<LearningResourceReport>()
                     };
 
                     foreach (var subject in listSubject)
@@ -126,7 +201,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var learningResourceReport = new LearningResourceReport();
                             var number = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
                             learningResourceReport.learning_resouce_name = learningResource.learning_resource_type;
-                            if(textBookReport.LearningResource.FirstOrDefault(x => x.learning_resouce_name.Equals(learningResourceReport.learning_resouce_name)) == null)
+                            if (textBookReport.LearningResource.FirstOrDefault(x => x.learning_resouce_name.Equals(learningResourceReport.learning_resouce_name)) == null)
                             {
                                 learningResourceReport.number_subject = number;
                                 textBookReport.LearningResource.Add(learningResourceReport);
@@ -135,9 +210,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 textBookReport.LearningResource.FirstOrDefault(x => x.learning_resouce_name.Equals(learningResourceReport.learning_resouce_name)).number_subject += number;
                             }
-                            
-
-                            
                         }
                     }
 
