@@ -30,14 +30,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = _mapper.Map<List<ComboResponse>>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
-        [HttpGet("{id}")]
+        [HttpGet("GetComboById/{id}")]
         public ActionResult GetCombo(int id)
         {
             ComboResponse rs = new ComboResponse();
@@ -47,12 +46,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = _mapper.Map<ComboResponse>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpGet("GetListComboByCurri/{curri_Id}")]
@@ -64,12 +62,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = comboRepository.GetListComboByCurriId(curri_Id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
 
@@ -92,12 +89,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("DisableCombo")]
         public ActionResult DisableCombo(int id)
@@ -108,12 +104,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 bool rs = comboRepository.DisableCombo(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPut]
         public ActionResult UpdateCombo(ComboUpdateRequest cb)
@@ -125,10 +120,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 combo = comboRepository.UpdateCombo(combo);
                 return Ok(new BaseResponse(false, "Sucessfully", combo));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
         [HttpDelete]
@@ -146,10 +141,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
     }
