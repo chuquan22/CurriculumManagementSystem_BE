@@ -27,12 +27,12 @@ namespace DataAccess.DAO
 
         public GradingStruture CreateGradingStruture(GradingStruture gra)
         {
-            bool check = CheckGrading(gra);
-            if (check == true)
-            {
+            //bool check = CheckGrading(gra);
+           // if (check == true)
+           // {
                 _cmsDbContext.GradingStruture.Add(gra);
                 _cmsDbContext.SaveChanges();
-            }
+         //   }
             return gra;
 
         }

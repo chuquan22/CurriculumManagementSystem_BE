@@ -51,7 +51,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 return Ok(new BaseResponse(false, "Login Successful", data));
             }
-            return Unauthorized(new BaseResponse(false, "Login False", null));
+            return Unauthorized(new BaseResponse(false, "Your account is not allowed to log into the system!", null));
         }
 
         private User AuthenticateUser(string email)
