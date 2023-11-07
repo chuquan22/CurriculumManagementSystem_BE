@@ -52,8 +52,7 @@ namespace DataAccess.Major
                 // Update the Major object if it exists
                 editMajor.major_name = major.major_name;
                 editMajor.is_active = major.is_active;
-                editMajor.major_english_name = major.major_english_name;
-            
+                editMajor.major_english_name = major.major_english_name;          
                 db.Major.Update(editMajor);
                 db.SaveChanges();
             }
