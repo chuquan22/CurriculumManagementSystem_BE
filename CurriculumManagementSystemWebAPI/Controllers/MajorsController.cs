@@ -34,7 +34,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true,"Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -64,12 +63,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", result));
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "Add major false.", null));
+                return BadRequest(new BaseResponse(true, "Add major false. Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "Add major False", null));
         }
 
         [HttpPut]
@@ -89,7 +87,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
             }
-            return Ok(new BaseResponse(true, "Edit False", null));
         }
 
         [HttpDelete]
@@ -110,7 +107,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Cant not delete this major. Major already used in system!", null));
             }
-            return Ok(new BaseResponse(true, "Delete False", null));
         }
     }
 }

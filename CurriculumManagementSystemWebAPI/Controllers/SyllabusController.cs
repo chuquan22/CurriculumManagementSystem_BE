@@ -76,11 +76,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
                 return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -94,11 +93,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = syllabusRepository.CreateSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucess", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpGet("GetSyllabusDetails")]
@@ -109,15 +107,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
-
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
                 return Ok(new BaseResponse(true, "False", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
 
         }
