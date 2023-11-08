@@ -72,6 +72,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             User user = AuthenticateUser(userEmail);
             if (user == null)
             {
+                Logout();
                 return Unauthorized(new BaseResponse(true, "User authentication failed."));
             }
             string token = GenerateToken(user);
@@ -148,7 +149,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Console.WriteLine("User credentials are not available or could not be obtained.");
             }
-            return Redirect("/");
+            return null;
         }
 
         public static void RevokeUserCredential(UserCredential credential, out string error)
