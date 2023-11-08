@@ -58,28 +58,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     refreshToken = credential.Token.RefreshToken;
                 }
-            var services = new GmailService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential
-            });
-            var userInfo = services.Users.GetProfile("me").Execute();
-            string userEmail = userInfo.EmailAddress;
-            User user = AuthenticateUser(userEmail);
-            if (user == null)
-            {
-                return Unauthorized(new BaseResponse(true, "User authentication failed."));
-            }
-            string token = GenerateToken(user);
-
-            return Ok(new BaseResponse(false, "Login Successful", new { Token = token }));
-
-        }
-        [AllowAnonymous]
-        [HttpPost("CallBack")]
-        public ActionResult LoginCallBack(string? code)
-        {
-            string credentialError = null;
-            UserCredential credential = GetUserCredential(out credentialError);
             if (credential == null)
             {
                 return BadRequest(new BaseResponse(true, "Failed to obtain user credentials: " + credentialError));
@@ -96,7 +74,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Unauthorized(new BaseResponse(true, "User authentication failed."));
             }
-
             string token = GenerateToken(user);
             UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
             var data = new[]
@@ -106,10 +83,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                        UserData = userResponse
                        },
                  };
-
-            return Ok(new BaseResponse(false, "Login Successful", new { Token = userEmail }));
+            return Ok(new BaseResponse(false, "Login Successful", data));
 
         }
+       
 
 
         public static UserCredential GetUserCredential(out string error)
