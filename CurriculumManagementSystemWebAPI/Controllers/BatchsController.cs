@@ -26,6 +26,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             batchRepository = new BatchRepository();
         }
         //[Authorize(Roles = "Admin")]
+        [Authorize]
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
         {
