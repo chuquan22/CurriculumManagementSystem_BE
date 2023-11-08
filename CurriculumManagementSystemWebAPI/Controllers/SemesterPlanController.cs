@@ -3,7 +3,6 @@ using BusinessObject;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.SemesterBatchs;
 using Repositories.SemesterPlans;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -14,13 +13,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private ISemesterPlanRepository _repo;
-        private ISemesterBatchRepository _repo2;
 
         public SemesterPlanController(IMapper mapper)
         {
             _mapper = mapper;
             _repo = new SemesterPlanRepository();
-            _repo2 = new SemesterBatchRepository();
 
         }
 

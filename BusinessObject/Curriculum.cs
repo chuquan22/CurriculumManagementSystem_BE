@@ -25,23 +25,19 @@ namespace BusinessObject
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
-        [ForeignKey("Batch")]
-        public int batch_id { get; set;}
         [Required]
         public string decision_No { get;set; }
         [Required]
         public string Formality { get; set; }
         [Required]
         public DateTime approved_date { get; set; }
-        [AllowNull]
-        public DateTime? updated_date { get; set; }
         [Required]
         public bool is_active { get; set; }
 
-        public virtual Batch? Batch { get; set; }
         public virtual Specialization? Specialization { get; set; }
         public virtual ICollection<PLOs>? PLOs { get; set; }
         public virtual ICollection<SemesterPlan>? Semesters { get; set; }
+        public virtual ICollection<CurriculumBatch>? CurriculumBatchs { get; set; }
         public virtual ICollection<CurriculumSubject>? CurriculumSubjects { get; set; }
         public virtual ICollection<ComboCurriculum>? ComboCurriculum { get; set; }
     }

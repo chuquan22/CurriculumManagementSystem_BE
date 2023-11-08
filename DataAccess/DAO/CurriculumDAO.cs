@@ -15,7 +15,7 @@ namespace DataAccess.DAO
         public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
                 .Where(x => x.is_active == true);
@@ -32,8 +32,6 @@ namespace DataAccess.DAO
 
             var curriculumList = query
                 .AsEnumerable()
-                .OrderByDescending(x => x.Batch.batch_name)  // Sắp xếp theo Batch Name giảm dần
-                .ThenBy(x => x.curriculum_code)
                 .ToList();
             return curriculumList;
         }
@@ -41,7 +39,7 @@ namespace DataAccess.DAO
         public List<Curriculum> PanigationCurriculum(int page, int limit, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
                 .Where(x => x.is_active == true);
@@ -57,14 +55,14 @@ namespace DataAccess.DAO
             }
 
             var curriculumList = query
-                .OrderByDescending(x => x.Batch.batch_name) 
-                .ThenBy(x => x.curriculum_code) 
+                .OrderByDescending(x => x.CurriculumBatchs.Max(b => b.Batch.batch_name)) 
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
 
             return curriculumList;
         }
+
 
 
 
@@ -91,7 +89,7 @@ namespace DataAccess.DAO
         public Curriculum GetCurriculumById(int id)
         {
             var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Semesters)
                 .Include(x => x.Specialization.Major)
@@ -104,8 +102,8 @@ namespace DataAccess.DAO
 
         public List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode)
         {
-            var batchIdsInCurriculum = _cmsDbContext.Curriculum
-                .Where(curriculum => curriculum.curriculum_code.Equals(curriculumCode) && curriculum.is_active == true)
+            var batchIdsInCurriculum = _cmsDbContext.CurriculumBatch
+                .Where(curriculum => curriculum.Curriculum.curriculum_code.Equals(curriculumCode) && curriculum.Curriculum.is_active == true)
                 .Select(curriculum => curriculum.batch_id)
                 .ToList();
 
@@ -124,24 +122,24 @@ namespace DataAccess.DAO
         {
             var listBatch = _cmsDbContext.Curriculum
                 .Where(x => x.curriculum_code.Equals(curriculumCode) && x.is_active == true)
-                .Join(_cmsDbContext.Batch,
-                      curriculum => curriculum.batch_id,
+                .Join(_cmsDbContext.CurriculumBatch,
+                      curriculum => curriculum.curriculum_id,
                       batch => batch.batch_id,
-                      (curriculum, batch) => batch)
+                      (curriculum, batch) => batch.Batch)
                 .ToList();
 
             return listBatch;
         }
 
 
-        public Curriculum GetCurriculum(string code, int batchId)
+        public Curriculum GetCurriculum(string code)
         {
             var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
                 .Where(x => x.is_active == true)
-                .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
+                .FirstOrDefault(x => x.curriculum_code.Equals(code));
 
             return curriculum;
         }

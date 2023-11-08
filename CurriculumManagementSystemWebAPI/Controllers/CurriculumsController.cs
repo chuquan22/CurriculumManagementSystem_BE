@@ -74,7 +74,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode, batchId);
+            var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode);
             if (Curriculum == null)
             {
                 return Ok(new BaseResponse(true, "Not Found Curriculum"));
@@ -131,7 +131,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
-            curriculumResponse.Semester = _context.Semester.Where(x => x.batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
+            //curriculumResponse.Semester = _context.Semester.Where(x => x.start_batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
         }
 
@@ -160,9 +160,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             _mapper.Map(curriculumRequest, curriculum);
-            curriculum.updated_date = DateTime.Today;
-
-
             string updateResult = _curriculumRepository.UpdateCurriculum(curriculum);
 
             if (!updateResult.Equals("OK"))
@@ -180,9 +177,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id);
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumRequest.batch_id,curriculum.specialization_id);
             curriculum.is_active = true;
-            if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
+            if (CheckCurriculumExists(curriculum.curriculum_code))
             {
                 return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} is Duplicate!"));
             }
@@ -870,9 +867,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
 
-        private bool CheckCurriculumExists(string code, int batchId)
+        private bool CheckCurriculumExists(string code)
         {
-            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code) && e.batch_id == batchId)).GetValueOrDefault();
+            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code))).GetValueOrDefault();
         }
 
         private bool CheckCurriculumCanDelete(int id)

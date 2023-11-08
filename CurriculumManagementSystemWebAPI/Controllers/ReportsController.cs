@@ -45,7 +45,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult ReportTKOLChart(int batchId, int SpeId)
         {
             var spe = _specializationRepository.GetSpeById(SpeId);
-            var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id, batchId);
+            var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
             var tkolReport = new TKOLReport { specialization_name = spe.specialization_english_name, total_subject = subject.Count() };
 
             var learningMethod = _learningMethodRepository.GetAllLearningMethods();
@@ -105,7 +105,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                     foreach (var s in spe)
                     {
-                        var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batchId);
+                        var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id);
                         var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count() };
 
                         var learningMethod = _learningMethodRepository.GetAllLearningMethods();
@@ -180,7 +180,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 foreach (var s in spe)
                 {
-                    var listSubject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batchId);
+                    var listSubject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id);
                     var textBookReport = new TextBookReport
                     {
                         specialization_name = s.specialization_english_name,

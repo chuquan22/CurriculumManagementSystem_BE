@@ -79,19 +79,18 @@ namespace DataAccess.DAO
 
         public bool CheckBatchDuplicate(string batch_name, int batch_no)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_term_no == batch_no)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_order == batch_no)).GetValueOrDefault();
         }
 
         public bool CheckBatchUpdateDuplicate(int id,string batch_name, int batch_no)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_term_no == batch_no && x.batch_id != id)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_order == batch_no && x.batch_id != id)).GetValueOrDefault();
         }
 
         public bool CheckBatchExsit(int id)
         {
-            var exsitInCurri = _context.Curriculum.FirstOrDefault(x => x.batch_id == id);
-            var exsitInSemesterBatch = _context.SemesterBatch.FirstOrDefault(x => x.batch_id == id);
-            if(exsitInCurri == null && exsitInSemesterBatch == null)
+            var exsitInCurri = _context.CurriculumBatch.FirstOrDefault(x => x.batch_id == id);
+            if(exsitInCurri == null )
             {
                 return false;
             }

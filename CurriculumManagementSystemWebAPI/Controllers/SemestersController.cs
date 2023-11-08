@@ -90,9 +90,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var batch = new Batch();
             batch.batch_name = semesterRequest.batch_name;
-            batch.batch_term_no = semesterRequest.batch_term_no;
+            batch.batch_order = semesterRequest.batch_term_no;
 
-            if(batchRepository.CheckBatchDuplicate(batch.batch_name, batch.batch_term_no))
+            if(batchRepository.CheckBatchDuplicate(batch.batch_name, batch.batch_order))
             {
                 return BadRequest(new BaseResponse(true, "Batch Duplicate!"));
             }
@@ -102,7 +102,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, batchCreateResult));
             }
-            semester.batch_id = batch.batch_id;
+            semester.start_batch_id = batch.batch_id;
             string createResult = semesterRepository.CreateSemester(semester);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
             {
@@ -127,15 +127,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }
 
-            var batch = batchRepository.GetBatchById(semester.batch_id);
+            var batch = batchRepository.GetBatchById(semester.start_batch_id);
 
-            if(batchRepository.CheckBatchUpdateDuplicate(batch.batch_id, batch.batch_name, batch.batch_term_no))
+            if(batchRepository.CheckBatchUpdateDuplicate(batch.batch_id, batch.batch_name, batch.batch_order))
             {
                 return BadRequest(new BaseResponse(true, "Batch Duplicate!"));
             }
 
             batch.batch_name = semesterRequest.batch_name;
-            batch.batch_term_no = semesterRequest.batch_term_no;
+            batch.batch_order = semesterRequest.batch_term_no;
 
             string updateBatch = batchRepository.UpdateBatch(batch);
             if (!updateBatch.Equals(Result.updateSuccessfull.ToString()))
@@ -162,7 +162,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
-            var batch = batchRepository.GetBatchById(semester.batch_id);
+            var batch = batchRepository.GetBatchById(semester.start_batch_id);
             if (semesterRepository.CheckSemesterExsit(id))
             {
                 return NotFound(new BaseResponse(true, "Semester Used. Can't Delete!"));
