@@ -19,7 +19,6 @@ namespace BusinessObject
         [Required]
         public string degree_level_english_name { get; set; }
 
-        public virtual ICollection<Batch>? Batches { get; set; }
         public virtual ICollection<Major>? Majors { get; set; }
         public virtual ICollection<Syllabus>? Syllabus { get; set; }
     }

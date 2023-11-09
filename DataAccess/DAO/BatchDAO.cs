@@ -21,36 +21,6 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
-        public List<Batch> PaginationBatch(int page, int limit, string? txtSearch)
-        {
-            IQueryable<Batch> query = _context.Batch;
-
-            if (!string.IsNullOrEmpty(txtSearch))
-            {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
-            }
-
-            var listBatch = query
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
-            return listBatch;
-        }
-
-        public int GetTotalBatch(string? txtSearch)
-        {
-            IQueryable<Batch> query = _context.Batch;
-
-            if (!string.IsNullOrEmpty(txtSearch))
-            {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
-            }
-
-            var listBatch = query
-                .ToList();
-            return listBatch.Count;
-        }
-
         public int GetBatchIDByName(string batchName)
         {
             
@@ -77,14 +47,14 @@ namespace DataAccess.DAO
         }
 
 
-        public bool CheckBatchDuplicate(string batch_name, int batch_no)
+        public bool CheckBatchDuplicate(string batch_name)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_order == batch_no)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
         }
 
-        public bool CheckBatchUpdateDuplicate(int id,string batch_name, int batch_no)
+        public bool CheckBatchUpdateDuplicate(int id,string batch_name)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_order == batch_no && x.batch_id != id)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_id != id)).GetValueOrDefault();
         }
 
         public bool CheckBatchExsit(int id)

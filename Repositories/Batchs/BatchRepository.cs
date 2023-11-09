@@ -12,9 +12,9 @@ namespace Repositories.Batchs
     {
         private readonly BatchDAO _batchDAO = new BatchDAO();
 
-        public bool CheckBatchDuplicate(string batch_name, int batch_no)
+        public bool CheckBatchDuplicate(string batch_name)
         {
-            return _batchDAO.CheckBatchDuplicate(batch_name, batch_no);
+            return _batchDAO.CheckBatchDuplicate(batch_name);
         }
 
         public bool CheckBatchExsit(int id)
@@ -22,9 +22,9 @@ namespace Repositories.Batchs
             return _batchDAO.CheckBatchExsit(id);
         }
 
-        public bool CheckBatchUpdateDuplicate(int id, string batch_name, int batch_no)
+        public bool CheckBatchUpdateDuplicate(int id, string batch_name)
         {
-            return _batchDAO.CheckBatchUpdateDuplicate(id, batch_name, batch_no);
+            return _batchDAO.CheckBatchUpdateDuplicate(id, batch_name);
         }
 
         public string CreateBatch(Batch batch)
@@ -55,16 +55,6 @@ namespace Repositories.Batchs
         public int GetBatchIDByName(string batchName)
         {
             return _batchDAO.GetBatchIDByName(batchName);
-        }
-
-        public int GetTotalBatch(string? txtSearch)
-        {
-            return _batchDAO.GetTotalBatch(txtSearch);
-        }
-
-        public List<Batch> PaginationBatch(int page, int limit, string? txtSearch)
-        {
-            return _batchDAO.PaginationBatch(page, limit, txtSearch);
         }
 
         public string UpdateBatch(Batch batch)

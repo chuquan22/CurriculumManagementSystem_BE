@@ -110,9 +110,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
 
             var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            
 
             foreach (var curriculum in subjectRespone)
             {
+                var array = curriculum.curriculum_code.Split("-");
+                curriculum.batch_name = array[3];
                 curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
             }
 
@@ -177,7 +180,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumRequest.batch_id,curriculum.specialization_id);
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumRequest.batch_id ,curriculum.specialization_id);
             curriculum.is_active = true;
             if (CheckCurriculumExists(curriculum.curriculum_code))
             {
