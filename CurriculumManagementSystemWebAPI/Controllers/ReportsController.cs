@@ -41,8 +41,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _learningResourceRepository = new LearningResourceRepository();
         }
 
-        [HttpGet("ReportTKOLChart/{batchId}/{SpeId}")]
-        public IActionResult ReportTKOLChart(int batchId, int SpeId)
+        [HttpGet("ReportTKOLChart/{SpeId}")]
+        public IActionResult ReportTKOLChart(int SpeId)
         {
             var spe = _specializationRepository.GetSpeById(SpeId);
             var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
@@ -51,37 +51,37 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var learningMethod = _learningMethodRepository.GetAllLearningMethods();
             foreach (var item in learningMethod)
             {
-                if (item.learning_method_name.ToLower().Contains("online"))
+                if (item.learning_method_code.Equals("T01"))
                 {
-                    tkolReport.learning_method_onl_name = item.learning_method_name;
-                    tkolReport.total_subject_onl = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                    tkolReport.learning_method_T01_name = item.learning_method_name;
+                    tkolReport.total_subject_T01 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                    if (!double.IsInfinity(tkolReport.total_subject_onl) && !double.IsNaN(tkolReport.total_subject_onl) && subject.Count() != 0)
+                    if (!double.IsInfinity(tkolReport.total_subject_T01) && !double.IsNaN(tkolReport.total_subject_T01) && subject.Count() != 0)
                     {
-                        tkolReport.ratio_onl = ((double)tkolReport.total_subject_onl / (double)subject.Count()) * 100;
-                        tkolReport.ratio_onl = Math.Round(tkolReport.ratio_onl, 2);
+                        tkolReport.ratio_T01 = ((double)tkolReport.total_subject_T01 / (double)subject.Count()) * 100;
+                        tkolReport.ratio_T01 = Math.Round(tkolReport.ratio_T01, 2);
                     }
                 }
-                else if (item.learning_method_name.ToLower().Equals("blended"))
+                else if (item.learning_method_code.Equals("T02"))
                 {
-                    tkolReport.learning_method_blended_name = item.learning_method_name;
-                    tkolReport.total_subject_blended = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                    tkolReport.learning_method_T02_name = item.learning_method_name;
+                    tkolReport.total_subject_T02 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                    if (!double.IsInfinity(tkolReport.total_subject_blended) && !double.IsNaN(tkolReport.total_subject_blended) && subject.Count() != 0)
+                    if (!double.IsInfinity(tkolReport.total_subject_T02) && !double.IsNaN(tkolReport.total_subject_T02) && subject.Count() != 0)
                     {
-                        tkolReport.ratio_blended = ((double)tkolReport.total_subject_blended / (double)subject.Count()) * 100;
-                        tkolReport.ratio_blended = Math.Round(tkolReport.ratio_blended, 2);
+                        tkolReport.ratio_T02 = ((double)tkolReport.total_subject_T02 / (double)subject.Count()) * 100;
+                        tkolReport.ratio_T02 = Math.Round(tkolReport.ratio_T02, 2);
                     }
                 }
-                else if (item.learning_method_name.ToLower().Equals("traditional"))
+                else if (item.learning_method_code.Equals("T03"))
                 {
-                    tkolReport.learning_method_traditional_name = item.learning_method_name;
-                    tkolReport.total_subject_traditional = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                    tkolReport.learning_method_T03_name = item.learning_method_name;
+                    tkolReport.total_subject_T03 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                    if (!double.IsInfinity(tkolReport.total_subject_traditional) && !double.IsNaN(tkolReport.total_subject_traditional) && subject.Count() != 0)
+                    if (!double.IsInfinity(tkolReport.total_subject_T03) && !double.IsNaN(tkolReport.total_subject_T03) && subject.Count() != 0)
                     {
-                        tkolReport.ratio_traditional = ((double)tkolReport.total_subject_traditional / (double)subject.Count()) * 100;
-                        tkolReport.ratio_traditional = Math.Round(tkolReport.ratio_traditional, 2);
+                        tkolReport.ratio_T03 = ((double)tkolReport.total_subject_T03 / (double)subject.Count()) * 100;
+                        tkolReport.ratio_T03 = Math.Round(tkolReport.ratio_T03, 2);
                     }
                 }
 
@@ -111,37 +111,37 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         var learningMethod = _learningMethodRepository.GetAllLearningMethods();
                         foreach (var item in learningMethod)
                         {
-                            if (item.learning_method_name.ToLower().Contains("online"))
+                            if (item.learning_method_code.Equals("T01"))
                             {
-                                tkolReport.learning_method_onl_name = item.learning_method_name;
-                                tkolReport.total_subject_onl = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                                tkolReport.learning_method_T01_name = item.learning_method_name;
+                                tkolReport.total_subject_T01 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                                if (!double.IsInfinity(tkolReport.total_subject_onl) && !double.IsNaN(tkolReport.total_subject_onl) && subject.Count() != 0)
+                                if (!double.IsInfinity(tkolReport.total_subject_T01) && !double.IsNaN(tkolReport.total_subject_T01) && subject.Count() != 0)
                                 {
-                                    tkolReport.ratio_onl = ((double)tkolReport.total_subject_onl / (double)subject.Count()) * 100;
-                                    tkolReport.ratio_onl = Math.Round(tkolReport.ratio_onl, 2);
+                                    tkolReport.ratio_T01 = ((double)tkolReport.total_subject_T01 / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_T01 = Math.Round(tkolReport.ratio_T01, 2);
                                 }
                             }
-                            else if (item.learning_method_name.ToLower().Equals("blended"))
+                            else if (item.learning_method_code.Equals("T02"))
                             {
-                                tkolReport.learning_method_blended_name = item.learning_method_name;
-                                tkolReport.total_subject_blended = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                                tkolReport.learning_method_T02_name = item.learning_method_name;
+                                tkolReport.total_subject_T02 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                                if (!double.IsInfinity(tkolReport.total_subject_blended) && !double.IsNaN(tkolReport.total_subject_blended) && subject.Count() != 0)
+                                if (!double.IsInfinity(tkolReport.total_subject_T02) && !double.IsNaN(tkolReport.total_subject_T02) && subject.Count() != 0)
                                 {
-                                    tkolReport.ratio_blended = ((double)tkolReport.total_subject_blended / (double)subject.Count()) * 100;
-                                    tkolReport.ratio_blended = Math.Round(tkolReport.ratio_blended, 2);
+                                    tkolReport.ratio_T02 = ((double)tkolReport.total_subject_T02 / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_T02 = Math.Round(tkolReport.ratio_T02, 2);
                                 }
                             }
-                            else if (item.learning_method_name.ToLower().Equals("traditional"))
+                            else if (item.learning_method_code.Equals("T03"))
                             {
-                                tkolReport.learning_method_traditional_name = item.learning_method_name;
-                                tkolReport.total_subject_traditional = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
+                                tkolReport.learning_method_T03_name = item.learning_method_name;
+                                tkolReport.total_subject_T03 = subject.Where(x => x.learning_method_id == item.learning_method_id).Count();
 
-                                if (!double.IsInfinity(tkolReport.total_subject_traditional) && !double.IsNaN(tkolReport.total_subject_traditional) && subject.Count() != 0)
+                                if (!double.IsInfinity(tkolReport.total_subject_T03) && !double.IsNaN(tkolReport.total_subject_T03) && subject.Count() != 0)
                                 {
-                                    tkolReport.ratio_traditional = ((double)tkolReport.total_subject_traditional / (double)subject.Count()) * 100;
-                                    tkolReport.ratio_traditional = Math.Round(tkolReport.ratio_traditional, 2);
+                                    tkolReport.ratio_T03 = ((double)tkolReport.total_subject_T03 / (double)subject.Count()) * 100;
+                                    tkolReport.ratio_T03 = Math.Round(tkolReport.ratio_T03, 2);
                                 }
                             }
 
