@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Google;
 using Google.Apis.Auth.OAuth2.Flows;
+using Microsoft.AspNetCore.Cors;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -64,7 +65,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 });
 
                 var authUri = flow.CreateAuthorizationCodeRequest(CallBackUrl).Build();
-                return Redirect(authUri.AbsoluteUri);
+
+                return Ok(new { AuthorizationUrl = authUri.AbsoluteUri });
             }
             catch (Exception ex)
             {

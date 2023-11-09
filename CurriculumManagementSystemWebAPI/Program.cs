@@ -41,10 +41,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.AllowAnyOrigin()
-        .AllowAnyMethod()
-       .AllowAnyHeader();
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
+    
 });
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -61,7 +63,6 @@ builder.Services.AddSession(options =>
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors();
 builder.Services.AddControllers();
 //MAPPER
 //var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new CurriculumManagementSystemWebAPI.Mappers.AutoMapper()); });
@@ -91,6 +92,7 @@ app.UseCors(builder =>
     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 });
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseSession();
