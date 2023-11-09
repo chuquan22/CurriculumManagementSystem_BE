@@ -15,6 +15,7 @@ namespace Repositories.SemesterPlans
         public List<SemesterPlanDTO> GetSemesterPlan(int semester_id);
 
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id);
+        List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id);
 
         //public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
 

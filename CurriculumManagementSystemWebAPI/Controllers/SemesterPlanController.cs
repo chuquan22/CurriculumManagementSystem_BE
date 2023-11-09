@@ -29,8 +29,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                var response = _repo.GetSemesterPlan(semester_id);
-                return Ok(new BaseResponse(false, "Successfully!", response));
+                var list = _repo.GetSemesterPlanDetails(semester_id);
+                List<CreateSemesterPlanResponse> rs = null;
+                if(list.spe.Count == 0)
+                {
+                    var response = _repo.GetSemesterPlan(semester_id);
+                    rs = _repo.GetSemesterPlanOverView(semester_id);
+
+                }
+                return Ok(new BaseResponse(false, "Successfully!", rs));
 
             }
             catch (Exception ex)
@@ -38,6 +45,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Error: " + ex.Message, null));
 
+            }
+        }
+        [HttpGet("GetSemesterPlanOverView/{semester_id}")]
+        public ActionResult GetSemesterPlanOverView(int semester_id)
+        {
+            try
+            {
+                var response = _repo.GetSemesterPlanOverView(semester_id);
+                return Ok(new BaseResponse(false, "Successfully!", response));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
         [HttpGet("GetSemesterPlanSubject/{semester_id}")]
