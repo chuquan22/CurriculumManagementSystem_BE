@@ -18,6 +18,7 @@ using DataAccess.Models.DTO.GoogleLogin;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Google;
+using Google.Apis.Auth.OAuth2.Flows;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -33,7 +34,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private static string ClientsId = "727708784205-5cpdj755l32h8ddrh1husncpdj7e84hk.apps.googleusercontent.com";
         private static string ClientsSecret = "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";
         private static string ApplicationName = "Web client 1";
-        private static string CallBackUrl = "https://localhost:8080/api/Login/CallBack/token";
+        private static string CallBackUrl = "https://localhost:8080/api/Login/CallBack";
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
@@ -47,47 +48,80 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         };
 
         [AllowAnonymous]
-        [HttpPost]
-        public ActionResult Login()
+        [HttpGet]
+        public ActionResult GoogleOAuthLogin()
         {
-            string credentialError = null;
-            string refreshToken = null;
-            
-                UserCredential credential = GetUserCredential(out credentialError);
-                if(credential != null && string.IsNullOrEmpty(credentialError))
-                {
-                    refreshToken = credential.Token.RefreshToken;
-                }
-            if (credential == null)
+            try
             {
-                return BadRequest(new BaseResponse(true, "Failed to obtain user credentials: " + credentialError));
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+                {
+                    ClientSecrets = new ClientSecrets
+                    {
+                        ClientId = ClientsId,
+                        ClientSecret = ClientsSecret
+                    },
+                    Scopes = Scopes
+                });
 
+                var authUri = flow.CreateAuthorizationCodeRequest(CallBackUrl).Build();
+                return Redirect(authUri.AbsoluteUri);
             }
-            var services = new GmailService(new BaseClientService.Initializer()
+            catch (Exception ex)
             {
-                HttpClientInitializer = credential
-            });
-            var userInfo = services.Users.GetProfile("me").Execute();
-            string userEmail = userInfo.EmailAddress;
-            User user = AuthenticateUser(userEmail);
-            if (user == null)
-            {
-                Logout();
-                return Unauthorized(new BaseResponse(true, "User authentication failed."));
+                return BadRequest("Failed to initiate Google OAuth login: " + ex.Message);
             }
-            string token = GenerateToken(user);
-            UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
-            var data = new[]
+        }
+
+        [AllowAnonymous]
+        [HttpGet("CallBack")]
+        public async Task<ActionResult> GoogleOAuthCallback(string? code, string? scope)
+        {
+            try
+            {
+               
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
+                    ClientSecrets = new ClientSecrets
+                    {
+                        ClientId = ClientsId,
+                        ClientSecret = ClientsSecret
+                    },
+                    Scopes = Scopes
+                });
+
+                // Exchange the authorization code for a token
+                var token = await flow.ExchangeCodeForTokenAsync("user", code, CallBackUrl, CancellationToken.None);
+
+                // Use the token to create UserCredential if needed
+                var credential = new UserCredential(flow, "user", token);
+                var services = new GmailService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+                var userInfo = services.Users.GetProfile("me").Execute();
+                string userEmail = userInfo.EmailAddress;
+                User user = AuthenticateUser(userEmail);
+                if (user == null)
+                {
+                    Logout();
+                    return Unauthorized(new BaseResponse(true, "User authentication failed."));
+                }
+                //string TokenUser = GenerateToken(user);
+                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
+                var data = new[]
+                    {
                    new {
                        Token = token,
                        UserData = userResponse
                        },
                  };
-            return Ok(new BaseResponse(false, "Login Successful", data));
-
+                return Ok(new BaseResponse(false, "Login Successful!", data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to complete Google OAuth callback: " + ex.Message);
+            }
         }
-       
 
 
         public static UserCredential GetUserCredential(out string error)
@@ -132,24 +166,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             string error;
             UserCredential credential = GetUserCredential(out error);
-
             if (credential != null)
             {
                 RevokeUserCredential(credential, out error);
                 if (error != null)
                 {
-                    Console.WriteLine("Failed to revoke credentials: " + error);
+                    return BadRequest(new BaseResponse(true, error, null));
                 }
                 else
                 {
-                    Console.WriteLine("User has been successfully logged out.");
+                    return Ok(new BaseResponse(false, "User logged out successfully!", null));
+
                 }
             }
             else
             {
-                Console.WriteLine("User credentials are not available or could not be obtained.");
+                return BadRequest(new BaseResponse(true, "User credentials are not available or could not be obtained.", null));
             }
-            return null;
         }
 
         public static void RevokeUserCredential(UserCredential credential, out string error)
