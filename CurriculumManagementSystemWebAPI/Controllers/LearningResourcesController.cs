@@ -5,6 +5,7 @@ using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.LearningMethods;
 using Repositories.LearningResources;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -70,7 +71,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
 
-            var learningResource = _mapper.Map<LearningResource>(learningResourceRequest); 
+            var learningResource = _mapper.Map<LearningResource>(learningResourceRequest);
+            learningResource.learning_resouce_code = "T0" + (learningResourceRepository.GetLearningResource().Count + 1);
 
             string createResult = learningResourceRepository.CreateLearningResource(learningResource);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
