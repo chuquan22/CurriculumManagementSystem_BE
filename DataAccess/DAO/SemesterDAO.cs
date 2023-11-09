@@ -93,8 +93,7 @@ namespace DataAccess.DAO
         {
             var exsitSemesterPlan = _cmsDbContext.SemesterPlan.FirstOrDefault(x => x.semester_id == id);
             var exsitSpecialization = _cmsDbContext.Specialization.FirstOrDefault(x => x.semester_id == id);
-            var exsitInCurriculumBatch = _cmsDbContext.CurriculumBatch.FirstOrDefault(x => x.Batch.batch_id == GetSemester(id).Batch.batch_id);
-            if(exsitSemesterPlan == null && exsitSpecialization == null && exsitInCurriculumBatch == null)
+            if(exsitSemesterPlan == null && exsitSpecialization == null)
             {
                 return false;
             }
