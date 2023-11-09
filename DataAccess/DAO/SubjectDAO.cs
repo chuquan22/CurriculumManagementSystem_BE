@@ -93,6 +93,20 @@ namespace DataAccess.DAO
 
         }
 
+        public int GetNumberSubjectNoSyllabus(List<Subject> subjects)
+        {
+            var count = 0;
+            foreach (var subject in subjects)
+            {
+                var syllabus = CMSDbContext.Syllabus.Where(x => x.subject_id == subject.subject_id).FirstOrDefault();
+                if(syllabus == null)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
         public List<Subject> GetSubjectByName(string name)
         {
             try

@@ -23,8 +23,9 @@ namespace Repositories.Subjects
         public List<Subject> GetAllSubject() => subjectDAO.GetAllSubjects();
 
         public List<Subject> GetListSubjectByTermNo(int term_no, int curriculumId) => subjectDAO.GetListSubjectByTermNo(term_no, curriculumId);
-      
 
+        public int GetNumberSubjectNoSyllabus(List<Subject> subjects) => subjectDAO.GetNumberSubjectNoSyllabus(subjects);
+        
         public Subject GetSubjectByCode(string code)
         {
             return subjectDAO.GetSubjectByCode(code);

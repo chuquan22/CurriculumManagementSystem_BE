@@ -11,7 +11,18 @@ namespace DataAccess.Models.DTO.Report
     {
         public string specialization_name { get; set; }
         public int total_subject { get; set; }
-        public List<LearningResourceReport> LearningResource { get; set; }
+        public string learning_resource_T01_name { get; set; }
+        public int number_subject_T01 { get; set; }
+        public string learning_resource_T02_name { get; set; }
+        public int number_subject_T02 { get; set; }
+        public string learning_resource_T03_name { get; set; }
+        public int number_subject_T03 { get; set; }
+        public string learning_resource_T04_name { get; set; }
+        public int number_subject_T04 { get; set; }
+        public string learning_resource_T05_name { get; set; }
+        public int number_subject_T05 { get; set; }
+        public string learning_resource_T06_name { get; set; }
+        public int number_subject_T06 { get; set; }
 
     }
 }

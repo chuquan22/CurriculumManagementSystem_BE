@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,9 +21,18 @@ namespace DataAccess.DAO
             return mt;
         }
 
-        public List<Material> GetMaterialListBysubject(int sid) 
+        public List<Material> GetMaterialListBysubject(List<Subject> subjects) 
         {
-            var listSyllabus = _context.Syllabus.Where(x => x.subject_id == sid).ToList();
+            var listSyllabus = new List<Syllabus>();
+            foreach (var subject in subjects)
+            {
+                var ListSyllabus = _context.Syllabus.Where(x => x.subject_id == subject.subject_id && x.syllabus_approved == true).ToList();
+                foreach (var syllabus in ListSyllabus)
+                {
+                    listSyllabus.Add(syllabus);
+                }
+            }
+            
             var listMaterials = new List<Material>();
             foreach (var syllabus in listSyllabus)
             {

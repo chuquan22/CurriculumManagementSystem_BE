@@ -10,7 +10,7 @@ namespace Repositories.Materials
     public interface IMaterialRepository
     {
         public List<BusinessObject.Material> GetMaterial(int id);
-        List<Material> GetMaterialListBysubject(int sid);
+        List<Material> GetMaterialListBysubject(List<Subject> subjects);
         public BusinessObject.Material CreateMaterial(BusinessObject.Material mate);
         public BusinessObject.Material EditMaterial(BusinessObject.Material mate);
         public BusinessObject.Material DeleteMaterial(int id);

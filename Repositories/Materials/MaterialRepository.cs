@@ -37,9 +37,9 @@ namespace Repositories.Materials
             return db.GetMaterialById(id);
         }
 
-        public List<Material> GetMaterialListBysubject(int sid)
+        public List<Material> GetMaterialListBysubject(List<Subject> subjects)
         {
-            return db.GetMaterialListBysubject(sid);
+            return db.GetMaterialListBysubject(subjects);
         }
     }
 }

@@ -23,6 +23,8 @@ namespace Repositories.Syllabus
             return db.GetListSyllabus(start, end, txtSearch, subjectCode);
         }
 
+        
+
         public List<PreRequisite> GetPre(int id)
         {
            return db.GetListPre(id);
