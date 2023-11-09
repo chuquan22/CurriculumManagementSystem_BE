@@ -61,6 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             var learningMethod = _mapper.Map<LearningMethod>(learningMethodRequest);
+            learningMethod.learning_method_code = "T" + learningMethodRepository.GetAllLearningMethods().Count + 1;
 
             string createResult = learningMethodRepository.CreateLearningMethod(learningMethod);
             if (!createResult.Equals(Result.createSuccessfull.ToString()))
