@@ -38,7 +38,7 @@ namespace DataAccess.DAO
             return listSemester;
         }
 
-        public object GetSemesterByDegreeLevel(int id)
+        public List<Semester> GetSemesterByDegreeLevel(int id)
         {
             var listSemester = _cmsDbContext.Semester.Where(x => x.degree_level_id == id).ToList();
             return listSemester;

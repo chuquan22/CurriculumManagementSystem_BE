@@ -8,6 +8,7 @@ namespace DataAccess.Models.DTO.response
 {
     public class CreateSemesterPlanResponse
     {
-
+        public int semester_batch_id { get; set; }
+        public int MyProperty { get; set; }
     }
 }

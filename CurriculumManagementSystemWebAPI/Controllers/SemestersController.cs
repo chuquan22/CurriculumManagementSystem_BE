@@ -73,7 +73,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester Plan By Degree Level!"));
             }
-            var semesterResponse = _mapper.Map<SemesterResponse>(semester);
+            var semesterResponse = _mapper.Map<List<SemesterResponse>>(semester);
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
 
