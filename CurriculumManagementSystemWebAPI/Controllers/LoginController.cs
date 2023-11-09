@@ -9,7 +9,14 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Repositories.Users;
 using AutoMapper;
+using Google.Apis.Util;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+
+using DataAccess.Models.DTO.GoogleLogin;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -21,37 +28,141 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
+        private readonly SignInManager<IdentityUser> _signInManager ;
 
+        private static string ClientsId = "727708784205-5cpdj755l32h8ddrh1husncpdj7e84hk.apps.googleusercontent.com";
+        private static string ClientsSecret = "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";
+        private static string ApplicationName = "Web client 1";
+        private static string CallBackUrl = "https://localhost:8080/api/Login/CallBack/token";
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
             repo = new UsersRepository();
             _mapper = mapper;  
         }
-       
+        public static string[] Scopes =
+        {
+            GmailService.Scope.GmailCompose,
+            GmailService.Scope.GmailSend
+        };
+
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
+        public ActionResult Login()
         {
-            User user = AuthenticateUser(userLoginRequest.email);
-            if (user != null)
+            string credentialError = null;
+            string refreshToken = null;
+            
+                UserCredential credential = GetUserCredential(out credentialError);
+                if(credential != null && string.IsNullOrEmpty(credentialError))
+                {
+                    refreshToken = credential.Token.RefreshToken;
+                }
+            if (credential == null)
             {
-                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
-                var token = GenerateToken(user);
-                var data = new[]
+                return BadRequest(new BaseResponse(true, "Failed to obtain user credentials: " + credentialError));
+
+            }
+            var services = new GmailService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential
+            });
+            var userInfo = services.Users.GetProfile("me").Execute();
+            string userEmail = userInfo.EmailAddress;
+            User user = AuthenticateUser(userEmail);
+            if (user == null)
+            {
+                Logout();
+                return Unauthorized(new BaseResponse(true, "User authentication failed."));
+            }
+            string token = GenerateToken(user);
+            UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
+            var data = new[]
                 {
                    new {
                        Token = token,
                        UserData = userResponse
                        },
                  };
-                if(userResponse.is_active == false)
+            return Ok(new BaseResponse(false, "Login Successful", data));
+
+        }
+       
+
+
+        public static UserCredential GetUserCredential(out string error)
+        {
+            UserCredential credential = null;
+            error = null;
+            try
+            {
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                     new ClientSecrets
+                     {
+                         ClientId = ClientsId,
+                         ClientSecret = ClientsSecret,
+                     },
+
+                     Scopes,
+                     Environment.UserName,
+                     CancellationToken.None
+                     ).Result;
+                if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
                 {
-                    return BadRequest(new BaseResponse(true, "Your account has been locked for violating system policies. You can send an unlock request to the system adminstrator via email at admin-cms@fpoly.fpt.edu.vn!", null));
+                    credential.RefreshTokenAsync(CancellationToken.None).Wait();
                 }
-                return Ok(new BaseResponse(false, "Login Successful", data));
+                var services = new GmailService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+
+
             }
-            return Unauthorized(new BaseResponse(false, "Your account is not allowed to log into the system!", null));
+            catch (Exception ex)
+            {
+                credential = null;
+                error = "Failed to UserCredential Initialization: " + ex.Message;
+            }
+            return credential;
+        }
+        [HttpPost("Logout")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+
+            string error;
+            UserCredential credential = GetUserCredential(out error);
+
+            if (credential != null)
+            {
+                RevokeUserCredential(credential, out error);
+                if (error != null)
+                {
+                    Console.WriteLine("Failed to revoke credentials: " + error);
+                }
+                else
+                {
+                    Console.WriteLine("User has been successfully logged out.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("User credentials are not available or could not be obtained.");
+            }
+            return null;
+        }
+
+        public static void RevokeUserCredential(UserCredential credential, out string error)
+        {
+            error = null;
+            try
+            {
+                credential.RevokeTokenAsync(CancellationToken.None).Wait();
+            }
+            catch (Exception ex)
+            {
+                error = "Failed to revoke the user's credentials: " + ex.Message;
+            }
         }
 
         private User AuthenticateUser(string email)
@@ -101,35 +212,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return null;
         }
-        [HttpGet("login-with-google")]
-        [AllowAnonymous]
-        public IActionResult LoginWithGoogle()
-        {
-            var properties = new AuthenticationProperties
-            {
-                RedirectUri = Url.Action("GoogleResponse")
-            };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-        }
-
-        [HttpGet("google-response")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GoogleResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync("Cookies");
-
-            if (!result.Succeeded)
-            {
-                // Handle authentication failure...
-                return BadRequest("Google Authentication failed.");
-            }
-
-            // Access user information from result.Principal and process it as needed.
-            // Create or update a user's account in your database and sign them in.
-
-            // Redirect or return to your application's main page.
-            return Redirect("/"); // Replace with your desired URL.
-        }
+        
 
     }
 }

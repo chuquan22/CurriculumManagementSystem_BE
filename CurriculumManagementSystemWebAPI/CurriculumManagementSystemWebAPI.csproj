@@ -12,6 +12,10 @@
 
     <PackageReference Include="EPPlus" Version="6.2.10" />
 
+    <PackageReference Include="Google.Apis.Auth" Version="1.63.0" />
+
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.63.0.3217" />
+
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.22" />
 
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
@@ -33,6 +37,12 @@
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
 
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="client.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

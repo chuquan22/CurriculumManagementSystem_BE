@@ -2,33 +2,40 @@
 using BusinessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Google;
-
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
 using DataAccess.Models.DTO;
 using OfficeOpenXml;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(option =>
-    {
-        option.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-        };
-    })
+    //.AddJwtBearer(option =>
+    //{
+    //    option.TokenValidationParameters = new TokenValidationParameters
+    //    {
+    //        ValidateAudience = true,
+    //        ValidateIssuer = true,
+    //        ValidateLifetime = true,
+    //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+    //        ValidAudience = builder.Configuration["Jwt:Audience"],
+    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    //    };
+    //})
+    .AddCookie()
     .AddGoogle(options =>
     {
-        options.ClientId = "780549906802-4k5phhf2h582rbhfc55qqn9tmi3ir24k.apps.googleusercontent.com"; 
-        options.ClientSecret = "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";
+        options.ClientId = configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+        options.CallbackPath = configuration["Authentication:Google:CallBackUrl"];
     });
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddCors(options =>
 {
@@ -40,7 +47,11 @@ builder.Services.AddCors(options =>
     });
 });
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 builder.Services.AddControllers();
 builder.Services.AddSession(options =>
 {
@@ -50,29 +61,41 @@ builder.Services.AddSession(options =>
 builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddCors();
 builder.Services.AddControllers();
 //MAPPER
 //var mapperConfig = new MapperConfiguration(mc => { mc.AddProfile(new CurriculumManagementSystemWebAPI.Mappers.AutoMapper()); });
 //var mapper = mapperConfig.CreateMapper();
 //builder.Services.AddSingleton(mapper);
-
-builder.Services.AddDbContext<CMSDbContext>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Configure the HTTP request pipeline.
 var app = builder.Build();
+app.UseForwardedHeaders();
 
-    app.UseSwagger();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseForwardedHeaders();
+    app.UseHsts();
+}
+else
+{
+    app.UseDeveloperExceptionPage();
+    app.UseForwardedHeaders();
+}
+app.UseSwagger();
     app.UseSwaggerUI();
 
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 });
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseSession();
 app.MapControllers();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
