@@ -205,7 +205,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         else if (learningResource.learning_resouce_code.Equals("T03"))
                         {
                             textBookReport.learning_resource_T03_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T03= listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T03 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                         else if (learningResource.learning_resouce_code.Equals("T04"))
                         {
@@ -228,6 +228,64 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Text Book Table Report", listTextBookReport));
         }
+
+        [HttpGet("ReportTextBookChart/{speId}")]
+        public IActionResult ReportTextBookChart(int speId)
+        {
+
+
+            var spe = _specializationRepository.GetSpeById(speId);
+            var textbook = new TextBookDTOReport
+            {
+                textBookReports = new List<TextBookReport>()
+            };
+
+
+            var listSubject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
+            var textBookReport = new TextBookReport
+            {
+                specialization_name = spe.specialization_english_name,
+                total_subject = listSubject.Count(),
+            };
+
+            var listMaterial = _materialRepository.GetMaterialListBysubject(listSubject);
+            var listLearningResource = _learningResourceRepository.GetLearningResource();
+
+            foreach (var learningResource in listLearningResource)
+            {
+                if (learningResource.learning_resouce_code.Equals("T01"))
+                {
+                    textBookReport.learning_resource_T01_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T01 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
+                else if (learningResource.learning_resouce_code.Equals("T02"))
+                {
+                    textBookReport.learning_resource_T02_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T02 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
+                else if (learningResource.learning_resouce_code.Equals("T03"))
+                {
+                    textBookReport.learning_resource_T03_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T03 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
+                else if (learningResource.learning_resouce_code.Equals("T04"))
+                {
+                    textBookReport.learning_resource_T04_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T04 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
+                else if (learningResource.learning_resouce_code.Equals("T05"))
+                {
+                    textBookReport.learning_resource_T05_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T05 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
+            }
+            textBookReport.learning_resource_T06_name = "no syllabus";
+            textBookReport.number_subject_T06 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
+            textbook.textBookReports.Add(textBookReport);
+
+            return Ok(new BaseResponse(false, "Text Book Table Report", textbook));
+        }
+
 
 
         [HttpGet("ReportSubject")]
