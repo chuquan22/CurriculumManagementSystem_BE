@@ -103,7 +103,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 User user = AuthenticateUser(userEmail);
                 if (user == null)
                 {
-                    Logout();
                     return Unauthorized(new BaseResponse(true, "User authentication failed."));
                 }
                 //string TokenUser = GenerateToken(user);
