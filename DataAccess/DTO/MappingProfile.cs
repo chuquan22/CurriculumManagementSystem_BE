@@ -275,6 +275,7 @@ namespace DataAccess.Models.DTO
             CreateMap<Semester, SemesterResponse>()
                 .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.Batch.batch_id))
                 .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+                .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
                 .ReverseMap();
 
 

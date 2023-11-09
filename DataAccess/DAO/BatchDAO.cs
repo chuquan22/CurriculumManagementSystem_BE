@@ -60,8 +60,8 @@ namespace DataAccess.DAO
 
         public bool CheckBatchExsit(int id)
         {
-            var exsitInCurri = _context.CurriculumBatch.FirstOrDefault(x => x.batch_id == id);
-            if (exsitInCurri == null)
+            var exsitInSemester = _context.Semester.FirstOrDefault(x => x.start_batch_id == id);
+            if (exsitInSemester == null)
             {
                 return false;
             }

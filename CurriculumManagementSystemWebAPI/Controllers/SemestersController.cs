@@ -130,7 +130,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
-            var batch = batchRepository.GetBatchById(semester.start_batch_id);
             if (semesterRepository.CheckSemesterExsit(id))
             {
                 return NotFound(new BaseResponse(true, "Semester Used. Can't Delete!"));
@@ -140,12 +139,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             if (!deleteResult.Equals(Result.deleteSuccessfull.ToString()))
             {
                 return BadRequest(new BaseResponse(true, deleteResult));
-            }
-
-            string deleteBatchResult = batchRepository.DeleteBatch(batch);
-            if (!deleteBatchResult.Equals(Result.deleteSuccessfull.ToString()))
-            {
-                return BadRequest(new BaseResponse(true, deleteBatchResult));
             }
 
             return Ok(new BaseResponse(false, "Delete Success!", semester));
