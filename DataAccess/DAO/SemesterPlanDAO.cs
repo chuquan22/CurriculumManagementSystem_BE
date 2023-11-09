@@ -79,7 +79,38 @@ namespace DataAccess.DAO
             }
             return listResponse;
         }
+        public List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id)
+        {
 
+            var semesterPlan = _cmsDbContext.SemesterPlan.Where(x => x.semester_id == semester_id).ToList();
+            if (semesterPlan.Count == 0)
+            {
+                return null;
+            }
+            var result = new List<CreateSemesterPlanResponse>();
+
+            var semester = _cmsDbContext.Semester.Include(x => x.DegreeLevel).FirstOrDefault(x => x.semester_id == semester_id);
+            string degreeLevel = semester.DegreeLevel.degree_level_english_name;
+            var startBatch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == semester.start_batch_id);
+            int order = startBatch.batch_order;
+            int validOrder = order - 7;
+            List<Semester> semesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == semester.degree_level_id).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order).OrderByDescending(x => x.Batch.batch_order).ToList();
+            int termNO = 1;
+            foreach (var batch in semesterValid)
+            {
+                var response = new CreateSemesterPlanResponse();
+                response.semester_batch_id = startBatch.batch_id;
+                response.semester_id = semester.semester_id;
+                response.batch_id = batch.Batch.batch_id;
+                response.batch_name = batch.Batch.batch_name;
+                response.term_no = termNO;
+                response.degree_level = degreeLevel;
+                result.Add(response);
+                termNO++;
+            }
+
+            return result;
+        }
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
         {
             var Semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.semester_id == semester_id).FirstOrDefault();
@@ -167,169 +198,7 @@ namespace DataAccess.DAO
             return responseList;
         }
 
-        //    public List<SemesterPlan> GetAllSemesterPlan()
-        //    {
-        //        var listSemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).ToList();
-        //        return listSemesterPlan;
-        //    }
-
-        //    public List<SemesterPlanResponse> GetAllSemesterPlan(int semester_id, string degree_level)
-        //    {
-        //        var listSemesterPlan = _cmsDbContext.SemesterPlan
-        //            .Include(x => x.Curriculum)
-        //            .Include(x => x.Curriculum.Specialization)
-        //            .Include(x => x.Semester.SemesterBatches)
-        //            .Where(s => s.semester_id == semester_id && s.degree_level.Equals(degree_level))
-        //            .ToList();
-
-        //        var responseList = new List<SemesterPlanResponse>();
-
-        //        var uniqueCurriculumIds = listSemesterPlan.Select(sp => sp.Curriculum.curriculum_id).ToList();
-
-        //        foreach (var curriculumId in uniqueCurriculumIds)
-        //        {
-        //            var semesterPlanForCurriculum = listSemesterPlan.FirstOrDefault(sp => sp.Curriculum.curriculum_id == curriculumId);
-
-        //            if (semesterPlanForCurriculum != null)
-        //            {
-        //                var spe_name = semesterPlanForCurriculum.Curriculum.Specialization.specialization_english_name;
-        //                var spe_id = semesterPlanForCurriculum.Curriculum.Specialization.specialization_id;
-        //                var totalSemester = semesterPlanForCurriculum.Curriculum.total_semester;
-        //                var semester = semesterPlanForCurriculum.Semester;
-        //                var semester_name = semester.semester_name;
-
-        //                var semester_filter = _cmsDbContext.Semester.Where(x => x.semester_id == semesterPlanForCurriculum.Curriculum.Specialization.semester_id).FirstOrDefault();
-
-        //                var batch = _cmsDbContext.Batch.Where(x => x.batch_id == semester_filter.batch_id).FirstOrDefault();
-        //                var semesterBatches = _cmsDbContext.SemesterBatch
-        //                    .Include(sb => sb.Batch)
-        //                    .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level) && string.Compare(sb.Batch.batch_name, batch.batch_name) >= 0)
-        //                    .ToList();
-
-        //                var batchResponses = semesterBatches.Select(sb => new SemesterBatchResponse
-        //                {
-        //                    semester_batch_id = sb.semester_batch_id,
-        //                    semester_id = sb.semester_id,
-        //                    batch_id = sb.batch_id,
-        //                    batch_name = sb.Batch.batch_name,
-        //                    term_no = sb.term_no,
-        //                    degree_level = sb.degree_level
-        //                }).ToList();
-
-        //                var semesterPlanResponse = new SemesterPlanResponse
-        //                {
-        //                    spe = spe_name,
-        //                    specialization_id = spe_id,
-        //                    totalSemester = totalSemester,
-        //                    semester = semester_name,
-        //                    batch = batchResponses
-        //                };
-
-        //                responseList.Add(semesterPlanResponse);
-        //            }
-        //        }
-
-        //        return responseList;
-        //    }
-
-        //    public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id, string degree_level)
-        //    {
-
-        //        var curriculumIds = _cmsDbContext.SemesterPlan
-        //                .Where(sp => sp.semester_id == semester_id && sp.degree_level.Equals(degree_level))
-        //                .Select(sp => sp.curriculum_id)
-        //                .Distinct()
-        //                .ToList();
-        //        var responseList = new SemesterPlanDetailsResponse
-        //        {
-        //            spe = new List<SemesterPlanDetailsTermResponse>(),
-        //        };
-        //        foreach (var curriculumId in curriculumIds)
-        //        {
-        //            var curri = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == curriculumId).FirstOrDefault();
-        //            var semester_filter = _cmsDbContext.Semester.Where(x => x.semester_id == curri.Specialization.semester_id).FirstOrDefault();
-        //            var batch = _cmsDbContext.Batch.Where(x => x.batch_id == semester_filter.batch_id).FirstOrDefault();
-
-        //            var semesterBatches = _cmsDbContext.SemesterBatch
-        //                .Include(sb => sb.Semester)
-        //                .Include(sb => sb.Batch)
-        //                .Where(sb => sb.semester_id == semester_id && sb.degree_level.Equals(degree_level) && string.Compare(sb.Batch.batch_name, batch.batch_name) >= 0)
-        //                .ToList();
-
-        //            var semesterPlanDetails = new SemesterPlanDetailsTermResponse
-        //            {
-        //                specialization_name = "",
-        //                major_name = "",
-        //                specialization_id = 0,
-        //                courses = new List<DataTermNoResponse>(),
-        //            };
-        //            var dataTermNo = new DataTermNoResponse();
-        //            foreach (var semesterBatch in semesterBatches)
-        //            {
-        //                responseList.semesterName = semesterBatch.Semester.semester_name;
-
-        //                var curriculum = _cmsDbContext.Curriculum
-        //                    .Include(c => c.Specialization)
-        //                    .ThenInclude(s => s.Major)
-        //                    .Include(c => c.CurriculumSubjects)
-        //                    .ThenInclude(cs => cs.Subject)
-        //                    .ThenInclude(subject => subject.AssessmentMethod)
-        //                    .ThenInclude(assessmentMethod => assessmentMethod.AssessmentType)
-        //                    .FirstOrDefault(c => c.curriculum_id == curriculumId);
-
-        //                semesterPlanDetails.specialization_name = curriculum.Specialization.specialization_english_name;
-        //                semesterPlanDetails.major_name = curriculum.Specialization.Major.major_english_name;
-        //                semesterPlanDetails.specialization_id = curriculum.specialization_id;
-        //                if (curriculum.batch_id == semesterBatch.batch_id)
-        //                {
-        //                    dataTermNo = new DataTermNoResponse
-        //                    {
-        //                        term_no = semesterBatch.term_no,
-        //                        batch = semesterBatch.Batch.batch_name,
-        //                        batch_check = curriculum.Batch.batch_name,
-        //                        curriculum_code = curriculum.curriculum_code,
-        //                        subjectData = curriculum.CurriculumSubjects
-        //                        .Where(cs => cs.term_no == semesterBatch.term_no && cs.Subject.subject_code != null)
-        //                        .Select(cs => new DataSubjectReponse
-        //                        {
-        //                            subject_code = cs.Subject.subject_code,
-        //                            subject_name = cs.Subject.english_subject_name,
-        //                            credit = cs.Subject.credit,
-        //                            total = cs.Subject.total_time,
-        //                            @class = cs.Subject.total_time_class,
-        //                            @exam = cs.Subject.exam_total,
-        //                            method = cs.Subject.AssessmentMethod.assessment_method_component,
-        //                            assessment = cs.Subject.AssessmentMethod.AssessmentType.assessment_type_name
-        //                        })
-        //                        .ToList(),
-        //                    };
-        //                }
-        //                else
-        //                {
-        //                    dataTermNo = new DataTermNoResponse
-        //                    {
-        //                        term_no = semesterBatch.term_no,
-        //                        batch = semesterBatch.Batch.batch_name,
-        //                        subjectData = null,
-        //                    };
-        //                }
-
-        //                semesterPlanDetails.courses.Add(dataTermNo);
-
-        //            }
-
-        //            responseList.spe.Add(semesterPlanDetails);
-
-
-        //        }
-
-        //        return responseList;
-        //    }
-        //    public SemesterPlan GetSemesterPlan(int curriId, int semestId)
-        //    {
-        //        var semesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Semester).Include(x => x.Curriculum).FirstOrDefault(x => x.curriculum_id == curriId && x.semester_id == semestId);
-        //        return semesterPlan;
-        //    }
+       
 
         public string CreateSemesterPlan(SemesterPlan semesterPlan)
         {

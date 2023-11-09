@@ -27,5 +27,9 @@ namespace Repositories.SemesterPlans
             return db.GetSemesterPlanDetails(semester_id);
         }
 
+        public List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id)
+        {
+            return db.GetSemesterPlanOverView(semester_id);
+        }
     }
 }
