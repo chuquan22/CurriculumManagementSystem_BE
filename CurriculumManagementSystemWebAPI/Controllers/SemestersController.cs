@@ -65,7 +65,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var semesterResponse = _mapper.Map<SemesterResponse>(semester);
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
-
+        [HttpGet("GetSemesterByDegreeLevel/{Id}")]
+        public ActionResult GetSemesterByDegreeLevel(int Id)
+        {
+            var semester = semesterRepository.GetSemesterByDegreeLevel(Id);
+            if (semester == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Semester Plan By Degree Level!"));
+            }
+            var semesterResponse = _mapper.Map<SemesterResponse>(semester);
+            return Ok(new BaseResponse(false, "Semester", semesterResponse));
+        }
 
         [HttpGet("GetSemesterBySpeId/{speId}")]
         public ActionResult GetSemesterBy(int speId)

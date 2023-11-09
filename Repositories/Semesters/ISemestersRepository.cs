@@ -21,5 +21,6 @@ namespace Repositories.Semesters
         string DeleteSemester(Semester semester);
 
         List<Semester> GetAllSemestersByMajorId(int id);
+        object GetSemesterByDegreeLevel(int id);
     }
 }

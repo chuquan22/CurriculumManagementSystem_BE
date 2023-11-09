@@ -12,7 +12,9 @@ namespace Repositories.SemesterPlans
     {
         public string CreateSemesterPlan(SemesterPlan semesterPlans); 
 
-        //public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level);
+        public List<SemesterPlanDTO> GetSemesterPlan(int semester_id);
+
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id);
 
         //public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
 

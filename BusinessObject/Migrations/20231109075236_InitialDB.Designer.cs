@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231108103409_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231109075236_InitialDB")]
+    partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -375,7 +375,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 1,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "GD-IED-CD-18.3",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế đồ họa",
@@ -389,7 +389,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 2,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "GD-IED-IC-19.1",
                             curriculum_description = "",
                             curriculum_name = "Thiết kế mĩ thuật số",
@@ -403,7 +403,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 3,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "SE-SE-IC-18",
                             curriculum_description = "",
                             curriculum_name = "kĩ sư phần mềm",
@@ -417,7 +417,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 4,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "SE-SE-CD-17",
                             curriculum_description = "",
                             curriculum_name = "kĩ thuật phần mềm",
@@ -431,7 +431,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 5,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "CM-FMA-TC-19.3",
                             curriculum_description = "",
                             curriculum_name = "quản lí học liệu",
@@ -445,7 +445,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 6,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "SS-IED-TC-19.2",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",
@@ -459,7 +459,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 7,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "SWP-WP-TC-17",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng lập trình web",
@@ -473,7 +473,7 @@ namespace BusinessObject.Migrations
                         {
                             curriculum_id = 8,
                             Formality = "formal education",
-                            approved_date = new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            approved_date = new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local),
                             curriculum_code = "SS-IED-TC-7.1",
                             curriculum_description = "",
                             curriculum_name = "kĩ năng mềm",

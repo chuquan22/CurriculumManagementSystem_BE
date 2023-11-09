@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BusinessObject.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -1030,14 +1030,14 @@ namespace BusinessObject.Migrations
                 columns: new[] { "curriculum_id", "Formality", "approved_date", "curriculum_code", "curriculum_description", "curriculum_name", "decision_No", "english_curriculum_name", "is_active", "specialization_id", "total_semester" },
                 values: new object[,]
                 {
-                    { 1, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "GD-IED-CD-18.3", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7 },
-                    { 2, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "GD-IED-IC-19.1", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7 },
-                    { 3, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "SE-SE-IC-18", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7 },
-                    { 4, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "SE-SE-CD-17", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7 },
-                    { 5, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "CM-FMA-TC-19.3", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 6 },
-                    { 6, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "SS-IED-TC-19.2", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 6 },
-                    { 7, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "SWP-WP-TC-17", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 5, 7 },
-                    { 8, "formal education", new DateTime(2023, 11, 8, 0, 0, 0, 0, DateTimeKind.Local), "SS-IED-TC-7.1", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7 }
+                    { 1, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "GD-IED-CD-18.3", "", "Thiết kế đồ họa", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7 },
+                    { 2, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "GD-IED-IC-19.1", "", "Thiết kế mĩ thuật số", "360/QĐ-CĐFPL", "Graphic Design", true, 1, 7 },
+                    { 3, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "SE-SE-IC-18", "", "kĩ sư phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7 },
+                    { 4, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "SE-SE-CD-17", "", "kĩ thuật phần mềm", "360/QĐ-CĐFPL", "Software Engineering", true, 4, 7 },
+                    { 5, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "CM-FMA-TC-19.3", "", "quản lí học liệu", "360/QĐ-CĐFPL", "Curriculum Management", true, 2, 6 },
+                    { 6, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "SS-IED-TC-19.2", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 6 },
+                    { 7, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "SWP-WP-TC-17", "", "kĩ năng lập trình web", "360/QĐ-CĐFPL", "Skill Web Program", false, 5, 7 },
+                    { 8, "formal education", new DateTime(2023, 11, 9, 0, 0, 0, 0, DateTimeKind.Local), "SS-IED-TC-7.1", "", "kĩ năng mềm", "360/QĐ-CĐFPL", "Soft Skill", true, 1, 7 }
                 });
 
             migrationBuilder.InsertData(
