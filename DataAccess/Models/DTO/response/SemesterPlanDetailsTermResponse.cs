@@ -10,6 +10,7 @@ namespace DataAccess.Models.DTO.response
     {
         public string specialization_name { get; set; }
         public string major_name { get; set; }
+        public int specializationId { get; set; }   
         public List<DataTermNoResponse> courses { get; set; }
     }
 }
