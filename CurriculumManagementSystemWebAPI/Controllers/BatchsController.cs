@@ -12,7 +12,7 @@ using Repositories.CLOS;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {   
-   // [Authorize]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class BatchsController : ControllerBase
@@ -25,16 +25,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             batchRepository = new BatchRepository();
         }
-        //[Authorize(Roles = "Admin")]
-        [Authorize]
+
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
         {
             var listBatch = batchRepository.GetAllBatch();
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
-
-
 
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)

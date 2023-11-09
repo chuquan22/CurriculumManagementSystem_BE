@@ -28,31 +28,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetAllCurriculumBatch")]
         public IActionResult GetCurriculumBatch()
         {
+            var listBatch = _batchRepository.GetAllBatch();
             var listCurriBatch = _curriculumBatchRepository.GetAllCurriculumBatch();
             List<CurriculumBatchDTOResponse> listCurriculumBatch = new List<CurriculumBatchDTOResponse>();
 
-            foreach (var curriBatch in listCurriBatch)
+            foreach (var batch in listBatch)
             {
                 var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-                curriBacthDTO.batch_id = curriBatch.batch_id;
-                curriBacthDTO.batch_name = curriBatch.Batch.batch_name;
-                var curriResponse = _mapper.Map<CurriculumResponse>(curriBatch.Curriculum);
-                curriBacthDTO.curriculum.Add(curriResponse);
+                curriBacthDTO.batch_id = batch.batch_id;
+                curriBacthDTO.batch_name = batch.batch_name;
+                var curriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriBatch.Where(x => x.batch_id == batch.batch_id).Select(x => x.Curriculum).ToList());
+                curriBacthDTO.curriculum = curriResponse;
 
-                bool found = false;
-                foreach (var item in listCurriculumBatch)
-                {
-                    if (item.batch_id == curriBacthDTO.batch_id)
-                    {
-                        item.curriculum.Add(curriResponse);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    listCurriculumBatch.Add(curriBacthDTO);
-                }
+                listCurriculumBatch.Add(curriBacthDTO);
+
 
             }
 
@@ -82,13 +71,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
             }
-            var batch = new Batch 
-            { 
-                batch_name = curriculumBatchRequest.batch_name, 
-                batch_order = curriculumBatchRequest.batch_order 
+            var batch = new Batch
+            {
+                batch_name = curriculumBatchRequest.batch_name,
+                batch_order = curriculumBatchRequest.batch_order
             };
             string createResult = _batchRepository.CreateBatch(batch);
-            if(createResult != Result.createSuccessfull.ToString())
+            if (createResult != Result.createSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
@@ -100,17 +89,54 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     batch_id = batch.batch_id,
                     curriculum_id = curriId
                 };
-                string createcurriBatch = _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
-                if (createcurriBatch != Result.createSuccessfull.ToString())
+                // if curriculum_id exsit in db
+                if (curriId > 0)
                 {
-                    return BadRequest(new BaseResponse(true, createcurriBatch));
+                    string createcurriBatch = _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
+                    if (createcurriBatch != Result.createSuccessfull.ToString())
+                    {
+                        return BadRequest(new BaseResponse(true, createcurriBatch));
+                    }
                 }
             }
 
-            return Ok(new BaseResponse(false, "Create Successfull" ));
+
+            return Ok(new BaseResponse(false, "Create Successfull", curriculumBatchRequest));
         }
 
+        [HttpPut("UpdateCurriculumBatch/{id}")]
+        public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
+        {
+            var batch = _batchRepository.GetBatchById(id);
+            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name))
+            {
+                return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
+            }
+            batch.batch_name = curriculumBatchRequest.batch_name;
+            batch.batch_order = curriculumBatchRequest.batch_order;
 
+            string updateResult = _batchRepository.UpdateBatch(batch);
+            if (updateResult != Result.updateSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
+            }
+
+            foreach (var curriId in curriculumBatchRequest.list_curriculum_id)
+            {
+                var curriBatch = new CurriculumBatch
+                {
+                    batch_id = batch.batch_id,
+                    curriculum_id = curriId
+                };
+                string updatecurriBatch = _curriculumBatchRepository.UpdateCurriculumBatch(curriBatch);
+                if (updatecurriBatch != Result.updateSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, updatecurriBatch));
+                }
+            }
+
+            return Ok(new BaseResponse(false, "Update Successfull", curriculumBatchRequest));
+        }
 
     }
 }
