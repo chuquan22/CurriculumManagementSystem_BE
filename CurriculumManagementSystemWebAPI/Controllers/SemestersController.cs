@@ -16,13 +16,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private ISemestersRepository semesterRepository;
-        private IBatchRepository batchRepository;
 
         public SemestersController(IMapper mapper)
         {
             _mapper = mapper;
             semesterRepository = new SemestersRepository();
-            batchRepository = new BatchRepository(); 
         }
 
         [HttpGet("GetAllSemester")]
