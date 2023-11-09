@@ -56,9 +56,9 @@ namespace DataAccess.DAO
 
         }
 
-        public List<Subject> GetSubjectBySpecialization(int speId, int batchId)
+        public List<Subject> GetSubjectBySpecialization(int speId)
         {
-            var listcurri = CMSDbContext.Curriculum.Where(x => x.specialization_id == speId && x.batch_id == batchId && x.is_active == true).ToList();
+            var listcurri = CMSDbContext.Curriculum.Where(x => x.specialization_id == speId && x.is_active == true).ToList();
             var listSubjects = new List<Subject>();
             foreach (var item in listcurri)
             {

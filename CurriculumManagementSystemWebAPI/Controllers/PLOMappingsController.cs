@@ -66,6 +66,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
+            if(listPLOMappingResponse.Count == 0)
+            {
+                return Ok(new BaseResponse(false, "PLO Mapping Empty.Please Create Curriculum Subject and PLO"));
+            }
+
 
             return Ok(new BaseResponse(false, "List PLO Mapping", listPLOMappingResponse));
         }

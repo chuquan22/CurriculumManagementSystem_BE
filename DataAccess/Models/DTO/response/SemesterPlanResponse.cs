@@ -11,6 +11,5 @@ namespace DataAccess.Models.DTO.response
         public string spe { get; set; }
         public int totalSemester { get; set; }
         public string semester { get; set; }
-        public List<SemesterBatchResponse>? batch { get; set; }
     }
 }

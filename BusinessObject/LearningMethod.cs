@@ -15,6 +15,8 @@ namespace BusinessObject
         public int learning_method_id { get; set; }
         [Required]
         public string learning_method_name { get; set; }
+        [AllowNull]
+        public string? learning_method_code { get; set; }
         public virtual ICollection<Subject> subjects { get; set; }
     }
 }

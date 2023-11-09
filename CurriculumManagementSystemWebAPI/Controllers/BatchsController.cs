@@ -34,6 +34,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
+
+
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
         {

@@ -90,9 +90,8 @@ namespace DataAccess.DAO
         public bool CheckSemesterExsit(int id)
         {
             var exsitSemesterPlan = _cmsDbContext.SemesterPlan.FirstOrDefault(x => x.semester_id == id);
-            var exsitSemesterBatch = _cmsDbContext.SemesterBatch.FirstOrDefault(x => x.semester_id == id);
             var exsitSpecialization = _cmsDbContext.Specialization.FirstOrDefault(x => x.semester_id == id);
-            if(exsitSemesterPlan == null && exsitSemesterBatch == null && exsitSpecialization == null)
+            if(exsitSemesterPlan == null && exsitSpecialization == null)
             {
                 return false;
             }

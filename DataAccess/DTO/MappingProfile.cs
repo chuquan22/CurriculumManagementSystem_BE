@@ -61,17 +61,12 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
             CreateMap<Material, MaterialExportExcel>().ReverseMap();
 
-            CreateMap<SemesterBatch, SemesterBatchResponse>()
-            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
-             .ReverseMap();
-            CreateMap<SemesterBatch, SemesterBatchRequest>()
-                .ReverseMap();
             //SemesterBatchResponse
             CreateMap<SemesterPlan, SemesterPlanResponse>()
                .ForMember(dest => dest.spe, opt => opt.MapFrom(src => src.Curriculum.Specialization.specialization_english_name))
                 .ForMember(dest => dest.totalSemester, opt => opt.MapFrom(src => src.Curriculum.total_semester))
                  .ForMember(dest => dest.semester, opt => opt.MapFrom(src => src.Semester.semester_name))
-                .ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Curriculum.Batch))
+                //.ForMember(dest => dest.batch, opt => opt.MapFrom(src => src.Curriculum.Batch))
                 .ReverseMap();
 
             //Excel Syllabus
@@ -205,7 +200,6 @@ namespace DataAccess.Models.DTO
             //Curriculum
             CreateMap<Curriculum, CurriculumResponse>()
             .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
-            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
             .ForMember(dest => dest.vocational_code, opt => opt.MapFrom(src => src.Specialization.Major.major_code))
             .ForMember(dest => dest.vocational_name, opt => opt.MapFrom(src => src.Specialization.Major.major_name))
             .ForMember(dest => dest.vocational_english_name, opt => opt.MapFrom(src => src.Specialization.Major.major_english_name))
@@ -279,6 +273,7 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
 
             CreateMap<Semester, SemesterResponse>()
+                .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.Batch.batch_id))
                 .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
                 .ReverseMap();
 
@@ -296,6 +291,7 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.role_name, opt => opt.MapFrom(src => src.Role.role_name))
                 .ReverseMap();
 
+            
 
         }
     }
