@@ -13,24 +13,25 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _context = new CMSDbContext();
 
-       public List<Batch> GetAllBatch()
+        public List<Batch> GetAllBatch()
         {
             var listBatch = _context.Batch
                 .OrderByDescending(x => x.batch_name)
+                .ThenByDescending(x => x.batch_order)
                 .ToList();
             return listBatch;
         }
 
         public int GetBatchIDByName(string batchName)
         {
-            
+
             var batch = _context.Batch.Where(x => x.batch_name.Equals(batchName)).FirstOrDefault();
             var batch_id = 0;
-            if(batch != null)
+            if (batch != null)
             {
                 batch_id = batch.batch_id;
             }
-           
+
             return batch_id;
         }
 
@@ -52,7 +53,7 @@ namespace DataAccess.DAO
             return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
         }
 
-        public bool CheckBatchUpdateDuplicate(int id,string batch_name)
+        public bool CheckBatchUpdateDuplicate(int id, string batch_name)
         {
             return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_id != id)).GetValueOrDefault();
         }
@@ -60,7 +61,7 @@ namespace DataAccess.DAO
         public bool CheckBatchExsit(int id)
         {
             var exsitInCurri = _context.CurriculumBatch.FirstOrDefault(x => x.batch_id == id);
-            if(exsitInCurri == null )
+            if (exsitInCurri == null)
             {
                 return false;
             }
@@ -97,7 +98,8 @@ namespace DataAccess.DAO
                 _context.Batch.Add(batch);
                 _context.SaveChanges();
                 return Result.createSuccessfull.ToString();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return ex.InnerException.Message;
             }

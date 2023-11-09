@@ -110,7 +110,40 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Create Successfull" ));
         }
 
+        [HttpPost("UpdateCurriculumBatch")]
+        public IActionResult UpdateCurriculumBatch([FromBody] CurriculumBatchRequest curriculumBatchRequest)
+        {
+            if (_batchRepository.CheckBatchDuplicate(curriculumBatchRequest.batch_name))
+            {
+                return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
+            }
+            var batch = new Batch
+            {
+                batch_name = curriculumBatchRequest.batch_name,
+                batch_order = curriculumBatchRequest.batch_order
+            };
+            string createResult = _batchRepository.CreateBatch(batch);
+            if (createResult != Result.createSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, createResult));
+            }
 
+            foreach (var curriId in curriculumBatchRequest.list_curriculum_id)
+            {
+                var curriBatch = new CurriculumBatch
+                {
+                    batch_id = batch.batch_id,
+                    curriculum_id = curriId
+                };
+                string createcurriBatch = _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
+                if (createcurriBatch != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createcurriBatch));
+                }
+            }
+
+            return Ok(new BaseResponse(false, "Create Successfull"));
+        }
 
     }
 }
