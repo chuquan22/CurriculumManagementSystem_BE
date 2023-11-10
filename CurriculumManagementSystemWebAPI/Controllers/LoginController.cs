@@ -34,7 +34,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private static string ClientsId = "727708784205-5cpdj755l32h8ddrh1husncpdj7e84hk.apps.googleusercontent.com";
         private static string ClientsSecret = "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";
         private static string ApplicationName = "Web client 1";
-        private static string CallBackUrl = "https://localhost:8080/api/Login/CallBack";
+        private static string CallBackUrl = "http://localhost:3000/Login/CallBack";
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
@@ -64,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 });
 
                 var authUri = flow.CreateAuthorizationCodeRequest(CallBackUrl).Build();
-                return Redirect(authUri.AbsoluteUri);
+                return Ok(authUri.AbsoluteUri);
             }
             catch (Exception ex)
             {
