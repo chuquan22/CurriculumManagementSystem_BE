@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
+using Repositories.CurriculumBatchs;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -55,6 +56,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IPLOMappingRepository _ploMappingRepository = new PLOMappingRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
+        private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
@@ -192,6 +194,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, createResult));
             }
             var curriResponse = _mapper.Map<CurriculumResponse>(curriculum);
+
 
             return Ok(new BaseResponse(false, "Create Curriculum Success!", curriResponse));
         }

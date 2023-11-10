@@ -272,12 +272,13 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.semester_name, opt => opt.MapFrom(src => src.semester_name.ToUpper().Trim()))
                 .ReverseMap();
 
-            CreateMap<Semester, SemesterResponse>()
-                .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.Batch.batch_id))
-                .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
-                .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
-                .ReverseMap();
-
+                    CreateMap<Semester, SemesterResponse>()
+             .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.Batch.batch_id))
+             .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
+             .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+             .ForMember(dest => dest.semester_start_date, opt => opt.MapFrom(src => src.semester_start_date.ToShortDateString()))
+             .ForMember(dest => dest.semester_end_date, opt => opt.MapFrom(src => src.semester_end_date.ToShortDateString()))
+             .ReverseMap();
 
             //User
             CreateMap<UserCreateRequest, User>()

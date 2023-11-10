@@ -218,7 +218,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             textBookReport.number_subject_T05 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                     }
-                    textBookReport.learning_resource_T06_name = "no syllabus";
+                    textBookReport.learning_resource_T06_name = "No Syllabus";
                     textBookReport.number_subject_T06 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
                     textbook.textBookReports.Add(textBookReport);
                 }
@@ -232,14 +232,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("ReportTextBookChart/{speId}")]
         public IActionResult ReportTextBookChart(int speId)
         {
-
-
             var spe = _specializationRepository.GetSpeById(speId);
-            var textbook = new TextBookDTOReport
-            {
-                textBookReports = new List<TextBookReport>()
-            };
-
 
             var listSubject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
             var textBookReport = new TextBookReport
@@ -281,9 +274,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             textBookReport.learning_resource_T06_name = "no syllabus";
             textBookReport.number_subject_T06 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
-            textbook.textBookReports.Add(textBookReport);
 
-            return Ok(new BaseResponse(false, "Text Book Table Report", textbook));
+            return Ok(new BaseResponse(false, "Text Book Table Report", textBookReport));
         }
 
 
