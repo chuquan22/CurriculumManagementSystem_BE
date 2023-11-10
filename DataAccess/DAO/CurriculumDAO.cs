@@ -132,6 +132,22 @@ namespace DataAccess.DAO
         }
 
 
+        public List<Curriculum> GetListCurriculumByBatchName(string batchName)
+        {
+            var list = new List<Curriculum>();
+            var listCurri = GetAllCurriculum(null, null);
+            foreach (var curri in listCurri)
+            {
+                var curriCode = curri.curriculum_code.Split("-");
+                var start_batch_name = curriCode[curriCode.Length -1];
+                if(double.Parse(batchName) < double.Parse(start_batch_name))
+                {
+                    list.Add(curri);
+                }
+            }
+            return list;
+        }
+
         public Curriculum GetCurriculum(string code)
         {
             var curriculum = _cmsDbContext.Curriculum

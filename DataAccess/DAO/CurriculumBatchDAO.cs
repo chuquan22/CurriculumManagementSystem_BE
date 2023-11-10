@@ -33,6 +33,8 @@ namespace DataAccess.DAO
 
         }
 
+       
+
         public bool CheckCurriculumBatchDuplicate(int curriId, int batchId)
         {
             return (_context.CurriculumBatch?.Any(x => x.curriculum_id == curriId && x.batch_id == batchId)).GetValueOrDefault();

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
 using Repositories.CurriculumBatchs;
+using Repositories.Curriculums;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -17,12 +18,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private ICurriculumBatchRepository _curriculumBatchRepository;
         private IBatchRepository _batchRepository;
+        private ICurriculumRepository _curriculumRepository;
 
         public CurriculumBatchController(IMapper mapper)
         {
             _mapper = mapper;
             _curriculumBatchRepository = new CurriculumBatchRepository();
             _batchRepository = new BatchRepository();
+            _curriculumRepository = new CurriculumRepository();
         }
 
         [HttpGet("GetAllCurriculumBatch")]
@@ -47,6 +50,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Curriculum Batch", listCurriculumBatch));
         }
+
+        [HttpGet("GetCurriculumByBatchName/{batchName}")]
+        public IActionResult GetCurriculumByBatchName(string batchName)
+        {
+            var listCurriculum = _curriculumRepository.GetListCurriculumByBatchName(batchName);
+            var listCurriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+
+            return Ok(new BaseResponse(false, "List Curriculum", listCurriResponse));
+        }
+
+
 
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
