@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Google;
 using Google.Apis.Auth.OAuth2.Flows;
 using Microsoft.AspNetCore.Cors;
+using System.Net;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -35,7 +36,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private static string ClientsId = "727708784205-5cpdj755l32h8ddrh1husncpdj7e84hk.apps.googleusercontent.com";
         private static string ClientsSecret = "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";
         private static string ApplicationName = "Web client 1";
-        private static string CallBackUrl = "https://localhost:8080/api/Login/CallBack";
+        private static string CallBackUrl = "http://localhost:3000/Login/CallBack";
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
@@ -48,7 +49,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             GmailService.Scope.GmailSend
         };
 
+    
         [AllowAnonymous]
+        [EnableCors("AllowOrigin")]
         [HttpGet]
         public ActionResult GoogleOAuthLogin()
         {
@@ -65,8 +68,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 });
 
                 var authUri = flow.CreateAuthorizationCodeRequest(CallBackUrl).Build();
-
-                return Ok(new { AuthorizationUrl = authUri.AbsoluteUri });
+                string googleAPi = authUri.AbsoluteUri;
+                return Ok(googleAPi);
             }
             catch (Exception ex)
             {
@@ -75,6 +78,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [AllowAnonymous]
+        [EnableCors("AllowOrigin")]
+
         [HttpGet("CallBack")]
         public async Task<ActionResult> GoogleOAuthCallback(string? code, string? scope)
         {
