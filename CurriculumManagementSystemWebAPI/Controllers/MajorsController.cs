@@ -36,6 +36,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
+        [HttpGet("{batchId}")]
+        public ActionResult GetAllMajor(int batchId)
+        {
+            List<Major> rs = new List<Major>();
+            try
+            {
+                rs = majorRepository.GetMajorByBatch(batchId);
+                var result = _mapper.Map<List<MajorResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+            }
+        }
+
         [HttpPost]
         public ActionResult CreateMajor(MajorRequest major)
         {
