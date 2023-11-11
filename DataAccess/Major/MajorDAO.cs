@@ -26,6 +26,14 @@ namespace DataAccess.Major
             return list;
         }
 
+        public List<BusinessObject.Major> GetMajorByBatch(int batchId)
+        {
+            List<BusinessObject.Major> list = new List<BusinessObject.Major>();
+            var degreeId = db.Semester.FirstOrDefault(x => x.start_batch_id ==  batchId).degree_level_id;
+            list = GetMajorByDegreeLevel(degreeId);
+            return list;
+        }
+
         public BusinessObject.Major AddMajor(BusinessObject.Major major)
         {
             major.major_english_name = major.major_english_name.Trim();

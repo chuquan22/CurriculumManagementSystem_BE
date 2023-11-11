@@ -51,6 +51,11 @@ namespace Repositories.Major
             return db.GetAllMajor();
         }
 
+        public List<BusinessObject.Major> GetMajorByBatch(int batchId)
+        {
+            return db.GetMajorByBatch(batchId);
+        }
+
         public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
         {
             return db.GetMajorByDegreeLevel(degreeId);

@@ -42,6 +42,11 @@ namespace Repositories.Batchs
             return _batchDAO.GetAllBatch(); 
         }
 
+        public List<Batch> GetBatchByDegreeLevel(int degreeLevelId)
+        {
+            return _batchDAO.GetBatchByDegreeLevel(degreeLevelId);
+        }
+
         public Batch GetBatchById(int id)
         {
             return _batchDAO.GetBatchById(id);

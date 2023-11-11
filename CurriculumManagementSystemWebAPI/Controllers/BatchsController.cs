@@ -40,6 +40,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
+        [HttpGet("GetBatchByDegreeLevel/{degree_level_Id}")]
+        public ActionResult GetBatchByDegreeLevel(int degree_level_Id)
+        {
+            var listBatch = batchRepository.GetBatchByDegreeLevel(degree_level_Id);
+            return Ok(new BaseResponse(false, "List Batch", listBatch));
+        }
+
         [HttpGet("GetBatchById/{Id}")]
         public ActionResult GetBatchById(int Id)
         {
