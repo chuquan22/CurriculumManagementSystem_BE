@@ -16,11 +16,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private ISemestersRepository semesterRepository;
+        private IBatchRepository batchRepository;
 
         public SemestersController(IMapper mapper)
         {
             _mapper = mapper;
             semesterRepository = new SemestersRepository();
+            batchRepository = new BatchRepository();
         }
 
         [HttpGet("GetAllSemester")]
@@ -90,11 +92,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
-            var semester = _mapper.Map<Semester>(semesterRequest); 
+            var batch = new Batch { batch_name = semesterRequest.batch_name, batch_order = semesterRequest.batch_order };
+            if (batchRepository.CheckBatchDuplicate(batch.batch_name))
+            {
+                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
+            }
+            string create = batchRepository.CreateBatch(batch);
+            if (!create.Equals(Result.createSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, create));
+            }
+
+            var semester = _mapper.Map<Semester>(semesterRequest);
+            semester.start_batch_id = batch.batch_id;
 
             if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year, semester.degree_level_id))
             {
-                return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
+                return BadRequest(new BaseResponse(true, $"Semester {semester.semester_name + "-" + semester.school_year} is Duplicate!"));
             }
             string createResult = semesterRepository.CreateSemester(semester);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
