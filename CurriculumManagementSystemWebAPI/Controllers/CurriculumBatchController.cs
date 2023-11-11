@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
 using Repositories.CurriculumBatchs;
 using Repositories.Curriculums;
+using Repositories.LearningMethods;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -40,16 +41,45 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
                 curriBacthDTO.batch_id = batch.batch_id;
                 curriBacthDTO.batch_name = batch.batch_name;
+                curriBacthDTO.batch_order = batch.batch_order;
                 var curriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriBatch.Where(x => x.batch_id == batch.batch_id).Select(x => x.Curriculum).ToList());
                 curriBacthDTO.curriculum = curriResponse;
 
                 listCurriculumBatch.Add(curriBacthDTO);
-
-
             }
 
             return Ok(new BaseResponse(false, "Curriculum Batch", listCurriculumBatch));
         }
+
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationLearningMethod(int page, int limit, [FromQuery] string? txtSearch)
+        {
+            var listBatch = _batchRepository.PaginationCurriculumBatch(page, limit, txtSearch);
+
+            if (listBatch.Count == 0)
+            {
+                Ok(new BaseResponse(false, $"Not Found Batch {txtSearch}!"));
+            }
+
+            List<CurriculumBatchDTOResponse> listCurriculumBatch = new List<CurriculumBatchDTOResponse>();
+
+            foreach (var batch in listBatch)
+            {
+                var listcurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batch.batch_id);
+                var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
+                curriBacthDTO.batch_id = batch.batch_id;
+                curriBacthDTO.batch_name = batch.batch_name;
+                curriBacthDTO.batch_order = batch.batch_order;
+                var curriResponse = _mapper.Map<List<CurriculumResponse>>(listcurriBatch.Select(x => x.Curriculum).ToList());
+                curriBacthDTO.curriculum = curriResponse;
+
+                listCurriculumBatch.Add(curriBacthDTO);
+            }
+
+            var total = _batchRepository.GetTotalCurriculumBatch(txtSearch);
+            return Ok(new BaseResponse(false, "List Curriculum Batch", new BaseListResponse(page, limit, total, listCurriculumBatch)));
+        }
+
 
         [HttpGet("GetCurriculumByBatchName/{batchName}")]
         public IActionResult GetCurriculumByBatchName(string batchName)
@@ -61,7 +91,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
-
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
         {
@@ -69,6 +98,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
             curriBacthDTO.batch_id = listCurriBatch.FirstOrDefault().batch_id;
             curriBacthDTO.batch_name = listCurriBatch.FirstOrDefault().Batch.batch_name;
+            curriBacthDTO.batch_order = listCurriBatch.FirstOrDefault().Batch.batch_order;
             foreach (var curriBatch in listCurriBatch)
             {
                 var curriResponse = _mapper.Map<CurriculumResponse>(curriBatch.Curriculum);

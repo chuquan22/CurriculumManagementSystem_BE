@@ -293,7 +293,6 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.role_name, opt => opt.MapFrom(src => src.Role.role_name))
                 .ReverseMap();
 
-            
 
         }
     }

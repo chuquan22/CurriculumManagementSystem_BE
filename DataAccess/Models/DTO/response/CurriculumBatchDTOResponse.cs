@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
     {
         public int batch_id { get; set; }
         public string batch_name { get; set; }
+        public int batch_order { get; set; }
         public List<CurriculumResponse> curriculum { get; set; }
 
     }

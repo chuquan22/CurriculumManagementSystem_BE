@@ -57,6 +57,16 @@ namespace Repositories.Batchs
             return _batchDAO.GetBatchIDByName(batchName);
         }
 
+        public int GetTotalCurriculumBatch(string? txtSearch)
+        {
+            return _batchDAO.GetTotalCurriculumBatch(txtSearch);
+        }
+
+        public List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch)
+        {
+            return _batchDAO.PaginationCurriculumBatch(page, limit, txtSearch);
+        }
+
         public string UpdateBatch(Batch batch)
         {
             return _batchDAO.UpdateBatch(batch);

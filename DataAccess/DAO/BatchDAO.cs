@@ -22,6 +22,38 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
+        public List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch)
+        {
+            IQueryable<Batch> query = _context.Batch
+                .Include(x => x.CurriculumBatchs);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listLearningMethod = query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToList();
+            return listLearningMethod;
+        }
+
+        public int GetTotalCurriculumBatch(string? txtSearch)
+        {
+            IQueryable<Batch> query = _context.Batch
+                 .Include(x => x.CurriculumBatchs);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+            }
+
+            var listLearningMethod = query
+                .ToList();
+            return listLearningMethod.Count;
+        }
+
         public int GetBatchIDByName(string batchName)
         {
 
