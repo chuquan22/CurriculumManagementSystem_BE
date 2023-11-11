@@ -195,7 +195,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriResponse = _mapper.Map<CurriculumResponse>(curriculum);
 
+            var curriBatch = new CurriculumBatch { batch_id = curriculumRequest.batch_id, curriculum_id = curriculum.curriculum_id };
+            string create = _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
 
+            if (create != Result.createSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, create));
+            }
             return Ok(new BaseResponse(false, "Create Curriculum Success!", curriResponse));
         }
 

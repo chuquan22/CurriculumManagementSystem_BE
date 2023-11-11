@@ -37,6 +37,7 @@ namespace Repositories.CurriculumBatchs
             return _curriculumBatchDAO.GetCurriculumBatchByBatchId(batchId);
         }
 
+
         public string UpdateCurriculumBatch(CurriculumBatch curriculumBatch)
         {
             return _curriculumBatchDAO.UpdateCurriculumBatch(curriculumBatch);

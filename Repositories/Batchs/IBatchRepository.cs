@@ -11,6 +11,8 @@ namespace Repositories.Batchs
     {
         List<Batch> GetAllBatch();
         int GetBatchIDByName(string batchName);
+        List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch);
+        int GetTotalCurriculumBatch(string? txtSearch);
         List<Batch> GetBatchBySpe(int speId);
         Batch GetBatchById(int id);
         bool CheckBatchDuplicate(string batch_name);
