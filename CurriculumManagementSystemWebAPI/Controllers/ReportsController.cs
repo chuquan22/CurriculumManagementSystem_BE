@@ -195,27 +195,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         if (learningResource.learning_resouce_code.Equals("T01"))
                         {
                             textBookReport.learning_resource_T01_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T01 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T01 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                         else if (learningResource.learning_resouce_code.Equals("T02"))
                         {
                             textBookReport.learning_resource_T02_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T02 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T02 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                         else if (learningResource.learning_resouce_code.Equals("T03"))
                         {
                             textBookReport.learning_resource_T03_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T03 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T03 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                         else if (learningResource.learning_resouce_code.Equals("T04"))
                         {
                             textBookReport.learning_resource_T04_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T04 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T04 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                         else if (learningResource.learning_resouce_code.Equals("T05"))
                         {
                             textBookReport.learning_resource_T05_name = learningResource.learning_resource_type;
-                            textBookReport.number_subject_T05 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                            textBookReport.number_subject_T05 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
                     }
                     textBookReport.learning_resource_T06_name = "No Syllabus";
@@ -249,27 +249,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 if (learningResource.learning_resouce_code.Equals("T01"))
                 {
                     textBookReport.learning_resource_T01_name = learningResource.learning_resource_type;
-                    textBookReport.number_subject_T01 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                    textBookReport.number_subject_T01 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
                 else if (learningResource.learning_resouce_code.Equals("T02"))
                 {
                     textBookReport.learning_resource_T02_name = learningResource.learning_resource_type;
-                    textBookReport.number_subject_T02 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                    textBookReport.number_subject_T02 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
                 else if (learningResource.learning_resouce_code.Equals("T03"))
                 {
                     textBookReport.learning_resource_T03_name = learningResource.learning_resource_type;
-                    textBookReport.number_subject_T03 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                    textBookReport.number_subject_T03 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
                 else if (learningResource.learning_resouce_code.Equals("T04"))
                 {
                     textBookReport.learning_resource_T04_name = learningResource.learning_resource_type;
-                    textBookReport.number_subject_T04 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                    textBookReport.number_subject_T04 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
                 else if (learningResource.learning_resouce_code.Equals("T05"))
                 {
                     textBookReport.learning_resource_T05_name = learningResource.learning_resource_type;
-                    textBookReport.number_subject_T05 = listMaterial.Where(x => x.learning_resource_id == learningResource.learning_resource_id).Count();
+                    textBookReport.number_subject_T05 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
             }
             textBookReport.learning_resource_T06_name = "no syllabus";
