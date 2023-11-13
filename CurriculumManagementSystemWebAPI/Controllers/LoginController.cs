@@ -95,12 +95,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 accessToken = token.AccessToken;
                 if (!userEmail.EndsWith("@fpt.edu.vn"))
                 {
-                    return Unauthorized(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account."));
+                    return Ok(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account.", null));
                 }
                 User user = AuthenticateUser(userEmail);
                 if (user == null)
                 {
-                    return Unauthorized(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn."));
+                    return Ok(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn.",null));
                 }
                 UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
                 var tokenJWTuser = GenerateToken(user);
