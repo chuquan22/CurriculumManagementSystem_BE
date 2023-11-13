@@ -17,6 +17,10 @@ namespace Repositories.SemesterPlans
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id);
         List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id);
 
+        List<SemesterPlanResponse> GetSemesterPlanOverViewDetails(int semester_id);
+
+        string DeleteSemesterPlan(int semester_id);
+
         //public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level);
 
     }

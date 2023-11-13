@@ -17,6 +17,11 @@ namespace Repositories.SemesterPlans
             return db.CreateSemesterPlan(semesterPlans);
         }
 
+        public string DeleteSemesterPlan(int semester_id)
+        {
+            return db.DeleteSemesterPlan(semester_id);
+        }
+
         public List<SemesterPlanDTO> GetSemesterPlan(int semester_id)
         {
             return db.GetSemesterPlan(semester_id);
@@ -30,6 +35,11 @@ namespace Repositories.SemesterPlans
         public List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id)
         {
             return db.GetSemesterPlanOverView(semester_id);
+        }
+
+        public List<SemesterPlanResponse> GetSemesterPlanOverViewDetails(int semester_id)
+        {
+            return db.GetSemesterPlanOverViewDetails(semester_id);
         }
     }
 }

@@ -267,11 +267,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         {
                                             lst = new List<int>();
                                             lst.AddRange(cloId);
-                                        }
-
-                                    
-
-                                   
+                                        }                                                                 
                                 }
                                 foreach (var idClo in lst)
                                 {
