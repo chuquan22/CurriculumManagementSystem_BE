@@ -52,19 +52,54 @@ namespace DataAccess.DAO
         }
         public CLO CreateCLOs(CLO clo)
         {
-            var rs = _cmsDbContext.CLO.Where(c => c.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()) && c.syllabus_id == clo.syllabus_id).FirstOrDefault();
+            if (!IsValidCLOName(clo.CLO_name))
+            {
+                throw new Exception("Invalid CLO name. It must start with 'CLO' and be followed by at least one number, and not contain spaces.");
+            }
+
+            var rs = _cmsDbContext.CLO
+                .Where(c => c.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()) && c.syllabus_id == clo.syllabus_id)
+                .FirstOrDefault();
+
             if (rs == null)
             {
-
-            _cmsDbContext.CLO.Add(clo);
-            _cmsDbContext.SaveChanges();
-            return clo;
+                _cmsDbContext.CLO.Add(clo);
+                _cmsDbContext.SaveChanges();
+                return clo;
             }
             else
             {
-                throw new Exception("CLO name already exist in system.");
+                throw new Exception("CLO name already exists in the system.");
             }
         }
+
+        // Validation method for CLO name
+        private bool IsValidCLOName(string cloName)
+        {
+            const string prefix = "CLO";
+
+            // Check if it starts with 'CLO'
+            if (!cloName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // Check if it has at least one number after 'CLO'
+            int numberStartIndex = prefix.Length;
+            if (numberStartIndex >= cloName.Length || !char.IsDigit(cloName[numberStartIndex]))
+            {
+                return false;
+            }
+
+            // Check if it does not contain spaces 
+            if (cloName.Contains(" "))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
         public CLO UpdateCOLs(CLO clo)
         {
