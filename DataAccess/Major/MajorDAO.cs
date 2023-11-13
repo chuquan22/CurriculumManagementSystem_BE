@@ -22,7 +22,7 @@ namespace DataAccess.Major
         public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            list = db.Major.Include(x => x.DegreeLevel).Where(x => x.degree_level_id == degreeId).ToList();
+            list = db.Major.Include(x => x.DegreeLevel).Include(x => x.Specialization).Where(x => x.degree_level_id == degreeId).ToList();
             return list;
         }
 

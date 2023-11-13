@@ -79,15 +79,23 @@ namespace DataAccess.Specialization
 
             foreach (var item in major)
             {
-                var spe = db.Specialization.Where(x => x.major_id == item.major_id && x.is_active == true).ToList();
+                var spe = db.Specialization.Where(x => x.major_id == item.major_id  && x.is_active == true).ToList();
                 foreach (var item1 in spe)
                 {
                     listSpe.Add(item1);
                 }
             }
-
-            
             return listSpe;
+        }
+
+        public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId, int majorId)
+        {
+            var bacth = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var semester = db.Semester.FirstOrDefault(x => x.start_batch_id == batchId);
+
+            var spe = db.Specialization.Where(x => x.major_id == majorId && x.Semester.Batch.batch_name.CompareTo(bacth.batch_name) >= 0 && x.is_active == true).ToList();
+
+            return spe;
         }
 
         public bool IsCodeExist(string code)

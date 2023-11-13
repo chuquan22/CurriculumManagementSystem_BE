@@ -66,5 +66,10 @@ namespace Repositories.Specialization
         {
             return db.GetSpeByMajorId(majorId);
         }
+
+        public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId, int majorId)
+        {
+            return db.GetSpeByBatchId(batchId, majorId);
+        }
     }
 }

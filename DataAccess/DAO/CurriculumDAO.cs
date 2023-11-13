@@ -56,19 +56,16 @@ namespace DataAccess.DAO
                 query = query.Where(x => x.Specialization.Major.major_id == majorId);
             }
 
-            var curriculumList = query
-                .OrderByDescending(x => x.CurriculumBatchs.Max(b => b.Batch.batch_name)) 
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
+            var sortedCurriculumList = query
+            .ToList()
+            .OrderByDescending(x => x.curriculum_code.Split('-')[3].Trim('.'))
+            .ThenBy(x => x.curriculum_code)
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToList();
 
-            return curriculumList;
+            return sortedCurriculumList;
         }
-
-
-
-
-
 
         public int GetTotalCredit(int curriculumId)
         {

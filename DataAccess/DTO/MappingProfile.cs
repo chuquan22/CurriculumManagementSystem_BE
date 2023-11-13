@@ -42,6 +42,9 @@ namespace DataAccess.Models.DTO
              .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
              .ReverseMap();
 
+            CreateMap<BusinessObject.Major, MajorSpeResponse>()
+            .ReverseMap();
+
             //MaterialsResponse
             CreateMap<Material, MaterialsResponse>()
              .ForMember(dest => dest.learning_resource_name, opt => opt.MapFrom(src => src.LearningResource.learning_resource_type))
@@ -127,10 +130,14 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.specialization_english_name, opt => opt.MapFrom(src => src.specialization_english_name.Trim()))
                 .ForMember(dest => dest.specialization_code, opt => opt.MapFrom(src => src.specialization_code.Trim()))
                 .ReverseMap();
+
             CreateMap<SpecializationUpdateRequest, BusinessObject.Specialization>()
                  .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.specialization_name.Trim()))
                 .ForMember(dest => dest.specialization_english_name, opt => opt.MapFrom(src => src.specialization_english_name.Trim()))
                 .ReverseMap();
+
+            CreateMap<BusinessObject.Specialization, SpecializationResponse>()
+               .ReverseMap();
             //AssessmentType
             CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();
             CreateMap<AssessmentTypeRequest, AssessmentType>()

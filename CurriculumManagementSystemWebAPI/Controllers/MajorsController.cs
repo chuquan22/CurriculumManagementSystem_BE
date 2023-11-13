@@ -4,6 +4,7 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Major;
+using Repositories.Specialization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -13,11 +14,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private IMajorRepository majorRepository;
+        private ISpecializationRepository specializationRepository;
 
         public MajorsController( IMapper mapper)
         {
             _mapper = mapper;
             majorRepository = new MajorRepository();
+            specializationRepository = new SpecializationRepository();
         }
         [HttpGet]
         public ActionResult GetAllMajor()
@@ -37,14 +40,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("{batchId}")]
-        public ActionResult GetAllMajor(int batchId)
+        public ActionResult GetMajor(int batchId)
         {
             List<Major> rs = new List<Major>();
             try
             {
                 rs = majorRepository.GetMajorByBatch(batchId);
-                var result = _mapper.Map<List<MajorResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                var listMajorRespone = _mapper.Map<List<MajorSpeResponse>>(rs);
+                foreach (var major in listMajorRespone)
+                {
+                    major.lisSpe = _mapper.Map<List<SpecializationResponse>>(specializationRepository.GetSpeByBatchId(batchId, major.major_id));
+                }
+                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
             }
             catch (Exception ex)
             {
