@@ -701,8 +701,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
-                        syllabus.approved_date = DateTime.ParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        syllabus.approved_date = DateTime.ParseExact(r.Details, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                     }
+
 
 
                 }

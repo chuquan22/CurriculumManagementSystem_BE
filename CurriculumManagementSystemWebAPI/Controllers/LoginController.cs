@@ -5,19 +5,13 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Repositories.Users;
 using AutoMapper;
-using Google.Apis.Util;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Services;
 using Google.Apis.Auth.OAuth2;
 
-using DataAccess.Models.DTO.GoogleLogin;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Google;
 using Google.Apis.Auth.OAuth2.Flows;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -29,7 +23,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
-        private readonly SignInManager<IdentityUser> _signInManager ;
         private static string accessToken = null;
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
@@ -132,10 +125,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 var httpClient = new HttpClient();
                 var revokeTokenEndpoint = $"https://oauth2.googleapis.com/revoke?token={accessToken}";
-
                 var response = await httpClient.PostAsync(revokeTokenEndpoint, null);
-
-                // If the response is successful, the token was revoked
                 return Ok(new BaseResponse(false, "Logout system successfully!", null));
             }
             catch (Exception ex)
@@ -151,7 +141,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return null;
             }
             return userLogged;
-
         }
         [HttpPost("get-token")]
         private string GenerateToken(User user)
@@ -167,7 +156,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Role,user.role_id.ToString()),
             };
 
-            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(5), signingCredentials: credentials);
+            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(30), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
