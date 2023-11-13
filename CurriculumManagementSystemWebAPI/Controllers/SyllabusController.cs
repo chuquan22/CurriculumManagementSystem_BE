@@ -701,7 +701,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
-                        syllabus.approved_date = DateTime.ParseExact(r.Details, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        syllabus.approved_date = DateTime.ParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                     }
 
 
@@ -739,56 +739,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
 
-         // Post: Export Curriculum by Excel File
-        //[HttpPost("ExportSyllabus/{syllabus_id}")]
-        //public async Task<IActionResult> ExportSyllabus(int syllabus_id)
-        //{
-        //    string templatePath = "SyllabusExcel.xlsx";
-        //    var syllabus = repo.GetSyllabusById(syllabus_id);
-        //     var materials = repo6.GetMaterial(syllabus_id);
-        //     var clos = repo4.GetCLOs(syllabus_id);
-        //    var schedule = repo8.GetSession(syllabus_id);
-        //     var gradingStruture = repo7.GetGradingStruture(syllabus_id);
-
-
-
-        //    Dictionary<string, object> value = new Dictionary<string, object>()
-        //    {
-        //        //Tab Syllabus
-        //        ["document_type"] = syllabus.document_type,
-        //        ["program"] = syllabus.program,
-        //        ["decision_no"] = syllabus.decision_No,
-        //        ["course_name"] = syllabus.Subject.subject_name,
-        //        ["course_name_english"] = syllabus.Subject.english_subject_name,
-        //        ["course_code"] = syllabus.Subject.subject_code,
-        //        ["leaning-teaching_method"] = null,
-        //        ["credit"] = null,
-        //        ["degree_level"] = syllabus.degree_level,
-        //        ["time_allocation"] = syllabus.time_allocation,
-        //        ["description"] = syllabus.syllabus_description,
-        //        ["student_task"] = syllabus.student_task,
-        //        ["tools"] = syllabus.syllabus_tool,
-        //        ["note"] = syllabus.syllabus_note,
-        //        ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
-        //        ["scoring_scale"] = syllabus.scoring_scale,
-        //        ["approved_date"] = syllabus.approved_date,
-        //        //Tab Materials
-        //        ["materials"] = materials,
-        //        //Tab CLO
-        //        ["CLOs"] = clos,
-        //        //Tab Schedule
-        //        ["schedule"] = schedule,
-        //        //Tab GradingStruture
-        //        ["gradingStruture"] = gradingStruture
-        //    };
-
-
-        //    MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
-
-        //    byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
-        //    return Ok(fileContents);
-        //    //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "exported.xlsx");
-        //}
         // Post: Export Curriculum by Excel File
         [HttpPost("ExportSyllabus/{syllabus_id}")]
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)

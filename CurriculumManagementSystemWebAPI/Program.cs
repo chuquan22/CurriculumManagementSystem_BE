@@ -77,8 +77,7 @@ else
     app.UseForwardedHeaders();
 }
 app.UseSwagger();
-    app.UseSwaggerUI();
-
+app.UseSwaggerUI();
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();

@@ -19,7 +19,7 @@ namespace DataAccess.Users
             User response = new User();
             try
             {
-                response = _cmsDbContext.User.Where(u => u.user_email.Equals(email)).FirstOrDefault();
+                response = _cmsDbContext.User.Include(x => x.Role).Where(u => u.user_email.Equals(email)).FirstOrDefault();
             }
             catch (Exception)
             {
