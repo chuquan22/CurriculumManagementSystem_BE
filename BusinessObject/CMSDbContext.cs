@@ -216,11 +216,11 @@ namespace BusinessObject
                 new Curriculum { curriculum_id = 1, curriculum_code = "GD-IED-CD-18.3", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1,  curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
                 new Curriculum { curriculum_id = 2, curriculum_code = "GD-IED-IC-19.1", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
                 new Curriculum { curriculum_id = 3, curriculum_code = "SE-SE-IC-18", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 4, curriculum_code = "SE-SE-CD-17", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 4, curriculum_code = "SE-SE-CD-17", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 5, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
                 new Curriculum { curriculum_id = 5, curriculum_code = "CM-FMA-TC-19.3", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", total_semester = 6, specialization_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 6, curriculum_code = "SS-IED-TC-19.2", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 7, curriculum_code = "SWP-WP-TC-17", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 5, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = false },
-                new Curriculum { curriculum_id = 8, curriculum_code = "SS-IED-TC-7.1", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
+                new Curriculum { curriculum_id = 6, curriculum_code = "SS-IED-TC-19", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 6, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 7, curriculum_code = "SWP-WP-TC-7.1", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 6, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = false },
+                new Curriculum { curriculum_id = 8, curriculum_code = "SS-IED-TC-18.2", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumBatch>().HasData(
@@ -228,11 +228,8 @@ namespace BusinessObject
                 new CurriculumBatch { curriculum_id = 2, batch_id =  1 },
                 new CurriculumBatch { curriculum_id = 1, batch_id =  2 },
                 new CurriculumBatch { curriculum_id = 3, batch_id =  2 },
-                new CurriculumBatch { curriculum_id = 4, batch_id =  3 },
-                new CurriculumBatch { curriculum_id = 5, batch_id =  5 },
                 new CurriculumBatch { curriculum_id = 6, batch_id =  4 },
-                new CurriculumBatch { curriculum_id = 7, batch_id =  6 },
-                new CurriculumBatch { curriculum_id = 8, batch_id =  4 }
+                new CurriculumBatch { curriculum_id = 7, batch_id =  6 }
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(

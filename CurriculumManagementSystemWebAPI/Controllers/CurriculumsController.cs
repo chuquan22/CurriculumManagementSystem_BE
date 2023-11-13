@@ -98,6 +98,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "list Batch", listBatch));
         }
 
+       
+
 
         // GET: api/Curriculums/Pagination/5/6/search/1
         [HttpGet("Pagination/{page}/{limit}")]
