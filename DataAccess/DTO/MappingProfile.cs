@@ -301,7 +301,9 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.role_name, opt => opt.MapFrom(src => src.Role.role_name))
                 .ReverseMap();
 
-
+            //Quiz
+            CreateMap<QuizDTORequest, Quiz>().ReverseMap();
+            CreateMap<QuestionDTORequest, Question>().ReverseMap();
         }
     }
 }
