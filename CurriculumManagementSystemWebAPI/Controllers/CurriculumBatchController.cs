@@ -98,11 +98,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
         {
-            var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
             var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-            curriBacthDTO.batch_id = listCurriBatch.FirstOrDefault().batch_id;
-            curriBacthDTO.batch_name = listCurriBatch.FirstOrDefault().Batch.batch_name;
-            curriBacthDTO.batch_order = listCurriBatch.FirstOrDefault().Batch.batch_order;
+
+            var batch = _batchRepository.GetBatchById(batchId);
+            var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
+           
+            curriBacthDTO.batch_id = batch.batch_id;
+            curriBacthDTO.batch_name = batch.batch_name;
+            curriBacthDTO.batch_order = batch.batch_order;
             foreach (var curriBatch in listCurriBatch)
             {
                 var curriResponse = _mapper.Map<CurriculumResponse>(curriBatch.Curriculum);
