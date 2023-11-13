@@ -212,9 +212,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var value = new
                             {
                                 CLOs = listClo,
-                            };
-                            //Add to database
-                            
+                            };                            
                             foreach (var item in listClo)
                             {
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
@@ -227,7 +225,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 cloId.Add(idClo);
 
                             }
-
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
