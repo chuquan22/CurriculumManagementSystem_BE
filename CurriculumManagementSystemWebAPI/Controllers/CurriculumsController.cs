@@ -408,13 +408,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         else
                         if (i == 3)
                         {
-                            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                             var group_name = "";
-                            var groupNames = new Dictionary<string, string>
+                            var groupNames = new List<string>
                                 {
-                                    { "Khối Kiến thức chung", "General Subject" },
-                                    { "Khối kiến thức ngành", "Basic Subject" },
-                                    { "Khối kiến thức chọn theo chuyên ngành hẹp", "Specialization Subject" }
+                                     "General Subject", "Basic Subject", "Specialization Subject", "Elective Subject" 
                                 };
                             using (var package = new ExcelPackage(stream))
                             {
@@ -426,9 +423,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         var cell = worksheet.Cells[row, col];
                                         string cellValue = cell.Text;
-                                        if (groupNames.ContainsKey(cellValue))
+                                        if (groupNames.FirstOrDefault(x => x.ToUpper().Equals(cellValue.ToUpper().Trim())) != null)
                                         {
-                                            group_name = groupNames[cellValue];
+                                            group_name = cellValue;
                                         }
 
                                         var subjectCode = worksheet.Cells[row, 1].Text;
