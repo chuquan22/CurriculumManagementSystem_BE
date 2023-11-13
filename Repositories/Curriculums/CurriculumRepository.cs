@@ -31,7 +31,7 @@ namespace Repositories.Curriculums
 
         public List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode) => curriculumDAO.GetListBatchNotExsitInCurriculum(curriculumCode);
 
-        public List<Curriculum> GetListCurriculumByBatchName(string batchName) => curriculumDAO.GetListCurriculumByBatchName(batchName);
+        public List<Curriculum> GetListCurriculumByBatchName(int batchId, string batchName) => curriculumDAO.GetListCurriculumByBatchName(batchId, batchName);
        
 
         public int GetTotalCredit(int curriculumId) => curriculumDAO.GetTotalCredit(curriculumId);

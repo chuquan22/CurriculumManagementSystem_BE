@@ -1,4 +1,6 @@
 ﻿using BusinessObject;
+using DataAccess.Major;
+using DataAccess.Specialization;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -132,15 +134,26 @@ namespace DataAccess.DAO
         }
 
 
-        public List<Curriculum> GetListCurriculumByBatchName(string batchName)
+        public List<Curriculum> GetListCurriculumByBatchName(int batchId, string batchName)
         {
+            SpecializationDAO dao = new SpecializationDAO();
+            var listSpe = dao.GetSpeByBatchId(batchId);
+
             var list = new List<Curriculum>();
-            var listCurri = GetAllCurriculum(null, null);
+            var listCurri = new List<Curriculum>();
+            foreach (var spe in listSpe)
+            {
+                var curri = _cmsDbContext.Curriculum.Where(x => x.specialization_id == spe.specialization_id).ToList();
+                foreach (var item in curri)
+                {
+                    listCurri.Add(item);
+                }
+            }
             foreach (var curri in listCurri)
             {
                 var curriCode = curri.curriculum_code.Split("-");
                 var start_batch_name = curriCode[curriCode.Length -1];
-                if(double.Parse(batchName) < double.Parse(start_batch_name))
+                if(double.Parse(batchName) >= double.Parse(start_batch_name))
                 {
                     list.Add(curri);
                 }

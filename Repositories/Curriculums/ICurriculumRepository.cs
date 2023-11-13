@@ -17,7 +17,7 @@ namespace Repositories.Curriculums
         Curriculum GetCurriculumById(int id);
         int GetTotalCredit(int curriculumId);
         List<Batch> GetBatchByCurriculumCode(string curriculumCode);
-        List<Curriculum> GetListCurriculumByBatchName(string batchName);
+        List<Curriculum> GetListCurriculumByBatchName(int batchId, string batchName);
         string CreateCurriculum(Curriculum curriculum);
         string UpdateCurriculum(Curriculum curriculum);
         string RemoveCurriculum(Curriculum curriculum);
