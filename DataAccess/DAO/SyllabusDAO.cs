@@ -50,6 +50,22 @@ namespace DataAccess.DAO
                 {
                     rs.syllabus_approved = true;
                 }
+                if(rs.scoring_scale == null)
+                {
+                    rs.scoring_scale = 5;
+                }
+                if(rs.min_GPA_to_pass == null)
+                {
+                    rs.scoring_scale = 10;
+                }
+                if(rs.scoring_scale < 0 && rs.scoring_scale >= 10)
+                {
+                    throw new Exception("Scoring scale must be > 0 and <= 10.");
+                }
+                if (rs.min_GPA_to_pass < 0 && rs.min_GPA_to_pass >= 10)
+                {
+                    throw new Exception("Min GPA to pass must be > 0 and <= 10.");
+                }
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }
@@ -200,7 +216,6 @@ namespace DataAccess.DAO
                         oldRs.syllabus_approved = false;
 
                     }
-
                     context.Syllabus.Update(oldRs);
                     context.SaveChanges();
                 }

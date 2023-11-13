@@ -10,6 +10,8 @@ namespace Repositories.LearningResources
     public interface ILearningResourceRepository
     {
         public List<LearningResource> GetLearningResource();
+
+        LearningResource GetLearningResourceByName(string name);   
         List<LearningResource> PaginationLearningResource(int page, int limit, string? txtSearch);
         bool CheckLearningResourceDuplicate(int id, string type);
         int GetTotalLearningResource(string? txtSearch);
