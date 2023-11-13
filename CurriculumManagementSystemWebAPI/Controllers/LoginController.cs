@@ -115,7 +115,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+                return BadRequest(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account.", null));
             }
         }
 
