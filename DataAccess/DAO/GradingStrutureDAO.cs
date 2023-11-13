@@ -27,26 +27,40 @@ namespace DataAccess.DAO
 
         public GradingStruture CreateGradingStruture(GradingStruture gra)
         {
-            //bool check = CheckGrading(gra);
-           // if (check == true)
-           // {
+            if(gra.session_no == null)
+            {
                 _cmsDbContext.GradingStruture.Add(gra);
                 _cmsDbContext.SaveChanges();
-         //   }
+            }
+            else
+            {
+
+                bool check = CheckGrading(gra);
+
+                if (check == true)
+                {
+                    _cmsDbContext.GradingStruture.Add(gra);
+                    _cmsDbContext.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("False at creating grading struture! Wrong weight!");
+                }
+            }
             return gra;
 
         }
         public bool CheckGrading(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && (x.session_no == 0 || x.session_no == null)).FirstOrDefault();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references &&  x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
             decimal weightAll = father.grading_weight;
-            var listReferences = _cmsDbContext.GradingStruture.Where(x => x.assessment_method_id == gra.assessment_method_id && x.references == gra.references);
+            var listReferences = _cmsDbContext.GradingStruture.Where(x => x.session_no != null && x.references == gra.references && x.syllabus_id == gra.syllabus_id).ToList();
             decimal weightSon = 0;
             foreach (var reference in listReferences)
             {
                 weightSon += reference.grading_weight;
             }
-            if(weightSon > weightAll)
+            if((weightSon + gra.grading_weight) > weightAll)
             {
                 return false;
             }
