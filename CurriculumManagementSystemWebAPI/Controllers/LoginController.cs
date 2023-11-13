@@ -35,7 +35,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             GmailService.Scope.GmailCompose,
             GmailService.Scope.GmailSend
         };
-
         [AllowAnonymous]
         [HttpGet]
         public ActionResult GoogleOAuthLogin()
@@ -95,6 +94,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     return Ok(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn.",null));
                 }
+                if(user.is_active == false)
+                {
+                    return Ok(new BaseResponse(true, "Your account has been locked. Please contact the adminstrator cmspoly@fpt.edu.vn if you have questions about the locked issue.", null));
+                }
                 UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
                 var tokenJWTuser = GenerateToken(user);
                 var data = new[]
@@ -108,7 +111,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account.", null));
+                return BadRequest(new BaseResponse(true, "Login Google Authenticator False. Please Try Login Google Again.", null));
             }
         }
 
@@ -153,7 +156,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Name,user.full_name),
                 new Claim(ClaimTypes.Email,user.user_email),
                 new Claim(ClaimTypes.Surname,user.full_name),
-                new Claim(ClaimTypes.Role,user.role_id.ToString()),
+                new Claim(ClaimTypes.Role,user.Role.role_name),
             };
 
             var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(30), signingCredentials: credentials);
