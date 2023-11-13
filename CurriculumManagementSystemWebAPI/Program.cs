@@ -33,7 +33,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.ClientId = configuration["Authentication:Google:ClientId"];
         options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-        options.CallbackPath = configuration["Authentication:Google:CallBackUrl"];
     });
 
 builder.Services.AddDistributedMemoryCache();
