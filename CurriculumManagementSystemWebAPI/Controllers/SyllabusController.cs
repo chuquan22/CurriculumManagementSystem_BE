@@ -18,6 +18,7 @@ using Repositories.Materials;
 using Repositories.Session;
 using Repositories.Subjects;
 using Repositories.Syllabus;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -703,7 +704,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
-                        syllabus.approved_date = DateTime.Parse(r.Details);
+                        syllabus.approved_date = DateTime.ParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     }
 
 

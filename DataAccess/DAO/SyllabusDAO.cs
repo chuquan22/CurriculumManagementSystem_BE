@@ -66,6 +66,7 @@ namespace DataAccess.DAO
                 {
                     throw new Exception("Min GPA to pass must be > 0 and <= 10.");
                 }
+                
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }
