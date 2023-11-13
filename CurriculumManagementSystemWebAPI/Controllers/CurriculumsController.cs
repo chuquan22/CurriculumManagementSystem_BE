@@ -442,7 +442,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             }
                                         }
 
-                                        if (cellValue.Equals("ü"))
+                                        if (cellValue.Trim().Equals("ü"))
                                         {
                                             var subject_code = worksheet.Cells[row, 1].Text;
                                             var plo_name = worksheet.Cells[2, col].Text;
