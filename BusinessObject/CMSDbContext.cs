@@ -260,7 +260,9 @@ namespace BusinessObject
                 new AssessmentMethod { assessment_method_id = 3, assessment_method_component = "Lab", assessment_type_id = 1 },
                 new AssessmentMethod { assessment_method_id = 4, assessment_method_component = "Bảo vệ assignment", assessment_type_id = 2 },
                 new AssessmentMethod { assessment_method_id = 5, assessment_method_component = "Quiz", assessment_type_id = 1 },
-                new AssessmentMethod { assessment_method_id = 6, assessment_method_component = "Đánh giá Assignment GĐ 1", assessment_type_id = 1 }
+                new AssessmentMethod { assessment_method_id = 6, assessment_method_component = "Đánh giá Assignment GĐ 1", assessment_type_id = 1 },
+                new AssessmentMethod { assessment_method_id = 7, assessment_method_component = "Đánh giá Assignment GĐ 2", assessment_type_id = 1 }
+
                 );
 
 

@@ -13,6 +13,7 @@ using Repositories.ClassSessionTypes;
 using Repositories.CLOS;
 using Repositories.DegreeLevels;
 using Repositories.GradingStruture;
+using Repositories.LearningResources;
 using Repositories.Materials;
 using Repositories.Session;
 using Repositories.Subjects;
@@ -30,7 +31,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private readonly HttpClient client = null;
         public static string API_PORT = "https://localhost:8080";
-        public static string API_SYLLABUS = "/api/Syllabus";
+        public static string API_SYLLABUS = "/api/Syllabus";    
         public static string API_MATERIALS = "/api/Materials";
         public static string API_GRADING_STRUTURE = "/api/GradingStruture";
         public static string API_CLO = "/api/CLOs";
@@ -45,7 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ISessionRepository sessionRepository;
         private IClassSessionTypeRepository classSessionTypeRepository;
         private IDegreeLevelRepository degreeLevelRepository;
-
+        private ILearningResourceRepository learningResourceRepository;
 
         public SyllabusController(IMapper mapper)
         {
@@ -60,6 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             sessionRepository = new SessionRepository();
             classSessionTypeRepository = new ClassSessionTypeRepository();
             degreeLevelRepository = new DegreeLevelRepository();
+            learningResourceRepository = new LearningResourceRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -89,7 +91,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
-
+                if(rs.min_GPA_to_pass == null)
+                {
+                    rs.min_GPA_to_pass = 5;
+                }
+                if(rs.scoring_scale == null)
+                {
+                    rs.scoring_scale = 10;
+                }
                 var result = syllabusRepository.CreateSyllabus(rs);
                 return Ok(new BaseResponse(false, "Sucess", rs));
             }
@@ -156,7 +165,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             catch (Exception)
                             {
 
-                                return BadRequest("False when craete syllabus.");
+                                return BadRequest("Import false at sheet Syllabus!");
                             }
                             rs.Add(value);
                         }
@@ -185,7 +194,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     catch (Exception)
                                     {
 
-                                        return BadRequest("False when saving CLOs.");
+                                        return BadRequest("Import false at sheet Materials.");
 
                                     }
                                 }
@@ -212,7 +221,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 int idClo = await CreateCLOsAPI(addRs);
                                 if (idClo == 0)
                                 {
-                                    return BadRequest("False when saving CLOs.");
+                                    return BadRequest("Import false at sheet CLOs.");
                                 }
                                 cloId.Add(idClo);
 
@@ -222,7 +231,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
                         }
-                        else if (i == 4)
+                        else if (i == 3)
                         {
                             var row = MiniExcel.Query<ScheduleExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             var scheduleExcel = GetScheduleExcel(row, syllabusExcel);
@@ -278,13 +287,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 catch (Exception ex)
                                 {
 
-                                    return BadRequest("False when saving schudule.");
+                                    return BadRequest("Import false at sheet Schedule.");
                                 }
                             }
 
                             rs.Add(value);
                         }
-                        else if (i == 5)
+                        else if (i == 4)
                         {
                             var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             List<GradingStruture> gradingStrutureExcel = GetGradingStrutureExcel(row, syllabusExcel);
@@ -339,7 +348,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             catch (Exception ex)
                             {
 
-                                throw new Exception("Error when create grading struture.");
+                                throw new Exception("Import false at sheet Grading Struture!.");
                             }
 
                         }
@@ -487,7 +496,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 catch (Exception)
                 {
 
-                    throw new Exception("Wrong Grading Struture at " + r.assessment_component + " and " + r.assessment_type + ". One of this value not provide in database.");
+                    throw new Exception("Import syllabus fail at sheet GradingStruture!");
                 }
                 g.clo_name = r.CLO;
                 result.Add(g);
@@ -527,13 +536,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 se.CLO_name = r.CLO;
                 try
                 {
+
                     se.class_session_type_id = GetClassSessionTypeByName(r.leaning_teaching_method).class_session_type_id;
 
                 }
                 catch (Exception ex)
                 {
 
-                    throw new Exception("Wrong value at " + r.leaning_teaching_method + " not in database.");
+                    throw new Exception("Import syllabus fail at sheet Schedule!");
                 }
                 rs.Add(se);
             }
@@ -583,13 +593,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     if (int.TryParse(r.Published_Date, out int year))
                     {
                         m.material_published_date = new DateTime(year, 1, 1);
-                    }
-                    else
-                    {
-                        // Handle the case where the string is not a valid year.
-                    }
+                    }                 
                 }
+                try
+                {
+                    m.learning_resource_id = learningResourceRepository.GetLearningResourceByName(r.LearningResource).learning_resource_id;
 
+                }
+                catch (Exception)
+                {
+
+                    throw new Exception("Import syllabus fail at sheet Material!");
+
+                }
                 m.material_edition = r.Edition;
                 materials.Add(m);
 
@@ -628,7 +644,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                         else
                         {
-                            throw new Exception("Subject code not exist in system!");
+                            throw new Exception("Import syllabus fail at sheet Syllabus!");
                         }
                     }
                     else if (r.Title.Equals("Leaning-Teaching Method"))
@@ -650,7 +666,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         catch (Exception ex)
                         {
 
-                            throw new Exception("No Degree Level Enlish Name found in system:" + r.Details);
+                            throw new Exception("Import syllabus fail at sheet Syllabus!");
                         }
                     }
                     else if (r.Title.Equals("Time Allocation"))

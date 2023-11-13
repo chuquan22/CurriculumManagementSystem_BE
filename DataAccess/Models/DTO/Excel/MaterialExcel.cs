@@ -24,5 +24,7 @@ namespace DataAccess.Models.DTO.Excel
 
         public string Published_Date { get; set; }
         public string Edition { get; set; }
+        [DisplayName("Learning Resource")]
+        public string LearningResource { get; set; }
     }
 }
