@@ -184,7 +184,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 if (item.material_type != null)
                                 {
-                                    item.learning_resource_id = 1;
                                     item.syllabus_id = syllabusId;
                                     MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
                                     try
@@ -216,13 +215,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             foreach (var item in listClo)
                             {
                                 CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
-                                addRs.syllabus_id = syllabusId;
-                                int idClo = await CreateCLOsAPI(addRs);
-                                if (idClo == 0)
+                                if(item.CLO_name != null)
                                 {
-                                    return BadRequest("Import false at sheet CLOs.");
+
+                                    addRs.syllabus_id = syllabusId;
+                                    int idClo = await CreateCLOsAPI(addRs);
+                                    if (idClo == 0)
+                                    {
+                                        throw new Exception("Import false at sheet CLOs.");
+                                    }
+                                    cloId.Add(idClo);
                                 }
-                                cloId.Add(idClo);
 
                             }
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
@@ -255,13 +258,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         if (cloRepository.GetCLOsById(it) != null)
                                         {
                                             name = cloRepository.GetCLOsById(it).CLO_name;
-                                            if (item.CLO_name.Contains(name))
+                                            if (item.CLO_name.ToLower().Trim().Contains(name.ToLower().Trim()))
                                             {
                                                 lst.Add(it);
                                             }
                                         }
 
-                                        if (item.CLO_name.Contains("All CLOs"))
+                                        if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
                                         {
                                             lst = new List<int>();
                                             lst.AddRange(cloId);
@@ -701,7 +704,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
-                        syllabus.approved_date = DateTime.ParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                        syllabus.approved_date = DateTime.ParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     }
 
 

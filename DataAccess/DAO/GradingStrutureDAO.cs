@@ -53,6 +53,10 @@ namespace DataAccess.DAO
         public bool CheckGrading(GradingStruture gra)
         {
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references &&  x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
+            if(father == null)
+            {
+                throw new Exception("No Grading Strutude References When Importing this References!.");
+            }
             decimal weightAll = father.grading_weight;
             var listReferences = _cmsDbContext.GradingStruture.Where(x => x.session_no != null && x.references == gra.references && x.syllabus_id == gra.syllabus_id).ToList();
             decimal weightSon = 0;
