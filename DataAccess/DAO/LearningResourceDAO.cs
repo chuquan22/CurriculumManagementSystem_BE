@@ -52,7 +52,7 @@ namespace DataAccess.DAO
 
         public LearningResource GetLearningResourceByName(string name)
         {
-            return _cmsDbContext.LearningResource.Where(r => r.learning_resource_type.Equals(name)).FirstOrDefault();
+            return _cmsDbContext.LearningResource.Where(r => r.learning_resource_type.ToLower().Trim().Equals(name.ToLower().Trim())).FirstOrDefault();
         }
 
         public bool CheckLearningResourceDuplicate(int id, string type)
