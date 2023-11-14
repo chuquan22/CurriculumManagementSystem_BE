@@ -21,7 +21,7 @@ namespace Repositories.Subjects
         List<Subject> GetSubjectByLearningMethod(int learningMethodId);
         List<Subject> GetSubjectBySpecialization(int speId);
         int GetNumberSubjectNoSyllabus(List<Subject> subjects);
-
+        List<Subject> GetSubjectByMajorId(int majorId);
         string CreateNewSubject(Subject subject);
         string UpdateSubject(Subject subject);
         string DeleteSubject(Subject subject);

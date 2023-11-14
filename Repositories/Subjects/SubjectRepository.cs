@@ -39,6 +39,8 @@ namespace Repositories.Subjects
         public Subject GetSubjectById(int id) => subjectDAO.GetSubjectById(id);
 
         public List<Subject> GetSubjectByLearningMethod(int learningMethodId) => subjectDAO.GetSubjectByLearningMethod(learningMethodId);
+
+        public List<Subject> GetSubjectByMajorId(int majorId) => subjectDAO.GetSubjectByMajorId(majorId);
        
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);

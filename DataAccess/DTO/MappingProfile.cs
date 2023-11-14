@@ -22,6 +22,9 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.learning_method_name, opt => opt.MapFrom(src => src.LearningMethod.learning_method_name))
                .ReverseMap();
 
+            CreateMap<Subject, SubjectDTO>()
+               .ReverseMap();
+
             CreateMap<Subject, SubjectRequest>()
                 .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.subject_code.Trim().ToUpper()))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.subject_name.Trim()))
@@ -39,6 +42,10 @@ namespace DataAccess.Models.DTO
             //MajorReponse
 
             CreateMap<BusinessObject.Major, MajorResponse>()
+             .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+             .ReverseMap();
+
+            CreateMap<BusinessObject.Major, MajorSubjectDTOResponse>()
              .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
              .ReverseMap();
 
@@ -62,6 +69,9 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.major_name, opt => opt.MapFrom(src => src.major_name.Trim()))
                 .ForMember(dest => dest.major_english_name, opt => opt.MapFrom(src => src.major_english_name.Trim()))
                 .ReverseMap();
+            
+
+
             CreateMap<Material, MaterialExportExcel>().ReverseMap();
 
             //SemesterBatchResponse

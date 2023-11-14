@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
 using MiniExcelLibs.OpenXml;
 using Repositories.CLOS;
+using Repositories.Major;
 using Repositories.Questions;
 using Repositories.Quizs;
 using System.Xml;
@@ -24,7 +25,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext cMSDbContext = new CMSDbContext();
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
-        
 
         public QuizsController(IMapper mapper)
         {

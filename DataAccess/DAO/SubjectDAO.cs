@@ -21,7 +21,7 @@ namespace DataAccess.DAO
             var list = CMSDbContext.Subject
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.LearningMethod)
-               
+
                 .Where(x => x.is_active == true)
                 .ToList();
             return list;
@@ -76,16 +76,27 @@ namespace DataAccess.DAO
                     listSubjects.Add(subject);
                 }
             }
-            
-
             return listSubjects;
+        }
 
-
+        public List<Subject> GetSubjectByMajorId(int majorId)
+        {
+            var listSubject = new List<Subject>();
+            var listSpe = CMSDbContext.Specialization.Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var spe in listSpe)
+            {
+                var subjects = GetSubjectBySpecialization(spe.specialization_id);
+                foreach (var s in subjects)
+                {
+                    listSubject.Add(s);
+                }
+            }
+            return listSubject;
         }
 
         public Subject GetSubjectBySyllabus(int syllabus_id)
         {
-            var syllabus = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.syllabus_id ==  syllabus_id);
+            var syllabus = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.syllabus_id == syllabus_id);
             var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == syllabus.subject_id);
 
             return subject;
@@ -99,7 +110,7 @@ namespace DataAccess.DAO
             foreach (var subject in subjects)
             {
                 var syllabus = CMSDbContext.Syllabus.Where(x => x.subject_id == subject.subject_id).FirstOrDefault();
-                if(syllabus == null)
+                if (syllabus == null)
                 {
                     count++;
                 }
