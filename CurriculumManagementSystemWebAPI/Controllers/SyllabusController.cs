@@ -219,11 +219,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 {
 
                                     addRs.syllabus_id = syllabusId;
-                                    int idClo = await CreateCLOsAPI(addRs);
-                                    if (idClo == 0)
+                                    int idClo = 0;
+                                    try
                                     {
-                                        throw new Exception("Import false at sheet CLOs.");
+                                        idClo = await CreateCLOsAPI(addRs);
+                                        if (idClo == 0)
+                                        {
+                                            throw new Exception("Import false at sheet CLOs.");
+                                        }
                                     }
+                                    catch (Exception)
+                                    {
+
+                                        throw new Exception("Import false at sheet CLOs");
+                                    }
+                                
                                     cloId.Add(idClo);
                                 }
 
@@ -314,17 +324,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         if (cloRepository.GetCLOsById(cl) != null)
                                         {
                                             name = cloRepository.GetCLOsById(cl).CLO_name;
-                                            if (gra.clo_name.Contains(name))
+                                            if (gra.clo_name != null)
                                             {
-                                                lst.Add(cl);
+
+                                                if (gra.clo_name.Contains(name))
+                                                {
+                                                    lst.Add(cl);
+                                                }
                                             }
                                         }
-
-                                        if (gra.clo_name.Contains("All CLOs"))
+                                        if(gra.clo_name != null)
                                         {
-                                            lst = new List<int>();
-                                            lst.AddRange(cloId);
-                                            gra.number_of_questions = "";
+
+                                            if (gra.clo_name.Contains("All CLOs"))
+                                            {
+                                                lst = new List<int>();
+                                                lst.AddRange(cloId);
+                                            }
                                         }
 
                                     }
