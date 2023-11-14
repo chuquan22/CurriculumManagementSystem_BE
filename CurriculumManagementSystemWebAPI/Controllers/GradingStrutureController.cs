@@ -62,12 +62,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             if (gra == null)
             {
-                return BadRequest("Invalid request. 'gra' is null.");
+                return BadRequest(new BaseResponse(true, "Invalid request. 'gra' is null.", null));
             }
 
             if (gra.gradingStruture == null || gra.gradingCLORequest == null)
             {
-                return BadRequest("Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.");
+                return BadRequest(new BaseResponse(true,"Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.",null));
             }
 
             try
@@ -97,7 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred: " + ex.Message);
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
 
