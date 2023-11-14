@@ -5,6 +5,7 @@ using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Major;
 using Repositories.Specialization;
+using Repositories.Subjects;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -15,12 +16,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IMapper _mapper;
         private IMajorRepository majorRepository;
         private ISpecializationRepository specializationRepository;
+        private ISubjectRepository subjectRepository;
 
         public MajorsController( IMapper mapper)
         {
             _mapper = mapper;
             majorRepository = new MajorRepository();
             specializationRepository = new SpecializationRepository();
+            subjectRepository = new SubjectRepository();
         }
         [HttpGet]
         public ActionResult GetAllMajor()
@@ -35,7 +38,30 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true,"Error: " + ex.Message, null));
+                return BadRequest(new BaseResponse(true,"Error: " + ex.Message));
+            }
+        }
+
+        [HttpGet("GetAllMajorSubject")]
+        public ActionResult GetAllMajorSubject()
+        {
+            List<Major> rs = new List<Major>();
+            try
+            {
+                rs = majorRepository.GetAllMajor();
+                var listMajorRespone = _mapper.Map<List<MajorSubjectDTOResponse>>(rs);
+
+                foreach (var major in listMajorRespone)
+                {
+                    major.listSubjects = _mapper.Map<List<SubjectDTO>>(subjectRepository.GetSubjectByMajorId(major.major_id));
+                }
+
+                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
             }
         }
 

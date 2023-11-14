@@ -15,7 +15,7 @@ namespace DataAccess.Major
         public List<BusinessObject.Major> GetAllMajor()
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            list = db.Major.Include(x => x.DegreeLevel).ToList();
+            list = db.Major.Include(x => x.DegreeLevel).Where(x => x.is_active == true).ToList();
             return list;
         }
 
