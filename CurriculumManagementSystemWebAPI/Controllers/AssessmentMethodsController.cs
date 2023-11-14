@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.AssessmentMethods;
@@ -11,6 +12,7 @@ using Repositories.Batchs;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+
     [ApiController]
     public class AssessmentMethodsController : ControllerBase
     {
@@ -52,6 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
             return Ok(new BaseResponse(false, "List Assessment Method", new BaseListResponse(page, limit, total, listAssessmentMethodResponse)));
         }
+        [Authorize(Roles = "Manager")]
 
         [HttpPost("CreateAssessmentMethod")]
         public ActionResult CreateAssessmentMethod([FromBody] AssessmentMethodRequest assessmentMethodRequest)
@@ -72,6 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", assessmentMethodRequest));
         }
+        [Authorize(Roles = "Manager")]
 
         [HttpPut("updateAssessmentMethod/{id}")]
         public ActionResult UpdateAssessmentMethod(int id,[FromBody] AssessmentMethodRequest assessmentMethodRequest)
@@ -102,6 +106,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Update Success!", assessmentMethodRequest));
         }
 
+        [Authorize(Roles = "Manager")]
 
         [HttpDelete("DeleteAssessmentMethod/{id}")]
         public ActionResult DeleteAssessmentMethod(int id)

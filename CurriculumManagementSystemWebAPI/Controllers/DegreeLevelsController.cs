@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Models.DTO.response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DegreeLevels;
@@ -8,6 +9,7 @@ using Repositories.Roles;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class DegreeLevelsController : ControllerBase
     {

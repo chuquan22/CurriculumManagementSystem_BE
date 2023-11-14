@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -13,6 +14,8 @@ using Repositories.Subjects;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [Route("api/[controller]")]
     [ApiController]
     public class PLOMappingsController : ControllerBase
