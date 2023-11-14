@@ -3,7 +3,6 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.LearningMethods;
@@ -63,7 +62,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var total = learningResourceRepository.GetTotalLearningResource(txtSearch);
             return Ok(new BaseResponse(false, "List Learning Resource", new BaseListResponse(page, limit, total, listLearningResource)));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpPost("CreateLearningResource")]
         public ActionResult CreateLearningResource([FromBody] LearningResourceRequest learningResourceRequest)
         {
@@ -83,7 +82,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Learning Resource Success!", learningResourceRequest));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpPut("UpdateLearningResource/{id}")]
         public ActionResult UpdateLearningResource(int id,[FromBody] LearningResourceRequest learningResourceRequest)
         {
@@ -108,7 +107,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Learning Resource Success!", learningResourceRequest));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpDelete("RemoveLearningResource/{id}")]
         public ActionResult RemoveLearningResource(int id)
         {

@@ -2,7 +2,6 @@
 using BusinessObject;
 using DataAccess.Models.DTO.Report;
 using DataAccess.Models.DTO.response;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -17,7 +16,6 @@ using Repositories.Users;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
-    [Authorize(Roles = "Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportsController : ControllerBase

@@ -3,7 +3,6 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -52,7 +51,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Learning Method", new BaseListResponse(page, limit, total, listLearningMethod)));
         }
 
-        [Authorize(Roles = "Manager")]
+
         [HttpPost("CreateLearningMethod")]
         public ActionResult CreateLearningMethod([FromBody] LearningMethodRequest learningMethodRequest)
         {
@@ -72,7 +71,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Learning Method Success!", learningMethodRequest));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpPut("UpdateLearningMethod/{id}")]
         public ActionResult UpdateLearningMethod(int id,[FromBody] LearningMethodRequest learningMethodRequest)
         {
@@ -97,7 +96,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Learning Method Success!", learningMethodRequest));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpDelete("DeleteLearningMethod/{id}")]
         public ActionResult DeleteLearningMethod(int id)
         {

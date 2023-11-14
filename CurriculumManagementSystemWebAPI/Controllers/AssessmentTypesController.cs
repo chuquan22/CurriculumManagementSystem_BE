@@ -3,7 +3,6 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.AssessmentMethods;
@@ -52,7 +51,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var assessmentTypeResponse = _mapper.Map<AssessmentTypeResponse>(assessmentType);
             return Ok(new BaseResponse(false, "Sucessfully", assessmentTypeResponse));
         }
-        [Authorize(Roles = "Manager")]
 
         [HttpPost("CreateAssessmentType")]
         public ActionResult CreateAssessmentType([FromBody] AssessmentTypeRequest assessmentTypeRequest)
@@ -72,7 +70,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", assessmentTypeRequest));
         }
-        [Authorize(Roles = "Manager")]
 
         [HttpPut("UpdateAssessmentType/{id}")]
         public ActionResult UpdateAssessmentType(int id, [FromBody] AssessmentTypeRequest assessmentTypeRequest)
@@ -98,7 +95,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Success!", assessmentType));
         }
-        [Authorize(Roles = "Manager")]
+
         [HttpDelete("DeleteAssessmentType/{id}")]
         public ActionResult DeleteAssessmentType(int id)
         {
