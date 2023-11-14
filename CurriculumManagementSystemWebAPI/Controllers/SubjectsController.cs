@@ -15,10 +15,12 @@ using Newtonsoft.Json.Linq;
 using Repositories.PreRequisites;
 using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SubjectsController : ControllerBase
     {

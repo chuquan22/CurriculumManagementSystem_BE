@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ClassSessionTypes;
@@ -56,7 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Class Session Type", new BaseListResponse(page, limit, total, listAssessmentTypeResponse)));
         }
 
-
+        [Authorize(Roles = "Manager")]
         [HttpPost("CreateClassSessionType")]
         public ActionResult CreateClassSessionType([FromBody] ClassSessionTypeRequest classSessionTypeRequest)
         {
@@ -74,7 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", classSessionTypeRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateClassSessionType/{id}")]
         public ActionResult UpdateClassSessionType(int id,[FromBody] ClassSessionTypeRequest classSessionTypeRequest)
         {
@@ -99,7 +100,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Success!", classSessionTypeRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpDelete("DeleteClassSessionType/{id}")]
         public ActionResult DeleteClassSessionType(int id)
         {
