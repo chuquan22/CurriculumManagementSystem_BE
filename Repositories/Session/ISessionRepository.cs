@@ -20,5 +20,7 @@ namespace Repositories.Session
         string UpdatePatchSession(BusinessObject.Session rs);
 
         public BusinessObject.Session IsSessionNoExist(int sessionNo, int scheduleId);
+
+        public string DeleteSessionBySyllabusId(int syllabus_id);
     }
 }

@@ -22,6 +22,11 @@ namespace Repositories.Materials
            return db.DeleteMaterial(id);
         }
 
+        public string DeleteMaterialBySyllabusId(int syllabus_id)
+        {
+            return db.DeleteMaterialBySyllabusId(syllabus_id);
+        }
+
         public Material EditMaterial(Material mate)
         {
             return db.EditMaterial(mate);

@@ -50,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IClassSessionTypeRepository classSessionTypeRepository;
         private IDegreeLevelRepository degreeLevelRepository;
         private ILearningResourceRepository learningResourceRepository;
-
+        private static int syllaId = 0;
         public SyllabusController(IMapper mapper)
         {
             _mapper = mapper;
@@ -163,6 +163,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             try
                             {
                                 syllabusId = await CreateSyllabusAPI(syllabusExcel);
+                                syllaId = syllabusId;
 
                             }
                             catch (Exception)
@@ -181,28 +182,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 Materials = materialExcel,
                             };
 
-
-                            foreach (var item in materialExcel)
+                            try
                             {
-                                if (item.material_type != null)
+                                foreach (var item in materialExcel)
                                 {
-                                    item.syllabus_id = syllabusId;
-                                    MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
-                                    try
+                                    if (item.material_type != null)
                                     {
+                                        item.syllabus_id = syllabusId;
+                                        MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
                                         await CreateMaterialsAPI(addRs);
-
                                     }
-                                    catch (Exception)
-                                    {
 
-                                        return BadRequest("Import false at sheet Materials.");
-
-                                    }
                                 }
-
                             }
+                            catch (Exception)
+                            {
+                                materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                syllabusRepository.DeleteSyllabus(syllabusId);
+                                return BadRequest("Import false at sheet Materials.");
 
+                            }                         
                             rs.Add(value);
 
                         }
@@ -213,33 +212,35 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var value = new
                             {
                                 CLOs = listClo,
-                            };                            
-                            foreach (var item in listClo)
+                            };
+                            try
                             {
-                                CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
-                                if(item.CLO_name != null)
+                                foreach (var item in listClo)
                                 {
-
-                                    addRs.syllabus_id = syllabusId;
-                                    int idClo = 0;
-                                    try
+                                    CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
+                                    if (item.CLO_name != null)
                                     {
+
+                                        addRs.syllabus_id = syllabusId;
+                                        int idClo = 0;
+
                                         idClo = await CreateCLOsAPI(addRs);
                                         if (idClo == 0)
                                         {
                                             throw new Exception("Import false at sheet CLOs.");
                                         }
+                                        cloId.Add(idClo);
                                     }
-                                    catch (Exception)
-                                    {
-
-                                        throw new Exception("Import false at sheet CLOs");
-                                    }
-                                
-                                    cloId.Add(idClo);
                                 }
-
                             }
+                            catch (Exception)
+                            {
+                                cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                                materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                syllabusRepository.DeleteSyllabus(syllabusId);
+                                throw new Exception("Import false at sheet CLOs");
+                            }
+                            
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
@@ -295,6 +296,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
                                 catch (Exception ex)
                                 {
+                                    sessionRepository.DeleteSessionBySyllabusId(syllabusId);
+                                    cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                                    materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                    syllabusRepository.DeleteSyllabus(syllabusId);
 
                                     return BadRequest("Import false at sheet Schedule.");
                                 }
@@ -362,7 +367,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             catch (Exception ex)
                             {
-
+                                gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllabusId);
+                                sessionRepository.DeleteSessionBySyllabusId(syllabusId);
+                                cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                                materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                syllabusRepository.DeleteSyllabus(syllabusId);
                                 throw new Exception("Import false at sheet Grading Struture!.");
                             }
 
@@ -528,8 +537,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 catch (Exception)
                 {
-
-                    throw new Exception("Import syllabus fail at sheet GradingStruture!");
+                    gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllaId);
+                    sessionRepository.DeleteSessionBySyllabusId(syllaId);
+                    cloRepository.DeleteCLOsBySyllabusId(syllaId);
+                    materialsRepository.DeleteMaterialBySyllabusId(syllaId);
+                    syllabusRepository.DeleteSyllabus(syllaId);
+                    throw new Exception("Import syllabus fail at sheet GradingStruture! Wrong Assessment Method!");
                 }
                 g.clo_name = r.CLO;
                 result.Add(g);
@@ -575,7 +588,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    sessionRepository.DeleteSessionBySyllabusId(syllaId);
+                    cloRepository.DeleteCLOsBySyllabusId(syllaId);
+                    materialsRepository.DeleteMaterialBySyllabusId(syllaId);
+                    syllabusRepository.DeleteSyllabus(syllaId);
                     throw new Exception("Import syllabus fail at sheet Schedule!");
                 }
                 rs.Add(se);
@@ -635,8 +651,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 catch (Exception)
                 {
-
-                    throw new Exception("Import syllabus fail at sheet Material!");
+                    materialsRepository.DeleteMaterialBySyllabusId(syllaId);
+                    syllabusRepository.DeleteSyllabus(syllaId);
+                    throw new Exception("Import syllabus fail at sheet Material! No Learning Resource Found");
 
                 }
                 m.material_edition = r.Edition;
@@ -677,7 +694,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                         else
                         {
-                            throw new Exception("Import syllabus fail at sheet Syllabus!");
+                            throw new Exception("Import syllabus fail at sheet Syllabus! Wrong Cource Code!");
                         }
                     }
                     else if (r.Title.Equals("Leaning-Teaching Method"))
@@ -699,7 +716,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         catch (Exception ex)
                         {
 
-                            throw new Exception("Import syllabus fail at sheet Syllabus!");
+                            throw new Exception("Import syllabus fail at sheet Syllabus! Wrong Degree Level");
                         }
                     }
                     else if (r.Title.Equals("Time Allocation"))
