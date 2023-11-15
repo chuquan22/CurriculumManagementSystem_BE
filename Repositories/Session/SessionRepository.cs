@@ -23,6 +23,11 @@ namespace Repositories.Session
             return db.DeleteSession(id);
         }
 
+        public string DeleteSessionBySyllabusId(int syllabus_id)
+        {
+            return db.DeleteSessionBySyllabusId(syllabus_id);
+        }
+
         public List<BusinessObject.Session> GetSession(int id)
         {
             return db.GetSession(id);

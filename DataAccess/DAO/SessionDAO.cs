@@ -25,6 +25,25 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string DeleteSessionBySyllabusId(int syllabus_id)
+        {
+            var oldMate = _cmsDbContext.Session.Where(a => a.syllabus_id == syllabus_id).ToList();
+            foreach (var item in oldMate)
+            {
+                var listSessionClo = _cmsDbContext.SessionCLO.Where(x => x.session_id == item.schedule_id).ToList();
+                foreach(var session_clo in listSessionClo)
+                {
+                    _cmsDbContext.SessionCLO.Remove(session_clo);
+                }
+            }
+            foreach (var item in oldMate)
+            {
+                _cmsDbContext.Session.Remove(item);
+            }
+            _cmsDbContext.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
+        }
+
         public Session CreateSession(Session session)
         {
             var rs = _cmsDbContext.Session.Where(s => s.session_No == session.session_No && s.syllabus_id == session.syllabus_id).FirstOrDefault();

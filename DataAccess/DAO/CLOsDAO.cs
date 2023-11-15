@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.DTO.response;
+using DataAccess.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,17 @@ namespace DataAccess.DAO
             _cmsDbContext.CLO.Remove(oldCol);
             _cmsDbContext.SaveChanges();
             return oldCol;
+        }
+
+        public string DeleteCLOsBySyllabusId(int syllabus_id)
+        {
+            var oldMate = _cmsDbContext.CLO.Where(a => a.syllabus_id == syllabus_id).ToList();
+            foreach (var item in oldMate)
+            {
+                _cmsDbContext.CLO.Remove(item);
+            }
+            _cmsDbContext.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
         }
 
         public CLO GetCLOByName(string name)

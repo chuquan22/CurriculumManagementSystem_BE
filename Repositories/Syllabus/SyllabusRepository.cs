@@ -18,6 +18,11 @@ namespace Repositories.Syllabus
             return db.CreateSyllabus(rs);
         }
 
+        public string DeleteSyllabus(int syllabusId)
+        {
+            return db.DeleteSyllabus(syllabusId);
+        }
+
         public List<BusinessObject.Syllabus> GetListSyllabus(int start, int end, string txtSearch, string subjectCode)
         {
             return db.GetListSyllabus(start, end, txtSearch, subjectCode);

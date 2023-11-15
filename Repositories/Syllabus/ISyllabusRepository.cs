@@ -18,5 +18,6 @@ namespace Repositories.Syllabus
         BusinessObject.Syllabus CreateSyllabus(BusinessObject.Syllabus rs);
         bool SetStatusSyllabus(int id);
         bool SetApproved(int id);
+        string DeleteSyllabus(int syllabusId);
     }
 }

@@ -40,6 +40,20 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string DeleteSyllabus(int syllabusId)
+        {
+            using (var context = new CMSDbContext())
+            {
+                var oldMate = context.Syllabus.Where(a => a.syllabus_id == syllabusId).ToList();
+                foreach (var item in oldMate)
+                {
+                    context.Syllabus.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            return Result.deleteSuccessfull.ToString();
+        }
+
         public Syllabus CreateSyllabus(Syllabus rs)
         {
             using (var context = new CMSDbContext())
@@ -106,8 +120,8 @@ namespace DataAccess.DAO
                 {
                     query = query.Where(sy => sy.Subject.subject_code.Contains(subjectCode));
                 }
-
-                return query.Count();
+                var total = query.Count();
+                return total;
             }
         }
 

@@ -25,6 +25,27 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string DeleteGradingStrutureBySyllabusId(int syllabusId)
+        {
+            
+                var oldMate = _cmsDbContext.GradingStruture.Where(a => a.syllabus_id == syllabusId).ToList();
+                foreach (var item in oldMate)
+                {
+                    var listSessionClo = _cmsDbContext.GradingCLO.Where(x => x.grading_id == item.grading_id).ToList();
+                    foreach (var session_clo in listSessionClo)
+                    {
+                        _cmsDbContext.GradingCLO.Remove(session_clo);
+                    }
+                }
+                foreach (var item in oldMate)
+                {
+                    _cmsDbContext.GradingStruture.Remove(item);
+                }
+                _cmsDbContext.SaveChanges();
+                return Result.deleteSuccessfull.ToString();
+            
+        }
+
         public GradingStruture CreateGradingStruture(GradingStruture gra)
         {
             if(gra.session_no == null)
