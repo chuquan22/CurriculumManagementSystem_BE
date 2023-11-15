@@ -199,14 +199,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, createResult));
             }
             var curriResponse = _mapper.Map<CurriculumResponse>(curriculum);
-
-            var curriBatch = new CurriculumBatch { batch_id = curriculumRequest.batch_id, curriculum_id = curriculum.curriculum_id };
-            string create = _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
-
-            if (create != Result.createSuccessfull.ToString())
-            {
-                return BadRequest(new BaseResponse(true, create));
-            }
             return Ok(new BaseResponse(false, "Create Curriculum Success!", curriResponse));
         }
 
@@ -214,14 +206,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete("DeleteCurriculum/{id}")]
         public async Task<IActionResult> DeleteCurriculum(int id)
         {
-            if (CheckCurriculumCanDelete(id))
-            {
-                return BadRequest(new BaseResponse(true, "Can not Delete Curriculum Had Subject!"));
-            }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             if (curriculum == null)
             {
                 return NotFound(new BaseResponse(true, "Not found this curriculum"));
+            }
+
+            if (CheckCurriculumCanDelete(id))
+            {
+                return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} Had Used. Can't Delete!"));
             }
 
             string deleteResult = _curriculumRepository.RemoveCurriculum(curriculum);
@@ -496,6 +489,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(cu);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -519,6 +515,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(plo);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -538,6 +537,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_CURRICULUMSUBJECT;
             var jsonData = JsonSerializer.Serialize(curri);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -888,7 +890,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private bool CheckCurriculumCanDelete(int id)
         {
-            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
+            var haveSubject = _context.CurriculumSubject?.FirstOrDefault(e => e.curriculum_id == id);
+            var haveBatch = _context.CurriculumBatch?.FirstOrDefault(e => e.curriculum_id == id);
+            if(haveSubject == null && haveBatch == null)
+            {
+                return false;
+            }
+            return true;
         }
+
+
     }
 }
