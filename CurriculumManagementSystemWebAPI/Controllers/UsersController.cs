@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.AssessmentMethods;
@@ -51,7 +52,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "User", userResponse));
 
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateUser")]
         public ActionResult CreateUser([FromBody] UserCreateRequest userCreateRequest)
         {
@@ -72,7 +73,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create SuccessFull!", user));
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUserRole/{id}")]
         public ActionResult UpdateUser(int id, [FromBody]UserUpdateRequest userUpdateRequest)
         {
@@ -93,7 +94,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var userResponse = _mapper.Map<UserResponse>(user);
             return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser/{id}")]
         public ActionResult DeleteUser(int id)
         {

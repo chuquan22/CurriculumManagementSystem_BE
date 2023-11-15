@@ -32,10 +32,13 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using Repositories.CurriculumBatchs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
