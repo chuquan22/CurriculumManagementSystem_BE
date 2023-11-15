@@ -23,6 +23,9 @@ using DataAccess.Models.DTO.XML;
 using System.Linq;
 using System.IO.Compression;
 using NuGet.Packaging;
+using Microsoft.AspNetCore.Routing.Template;
+using System.IO;
+using OfficeOpenXml;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -241,49 +244,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
-        private async Task<int> CreateQuizsAPI(QuizDTORequest quiz)
-        {
-            string apiUrl = API_PORT + API_Quiz;
-            var jsonData = JsonSerializer.Serialize(quiz);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int quizId = responseObject.GetProperty("data").GetProperty("quiz_id").GetInt32();
-
-            return quizId;
-        }
-
-        private async Task<Question> CreateQuestionsAPI(QuestionDTORequest question)
-        {
-            string apiUrl = API_PORT + API_Question;
-            var jsonData = JsonSerializer.Serialize(question);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            Question rs = JsonSerializer.Deserialize<Question>(strData, options);
-            return rs;
-        }
-
         [HttpPost("ExportQuizXML/{quizId}")]
         public IActionResult ExportQuizXML(int quizId)
         {
@@ -300,14 +260,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             // var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
             var quiz = _quizRepository.GetQuizById(quizId);
             var subject = quiz.Subject;
-            
+
             var listQuestion = _questionRepository.GetQuestionByQuiz(quiz.quiz_id);
             var listQuizExport = new List<Quiz_qti_xml>();
-            
+
             // mapping question to quizExport
             foreach (var question in listQuestion)
             {
-                var quizExport = new Quiz_qti_xml { answers = new List<string>(), corrects = new List<int>()};
+                var quizExport = new Quiz_qti_xml { answers = new List<string>(), corrects = new List<int>() };
                 quizExport.question_name = question.question_name;
                 quizExport.question_name_title = GetTitleByQuestionName(question.question_name);
                 quizExport.question_type = question.question_type;
@@ -316,7 +276,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     quizExport.answers.Add(question.answers_1.ToString());
                 }
-                 if (question.answers_2 != null)
+                if (question.answers_2 != null)
                 {
                     quizExport.answers.Add(question.answers_2.ToString());
                 }
@@ -377,6 +337,68 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         }
 
+        //[HttpPost("ExportQuizExcel/{subjectId}")]
+        //public IActionResult ExportQuizExcel(int subjectId)
+        //{
+        //    var quizTemplate = "QuizTemplate.xlsx";
+            
+        //    var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
+           
+
+        //    //return Ok(fileContents);
+        //   // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Quiz.xlsx");
+        //}
+
+        private async Task<int> CreateQuizsAPI(QuizDTORequest quiz)
+        {
+            string apiUrl = API_PORT + API_Quiz;
+            var jsonData = JsonSerializer.Serialize(quiz);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            response.EnsureSuccessStatusCode();
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
+
+            int quizId = responseObject.GetProperty("data").GetProperty("quiz_id").GetInt32();
+
+            return quizId;
+        }
+
+        private async Task<Question> CreateQuestionsAPI(QuestionDTORequest question)
+        {
+            string apiUrl = API_PORT + API_Question;
+            var jsonData = JsonSerializer.Serialize(question);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            response.EnsureSuccessStatusCode();
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            Question rs = JsonSerializer.Deserialize<Question>(strData, options);
+            return rs;
+        }
+
+
         private List<int> GetListCorrectAnswer(List<string> answers, string correct_answer)
         {
             string[] answer = { "A", "B", "C", "D" };
@@ -385,10 +407,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             for (int i = 0; i < answers.Count; i++)
             {
                 list.Add((correct_answer.Contains(answer[i])) ? 1 : 0);
-                
+
             }
 
-           return list;
+            return list;
         }
 
         private string GetTitleByQuestionName(string questionName)
