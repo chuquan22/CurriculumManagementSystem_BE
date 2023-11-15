@@ -92,16 +92,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
-            //var batch = new Batch { batch_name = semesterRequest.batch_name, batch_order = semesterRequest.batch_order };
-            //if (batchRepository.CheckBatchDuplicate(batch.batch_name))
-            //{
-            //    return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
-            //}
-            //string create = batchRepository.CreateBatch(batch);
-            //if (!create.Equals(Result.createSuccessfull.ToString()))
-            //{
-            //    return BadRequest(new BaseResponse(true, create));
-            //}
+           
 
             var semester = _mapper.Map<Semester>(semesterRequest);
 

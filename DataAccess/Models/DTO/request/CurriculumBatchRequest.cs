@@ -10,6 +10,7 @@ namespace DataAccess.Models.DTO.request
     {
         public string batch_name { get; set; }
         public int batch_order { get; set; }
+        public int degree_level_id { get; set; }
         public List<int> list_curriculum_id { get; set; }
     }
 }
