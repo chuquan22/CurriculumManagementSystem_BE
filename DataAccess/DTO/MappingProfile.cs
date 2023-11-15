@@ -320,6 +320,13 @@ namespace DataAccess.Models.DTO
                 .ForMember(dest => dest.number_question_single_choice, opt => opt.MapFrom(src => src.Questions.Where(x => x.question_type.ToLower().Equals("single choice")).Count()))
                 .ForMember(dest => dest.number_question_mutiple_choice, opt => opt.MapFrom(src => src.Questions.Where(x => x.question_type.ToLower().Equals("mutiple choice")).Count()))
                 .ReverseMap();
+
+            CreateMap<Quiz, QuizResponse>()
+                .ReverseMap();
+
+            CreateMap<Question, QuestionResponse>()
+                .ForMember(dest => dest.subject_id, opt => opt.MapFrom(src => src.Quiz.subject_id))
+                .ReverseMap();
         }
     }
 }

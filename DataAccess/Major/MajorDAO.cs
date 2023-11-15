@@ -26,6 +26,18 @@ namespace DataAccess.Major
             return list;
         }
 
+        public BusinessObject.Major GetMajorBySubjectId(int subjectId)
+        {
+            var major = db.Subject
+                .Where(x => x.subject_id == subjectId)
+                .Select(x => x.CurriculumSubjects
+                                .Select(cs => cs.Curriculum.Specialization.Major)
+                                .FirstOrDefault())
+                .FirstOrDefault();
+
+            return major;
+        }
+
         public List<BusinessObject.Major> GetMajorByBatch(int batchId)
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();

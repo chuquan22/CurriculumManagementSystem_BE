@@ -285,7 +285,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("ReportSubject")]
         public IActionResult ReportSubject()
         {
-            int totalSubject = _subjectRepository.GetAllSubject().Count;
+            int totalSubject = _subjectRepository.GetAllSubject("").Count;
             var listSubjectReport = new List<SubjectDTOReport>();
             var learningMethod = _learningMethodRepository.GetAllLearningMethods();
             foreach (var item in learningMethod)

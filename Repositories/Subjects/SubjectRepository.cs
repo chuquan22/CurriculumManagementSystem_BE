@@ -20,7 +20,7 @@ namespace Repositories.Subjects
         public string DeleteSubject(Subject subject) => subjectDAO.DeleteSubject(subject);
        
 
-        public List<Subject> GetAllSubject() => subjectDAO.GetAllSubjects();
+        public List<Subject> GetAllSubject(string txtSearch) => subjectDAO.GetAllSubjects(txtSearch);
 
         public List<Subject> GetListSubjectByTermNo(int term_no, int curriculumId) => subjectDAO.GetListSubjectByTermNo(term_no, curriculumId);
 

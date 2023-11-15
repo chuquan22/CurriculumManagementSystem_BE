@@ -39,13 +39,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Subjects
         [HttpGet("GetAllSubject")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject()
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
         {
             if (_context.Subject == null)
             {
                 return NotFound();
             }
-            var subject = _subjectRepository.GetAllSubject();
+            var subject = _subjectRepository.GetAllSubject(txtSearch);
             if (subject == null)
             {
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));

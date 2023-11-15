@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DataAccess.DAO
 
         public List<Question> GetQuestionByQuiz(int quizId)
         {
-            var listQuestion = _context.Question.Where(x => x.quiz_id == quizId).ToList();
+            var listQuestion = _context.Question.Include(x => x.Quiz.Subject).Where(x => x.quiz_id == quizId).ToList();
             return listQuestion;
         }
 

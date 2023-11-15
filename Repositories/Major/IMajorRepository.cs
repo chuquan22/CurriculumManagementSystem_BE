@@ -11,6 +11,7 @@ namespace Repositories.Major
     {
         public List<BusinessObject.Major> GetAllMajor();
         List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId);
+        BusinessObject.Major GetMajorBySubjectId(int subjectId);
         public BusinessObject.Major AddMajor(BusinessObject.Major major);
         List<BusinessObject.Major> GetMajorByBatch(int batchId);
         public BusinessObject.Major EditMajor(BusinessObject.Major major);
