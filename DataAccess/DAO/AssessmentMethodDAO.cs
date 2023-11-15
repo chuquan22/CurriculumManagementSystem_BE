@@ -54,13 +54,12 @@ namespace DataAccess.DAO
 
         public AssessmentMethod GetAsssentMethodByName(string name, int id)
         {
-            string[] name2 = name.Split(' ');
 
             var rs = _context.AssessmentMethod
                 .Include(a => a.AssessmentType)
                 .Where(x =>
-                    (x.assessment_method_component.ToUpper().Trim().Contains(name2[0].ToUpper().Trim()) ||
-                     x.assessment_method_component.ToUpper().Trim().Contains(name.ToUpper().Trim())) &&
+                    
+                     x.assessment_method_component.ToUpper().Trim().Contains(name.ToUpper().Trim()) &&
                     x.assessment_type_id == id)
                 .FirstOrDefault();
 

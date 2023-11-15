@@ -368,6 +368,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         }
                     }
+                    SetStatusSyllabus(syllabusId);
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 
                 }
@@ -495,12 +496,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var r in row)
             {
                 if (r == null) { }
+                r.SessionNo = r.SessionNo.Trim();
                 GradingStruture g = new GradingStruture();
                 g.type_of_questions = r.type_of_questions;
                 g.number_of_questions = r.number_of_questions;
                 g.session_no = ((r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")) ? null : int.Parse(r.SessionNo));
                 g.references = r.Reference;
-                g.grading_weight = r.weight;
+                g.grading_weight = r.weight;              
                 g.grading_part = r.Part;
                 g.syllabus_id = syllabus.syllabus_id;
                 g.minimum_value_to_meet_completion = r.minimun_value_to_meet;
@@ -510,15 +512,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.grading_note = r.Note;
                 try
                 {
-                    if(r.Reference != null && r.SessionNo == null)
+                    if(r.Reference != null && (r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")))
+                    {
+                        g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
+                    }
+                    if(r.Reference != null && r.SessionNo.Trim() != null)
                     {
                         g.assessment_method_id = GetAssessmentMethodByName(r.Reference, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
                     }
-                    if(r.Reference != null && r.SessionNo != null)
-                    {
-                        g.assessment_method_id = GetAssessmentMethodByName(r.Reference, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
-                    }
-                    if(r.Reference == null && r.SessionNo == null)
+                    if(r.Reference == null && (r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")) )
                     {
                         g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
 
