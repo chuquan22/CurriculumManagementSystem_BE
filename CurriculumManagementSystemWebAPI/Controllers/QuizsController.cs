@@ -17,6 +17,10 @@ using System.Text.Json;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using SuperXML;
+using System.Numerics;
+using DataAccess.Models.DTO.XML;
+using System.Linq;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -55,7 +59,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult GetListQuizBySubject(int subjectId)
         {
             var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
-            if(listQuiz.Count == 0)
+            if (listQuiz.Count == 0)
             {
                 return Ok(new BaseResponse(false, "Subject no contain Quiz"));
             }
@@ -79,7 +83,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var quiz = _mapper.Map<Quiz>(quizDTO);
             string createResult = _quizRepository.CreateQUiz(quiz);
-            if(createResult != Result.createSuccessfull.ToString())
+            if (createResult != Result.createSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
@@ -104,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult GetListQuestionByQuiz(int quizId)
         {
             var listQuestion = _questionRepository.GetQuestionByQuiz(quizId);
-            if( listQuestion.Count == 0)
+            if (listQuestion.Count == 0)
             {
                 return Ok(new BaseResponse(false, "Not Found Question In Quiz"));
             }
@@ -125,7 +129,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateQuestion")]
         public IActionResult CreateQuestion([FromBody] QuestionDTORequest questionDTO)
         {
-            if(_questionRepository.CheckQuestionDuplicate(0, questionDTO.question_name, questionDTO.quiz_id))
+            if (_questionRepository.CheckQuestionDuplicate(0, questionDTO.question_name, questionDTO.quiz_id))
             {
                 return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
             }
@@ -150,7 +154,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
             }
-             _mapper.Map(questionDTO, question);
+            _mapper.Map(questionDTO, question);
             string updateResult = _questionRepository.UpdateQuestion(question);
             if (updateResult != Result.updateSuccessfull.ToString())
             {
@@ -278,50 +282,92 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return rs;
         }
 
-        [HttpPost("ImportQuizXML")]
-        public async Task<IActionResult> ImportQuizXML(IFormFile fileQuiz)
+        [HttpPost("ExportQuizXML/{quizId}")]
+        public IActionResult ExportQuizXML(int quizId)
         {
-            try
+            var template = "D:/1699949862__0__qti_77351.xml";
+            // var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
+            var quiz = _quizRepository.GetQuizById(quizId);
+            
+            var listQuestion = _questionRepository.GetQuestionByQuiz(quiz.quiz_id);
+            var listQuizExport = new List<Quiz_qti_xml>();
+            
+
+            foreach (var question in listQuestion)
             {
-                List<Question> listCurriSubject = new List<Question>();
-                string baseNode = "/questestinterop/item/presentation";
-                
+                var quizExport = new Quiz_qti_xml { answers = new List<string>(), corrects = new List<int>()};
+                quizExport.question_name = question.question_name;
+                quizExport.question_name_title = GetTitleByQuestionName(question.question_name);
+                quizExport.question_type = question.question_type;
 
-
-                using (var stream = new MemoryStream())
+                if (question.answers_1 != null)
                 {
-                    await fileQuiz.CopyToAsync(stream);
-                    stream.Position = 0; 
-
-                    var xmlDocument = XDocument.Load(stream);
-
-                    var data = xmlDocument.Descendants("item");
-
-                    foreach (var item in data)
-                    {
-                        var question = new Question();
-                        question.question_name = item.Descendants("material").FirstOrDefault().Value;
-                        question.question_type = item.Descendants("qtimetadatafield").Where(x => x.Element("fieldlabel").Value.Equals("QUESTIONTYPE")).Select(x => x.Element("fieldentry").Value).FirstOrDefault();
-                        var listAnswer = item.Descendants("response_label");
-
-                        question.answers_1 = listAnswer.Where(x => x.Attribute("ident").Value.Equals("0")).Select(x => x.Element("material").Value).First();
-                        question.answers_2 = listAnswer.Where(x => x.Attribute("ident").Value.Equals("1")).Select(x => x.Element("material").Value).First();
-                        question.answers_3 = listAnswer.Where(x => x.Attribute("ident").Value.Equals("2")).Select(x => x.Element("material").Value).FirstOrDefault();
-                        question.answers_4 = listAnswer.Where(x => x.Attribute("ident").Value.Equals("3")).Select(x => x.Element("material").Value).FirstOrDefault();
-
-                        question.correct_answer = item.Descendants("respcondition").Where(x => x.Element("setvar").Value.Equals("1")).Select(x => x.Element("conditionvar").Value).FirstOrDefault();
-                        
-                        listCurriSubject.Add(question);
-
-                    }
-
-                    return Ok(listCurriSubject);
+                    quizExport.answers.Add(question.answers_1.ToString());
                 }
+                 if (question.answers_2 != null)
+                {
+                    quizExport.answers.Add(question.answers_2.ToString());
+                }
+                if (question.answers_3 != null)
+                {
+                    quizExport.answers.Add(question.answers_3.ToString());
+                }
+                if (question.answers_4 != null)
+                {
+                    quizExport.answers.Add(question.answers_4.ToString());
+                }
+
+                quizExport.corrects = GetListCorrectAnswer(quizExport.answers, question.correct_answer);
+
+                listQuizExport.Add(quizExport);
+
             }
-            catch (Exception ex)
+            var compiler = new Compiler()
+                .AddKey("questions", listQuizExport)
+                .AddKey("quiz", quiz);
+
+            var compiled = compiler.CompileXml(template);
+
+            var xmlBytes = Encoding.UTF8.GetBytes(compiled);
+
+            // Set the file name
+            var fileName = $"{quiz.quiz_name}.xml";
+
+            // Return the XML file
+            return File(xmlBytes, "application/xml", fileName);
+        }
+
+        private List<int> GetListCorrectAnswer(List<string> answers, string correct_answer)
+        {
+            string[] answer = { "A", "B", "C", "D" };
+            var list = new List<int>();
+
+            for (int i = 0; i < answers.Count; i++)
             {
-                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+                list.Add((correct_answer.Contains(answer[i])) ? 1 : 0);
+                
             }
+
+           return list;
+        }
+
+        private string GetTitleByQuestionName(string questionName)
+        {
+            string originalString = questionName;
+
+            int maxLength = 50;
+
+            if (originalString.Length > maxLength)
+            {
+                int index = maxLength;
+                while (index > 0 && !char.IsWhiteSpace(originalString[index - 1]) && char.IsLetter(originalString[index - 1]))
+                {
+                    index--;
+                }
+
+                originalString = originalString.Substring(0, index);
+            }
+            return originalString;
         }
 
 
