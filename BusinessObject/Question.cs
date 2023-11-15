@@ -20,13 +20,13 @@ namespace BusinessObject
         [ForeignKey("Quiz")]
         public int quiz_id { get; set; }
         [Required]
-        public string answers_1 { get; set; }
+        public string answers_A { get; set; }
         [Required]
-        public string answers_2 { get; set; }
+        public string answers_B { get; set; }
         [AllowNull]
-        public string? answers_3 { get; set; }
+        public string? answers_C { get; set; }
         [AllowNull]
-        public string? answers_4 { get; set; }
+        public string? answers_D { get; set; }
         [Required]
         public string correct_answer { get; set; }
 

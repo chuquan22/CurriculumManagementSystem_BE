@@ -52,7 +52,6 @@ namespace BusinessObject
         public virtual DbSet<SemesterPlan> SemesterPlan { get; set; }
         public virtual DbSet<Session> Session { get; set; }
         public virtual DbSet<Specialization> Specialization { get; set; }
-        public virtual DbSet<SpecializationSubject> SpecializationSubject { get; set; }
         public virtual DbSet<Subject> Subject { get; set; }
         public virtual DbSet<Syllabus> Syllabus { get; set; }
         public virtual DbSet<SessionCLO> SessionCLO { get; set; }
@@ -73,9 +72,6 @@ namespace BusinessObject
 
             modelBuilder.Entity<SemesterPlan>()
                .HasKey(ba => new { ba.semester_id, ba.curriculum_id, ba.term_no });
-
-            modelBuilder.Entity<SpecializationSubject>()
-               .HasKey(ba => new { ba.specialization_id, ba.subject_id });
 
             modelBuilder.Entity<SessionCLO>()
                .HasKey(ba => new { ba.CLO_id, ba.session_id });
@@ -390,9 +386,9 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Question>().HasData(
-                new Question { question_id = 1, question_type = "Single Choice", question_name = "Lợi ích khi sử dụng View?", answers_1 = "Che dấu và bảo mật dữ liệu", answers_2 = "Hiển thị dữ liệu một cách tùy biến", answers_3 = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_4 = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 1 },
-                new Question { question_id = 2, question_type = "Single Choice", question_name = "Qui đinh đặt tên cột trong View?", answers_1 = "Cột chứa giá trị được tính toán từ nhiều cột khác phải được đặt tên", answers_2 = "Cột chứa giá trị được tính toán từ nhiều cột khác không được đặt tên", answers_3 = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_4 = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 2},
-                new Question { question_id = 3, question_type = "Single Choice", question_name = "VIEW có thể cập nhật (updatable view) cho phép?", answers_1 = "Xem dữ liệu và cập nhật dữ liệu trong các bảng cơ sở qua View", answers_2 = "Xem dữ liệu", answers_3 = "cập nhật dữ liệu trong các bảng cơ sở qua View", answers_4 = "Tất cả đáp án đều sai", correct_answer = "A", quiz_id = 1 }
+                new Question { question_id = 1, question_type = "Single Choice", question_name = "Lợi ích khi sử dụng View?", answers_A = "Che dấu và bảo mật dữ liệu", answers_B = "Hiển thị dữ liệu một cách tùy biến", answers_C = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_D = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 1 },
+                new Question { question_id = 2, question_type = "Single Choice", question_name = "Qui đinh đặt tên cột trong View?", answers_A = "Cột chứa giá trị được tính toán từ nhiều cột khác phải được đặt tên", answers_B = "Cột chứa giá trị được tính toán từ nhiều cột khác không được đặt tên", answers_C = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_D = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 2},
+                new Question { question_id = 3, question_type = "Single Choice", question_name = "VIEW có thể cập nhật (updatable view) cho phép?", answers_A = "Xem dữ liệu và cập nhật dữ liệu trong các bảng cơ sở qua View", answers_B = "Xem dữ liệu", answers_C = "cập nhật dữ liệu trong các bảng cơ sở qua View", answers_D = "Tất cả đáp án đều sai", correct_answer = "A", quiz_id = 1 }
                 );
         }
     }

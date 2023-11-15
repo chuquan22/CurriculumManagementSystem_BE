@@ -40,7 +40,6 @@ namespace BusinessObject
         public virtual AssessmentMethod AssessmentMethod { get; set; }
         public virtual ICollection<PreRequisite> PreRequisite { get; set; }
         public virtual ICollection<CurriculumSubject> CurriculumSubjects { get; set; }
-        public virtual ICollection<SpecializationSubject> SpecializationSubjects { get; set; }
         public virtual ICollection<PLOMapping> PLOMappings { get; set; }    
     }
 }
