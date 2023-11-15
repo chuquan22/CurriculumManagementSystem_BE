@@ -74,8 +74,8 @@ namespace DataAccess.Specialization
         public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId)
         {
             var listSpe = new List<BusinessObject.Specialization>();
-            var semester = db.Semester.FirstOrDefault(x => x.start_batch_id == batchId);
-            var major = db.Major.Where(x => x.degree_level_id == semester.degree_level_id && x.is_active == true).ToList();
+            var batch = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var major = db.Major.Where(x => x.degree_level_id == batch.degree_level_id && x.is_active == true).ToList();
 
             foreach (var item in major)
             {

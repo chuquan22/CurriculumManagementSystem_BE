@@ -92,21 +92,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
-            var batch = new Batch { batch_name = semesterRequest.batch_name, batch_order = semesterRequest.batch_order };
-            if (batchRepository.CheckBatchDuplicate(batch.batch_name))
-            {
-                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
-            }
-            string create = batchRepository.CreateBatch(batch);
-            if (!create.Equals(Result.createSuccessfull.ToString()))
-            {
-                return BadRequest(new BaseResponse(true, create));
-            }
+            //var batch = new Batch { batch_name = semesterRequest.batch_name, batch_order = semesterRequest.batch_order };
+            //if (batchRepository.CheckBatchDuplicate(batch.batch_name))
+            //{
+            //    return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
+            //}
+            //string create = batchRepository.CreateBatch(batch);
+            //if (!create.Equals(Result.createSuccessfull.ToString()))
+            //{
+            //    return BadRequest(new BaseResponse(true, create));
+            //}
 
             var semester = _mapper.Map<Semester>(semesterRequest);
-            semester.start_batch_id = batch.batch_id;
 
-            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year, semester.degree_level_id))
+            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year))
             {
                 return BadRequest(new BaseResponse(true, $"Semester {semester.semester_name + "-" + semester.school_year} is Duplicate!"));
             }
@@ -129,7 +128,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
 
-            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year, semester.degree_level_id))
+            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year))
             {
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }

@@ -75,7 +75,7 @@ namespace DataAccess.DAO
 
         public List<Batch> GetBatchByDegreeLevel(int degreeId)
         {
-            var listBatch = _context.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == degreeId).Select(x => x.Batch).ToList(); ;
+            var listBatch = _context.Batch.Where(x => x.degree_level_id == degreeId).ToList(); ;
             return listBatch;
         }
 

@@ -162,7 +162,6 @@ namespace BusinessObject
                 new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "nguyenthu120801@gmail.com", user_name = "ThuNT", is_active = true },
                 new User { user_id = 3, full_name = "Nguyen Phong Hao", role_id = 1, user_email = "haotest@gmail.com", user_name = "admin", is_active = true },
                 new User { user_id = 4, full_name = "Lam", role_id = 3, user_email = "lam@gmail.com", user_name = "lam", is_active = true }
-
                 );
 
 
@@ -174,21 +173,21 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Batch>().HasData(
-              new Batch { batch_id = 1, batch_name = "7.1", batch_order = 1},
-              new Batch { batch_id = 2, batch_name = "17", batch_order = 1 },
-              new Batch { batch_id = 3, batch_name = "18", batch_order = 2},
-              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 1 },
-              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 2 },
-              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 3 }
+              new Batch { batch_id = 1, batch_name = "7.1", batch_order = 1, degree_level_id = 3 },
+              new Batch { batch_id = 2, batch_name = "17", batch_order = 1, degree_level_id = 2 },
+              new Batch { batch_id = 3, batch_name = "18", batch_order = 2, degree_level_id = 2 },
+              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 1 , degree_level_id = 1 },
+              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 2 , degree_level_id = 1 },
+              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 3 , degree_level_id = 1 }
               );
 
             modelBuilder.Entity<Semester>().HasData(
-                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, degree_level_id = 1 , start_batch_id = 6 },
-                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/08/2023"), school_year = 2023, degree_level_id = 1, start_batch_id = 5 },
-                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/04/2023"), school_year = 2023, degree_level_id = 1, start_batch_id = 4 },
-                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, degree_level_id = 2, start_batch_id = 3 },
-                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, degree_level_id = 2, start_batch_id = 2 },
-                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, degree_level_id = 3, start_batch_id = 1 }
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, start_batch_id = 6 },
+                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/08/2023"), school_year = 2023, start_batch_id = 5 },
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/04/2023"), school_year = 2023, start_batch_id = 4 },
+                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, start_batch_id = 3 },
+                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, start_batch_id = 2 },
+                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, start_batch_id = 1 }
                 );
 
             modelBuilder.Entity<Major>().HasData(

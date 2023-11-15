@@ -10,15 +10,15 @@ namespace DataAccess.DAO
 
         public List<Semester> GetSemesters()
         {
-            var listSemesters = _cmsDbContext.Semester.Include(x => x.DegreeLevel).Include(x => x.Batch).ToList();
+            var listSemesters = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.Batch.DegreeLevel).ToList();
             return listSemesters;
         }
 
         public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
-                .Include(x => x.DegreeLevel)
-                .Include(x => x.Batch);
+                .Include(x => x.Batch)
+                .Include(x => x.Batch.DegreeLevel);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -35,21 +35,21 @@ namespace DataAccess.DAO
         public List<Semester> GetAllSemestersByMajorId(int id)
         {
             var major = _cmsDbContext.Major.Where(x => x.major_id == id).FirstOrDefault();
-            var listSemester = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.DegreeLevel).Where(x => x.degree_level_id == major.degree_level_id).ToList();
+            var listSemester = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.Batch.DegreeLevel).Where(x => x.Batch.degree_level_id == major.degree_level_id).ToList();
             return listSemester;
         }
 
         public List<Semester> GetSemesterByDegreeLevel(int id)
         {
-            var listSemester = _cmsDbContext.Semester.Where(x => x.degree_level_id == id).ToList();
+            var listSemester = _cmsDbContext.Semester.Where(x => x.Batch.degree_level_id == id).ToList();
             return listSemester;
         }
 
         public int GetTotalSemester(string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
-                .Include(x => x.DegreeLevel)
-                .Include(x => x.Batch);
+                .Include(x => x.Batch)
+                .Include(x => x.Batch.DegreeLevel);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -63,7 +63,7 @@ namespace DataAccess.DAO
 
         public Semester GetSemester(int id)
         {
-            var semester = _cmsDbContext.Semester.Include(x => x.DegreeLevel).Include(x => x.Batch).FirstOrDefault(x => x.semester_id == id);
+            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.Batch.DegreeLevel).FirstOrDefault(x => x.semester_id == id);
             return semester;
         }
 
@@ -74,7 +74,7 @@ namespace DataAccess.DAO
                .Include(x => x.Semester.Batch)
                .FirstOrDefault(x => x.specialization_id == speId);
             var batch_name = specialization.Semester.Batch.batch_name;
-            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == specialization.Major.degree_level_id).ToList();
+            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == specialization.Major.degree_level_id).ToList();
             var listSemester = new List<Semester>();
             foreach(var s in semester)
             {
@@ -90,9 +90,9 @@ namespace DataAccess.DAO
             return listSemester;
         }
 
-        public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int degreeId)
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
         {
-            return (_cmsDbContext.Semester?.Any(x => x.semester_name.ToLower().Equals(name.ToLower().Trim()) && x.school_year == schoolYear && x.semester_id != id && x.degree_level_id == degreeId)).GetValueOrDefault();
+            return (_cmsDbContext.Semester?.Any(x => x.semester_name.ToLower().Equals(name.ToLower().Trim()) && x.school_year == schoolYear && x.semester_id != id)).GetValueOrDefault();
         }
 
         public bool CheckSemesterExsit(int id)
