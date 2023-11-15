@@ -385,7 +385,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_SYLLABUS;
             var jsonData = JsonSerializer.Serialize(sy);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -407,7 +408,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_MATERIALS;
             var jsonData = JsonSerializer.Serialize(me);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -426,7 +428,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_GRADING_STRUTURE;
             var jsonData = JsonSerializer.Serialize(me);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -445,7 +448,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_CLO;
             var jsonData = JsonSerializer.Serialize(sy);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -467,7 +471,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             string apiUrl = API_PORT + API_SCHEDULE;
             var jsonData = JsonSerializer.Serialize(sy);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
             response.EnsureSuccessStatusCode();
@@ -505,8 +510,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.grading_note = r.Note;
                 try
                 {
-                    g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
+                    if(r.Reference != null && r.SessionNo == null)
+                    {
+                        g.assessment_method_id = GetAssessmentMethodByName(r.Reference, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
+                    }
+                    if(r.Reference != null && r.SessionNo != null)
+                    {
+                        g.assessment_method_id = GetAssessmentMethodByName(r.Reference, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
+                    }
+                    if(r.Reference == null && r.SessionNo == null)
+                    {
+                        g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
 
+                    }
                 }
                 catch (Exception)
                 {
