@@ -383,7 +383,17 @@ namespace BusinessObject
                 new PreRequisite { subject_id = 15, pre_subject_id = 17, pre_requisite_type_id = 3 }
                 );
 
+            modelBuilder.Entity<Quiz>().HasData(
+                new Quiz { quiz_id = 1, quiz_name = "Quiz 1", subject_id = 1 },
+                new Quiz { quiz_id = 2, quiz_name = "Quiz 2", subject_id = 2 },
+                new Quiz { quiz_id = 3, quiz_name = "Quiz 3", subject_id = 1 }
+                );
 
+            modelBuilder.Entity<Question>().HasData(
+                new Question { question_id = 1, question_type = "Single Choice", question_name = "Lợi ích khi sử dụng View?", answers_1 = "Che dấu và bảo mật dữ liệu", answers_2 = "Hiển thị dữ liệu một cách tùy biến", answers_3 = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_4 = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 1 },
+                new Question { question_id = 2, question_type = "Single Choice", question_name = "Qui đinh đặt tên cột trong View?", answers_1 = "Cột chứa giá trị được tính toán từ nhiều cột khác phải được đặt tên", answers_2 = "Cột chứa giá trị được tính toán từ nhiều cột khác không được đặt tên", answers_3 = "Thực thi nhanh hơn các câu lệnh truy vấn do đã được biên dịch sẵn", answers_4 = "Tất cả đáp án đều đúng", correct_answer = "D", quiz_id = 2},
+                new Question { question_id = 3, question_type = "Single Choice", question_name = "VIEW có thể cập nhật (updatable view) cho phép?", answers_1 = "Xem dữ liệu và cập nhật dữ liệu trong các bảng cơ sở qua View", answers_2 = "Xem dữ liệu", answers_3 = "cập nhật dữ liệu trong các bảng cơ sở qua View", answers_4 = "Tất cả đáp án đều sai", correct_answer = "A", quiz_id = 1 }
+                );
         }
     }
 }
