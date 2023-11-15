@@ -8,9 +8,7 @@ namespace DataAccess.Models.DTO.response
 {
     public class QuizDTOResponse
     {
-        public string quiz_name { get; set; }
-        public int number_question_single_choice { get; set; }
-        public int number_question_mutiple_choice { get; set; }
+
     }
 
     public class MajorSubjectDTOResponse

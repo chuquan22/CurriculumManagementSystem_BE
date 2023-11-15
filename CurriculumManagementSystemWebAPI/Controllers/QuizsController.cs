@@ -12,9 +12,6 @@ using Repositories.CLOS;
 using Repositories.Major;
 using Repositories.Questions;
 using Repositories.Quizs;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -28,20 +25,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext cMSDbContext = new CMSDbContext();
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
-        private readonly HttpClient client = null;
-        public static string API_PORT = "https://localhost:8080";
-        public static string API_Quiz = "/api/Quizs/CreateQuiz";
-        public static string API_Question = "/api/Quizs/CreateQuestion";
 
         public QuizsController(IMapper mapper)
         {
             _mapper = mapper;
             _quizRepository = new QuizRepository();
             _questionRepository = new QuestionRepository();
-            client = new HttpClient();
-
-            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
         [HttpGet("GetAllQuiz")]
@@ -59,8 +48,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Ok(new BaseResponse(false, "Subject no contain Quiz"));
             }
-            var listQuizResponse = _mapper.Map<List<QuizDTOResponse>>(listQuiz);
-            return Ok(new BaseResponse(false, "List Quiz", listQuizResponse));
+            return Ok(new BaseResponse(false, "List Quiz", listQuiz));
         }
 
         [HttpGet("GetQuizById/{Id}")]
@@ -203,28 +191,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         };
 
                         //Create Quiz
-                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = 1 };
-                        var quizId = 0;
-                        try
-                        {
-                            quizId = await CreateQuizsAPI(quiz);
-                        }
-                        catch (Exception ex)
-                        {
-                            return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
-                        }
+                        var quiz = new Quiz { quiz_name = sheetName, subject_id = 1 };
+                        cMSDbContext.Quiz.Add(quiz);
+                        cMSDbContext.SaveChanges();
 
                         //get Question In file Excel
-                        var listQuestion = GetListQuestionInQuiz(Listquestion, quizId);
+                        var listQuestion = GetListQuestionInQuiz(Listquestion, quiz.quiz_id);
                         // get a question in list question
                         foreach (var question in listQuestion)
                         {
-                            var questionDTO = _mapper.Map<QuestionDTORequest>(question);
-                            CreateQuestionsAPI(questionDTO);
+                            //cMSDbContext.Question.Add(question);
+                            //cMSDbContext.SaveChanges();
                             listCurriSubject.Add(question);
                         }
 
-
+                        
                     }
                     return Ok(listCurriSubject);
                 }
@@ -233,49 +214,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
             }
-        }
-
-        private async Task<int> CreateQuizsAPI(QuizDTORequest quiz)
-        {
-            string apiUrl = API_PORT + API_Quiz;
-            var jsonData = JsonSerializer.Serialize(quiz);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int quizId = responseObject.GetProperty("data").GetProperty("quiz_id").GetInt32();
-
-            return quizId;
-        }
-
-        private async Task<Question> CreateQuestionsAPI(QuestionDTORequest question)
-        {
-            string apiUrl = API_PORT + API_Question;
-            var jsonData = JsonSerializer.Serialize(question);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            Question rs = JsonSerializer.Deserialize<Question>(strData, options);
-            return rs;
         }
 
         [HttpPost("ImportQuizXML")]
