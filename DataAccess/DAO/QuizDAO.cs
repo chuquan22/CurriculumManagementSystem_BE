@@ -21,7 +21,11 @@ namespace DataAccess.DAO
 
         public List<Quiz> GetQUizBySubjectId(int subjectId)
         {
-            var listQuiz = _context.Quiz.Include(x => x.Questions).Where(x => x.subject_id == subjectId).ToList();
+            var listQuiz = _context.Quiz
+                .Include(x => x.Questions)
+                .Where(x => x.subject_id == subjectId)
+                .OrderBy(x => x.quiz_name)
+                .ToList();
             return listQuiz;
         }
 
