@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
         public Quiz GetQuizById(int id)
         {
-            var quiz = _context.Quiz.FirstOrDefault(x => x.quiz_id == id);
+            var quiz = _context.Quiz.Include(x => x.Subject).FirstOrDefault(x => x.quiz_id == id);
             return quiz;
         }
 

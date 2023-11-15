@@ -21,6 +21,8 @@ using SuperXML;
 using System.Numerics;
 using DataAccess.Models.DTO.XML;
 using System.Linq;
+using System.IO.Compression;
+using NuGet.Packaging;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -180,6 +182,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
+
         [HttpPost("ImportQuizExcel")]
         public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz)
         {
@@ -192,7 +195,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 List<object> listCurriSubject = new List<object>();
 
                 var filePath = Path.GetTempFileName();
-                var curriculum_id = 0;
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileQuiz.CopyToAsync(stream);
@@ -212,6 +214,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         try
                         {
                             quizId = await CreateQuizsAPI(quiz);
+                            listCurriSubject.Add(quizId);
                         }
                         catch (Exception ex)
                         {
@@ -225,12 +228,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             var questionDTO = _mapper.Map<QuestionDTORequest>(question);
                             CreateQuestionsAPI(questionDTO);
-                            listCurriSubject.Add(question);
                         }
 
 
                     }
-                    return Ok(listCurriSubject);
+                    return Ok(new BaseResponse(false, "Success", listCurriSubject));
                 }
             }
             catch (Exception ex)
@@ -285,14 +287,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ExportQuizXML/{quizId}")]
         public IActionResult ExportQuizXML(int quizId)
         {
-            var template = "D:/1699949862__0__qti_77351.xml";
+            var templateQTI = "./TemplateQuizXML/Template__Quiz__qti.xml";
+            var templateQPL = "./TemplateQuizXML/Template__Quiz__qpl.xml";
+            var folder = "./TemplateQuizXML";
+
+            // change file xml to DTDProcessing (fix error DTD prohibited)
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.DtdProcessing = DtdProcessing.Parse;
+            XmlReader reader = XmlReader.Create(templateQTI, settings);
+            XmlReader reader2 = XmlReader.Create(templateQPL, settings);
+
             // var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
             var quiz = _quizRepository.GetQuizById(quizId);
+            var subject = quiz.Subject;
             
             var listQuestion = _questionRepository.GetQuestionByQuiz(quiz.quiz_id);
             var listQuizExport = new List<Quiz_qti_xml>();
             
-
+            // mapping question to quizExport
             foreach (var question in listQuestion)
             {
                 var quizExport = new Quiz_qti_xml { answers = new List<string>(), corrects = new List<int>()};
@@ -322,19 +334,47 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 listQuizExport.Add(quizExport);
 
             }
+            // complier set key value in file xml template
             var compiler = new Compiler()
                 .AddKey("questions", listQuizExport)
-                .AddKey("quiz", quiz);
+                .AddKey("quiz", quiz)
+                .AddKey("subject", subject);
 
-            var compiled = compiler.CompileXml(template);
+            // complie mapper in file template
+            var compiledQTI = compiler.CompileXml(reader);
 
-            var xmlBytes = Encoding.UTF8.GetBytes(compiled);
+            var compiledQPL = compiler.CompileXml(reader2);
 
             // Set the file name
-            var fileName = $"{quiz.quiz_name}.xml";
+            var zipFileName = $"{subject.subject_code}__{quiz.quiz_name}__qpl_1.zip";
+            var zipFilePath = Path.Combine(folder, zipFileName);
 
-            // Return the XML file
-            return File(xmlBytes, "application/xml", fileName);
+            // Create a new zip file
+            using (var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create))
+            {
+                var objectsEntry = zipArchive.CreateEntry("objects/");
+
+                var qtiEntry = zipArchive.CreateEntry($"{subject.subject_code}__{quiz.quiz_name}__qti_1.xml");
+                using (var qtiStream = qtiEntry.Open())
+                using (var writer = new StreamWriter(qtiStream))
+                {
+                    writer.Write(compiledQTI);
+                }
+
+                var qplEntry = zipArchive.CreateEntry($"{subject.subject_code}__{quiz.quiz_name}_qpl_1.xml");
+                using (var qplStream = qplEntry.Open())
+                using (var writer = new StreamWriter(qplStream))
+                {
+                    writer.Write(compiledQPL);
+                }
+            }
+            // Return the zip file to the client
+            byte[] fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
+            // Delete the zip file after sending
+            System.IO.File.Delete(zipFilePath);
+
+            return File(fileBytes, "application/zip", zipFileName);
+
         }
 
         private List<int> GetListCorrectAnswer(List<string> answers, string correct_answer)
