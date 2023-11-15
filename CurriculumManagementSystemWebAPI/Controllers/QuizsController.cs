@@ -37,6 +37,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly CMSDbContext cMSDbContext = new CMSDbContext();
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
+        private IMajorRepository _majorRepository;
+
         private readonly HttpClient client = null;
         public static string API_PORT = "https://localhost:8080";
         public static string API_Quiz = "/api/Quizs/CreateQuiz";
@@ -47,6 +49,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             _quizRepository = new QuizRepository();
             _questionRepository = new QuestionRepository();
+            _majorRepository = new MajorRepository();
             client = new HttpClient();
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -80,7 +83,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Ok(new BaseResponse(true, "Not Found Quiz"));
             }
-            return Ok(new BaseResponse(false, "Quiz", quiz));
+            var quizResponse = _mapper.Map<QuizResponse>(quiz);
+            return Ok(new BaseResponse(false, "Quiz", quizResponse));
         }
 
         [HttpPost("CreateQuiz")]
@@ -117,7 +121,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Ok(new BaseResponse(false, "Not Found Question In Quiz"));
             }
-            return Ok(new BaseResponse(false, "List Question", listQuestion));
+            var listQuestionResponse = _mapper.Map<List<QuestionResponse>>(listQuestion);
+            foreach (var questionResponse in listQuestionResponse)
+            {
+                questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
+            }
+            return Ok(new BaseResponse(false, "List Question", listQuestionResponse));
         }
 
         [HttpGet("GetQuestionById/{Id}")]
@@ -128,6 +137,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Ok(new BaseResponse(true, "Not Found Question"));
             }
+
             return Ok(new BaseResponse(false, "Question", question));
         }
 

@@ -16,15 +16,23 @@ namespace DataAccess.DAO
         public readonly CMSDbContext CMSDbContext = new CMSDbContext();
 
 
-        public List<Subject> GetAllSubjects()
+        public List<Subject> GetAllSubjects(string txtSearch)
         {
-            var list = CMSDbContext.Subject
-                .Include(x => x.AssessmentMethod)
-                .Include(x => x.LearningMethod)
+            IQueryable<Subject> query = CMSDbContext.Subject
+               .Include(x => x.AssessmentMethod.AssessmentType)
+               .Include(x => x.LearningMethod)
+               .Include(x => x.CurriculumSubjects)
+               .Where(x => x.is_active == true);
 
-                .Where(x => x.is_active == true)
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()));
+            }
+
+            var subjectList = query
+                .AsEnumerable()
                 .ToList();
-            return list;
+            return subjectList;
         }
 
         public Subject GetSubjectById(int id)

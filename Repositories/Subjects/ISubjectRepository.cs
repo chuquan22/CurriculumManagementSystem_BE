@@ -11,7 +11,7 @@ namespace Repositories.Subjects
 {
     public interface ISubjectRepository
     {
-        List<Subject> GetAllSubject();
+        List<Subject> GetAllSubject(string txtSearch);
         Subject GetSubjectById(int id);
         Subject GetSubjectBySyllabus(int syllabus_id);
         List<Subject> GetSubjectByName(string name);

@@ -316,6 +316,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
+                var curriculum = new Curriculum();
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileCurriculum.CopyToAsync(stream);
@@ -336,9 +337,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             try
                             {
                                 curriculum_id = await CreateCurriculumsAPI(curriculumExcel);
+                                _curriculumRepository.GetCurriculumById(curriculum_id);
                             }
                             catch (Exception ex)
                             {
+                                _curriculumRepository.RemoveCurriculum(curriculum);
                                 return BadRequest(new BaseResponse(true, "Sheet Curriculum cancelled due to errors"));
                             }
 
@@ -364,7 +367,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     }
                                     catch (Exception ex)
                                     {
-                                        var curriculum = _curriculumRepository.GetCurriculumById(curriculum_id);
+                                        _curriculumRepository.RemoveCurriculum(curriculum);
                                         return BadRequest(new BaseResponse(true, "Sheet PLO cancelled due to errors"));
                                     }
                                 }
@@ -448,21 +451,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
                                             if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                             {
+                                                _curriculumRepository.RemoveCurriculum(curriculum);
                                                 return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
                                             }
                                         }
                                     }
                                 }
                             }
-
-
-
                             try
                             {
                                 await CreateCurriculumsAPI(listCurriSubject);
                             }
                             catch (Exception ex)
                             {
+                                _curriculumRepository.RemoveCurriculum(curriculum);
                                 return BadRequest(new BaseResponse(true, "Sheet Curriculum Subject due to errors"));
                             }
 
