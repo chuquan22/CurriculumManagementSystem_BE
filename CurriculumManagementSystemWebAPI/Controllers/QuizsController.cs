@@ -282,21 +282,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 quizExport.question_name_title = GetTitleByQuestionName(question.question_name);
                 quizExport.question_type = question.question_type;
 
-                if (question.answers_1 != null)
+                if (question.answers_A != null)
                 {
-                    quizExport.answers.Add(question.answers_1.ToString());
+                    quizExport.answers.Add(question.answers_A.ToString());
                 }
-                if (question.answers_2 != null)
+                if (question.answers_B != null)
                 {
-                    quizExport.answers.Add(question.answers_2.ToString());
+                    quizExport.answers.Add(question.answers_B.ToString());
                 }
-                if (question.answers_3 != null)
+                if (question.answers_C != null)
                 {
-                    quizExport.answers.Add(question.answers_3.ToString());
+                    quizExport.answers.Add(question.answers_C.ToString());
                 }
-                if (question.answers_4 != null)
+                if (question.answers_D != null)
                 {
-                    quizExport.answers.Add(question.answers_4.ToString());
+                    quizExport.answers.Add(question.answers_D.ToString());
                 }
 
                 quizExport.corrects = GetListCorrectAnswer(quizExport.answers, question.correct_answer);
@@ -465,20 +465,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                     if (item.ABC.Equals("A"))
                     {
-                        question.answers_1 = item.ANSWER;
+                        question.answers_A = item.ANSWER;
                     }
                     else if (item.ABC.Equals("B"))
                     {
-                        question.answers_2 = item.ANSWER;
+                        question.answers_B = item.ANSWER;
                     }
                     else if (item.ABC.Equals("C"))
                     {
-                        question.answers_3 = item.ANSWER;
+                        question.answers_C = item.ANSWER;
                     }
                     // if final answer
                     else if (item.ABC.Equals("D"))
                     {
-                        question.answers_4 = item.ANSWER;
+                        question.answers_D = item.ANSWER;
                         listQuestions.Add(question);
                         question = new Question();
                     }
