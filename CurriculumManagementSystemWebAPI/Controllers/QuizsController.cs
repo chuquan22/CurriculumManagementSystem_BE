@@ -240,7 +240,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         foreach (var question in listQuestion)
                         {
                             var questionDTO = _mapper.Map<QuestionDTORequest>(question);
-                            CreateQuestionsAPI(questionDTO);
+                            try
+                            {
+                                CreateQuestionsAPI(questionDTO);
+                            }
+                            catch(Exception ex)
+                            {
+                                return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
+                            }
+                            
                         }
 
 
