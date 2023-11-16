@@ -12,9 +12,9 @@ namespace Repositories.Batchs
     {
         private readonly BatchDAO _batchDAO = new BatchDAO();
 
-        public bool CheckBatchDuplicate(string batch_name)
+        public bool CheckBatchDuplicate(string batch_name, int degree_Id)
         {
-            return _batchDAO.CheckBatchDuplicate(batch_name);
+            return _batchDAO.CheckBatchDuplicate(batch_name, degree_Id);
         }
 
         public bool CheckBatchExsit(int id)
@@ -22,9 +22,9 @@ namespace Repositories.Batchs
             return _batchDAO.CheckBatchExsit(id);
         }
 
-        public bool CheckBatchUpdateDuplicate(int id, string batch_name)
+        public bool CheckBatchUpdateDuplicate(int id, string batch_name, int degree_Id)
         {
-            return _batchDAO.CheckBatchUpdateDuplicate(id, batch_name);
+            return _batchDAO.CheckBatchUpdateDuplicate(id, batch_name, degree_Id);
         }
 
         public string CreateBatch(Batch batch)

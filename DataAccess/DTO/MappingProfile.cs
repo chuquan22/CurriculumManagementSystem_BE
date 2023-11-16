@@ -327,6 +327,14 @@ namespace DataAccess.Models.DTO
             CreateMap<Question, QuestionResponse>()
                 .ForMember(dest => dest.subject_id, opt => opt.MapFrom(src => src.Quiz.subject_id))
                 .ReverseMap();
+            
+            CreateMap<Batch, CurriculumBatchDTOResponse>()
+                .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+                .ReverseMap();
+
+            CreateMap<CurriculumBatchRequest, Batch>().ReverseMap();
+
+
         }
     }
 }

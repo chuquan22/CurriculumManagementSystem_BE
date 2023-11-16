@@ -38,10 +38,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             foreach (var batch in listBatch)
             {
-                var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-                curriBacthDTO.batch_id = batch.batch_id;
-                curriBacthDTO.batch_name = batch.batch_name;
-                curriBacthDTO.batch_order = batch.batch_order;
+                var curriBacthDTO =  _mapper.Map<CurriculumBatchDTOResponse>(batch);
+               
                 var curriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriBatch.Where(x => x.batch_id == batch.batch_id).Select(x => x.Curriculum).ToList());
                 curriBacthDTO.curriculum = curriResponse;
 
@@ -66,10 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var batch in listBatch)
             {
                 var listcurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batch.batch_id);
-                var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-                curriBacthDTO.batch_id = batch.batch_id;
-                curriBacthDTO.batch_name = batch.batch_name;
-                curriBacthDTO.batch_order = batch.batch_order;
+                var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
                 var curriResponse = _mapper.Map<List<CurriculumResponse>>(listcurriBatch.Select(x => x.Curriculum).ToList());
                 curriBacthDTO.curriculum = curriResponse;
 
@@ -98,14 +93,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
         {
-            var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-
             var batch = _batchRepository.GetBatchById(batchId);
+            var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
+           
             var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
-
-            curriBacthDTO.batch_id = batch.batch_id;
-            curriBacthDTO.batch_name = batch.batch_name;
-            curriBacthDTO.batch_order = batch.batch_order;
+            
             foreach (var curriBatch in listCurriBatch)
             {
                 var curriResponse = _mapper.Map<CurriculumResponse>(curriBatch.Curriculum);
@@ -118,14 +110,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculumBatch")]
         public ActionResult CreateCurriculumBatch([FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
-            var batch = new Batch
-            {
-                batch_name = curriculumBatchRequest.batch_name,
-                batch_order = curriculumBatchRequest.batch_order,
-                degree_level_id = curriculumBatchRequest.degree_level_id
-            };
+            var batch = _mapper.Map<Batch>(curriculumBatchRequest);
 
-            if (_batchRepository.CheckBatchDuplicate(batch.batch_name))
+            if (_batchRepository.CheckBatchDuplicate(batch.batch_name, batch.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
             }
@@ -153,13 +140,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
             var batch = _batchRepository.GetBatchById(id);
-            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name))
+            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name, batch.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
             }
-            batch.batch_name = curriculumBatchRequest.batch_name;
-            batch.batch_order = curriculumBatchRequest.batch_order;
-            batch.degree_level_id = curriculumBatchRequest.degree_level_id;
+
+            _mapper.Map(curriculumBatchRequest, batch);
 
             string updateResult = _batchRepository.UpdateBatch(batch);
             if (updateResult != Result.updateSuccessfull.ToString())
