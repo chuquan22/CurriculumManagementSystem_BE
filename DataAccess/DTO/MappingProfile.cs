@@ -325,7 +325,6 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
 
             CreateMap<Question, QuestionResponse>()
-                .ForMember(dest => dest.subject_id, opt => opt.MapFrom(src => src.Quiz.subject_id))
                 .ReverseMap();
         }
     }
