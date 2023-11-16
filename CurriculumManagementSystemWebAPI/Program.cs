@@ -16,24 +16,17 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    //.AddJwtBearer(option =>
-    //{
-    //    option.TokenValidationParameters = new TokenValidationParameters
-    //    {
-    //        ValidateAudience = true,
-    //        ValidateIssuer = true,
-    //        ValidateLifetime = true,
-    //        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-    //        ValidAudience = builder.Configuration["Jwt:Audience"],
-    //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    //    };
-    //})
-    .AddCookie()
-    .AddGoogle(options =>
+    .AddJwtBearer(option =>
     {
-        options.ClientId = configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-        options.CallbackPath = configuration["Authentication:Google:CallBackUrl"];
+        option.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
     });
 
 builder.Services.AddDistributedMemoryCache();
@@ -84,8 +77,7 @@ else
     app.UseForwardedHeaders();
 }
 app.UseSwagger();
-    app.UseSwaggerUI();
-
+app.UseSwaggerUI();
 app.UseCors(builder =>
 {
     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();

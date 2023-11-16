@@ -26,6 +26,9 @@ using NuGet.Packaging;
 using Microsoft.AspNetCore.Routing.Template;
 using System.IO;
 using OfficeOpenXml;
+using System.Data;
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -91,6 +94,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult CreateQuiz([FromBody] QuizDTORequest quizDTO)
         {
             var quiz = _mapper.Map<Quiz>(quizDTO);
+
+            if(_quizRepository.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id))
+            {
+                return BadRequest(new BaseResponse(true, $"{quiz.quiz_name} is Duplicate in Subject"));
+            }
+
             string createResult = _quizRepository.CreateQUiz(quiz);
             if (createResult != Result.createSuccessfull.ToString())
             {
@@ -117,16 +126,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult GetListQuestionByQuiz(int quizId)
         {
             var listQuestion = _questionRepository.GetQuestionByQuiz(quizId);
+            var quiz = _quizRepository.GetQuizById(quizId);
+            var questionResponse = new QuestionDTOResponse();
+            questionResponse.subject_id = quiz.subject_id;
+            questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
             if (listQuestion.Count == 0)
             {
-                return Ok(new BaseResponse(false, "Not Found Question In Quiz"));
+                return Ok(new BaseResponse(false, "Not Found Question In Quiz", questionResponse));
             }
             var listQuestionResponse = _mapper.Map<List<QuestionResponse>>(listQuestion);
-            foreach (var questionResponse in listQuestionResponse)
-            {
-                questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
-            }
-            return Ok(new BaseResponse(false, "List Question", listQuestionResponse));
+            questionResponse.questionResponses = listQuestionResponse;
+            return Ok(new BaseResponse(false, "List Question", questionResponse));
         }
 
         [HttpGet("GetQuestionById/{Id}")]
@@ -194,10 +204,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Question Success", question));
         }
 
+        [HttpPost("ImportQuizExcel/{subjectId}")]
+        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz, int subjectId)
 
-
-        [HttpPost("ImportQuizExcel")]
-        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz)
         {
             var config = new OpenXmlConfiguration()
             {
@@ -205,10 +214,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             };
             try
             {
-                List<object> listCurriSubject = new List<object>();
+                List<Quiz> listQuiz = new List<Quiz>();
 
                 var filePath = Path.GetTempFileName();
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(filePath, FileMode.Open))
                 {
                     await fileQuiz.CopyToAsync(stream);
                     //Get SheetName
@@ -222,12 +231,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         };
 
                         //Create Quiz
-                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = 1 };
+
+                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = subjectId };
+
                         var quizId = 0;
                         try
                         {
                             quizId = await CreateQuizsAPI(quiz);
-                            listCurriSubject.Add(quizId);
+                            listQuiz.Add(new Quiz { quiz_id = quizId, quiz_name = quiz.quiz_name, subject_id = quiz.subject_id});
                         }
                         catch (Exception ex)
                         {
@@ -240,12 +251,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         foreach (var question in listQuestion)
                         {
                             var questionDTO = _mapper.Map<QuestionDTORequest>(question);
-                            CreateQuestionsAPI(questionDTO);
+                            try
+                            {
+                                CreateQuestionsAPI(questionDTO);
+                            }
+                            catch(Exception ex)
+                            {
+                                return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
+                            }
+                            
                         }
-
-
                     }
-                    return Ok(new BaseResponse(false, "Success", listCurriSubject));
+                    return Ok(new BaseResponse(false, "Success", listQuiz));
                 }
             }
             catch (Exception ex)
@@ -347,17 +364,96 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         }
 
-        //[HttpPost("ExportQuizExcel/{subjectId}")]
-        //public IActionResult ExportQuizExcel(int subjectId)
-        //{
-        //    var quizTemplate = "QuizTemplate.xlsx";
-            
-        //    var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
-           
+        [HttpPost("ExportQuizExcel/{subjectId}")]
+        public IActionResult ExportQuizExcel(int subjectId)
+        {
+            var quizTemplate = "QuizTemplate.xlsx";
+            // Get List Quiz
+            var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
 
-        //    //return Ok(fileContents);
-        //   // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Quiz.xlsx");
-        //}
+            using (ExcelPackage excelPackage = new ExcelPackage())
+            {
+                int tableCount = 1; // Biến đếm bảng
+
+                foreach (Quiz quiz in listQuiz)
+                {
+                    ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add(quiz.quiz_name);
+                    worksheet.Cells[1, 1].Value = "NO";
+                    worksheet.Cells[1, 2].Value = "QUESTION";
+                    worksheet.Cells[1, 3].Value = "ABC";
+                    worksheet.Cells[1, 4].Value = "ANSWER";
+                    worksheet.Cells[1, 5].Value = "CORRECT";
+                    using (var range = worksheet.Cells["A1:E1"])
+                    {
+                        range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
+                        range.Style.Font.Bold = true;
+                    }
+                    // Set width for columns A, B, C, D, and E
+                    worksheet.Column(1).Width = 5; // Adjust the value as needed
+                    worksheet.Column(2).Width = 70; // Adjust the value as needed
+                    worksheet.Column(3).Width = 5; // Adjust the value as needed
+                    worksheet.Column(4).Width = 70; // Adjust the value as needed
+                    worksheet.Column(5).Width = 5; // Adjust the value as needed
+
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        worksheet.Cells[1, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    }
+                    int row = 2;
+                    int index = 1;
+                    int no = 1;
+                    foreach (Question question in quiz.Questions)
+                    {
+                        worksheet.Cells[row, 1].Value = no;
+                        worksheet.Cells[row, 2].Value = question.question_name;
+                        worksheet.Cells[row, 3].Value = "A";
+                        worksheet.Cells[row + 1, 3].Value = "B";
+                        worksheet.Cells[row + 2, 3].Value = "C";
+                        worksheet.Cells[row + 3, 3].Value = "D";
+
+                        worksheet.Cells[row, 4].Value = question.answers_A;
+                        worksheet.Cells[row + 1, 4].Value = question.answers_B;
+                        worksheet.Cells[row + 2, 4].Value = question.answers_C;
+                        worksheet.Cells[row + 3, 4].Value = question.answers_D;
+
+                        string correctAnswer = question.correct_answer;
+                       
+                         worksheet.Cells[row + 3, 5].Value = correctAnswer;
+                       
+                        // Thêm đường viền cho mỗi dòng dữ liệu
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            for (int j = 0; j < 4; j++)
+                            {
+                                worksheet.Cells[row + j, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                            }
+                        }
+                        // Merge and center cells in column A for each question
+                        worksheet.Cells[row, 1, row + 3, 1].Merge = true;
+                        worksheet.Cells[row, 1, row + 3, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                        // Merge and center cells in column B for each question
+                        worksheet.Cells[row, 2, row + 3, 2].Merge = true;
+                        worksheet.Cells[row, 2, row + 3, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                        index += 4; // Mỗi câu hỏi chiếm 4 hàng
+                        row += 4;
+                        no = no + 1;
+                    }
+
+
+                }
+
+                // Lưu tệp Excel
+                FileInfo excelFile = new FileInfo("QuizExported.xlsx");
+                excelPackage.SaveAs(excelFile);
+            }
+
+            byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
+        }
+
 
         private async Task<int> CreateQuizsAPI(QuizDTORequest quiz)
         {
@@ -365,8 +461,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(quiz);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -391,8 +487,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(question);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 

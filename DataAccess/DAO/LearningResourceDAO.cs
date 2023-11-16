@@ -50,6 +50,11 @@ namespace DataAccess.DAO
             return listLearningResource.Count;
         }
 
+        public LearningResource GetLearningResourceByName(string name)
+        {
+            return _cmsDbContext.LearningResource.Where(r => r.learning_resource_type.ToLower().Trim().Equals(name.ToLower().Trim())).FirstOrDefault();
+        }
+
         public bool CheckLearningResourceDuplicate(int id, string type)
         {
             return (_cmsDbContext.LearningResource?.Any(x => x.learning_resource_type.Equals(type) && x.learning_resource_id != id)).GetValueOrDefault();

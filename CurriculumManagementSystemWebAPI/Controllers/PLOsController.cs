@@ -11,9 +11,11 @@ using Repositories.PLOS;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Manager, Dispatcher")]
     [Route("api/[controller]")]
     [ApiController]
     public class PLOsController : ControllerBase

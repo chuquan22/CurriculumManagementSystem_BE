@@ -1,4 +1,5 @@
 ﻿using BusinessObject;
+using DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -88,7 +89,16 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return oldMate;
         }
-
+        public string DeleteMaterialBySyllabusId(int syllabus_id)
+        {
+            var oldMate = _context.Material.Where(a => a.syllabus_id == syllabus_id).ToList();
+            foreach (var item in oldMate)
+            {
+                _context.Material.Remove(item);
+            }
+            _context.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
+        }
         public Material GetMaterialById(int id)
         {
             var oldMate = _context.Material

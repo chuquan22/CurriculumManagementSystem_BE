@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -88,7 +89,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var semesterResponse = _mapper.Map<List<SemesterResponse>>(semester);
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
@@ -108,7 +109,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", semesterRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateSemester/{id}")]
         public ActionResult UpdateSemester(int id,[FromBody] SemesterRequest semesterRequest)
         {
@@ -133,7 +134,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Success!", semesterRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpDelete("DeleteSemester/{id}")]
         public ActionResult DeleteSemester(int id)
         {

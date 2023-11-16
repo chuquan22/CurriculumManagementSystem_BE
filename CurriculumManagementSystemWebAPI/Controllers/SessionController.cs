@@ -2,6 +2,7 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ClassSessionTypes;
@@ -11,6 +12,8 @@ using Repositories.SessionCLOs;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [ApiController]
     public class SessionController : ControllerBase
     {
@@ -110,6 +113,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 foreach (var item in request)
                 {
+                    if(item.remote_learning < 0 || item.ass_defense < 0 || item.eos_exam < 0 ||  item.video_learning < 0 || item.IVQ < 0 || item.online_lab < 0 || item.online_lab < 0 || item.assigment < 0)
+                    {
+                        return BadRequest(new BaseResponse(true, "Value of time allocation musts > 0.", null));
+                    }
                     Session rs = _mapper.Map<Session>(item);
 
                     //   rs = repo.GetSession(syllabus_id);

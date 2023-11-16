@@ -32,10 +32,13 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using Repositories.CurriculumBatchs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
@@ -342,7 +345,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             catch (Exception ex)
                             {
                                 _curriculumRepository.RemoveCurriculum(curriculum);
-                                return BadRequest(new BaseResponse(true, "Sheet Curriculum cancelled due to errors"));
+                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum!"));
                             }
 
 
@@ -368,7 +371,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     catch (Exception ex)
                                     {
                                         _curriculumRepository.RemoveCurriculum(curriculum);
-                                        return BadRequest(new BaseResponse(true, "Sheet PLO cancelled due to errors"));
+                                        return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO!"));
                                     }
                                 }
 
@@ -452,7 +455,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                             {
                                                 _curriculumRepository.RemoveCurriculum(curriculum);
-                                                return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
+                                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
                                             }
                                         }
                                     }
@@ -465,14 +468,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             catch (Exception ex)
                             {
                                 _curriculumRepository.RemoveCurriculum(curriculum);
-                                return BadRequest(new BaseResponse(true, "Sheet Curriculum Subject due to errors"));
+                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum Subject and PLO Mapping!"));
                             }
 
 
 
                         }
                     }
-                    var list = listCurriSubject;
                     return Ok(new BaseResponse(false, "Import Success", curriculum_id));
                 }
             }

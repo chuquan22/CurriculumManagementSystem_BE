@@ -21,7 +21,6 @@ namespace DataAccess.DAO
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
                                    .Include(s => s.DegreeLevel)
-                                   .Where(s => s.syllabus_status == true)
                                    .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -41,6 +40,20 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string DeleteSyllabus(int syllabusId)
+        {
+            using (var context = new CMSDbContext())
+            {
+                var oldMate = context.Syllabus.Where(a => a.syllabus_id == syllabusId).ToList();
+                foreach (var item in oldMate)
+                {
+                    context.Syllabus.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            return Result.deleteSuccessfull.ToString();
+        }
+
         public Syllabus CreateSyllabus(Syllabus rs)
         {
             using (var context = new CMSDbContext())
@@ -50,6 +63,23 @@ namespace DataAccess.DAO
                 {
                     rs.syllabus_approved = true;
                 }
+                if(rs.scoring_scale == null)
+                {
+                    rs.scoring_scale = 5;
+                }
+                if(rs.min_GPA_to_pass == null)
+                {
+                    rs.scoring_scale = 10;
+                }
+                if(rs.scoring_scale < 0 && rs.scoring_scale >= 10)
+                {
+                    throw new Exception("Scoring scale must be > 0 and <= 10.");
+                }
+                if (rs.min_GPA_to_pass < 0 && rs.min_GPA_to_pass >= 10)
+                {
+                    throw new Exception("Min GPA to pass must be > 0 and <= 10.");
+                }
+                
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }
@@ -77,7 +107,7 @@ namespace DataAccess.DAO
             {
                 var query = context.Syllabus.Include(s => s.Subject)
                                             .Include(s => s.DegreeLevel)
-                                            .Where(s => s.syllabus_status == true);
+                                            .Where(s => s.syllabus_status == true || s.syllabus_status == false);
 
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -90,8 +120,8 @@ namespace DataAccess.DAO
                 {
                     query = query.Where(sy => sy.Subject.subject_code.Contains(subjectCode));
                 }
-
-                return query.Count();
+                var total = query.Count();
+                return total;
             }
         }
 
@@ -122,14 +152,18 @@ namespace DataAccess.DAO
                                     .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
-                if(rs.syllabus_status == true)
+
+                var listSyllabusFalse = context.Syllabus.Where(s => s.subject_id == rs.subject_id && s.syllabus_id != rs.syllabus_id).ToList();
+                foreach (var item in listSyllabusFalse)
                 {
-                    rs.syllabus_status = false;
-                    context.Syllabus.Update(rs);
-                    context.SaveChanges();
-                    return true;
+                    item.syllabus_status = false;
+                    context.Syllabus.Update(item);
                 }
-                
+                rs.syllabus_status = true;
+                context.Syllabus.Update(rs);
+                context.SaveChanges();
+                return true;
+
             }
             return false;
         }
@@ -200,7 +234,6 @@ namespace DataAccess.DAO
                         oldRs.syllabus_approved = false;
 
                     }
-
                     context.Syllabus.Update(oldRs);
                     context.SaveChanges();
                 }

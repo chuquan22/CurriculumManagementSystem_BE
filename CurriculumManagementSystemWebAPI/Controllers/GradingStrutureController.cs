@@ -2,6 +2,7 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.GradingCLOs;
 using Repositories.GradingStruture;
@@ -9,6 +10,7 @@ using Repositories.GradingStruture;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class GradingStrutureController : ControllerBase
     {
@@ -60,12 +62,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             if (gra == null)
             {
-                return BadRequest("Invalid request. 'gra' is null.");
+                return BadRequest(new BaseResponse(true, "Invalid request. 'gra' is null.", null));
             }
 
             if (gra.gradingStruture == null || gra.gradingCLORequest == null)
             {
-                return BadRequest("Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.");
+                return BadRequest(new BaseResponse(true,"Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.",null));
             }
 
             try
@@ -95,7 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred: " + ex.Message);
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
 

@@ -17,5 +17,7 @@ namespace Repositories.Materials
 
         public BusinessObject.Material GetMaterialById(int id);
 
+        public string DeleteMaterialBySyllabusId(int syllabus_id);
+
     }
 }

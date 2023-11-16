@@ -38,10 +38,15 @@ namespace DataAccess.Models.DTO.response
         public string subject_name { get; set; }
     }
 
-    public class QuestionResponse
+    public class QuestionDTOResponse
     {
         public int major_id { get; set; }
         public int subject_id { get; set; }
+        public List<QuestionResponse> questionResponses { get; set; }
+    }
+
+    public class QuestionResponse
+    {
         public int question_id { get; set; }
         public string question_name { get; set; }
         public string question_type { get; set; }
