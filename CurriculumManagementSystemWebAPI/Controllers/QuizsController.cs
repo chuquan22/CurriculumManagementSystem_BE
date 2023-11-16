@@ -95,11 +95,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var quiz = _mapper.Map<Quiz>(quizDTO);
 
-            string createResult = _quizRepository.CreateQUiz(quiz);
             if(_quizRepository.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id))
             {
                 return BadRequest(new BaseResponse(true, $"{quiz.quiz_name} is Duplicate in Subject"));
             }
+
+            string createResult = _quizRepository.CreateQUiz(quiz);
             if (createResult != Result.createSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, createResult));
@@ -205,9 +206,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
 
-        [HttpPost("ImportQuizExcel")]
-        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz, int subject_id)
-
+        [HttpPost("ImportQuizExcel/{subjectId}")]
+        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz, int subjectId)
         {
             var config = new OpenXmlConfiguration()
             {
@@ -215,7 +215,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             };
             try
             {
-                List<object> listCurriSubject = new List<object>();
+                List<Quiz> listQuiz = new List<Quiz>();
 
                 var filePath = Path.GetTempFileName();
                 using (var stream = new FileStream(filePath, FileMode.Open))
@@ -239,7 +239,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         try
                         {
                             quizId = await CreateQuizsAPI(quiz);
-                            listCurriSubject.Add(quizId);
+                            listQuiz.Add(new Quiz { quiz_id = quizId, quiz_name = quiz.quiz_name, subject_id = quiz.subject_id});
                         }
                         catch (Exception ex)
                         {
@@ -262,10 +262,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             
                         }
-
-
                     }
-                    return Ok(new BaseResponse(false, "Success", listCurriSubject));
+                    return Ok(new BaseResponse(false, "Success", listQuiz));
                 }
             }
             catch (Exception ex)
