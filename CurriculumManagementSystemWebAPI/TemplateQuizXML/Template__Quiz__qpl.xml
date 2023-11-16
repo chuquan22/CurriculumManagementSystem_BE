@@ -3,7 +3,7 @@
 <ContentObject Type="Questionpool_Test">
 	<MetaData>
 		<General Structure="Hierarchical">
-			<Identifier Catalog="ILIAS" Entry="il_10000_qpl_10001"/>
+			<Identifier Catalog="ILIAS" Entry="il_10000_qpl_{{quiz_number}}"/>
 			<Title Language="vi">{{subject.subject_code}} - {{quiz.quiz_name}}</Title>
 			<Language Language="vi"/>
 			<Description Language="vi"/>

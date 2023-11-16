@@ -29,6 +29,7 @@ using OfficeOpenXml;
 using System.Data;
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
+using System.Text.RegularExpressions;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -325,6 +326,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var compiler = new Compiler()
                 .AddKey("questions", listQuizExport)
                 .AddKey("quiz", quiz)
+                .AddKey("quiz_number", ExtractNumber(quiz.quiz_name))
                 .AddKey("subject", subject);
 
             // complie mapper in file template
@@ -454,6 +456,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
         }
 
+        private int ExtractNumber(string input)
+        {
+            Match match = Regex.Match(input, @"\d+");
+
+            if (match.Success)
+            {
+                if (int.TryParse(match.Value, out int result))
+                {
+                    return 10000 + result;
+                }
+            }
+
+            return 10000;
+        }
 
         private async Task<int> CreateQuizsAPI(QuizDTORequest quiz)
         {
