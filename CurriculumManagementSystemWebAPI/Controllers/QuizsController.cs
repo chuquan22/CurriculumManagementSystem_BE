@@ -414,7 +414,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         string correctAnswer = question.correct_answer;
                        
-                        worksheet.Cells[row + 3, 5].Value = correctAnswer;
+                         worksheet.Cells[row + 3, 5].Value = correctAnswer;
                        
                         // Thêm đường viền cho mỗi dòng dữ liệu
                         for (int i = 1; i <= 5; i++)
@@ -456,8 +456,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(quiz);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -482,8 +482,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(question);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 

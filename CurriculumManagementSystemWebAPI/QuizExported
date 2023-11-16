@@ -1,5 +1,0 @@
-﻿NO,QUESTION,ABC,ANSWER,CORRECT
-{{$index}},{{question.question_name}},A,{{question.answers_1}},
-,,B,{{question.answers_2}},
-,,C,{{question.answers_3}},
-,,D,{{question.answers_4}},{{question.correct_answer}}
