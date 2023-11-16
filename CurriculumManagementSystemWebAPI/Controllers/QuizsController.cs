@@ -204,10 +204,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Question Success", question));
         }
 
-
-
         [HttpPost("ImportQuizExcel/{subjectId}")]
         public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz, int subjectId)
+
         {
             var config = new OpenXmlConfiguration()
             {
@@ -233,7 +232,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         //Create Quiz
 
-                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = subject_id };
+                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = subjectId };
 
                         var quizId = 0;
                         try
