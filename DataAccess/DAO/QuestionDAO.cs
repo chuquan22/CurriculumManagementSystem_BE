@@ -27,7 +27,7 @@ namespace DataAccess.DAO
 
         public bool CheckQuestionDuplicate(int id, string questionName, int quizId)
         {
-            return (_context.Question?.Any(x => x.quiz_id != id && x.question_name.ToLower().Equals(questionName.ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
+            return (_context.Question?.Any(x => x.question_id != id && x.question_name.ToLower().Equals(questionName.ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
         }
 
 
