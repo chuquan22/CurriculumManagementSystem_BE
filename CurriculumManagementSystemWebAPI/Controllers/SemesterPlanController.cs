@@ -14,7 +14,7 @@ using static Google.Apis.Requests.BatchRequest;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SemesterPlanController : ControllerBase
     {
@@ -94,7 +94,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                var response = _repo.GetSemesterPlanOverViewDetails(semester_id);
+                var response = _repo.DeleteSemesterPlan(semester_id);
                 return Ok(new BaseResponse(false, "Successfully!", response));
             }
             catch (Exception ex)
