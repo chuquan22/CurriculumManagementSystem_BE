@@ -83,7 +83,7 @@ namespace DataAccess.DAO
         public List<SemesterPlanResponse> GetSemesterPlanOverViewDetails(int semester_id)
         {
             var semester_root = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.semester_id == semester_id).FirstOrDefault();
-            int degreeLv = semester_root.degree_level_id;
+            int degreeLv = semester_root.Batch.degree_level_id;
             var listSemesterPlan = _cmsDbContext.SemesterPlan
                .Include(x => x.Curriculum)
                .Include(x => x.Curriculum.Specialization)
@@ -106,7 +106,7 @@ namespace DataAccess.DAO
                     var semester = semesterPlanForCurriculum.Semester.semester_name + " " + semesterPlanForCurriculum.Semester.school_year;
 
                     int order = semester_root.Batch.batch_order - semesterPlanForCurriculum.Curriculum.total_semester;
-                    var validSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > order && x.Batch.batch_order <= semester_root.Batch.batch_order).Where(x => x.degree_level_id == degreeLv).OrderByDescending(x => x.Batch.batch_order).ToList();
+                    var validSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > order && x.Batch.batch_order <= semester_root.Batch.batch_order).Where(x => x.Batch.degree_level_id == degreeLv).OrderByDescending(x => x.Batch.batch_order).ToList();
                     List<SemesterBatchResponse> batchResponses = new List<SemesterBatchResponse>();
                     int i = 1;
                     foreach (var item in validSemester)
