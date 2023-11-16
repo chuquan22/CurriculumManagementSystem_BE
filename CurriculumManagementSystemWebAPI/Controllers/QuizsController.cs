@@ -91,7 +91,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult CreateQuiz([FromBody] QuizDTORequest quizDTO)
         {
             var quiz = _mapper.Map<Quiz>(quizDTO);
+
             string createResult = _quizRepository.CreateQUiz(quiz);
+            if(_quizRepository.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id))
+            {
+                return BadRequest(new BaseResponse(true, $"{quiz.quiz_name} is Duplicate in Subject"));
+            }
             if (createResult != Result.createSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, createResult));
@@ -198,7 +203,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
         [HttpPost("ImportQuizExcel")]
-        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz)
+        public async Task<IActionResult> ImportQuizInExcel(IFormFile fileQuiz, int subjectId)
         {
             var config = new OpenXmlConfiguration()
             {
@@ -209,7 +214,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 List<object> listCurriSubject = new List<object>();
 
                 var filePath = Path.GetTempFileName();
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new FileStream(filePath, FileMode.Open))
                 {
                     await fileQuiz.CopyToAsync(stream);
                     //Get SheetName
@@ -223,7 +228,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         };
 
                         //Create Quiz
-                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = 1 };
+                        var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = subjectId };
                         var quizId = 0;
                         try
                         {

@@ -238,8 +238,7 @@ namespace BusinessObject
              new LearningResource { learning_resource_id = 3, learning_resource_type = "Free e-book", learning_resouce_code = "T03" },
              new LearningResource { learning_resource_id = 4, learning_resource_type = "Officially published", learning_resouce_code = "T04" },
              new LearningResource { learning_resource_id = 5, learning_resource_type = "Self-compiled", learning_resouce_code = "T05" },
-             new LearningResource { learning_resource_id = 6, learning_resource_type = "Udemy course", learning_resouce_code = "T06" },
-             new LearningResource { learning_resource_id = 7, learning_resource_type = "No Textbook", learning_resouce_code = "T07" }
+             new LearningResource { learning_resource_id = 6, learning_resource_type = "Udemy course", learning_resouce_code = "T06" }
               );
 
             modelBuilder.Entity<AssessmentType>().HasData(

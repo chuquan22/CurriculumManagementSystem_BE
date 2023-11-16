@@ -23,6 +23,8 @@ namespace DataAccess.Models.DTO.Report
         public int number_subject_T05 { get; set; }
         public string learning_resource_T06_name { get; set; }
         public int number_subject_T06 { get; set; }
+        public string learning_resource_T07_name { get; set; }
+        public int number_subject_T07 { get; set; }
 
     }
 }
