@@ -117,20 +117,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult GetListQuestionByQuiz(int quizId)
         {
             var listQuestion = _questionRepository.GetQuestionByQuiz(quizId);
+            var quiz = _quizRepository.GetQuizById(quizId);
+            var questionResponse = new QuestionDTOResponse();
+            questionResponse.subject_id = quiz.subject_id;
+            questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
             if (listQuestion.Count == 0)
             {
-                var quiz = _quizRepository.GetQuizById(quizId);
-                var questionResponse = new QuestionResponse();
-                questionResponse.subject_id = quiz.subject_id;
-                questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
                 return Ok(new BaseResponse(false, "Not Found Question In Quiz", questionResponse));
             }
             var listQuestionResponse = _mapper.Map<List<QuestionResponse>>(listQuestion);
-            foreach (var questionResponse in listQuestionResponse)
-            {
-                questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
-            }
-            return Ok(new BaseResponse(false, "List Question", listQuestionResponse));
+            questionResponse.questionResponses = listQuestionResponse;
+            return Ok(new BaseResponse(false, "List Question", questionResponse));
         }
 
         [HttpGet("GetQuestionById/{Id}")]
