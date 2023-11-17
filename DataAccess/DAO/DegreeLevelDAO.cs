@@ -28,9 +28,9 @@ namespace DataAccess.DAO
             return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_english_name.Equals(name)).FirstOrDefault();
         }
 
-        public DegreeLevel GetDegreeLevelByVietnameseName(string name)
+        public DegreeLevel GetDegreeLevelByName(string name)
         {
-            return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_name.Equals(name)).FirstOrDefault();
+            return _cmsDbContext.DegreeLevel.Where(d => d.degree_level_name.Trim().ToLower().Equals(name.Trim().ToLower()) || d.degree_level_english_name.Trim().ToLower().Equals(name.Trim().ToLower())).FirstOrDefault();
 
         }
         public int GetDegreeIdByBatch(int bacthId)

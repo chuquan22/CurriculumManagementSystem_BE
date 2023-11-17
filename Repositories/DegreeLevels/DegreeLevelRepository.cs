@@ -26,9 +26,9 @@ namespace Repositories.DegreeLevels
             return degreeLevelDAO.GetDegreeLevelByID(name);
         }
 
-        public DegreeLevel GetDegreeLevelByVietnameseName(string name)
+        public DegreeLevel GetDegreeLevelByName(string name)
         {
-            return degreeLevelDAO.GetDegreeLevelByVietnameseName(name);
+            return degreeLevelDAO.GetDegreeLevelByName(name);
         }
 
         public int GetDegreeIdByBatch(int bacthId)

@@ -14,7 +14,7 @@ namespace Repositories.DegreeLevels
         DegreeLevel GetDegreeLevelByID(int id);
         DegreeLevel GetDegreeLevelByEnglishName(string name);
 
-        DegreeLevel GetDegreeLevelByVietnameseName(string name);
+        DegreeLevel GetDegreeLevelByName(string name);
         int GetDegreeIdByBatch(int bacthId);
 
     }
