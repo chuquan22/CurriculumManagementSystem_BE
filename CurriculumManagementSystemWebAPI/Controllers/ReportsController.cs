@@ -240,12 +240,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             textBookReport.learning_resource_T06_name = learningResource.learning_resource_type;
                             textBookReport.number_subject_T06 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                         }
-                        else
-                        {
-                            textBookReport.learning_resource_T07_name = "No Syllabus";
-                            textBookReport.number_subject_T07 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
-                        }
+                        
                     }
+                    textBookReport.learning_resource_T07_name = "No Syllabus";
+                    textBookReport.number_subject_T07 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
                     textbook.textBookReports.Add(textBookReport);
                 }
 
@@ -297,9 +295,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     textBookReport.learning_resource_T05_name = learningResource.learning_resource_type;
                     textBookReport.number_subject_T05 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
                 }
+                else if (learningResource.learning_resouce_code.Equals("T06"))
+                {
+                    textBookReport.learning_resource_T06_name = learningResource.learning_resource_type;
+                    textBookReport.number_subject_T06 = listMaterial.Where(x => x.material_purpose.Equals("Textbook") && x.learning_resource_id == learningResource.learning_resource_id).Count();
+                }
             }
-            textBookReport.learning_resource_T06_name = "no syllabus";
-            textBookReport.number_subject_T06 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
+            textBookReport.learning_resource_T07_name = "No Syllabus";
+            textBookReport.number_subject_T07 = _subjectRepository.GetNumberSubjectNoSyllabus(listSubject);
 
             return Ok(new BaseResponse(false, "Text Book Table Report", textBookReport));
         }
