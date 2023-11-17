@@ -14,10 +14,11 @@ namespace DataAccess.DAO
     public class SemesterPlanDAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
+        public string errorSemesterPlan = "";
 
         public List<SemesterPlanDTO> GetSemesterPlan(int semester_id)
         {
-            var Semester = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.Batch.DegreeLevel).Where(x => x.semester_id == semester_id).FirstOrDefault();
+            var Semester = _cmsDbContext.Semester.Where(x => x.semester_id == semester_id).FirstOrDefault();
             int degreeLevel = Semester.Batch.degree_level_id;
             var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
             var ListCurri = _cmsDbContext.CurriculumBatch.Where(x => x.batch_id == Semester.start_batch_id).ToList();
@@ -37,13 +38,24 @@ namespace DataAccess.DAO
                 int specializationId = Curriculum.specialization_id;
                 var validBatchIds = listValidSemester.Select(validSemester => validSemester.Batch.batch_id).ToList();
                 string speName = Curriculum.Specialization.specialization_english_name;
-                var listCurriValid = _cmsDbContext.CurriculumBatch.Include(x => x.Curriculum)
+                var listCurriValid = _cmsDbContext.CurriculumBatch.Include(x => x.Curriculum).ThenInclude(x => x.Specialization)
                     .Where(x => validBatchIds.Contains(x.batch_id))
                     .Where(x => x.Curriculum.specialization_id == specializationId)
                     .OrderByDescending(x => x.Batch.batch_order)
                     .ToList();
                 int termNo = 1;
                 List<SemesterPlan> list = new List<SemesterPlan>();
+                if (listCurriValid.Count != listValidSemester.Count)
+                {
+                    string batchError = "K";
+                    foreach(var errorBatch in listValidSemester.Select(x => x.Batch.batch_name).Except(listCurriValid.Select(x => x.Batch.batch_name)).ToList())
+                    {
+                        batchError = batchError + ", K" + errorBatch;
+                    }
+                        string error = batchError + " currently has no curriculum for " + item.Curriculum.Specialization.specialization_english_name;
+                    throw new Exception(error);
+
+                }
                 foreach (var curri in listCurriValid)
                 {
                     foreach (var batch in listValidSemester)
@@ -57,6 +69,7 @@ namespace DataAccess.DAO
                             list.Add(s);
                             termNo++;
                         }
+
                     }
                 }
                 SemesterPlanDTO sDTO = new SemesterPlanDTO { listSemester = new List<SemesterPlan>() };
@@ -255,7 +268,7 @@ namespace DataAccess.DAO
             return responseList;
         }
 
-       
+
 
         public string CreateSemesterPlan(SemesterPlan semesterPlan)
         {
