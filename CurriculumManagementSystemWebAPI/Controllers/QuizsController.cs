@@ -362,7 +362,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             // Delete the zip file after sending
             System.IO.File.Delete(zipFilePath);
 
-            return File(fileBytes, "application/zip", zipFileName);
+            //return File(fileBytes, "application/zip", zipFileName);
+            return Ok(new BaseResponse(false, "Sucessfully!", fileBytes));
 
         }
 
