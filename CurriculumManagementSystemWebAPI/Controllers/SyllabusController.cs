@@ -388,7 +388,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
         }
-        [HttpDelete("ExportSyllabus/{syllabusId}")]
+        [HttpDelete("DeleteSyllabus/{syllabusId}")]
         public async Task<IActionResult> DeleteSyllabusById(int syllabusId)
         {
             var syllabus = syllabusRepository.GetSyllabusById(syllabusId);
