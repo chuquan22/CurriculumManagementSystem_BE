@@ -73,7 +73,10 @@ namespace DataAccess.Models.DTO
             
 
 
-            CreateMap<Material, MaterialExportExcel>().ReverseMap();
+            CreateMap<Material, MaterialExportExcel>()
+                .ForMember(dest => dest.learning_resource_name, opt => opt.MapFrom(src => src.LearningResource.learning_resource_type))
+
+                .ReverseMap();
 
             //SemesterBatchResponse
             CreateMap<SemesterPlan, SemesterPlanResponse>()
