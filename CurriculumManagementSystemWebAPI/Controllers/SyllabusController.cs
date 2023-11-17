@@ -27,7 +27,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {
@@ -288,7 +288,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = idClo });
                                 }
                                 dataSession.session.syllabus_id = syllabusId;
-                                dataSession.session.class_session_type_id = 1;
                                 try
                                 {
                                     await CreateSchudeleAPI(dataSession);
@@ -388,6 +387,29 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
 
+        }
+        [HttpDelete("ExportSyllabus/{syllabusId}")]
+        public async Task<IActionResult> DeleteSyllabusById(int syllabusId)
+        {
+            var syllabus = syllabusRepository.GetSyllabusById(syllabusId);
+            if(syllabus == null)
+            {
+                return BadRequest(new BaseResponse(true, "Syllabus not exist in system!", null));
+            }
+            try
+            {
+
+                gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllabusId);
+                sessionRepository.DeleteSessionBySyllabusId(syllabusId);
+                cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                syllabusRepository.DeleteSyllabus(syllabusId);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true,"Error: " + ex.Message,null));
+            }
+            return Ok(new BaseResponse(false, "Delete Sucessfully!", null));
         }
 
         private async Task<int> CreateSyllabusAPI(Syllabus sy)
