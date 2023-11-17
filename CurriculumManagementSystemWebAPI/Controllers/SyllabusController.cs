@@ -732,7 +732,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         try
                         {
-                            syllabus.degree_level_id = degreeLevelRepository.GetDegreeLevelByVietnameseName(r.Details).degree_level_id;
+                            syllabus.degree_level_id = degreeLevelRepository.GetDegreeLevelByName(r.Details).degree_level_id;
 
                         }
                         catch (Exception ex)
