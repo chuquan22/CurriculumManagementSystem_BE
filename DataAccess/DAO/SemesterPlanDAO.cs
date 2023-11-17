@@ -227,8 +227,7 @@ namespace DataAccess.DAO
                         .ThenInclude(s => s.Major)
                         .Include(c => c.CurriculumSubjects)
                         .ThenInclude(cs => cs.Subject)
-                        .ThenInclude(subject => subject.AssessmentMethod)
-                        .ThenInclude(assessmentMethod => assessmentMethod.AssessmentType)
+                        .ThenInclude(x => x.LearningMethod)
                         .FirstOrDefault(c => c.curriculum_id == item.curriculumId);
                     var curriBatch = _cmsDbContext.CurriculumBatch.Include(x => x.Batch)
                         .Where(x => x.curriculum_id == item.curriculumId)
@@ -254,8 +253,9 @@ namespace DataAccess.DAO
                                 total = cs.Subject.total_time,
                                 @class = cs.Subject.total_time_class,
                                 @exam = cs.Subject.exam_total,
-                                method = cs.Subject.AssessmentMethod.assessment_method_component,
-                                assessment = cs.Subject.AssessmentMethod.AssessmentType.assessment_type_name
+                                method = cs.Subject.LearningMethod.learning_method_name,
+                                optional = cs.option.ToString(),
+                                combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
                             })
                             .ToList(),
                     };
