@@ -98,17 +98,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var batch = _batchRepository.GetBatchById(batchId);
                 var degreeId = _degreeLevelRepository.GetDegreeIdByBatch(batchId);
                 var major = _majorRepository.GetMajorByDegreeLevel(degreeId);
+                var learningMethod = _learningMethodRepository.GetAllLearningMethods();
                 foreach (var m in major)
                 {
-                    var spe = _specializationRepository.GetSpeByMajorId(m.major_id);
-                    var tkolDTOReport = new TKOL_DTOReport { batch_name = batch.batch_name, major_name = m.major_english_name, tkol = new List<TKOLReport>() };
+                    var spe = _specializationRepository.GetSpeByMajorId(m.major_id, batch.batch_name);
+                    var tkolDTOReport = new TKOL_DTOReport
+                    {
+                        batch_name = batch.batch_name,
+                        major_name = m.major_english_name,
+                        learning_method_T01_name = learningMethod.FirstOrDefault(x => x.learning_method_code.Equals("T01")).learning_method_name,
+                        learning_method_T02_name = learningMethod.FirstOrDefault(x => x.learning_method_code.Equals("T02")).learning_method_name,
+                        learning_method_T03_name = learningMethod.FirstOrDefault(x => x.learning_method_code.Equals("T03")).learning_method_name,
+                        tkol = new List<TKOLReport>()
+                    };
 
                     foreach (var s in spe)
                     {
                         var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id);
                         var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count() };
 
-                        var learningMethod = _learningMethodRepository.GetAllLearningMethods();
+
                         foreach (var item in learningMethod)
                         {
                             if (item.learning_method_code.Equals("T01"))
@@ -171,11 +180,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             foreach (var major in listMajor)
             {
-                var spe = _specializationRepository.GetSpeByMajorId(major.major_id);
+                var spe = _specializationRepository.GetSpeByMajorId(major.major_id, batch.batch_name);
                 var textbook = new TextBookDTOReport
                 {
                     batch_name = batch.batch_name,
-                    major_name = major.major_name,
+                    major_name = major.major_english_name,
                     learning_resource_T01_name = listLearningResource.FirstOrDefault(x => x.learning_resouce_code.Equals("T01")).learning_resource_type,
                     learning_resource_T02_name = listLearningResource.FirstOrDefault(x => x.learning_resouce_code.Equals("T02")).learning_resource_type,
                     learning_resource_T03_name = listLearningResource.FirstOrDefault(x => x.learning_resouce_code.Equals("T03")).learning_resource_type,

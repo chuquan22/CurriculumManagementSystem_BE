@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DAO\BatchDAO.cs~RF277a5d7.TMP" />
     <None Remove="Models\DTO\response\CurriculumSubjectResponse.cs~RF38110857.TMP" />
   </ItemGroup>
 

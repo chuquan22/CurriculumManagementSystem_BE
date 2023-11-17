@@ -62,9 +62,9 @@ namespace Repositories.Specialization
             return db.IsCodeExist(code);
         }
 
-        public List<BusinessObject.Specialization> GetSpeByMajorId(int majorId)
+        public List<BusinessObject.Specialization> GetSpeByMajorId(int majorId, string batch_name)
         {
-            return db.GetSpeByMajorId(majorId);
+            return db.GetSpeByMajorId(majorId, batch_name);
         }
 
         public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId, int majorId)

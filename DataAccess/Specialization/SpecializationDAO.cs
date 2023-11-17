@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using DataAccess.Combos;
 using DataAccess.DAO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,10 +66,18 @@ namespace DataAccess.Specialization
             return spe;
         }
 
-        public List<BusinessObject.Specialization> GetSpeByMajorId(int majorId)
+        public List<BusinessObject.Specialization> GetSpeByMajorId(int majorId, string batch_name)
         {
-            var spe = db.Specialization.Where(x => x.major_id == majorId && x.is_active == true).ToList().ToList();
-            return spe;
+            var listSpe = new List<BusinessObject.Specialization>();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var item in spe)
+            {
+                if (double.Parse(item.Semester.Batch.batch_name) <= double.Parse(batch_name))
+                {
+                    listSpe.Add(item);
+                }
+            }
+            return listSpe;
         }
 
         public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId)
