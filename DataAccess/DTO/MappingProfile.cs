@@ -287,14 +287,14 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
             //Semester
             CreateMap<SemesterRequest, Semester>()
-                .ForMember(dest => dest.semester_name, opt => opt.MapFrom(src => src.semester_name.ToUpper().Trim()))
+                .ForMember(dest => dest.semester_name, opt => opt.MapFrom(src => src.semester_name.Trim()))
                 .ReverseMap();
 
                     CreateMap<Semester, SemesterResponse>()
              .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.Batch.batch_id))
              .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
              .ForMember(dest => dest.batch_order, opt => opt.MapFrom(src => src.Batch.batch_order))
-             .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+             .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.Batch.DegreeLevel.degree_level_english_name))
              .ForMember(dest => dest.semester_start_date, opt => opt.MapFrom(src => src.semester_start_date.ToString("yyyy-MM-dd")))
              .ForMember(dest => dest.semester_end_date, opt => opt.MapFrom(src => src.semester_end_date.ToString("yyyy-MM-dd")))
              .ReverseMap();
@@ -326,6 +326,14 @@ namespace DataAccess.Models.DTO
 
             CreateMap<Question, QuestionResponse>()
                 .ReverseMap();
+            
+            CreateMap<Batch, CurriculumBatchDTOResponse>()
+                .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+                .ReverseMap();
+
+            CreateMap<CurriculumBatchRequest, Batch>().ReverseMap();
+
+
         }
     }
 }

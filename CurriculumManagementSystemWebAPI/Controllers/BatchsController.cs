@@ -54,6 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Batch", Batch));
         }
 
+        
 
         [HttpDelete("DeleteBatch/{id}")]
         public ActionResult DeleteBatch(int id)

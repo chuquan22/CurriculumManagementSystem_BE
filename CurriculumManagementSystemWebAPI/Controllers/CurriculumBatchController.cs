@@ -40,10 +40,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             foreach (var batch in listBatch)
             {
-                var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-                curriBacthDTO.batch_id = batch.batch_id;
-                curriBacthDTO.batch_name = batch.batch_name;
-                curriBacthDTO.batch_order = batch.batch_order;
+                var curriBacthDTO =  _mapper.Map<CurriculumBatchDTOResponse>(batch);
+               
                 var curriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriBatch.Where(x => x.batch_id == batch.batch_id).Select(x => x.Curriculum).ToList());
                 curriBacthDTO.curriculum = curriResponse;
 
@@ -68,10 +66,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var batch in listBatch)
             {
                 var listcurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batch.batch_id);
-                var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-                curriBacthDTO.batch_id = batch.batch_id;
-                curriBacthDTO.batch_name = batch.batch_name;
-                curriBacthDTO.batch_order = batch.batch_order;
+                var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
                 var curriResponse = _mapper.Map<List<CurriculumResponse>>(listcurriBatch.Select(x => x.Curriculum).ToList());
                 curriBacthDTO.curriculum = curriResponse;
 
@@ -100,14 +95,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
         {
-            var curriBacthDTO = new CurriculumBatchDTOResponse { curriculum = new List<CurriculumResponse>() };
-
             var batch = _batchRepository.GetBatchById(batchId);
-            var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
+            var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
            
-            curriBacthDTO.batch_id = batch.batch_id;
-            curriBacthDTO.batch_name = batch.batch_name;
-            curriBacthDTO.batch_order = batch.batch_order;
+            var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
+            
             foreach (var curriBatch in listCurriBatch)
             {
                 var curriResponse = _mapper.Map<CurriculumResponse>(curriBatch.Curriculum);
@@ -117,16 +109,45 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Curriculum Batch", curriBacthDTO));
         }
 
+        [HttpPost("CreateCurriculumBatch")]
+        public ActionResult CreateCurriculumBatch([FromBody] CurriculumBatchRequest curriculumBatchRequest)
+        {
+            var batch = _mapper.Map<Batch>(curriculumBatchRequest);
+
+            if (_batchRepository.CheckBatchDuplicate(batch.batch_name, batch.degree_level_id))
+            {
+                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
+            }
+            string create = _batchRepository.CreateBatch(batch);
+            if (!create.Equals(Result.createSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, create));
+            }
+
+            foreach (var curriculum_id in curriculumBatchRequest.list_curriculum_id)
+            {
+                var curriBatch = new CurriculumBatch
+                {
+                    batch_id = batch.batch_id,
+                    curriculum_id = curriculum_id,
+                };
+                _curriculumBatchRepository.CreateCurriculumBatch(curriBatch);
+            }
+
+            return Ok(new BaseResponse(false, "Create Batch SuccessFull!", curriculumBatchRequest));
+        }
+
+
         [HttpPut("UpdateCurriculumBatch/{id}")]
         public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
             var batch = _batchRepository.GetBatchById(id);
-            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name))
+            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name, batch.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
             }
-            batch.batch_name = curriculumBatchRequest.batch_name;
-            batch.batch_order = curriculumBatchRequest.batch_order;
+
+            _mapper.Map(curriculumBatchRequest, batch);
 
             string updateResult = _batchRepository.UpdateBatch(batch);
             if (updateResult != Result.updateSuccessfull.ToString())
@@ -161,33 +182,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Update Successfull", curriculumBatchRequest));
         }
 
-        //[HttpDelete("DeleteCurriculumBatch/{id}")]
-        //public IActionResult DeleteCurriculumBatch(int id)
-        //{
-        //    var batch = _batchRepository.GetBatchById(id);
-        //    if (_batchRepository.CheckBatchExsit(id))
-        //    {
-        //        return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Used. Can't Delete!"));
-        //    }
+        [HttpDelete("DeleteCurriculumBatch/{id}")]
+        public IActionResult DeleteCurriculumBatch(int id)
+        {
+            var batch = _batchRepository.GetBatchById(id);
+            if (_batchRepository.CheckBatchExsit(id))
+            {
+                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Used. Can't Delete!"));
+            }
 
-        //    string deleteBatch = _batchRepository.DeleteBatch(batch);
-        //    if (deleteBatch != Result.deleteSuccessfull.ToString())
-        //    {
-        //        return BadRequest(new BaseResponse(true, deleteBatch));
-        //    }
+            string deleteBatch = _batchRepository.DeleteBatch(batch);
+            if (deleteBatch != Result.deleteSuccessfull.ToString())
+            {
+                return BadRequest(new BaseResponse(true, deleteBatch));
+            }
 
-        //    var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(id);
-        //    foreach (var cb in listCurriBatch)
-        //    {
-        //        string removecurriBatch = _curriculumBatchRepository.DeleteCurriculumBatch(cb);
-        //        if (removecurriBatch != Result.deleteSuccessfull.ToString())
-        //        {
-        //            return BadRequest(new BaseResponse(true, "Update Curriculum Batch Fail!"));
-        //        }
-        //    }
+            var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(id);
+            foreach (var cb in listCurriBatch)
+            {
+                string removecurriBatch = _curriculumBatchRepository.DeleteCurriculumBatch(cb);
+                if (removecurriBatch != Result.deleteSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, "Update Curriculum Batch Fail!"));
+                }
+            }
 
-        //    return Ok(new BaseResponse(false, $"Delete Batch {batch.batch_name} Successfull"));
-        //}
+            return Ok(new BaseResponse(false, $"Delete Batch {batch.batch_name} Successfull"));
+        }
 
     }
 }

@@ -41,7 +41,7 @@ namespace DataAccess.Major
         public List<BusinessObject.Major> GetMajorByBatch(int batchId)
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            var degreeId = db.Semester.FirstOrDefault(x => x.start_batch_id ==  batchId).degree_level_id;
+            var degreeId = db.Batch.FirstOrDefault(x => x.batch_id ==  batchId).degree_level_id;
             list = GetMajorByDegreeLevel(degreeId);
             return list;
         }

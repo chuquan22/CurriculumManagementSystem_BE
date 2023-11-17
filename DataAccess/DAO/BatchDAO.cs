@@ -16,6 +16,7 @@ namespace DataAccess.DAO
         public List<Batch> GetAllBatch()
         {
             var listBatch = _context.Batch
+                .Include(x => x.DegreeLevel)
                 .OrderByDescending(x => x.batch_name)
                 .ThenByDescending(x => x.batch_order)
                 .ToList();
@@ -75,19 +76,19 @@ namespace DataAccess.DAO
 
         public List<Batch> GetBatchByDegreeLevel(int degreeId)
         {
-            var listBatch = _context.Semester.Include(x => x.Batch).Where(x => x.degree_level_id == degreeId).Select(x => x.Batch).ToList(); ;
+            var listBatch = _context.Batch.Where(x => x.degree_level_id == degreeId).ToList(); ;
             return listBatch;
         }
 
 
-        public bool CheckBatchDuplicate(string batch_name)
+        public bool CheckBatchDuplicate(string batch_name, int degree_Id)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name))).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.degree_level_id == degree_Id)).GetValueOrDefault();
         }
 
-        public bool CheckBatchUpdateDuplicate(int id, string batch_name)
+        public bool CheckBatchUpdateDuplicate(int id, string batch_name,int degree_Id)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_id != id)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_id != id && x.degree_level_id == degree_Id)).GetValueOrDefault();
         }
 
         public bool CheckBatchExsit(int id)

@@ -21,5 +21,6 @@ namespace BusinessObject
 
         public virtual ICollection<Major>? Majors { get; set; }
         public virtual ICollection<Syllabus>? Syllabus { get; set; }
+        public virtual ICollection<Batch>? Batches { get; set; }
     }
 }

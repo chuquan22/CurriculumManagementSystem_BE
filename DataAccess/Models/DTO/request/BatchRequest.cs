@@ -11,5 +11,9 @@ namespace DataAccess.Models.DTO.request
     {
         [Required]
         public string batch_name { get; set; }
+        [Required]
+        public int batch_order { get; set; }
+        [Required]
+        public int degree_level_id { get; set; }
     }
 }
