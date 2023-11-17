@@ -367,12 +367,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost("ExportQuizExcel/{subjectId}")]
-        public IActionResult ExportQuizExcel(int subjectId)
+        public async Task<IActionResult> ExportQuizExcel(int subjectId)
         {
             var quizTemplate = "QuizTemplate.xlsx";
             // Get List Quiz
             var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
-
+            if(listQuiz == null)
+            {
+                return BadRequest(new BaseResponse(false,"List Quiz does not exist !",null));
+            }
             using (ExcelPackage excelPackage = new ExcelPackage())
             {
                 int tableCount = 1; // Biến đếm bảng
@@ -453,7 +456,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
+            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
+            return Ok(new BaseResponse(false, "Sucessfully!", fileContents));
         }
 
         private int ExtractNumber(string input)
