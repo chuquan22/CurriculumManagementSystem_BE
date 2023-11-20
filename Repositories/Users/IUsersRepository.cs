@@ -18,5 +18,8 @@ namespace Repositories.Users
         string CreateUser(User user);
         string UpdateUser(User user);
         string DeleteUser(User user);
+        User GetUserByRefreshToken(string refreshToken);
+
+        void SaveRefreshTokenUser(int user_id,string refreshToken);
     }
 }

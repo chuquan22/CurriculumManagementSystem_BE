@@ -178,7 +178,8 @@ namespace BusinessObject.Migrations
                     user_email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     full_name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     role_id = table.Column<int>(type: "int", nullable: false),
-                    is_active = table.Column<bool>(type: "bit", nullable: false)
+                    is_active = table.Column<bool>(type: "bit", nullable: false),
+                    refresh_token = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -884,11 +885,11 @@ namespace BusinessObject.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "user_id", "full_name", "is_active", "role_id", "user_email", "user_name" },
+                columns: new[] { "user_id", "full_name", "is_active", "refresh_token", "role_id", "user_email", "user_name" },
                 values: new object[,]
                 {
-                    { 1, "Chu Quang Quan", true, 3, "quancqhe153661@fpt.edu.vn", "QuanCQ" },
-                    { 2, "Nguyen Thi Thu", true, 2, "thunthe151440@fpt.edu.vn", "ThuNT" }
+                    { 1, "Chu Quang Quan", true, null, 3, "quancqhe153661@fpt.edu.vn", "QuanCQ" },
+                    { 2, "Nguyen Thi Thu", true, null, 2, "thunthe151440@fpt.edu.vn", "ThuNT" }
                 });
 
             migrationBuilder.InsertData(

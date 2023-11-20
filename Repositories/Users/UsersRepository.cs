@@ -42,6 +42,11 @@ namespace Repositories.Users
             return userDAO.GetUserById(id);
         }
 
+        public User GetUserByRefreshToken(string refreshToken)
+        {
+            return userDAO.GetUserByRefreshToken(refreshToken);
+        }
+
         public User Login(string email)
         {
             return userDAO.Login(email);
@@ -50,6 +55,11 @@ namespace Repositories.Users
         public List<User> PaginationUser(int page, int limit, string? txtSearch)
         {
             return userDAO.PaginationUser(page, limit, txtSearch);
+        }
+
+        public void SaveRefreshTokenUser(int user_id, string refreshToken)
+        {
+            userDAO.SaveRefreshTokenUser(user_id, refreshToken);
         }
 
         public string UpdateUser(User user)

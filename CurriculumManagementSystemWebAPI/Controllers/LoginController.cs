@@ -28,7 +28,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             config = configuration;
             repo = new UsersRepository();
-            _mapper = mapper;  
+            _mapper = mapper;
         }
         public static string[] Scopes =
         {
@@ -66,7 +66,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-               
+
                 var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
                     ClientSecrets = new ClientSecrets
@@ -92,18 +92,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 User user = AuthenticateUser(userEmail);
                 if (user == null)
                 {
-                    return Ok(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn.",null));
+                    return Ok(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn.", null));
                 }
-                if(user.is_active == false)
+                if (user.is_active == false)
                 {
                     return Ok(new BaseResponse(true, "Your account has been locked. Please contact the adminstrator cmspoly@fpt.edu.vn if you have questions about the locked issue.", null));
                 }
                 UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
                 var tokenJWTuser = GenerateToken(user);
+                var refreshToken = GenerateRefreshToken();
+                repo.SaveRefreshTokenUser(user.user_id, refreshToken);
                 var data = new[]
                     {
                    new {
                        Token = tokenJWTuser,
+                       RefreshToken = refreshToken,
                        UserData = userResponse
                        },
                  };
@@ -145,7 +148,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return userLogged;
         }
-        [HttpPost("get-token")]
         private string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]));
@@ -162,27 +164,58 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(2), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        [HttpGet("get-current-user")]
-        public UserLoginResponse GetCurrentUser()
+        private string GenerateRefreshToken()
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity != null)
-            {
-                var userClaims = identity.Claims;
-                UserLoginResponse data = new UserLoginResponse
-                {
-                    user_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value),
-                    user_name = identity.FindFirst(ClaimTypes.Name)?.Value,
-                    user_email = identity.FindFirst(ClaimTypes.Email)?.Value,
-                    full_name = identity.FindFirst(ClaimTypes.Surname)?.Value,
-                    role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
-                };
-                return data;
-            }
-            return null;
+            var refreshToken = Guid.NewGuid().ToString();
+
+            return refreshToken;
         }
-        
+
+        [HttpPost("get-refresh-token")]
+        [AllowAnonymous]
+        public ActionResult GetRefreshToken(string refreshToken)
+        {
+          
+            User user = repo.GetUserByRefreshToken(refreshToken);
+            if(user == null)
+            {
+                return BadRequest(new BaseResponse(true, "Token refreshed not avaiable!", null));
+            }
+            var token = GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+            repo.SaveRefreshTokenUser(user.user_id, refreshToken);
+            var data = new[]
+                {
+                   new {
+                       Token = token,
+                       RefreshToken = newRefreshToken
+                       },
+                 };
+
+            return Ok(new BaseResponse(false, "Token refreshed successfully!", data));
+        }
+
+
+        //[HttpGet("get-current-user")]
+        //public UserLoginResponse GetCurrentUser()
+        //{
+        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
+        //    if (identity != null)
+        //    {
+        //        var userClaims = identity.Claims;
+        //        UserLoginResponse data = new UserLoginResponse
+        //        {
+        //            user_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value),
+        //            user_name = identity.FindFirst(ClaimTypes.Name)?.Value,
+        //            user_email = identity.FindFirst(ClaimTypes.Email)?.Value,
+        //            full_name = identity.FindFirst(ClaimTypes.Surname)?.Value,
+        //            role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
+        //        };
+        //        return data;
+        //    }
+        //    return null;
+        //}
+
 
     }
 }

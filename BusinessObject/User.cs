@@ -24,6 +24,8 @@ namespace BusinessObject
 
         [Required]
         public bool is_active { get; set; }
+        [AllowNull]
+        public string? refresh_token { get; set; }
 
         public virtual Role Role { get; set; }  
     }

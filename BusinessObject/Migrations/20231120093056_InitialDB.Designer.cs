@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(CMSDbContext))]
-    [Migration("20231120075445_InitialDB")]
+    [Migration("20231120093056_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -3060,6 +3060,9 @@ namespace BusinessObject.Migrations
 
                     b.Property<bool>("is_active")
                         .HasColumnType("bit");
+
+                    b.Property<string>("refresh_token")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("role_id")
                         .HasColumnType("int");

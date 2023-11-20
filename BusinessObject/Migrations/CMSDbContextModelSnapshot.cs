@@ -3059,6 +3059,9 @@ namespace BusinessObject.Migrations
                     b.Property<bool>("is_active")
                         .HasColumnType("bit");
 
+                    b.Property<string>("refresh_token")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("role_id")
                         .HasColumnType("int");
 

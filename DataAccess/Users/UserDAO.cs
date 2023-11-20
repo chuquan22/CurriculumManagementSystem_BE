@@ -41,6 +41,12 @@ namespace DataAccess.Users
             return user;
         }
 
+        public User GetUserByRefreshToken(string refreshToken)
+        {
+            var user = _cmsDbContext.User.Include(x => x.Role).Where(x => x.refresh_token.Equals(refreshToken)).FirstOrDefault();
+            return user;
+        }
+
         public List<User> PaginationUser(int page, int limit, string? txtSearch)
         {
             IQueryable<User> query = _cmsDbContext.User
@@ -56,6 +62,16 @@ namespace DataAccess.Users
                 .Take(limit)
                 .ToList();
             return listUser;
+        }
+
+        public void SaveRefreshTokenUser(int user_id, string refreshToken)
+        {
+            var user = GetUserById(user_id);
+            if(user != null)
+            {
+                user.refresh_token = refreshToken;
+                _cmsDbContext.SaveChanges();
+            }
         }
 
         public int GetTotalUser(string? txtSearch)
