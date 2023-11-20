@@ -119,9 +119,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var batch = _mapper.Map<Batch>(curriculumBatchRequest);
 
-            if (_batchRepository.CheckBatchDuplicate(batch.batch_name, batch.degree_level_id))
+            if (_batchRepository.CheckBatchDuplicate(batch.batch_name, batch.batch_order ,batch.degree_level_id))
             {
-                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Duplicate!"));
+                return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} or Batch Order {batch.batch_order} is Duplicate!"));
             }
             string create = _batchRepository.CreateBatch(batch);
             if (!create.Equals(Result.createSuccessfull.ToString()))
@@ -147,9 +147,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
             var batch = _batchRepository.GetBatchById(id);
-            if (_batchRepository.CheckBatchUpdateDuplicate(id, batch.batch_name, batch.degree_level_id))
+            if (_batchRepository.CheckBatchUpdateDuplicate(id, curriculumBatchRequest.batch_order, batch.degree_level_id))
             {
-                return BadRequest(new BaseResponse(true, "Batch is Duplicate!"));
+                return BadRequest(new BaseResponse(true, $"Batch Order {curriculumBatchRequest.batch_order} is Duplicate!"));
             }
 
             _mapper.Map(curriculumBatchRequest, batch);

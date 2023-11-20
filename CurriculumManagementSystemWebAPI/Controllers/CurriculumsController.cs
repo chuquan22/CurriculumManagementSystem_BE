@@ -260,7 +260,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
                 ["decision_No"] = curriculum.decision_No,
-                ["approved_date"] = $"Ngày {curriculum.approved_date.Day} tháng {curriculum.approved_date.Month} năm {curriculum.approved_date.Year}",
+                ["approved_date"] = $"Ngày {curriculum.approved_date.Value.Day} tháng {curriculum.approved_date.Value.Month} năm {curriculum.approved_date.Value.Year}",
                 ["major_name"] = major.major_name,
                 ["major_english_name"] = major.major_english_name,
                 ["major_code"] = major.major_code,
@@ -822,7 +822,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (double.TryParse(batch_name, out batchValue))
             {
-                if (batchValue <= 19.2)
+                if (batchValue < 19.2)
                 {
                     curriculum.total_semester = 7;
                 }

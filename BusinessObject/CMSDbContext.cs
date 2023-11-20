@@ -346,7 +346,7 @@ namespace BusinessObject
                 new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2, subject_group = "Option Subject", option = true },
                 new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = 0, subject_group = "Specialization Subject", option = false },
                 new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = 0, subject_group = "Basic Subject", option = false },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, combo_id = 3, subject_group = "Option Subject", option = true }
+                new CurriculumSubject { curriculum_id = 2, subject_id = 2, term_no = 1, combo_id = 1, subject_group = "Option Subject", option = true }
                 );
 
 
