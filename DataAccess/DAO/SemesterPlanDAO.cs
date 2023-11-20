@@ -47,12 +47,24 @@ namespace DataAccess.DAO
                 List<SemesterPlan> list = new List<SemesterPlan>();
                 if (listCurriValid.Count != listValidSemester.Count)
                 {
-                    string batchError = "K";
-                    foreach(var errorBatch in listValidSemester.Select(x => x.Batch.batch_name).Except(listCurriValid.Select(x => x.Batch.batch_name)).ToList())
+                    string batchError = "[";
+                    bool isFirstBatch = true;
+
+                    foreach (var errorBatch in listValidSemester.Select(x => x.Batch.batch_name).Except(listCurriValid.Select(x => x.Batch.batch_name)).ToList())
                     {
-                        batchError = batchError + ", K" + errorBatch;
+                        if (isFirstBatch)
+                        {
+                            batchError += "K" + errorBatch;
+                            isFirstBatch = false;
+                        }
+                        else
+                        {
+                            batchError += "][" + "K" + errorBatch;
+                        }
                     }
-                        string error = batchError + " currently has no curriculum for " + item.Curriculum.Specialization.specialization_english_name;
+
+                    batchError += "]";
+                    string error = batchError + " currently has no curriculum for " + item.Curriculum.Specialization.specialization_english_name;
                     throw new Exception(error);
 
                 }
