@@ -83,10 +83,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<IActionResult> GetListCurriculumByBatchName(int batchId, string batchName)
         {
             var listCurriculum = _curriculumRepository.GetListCurriculumByBatchName(batchId, batchName);
-            if (listCurriculum.Count == 0)
-            {
-                return BadRequest(new BaseResponse(true, $"Cannot Found Curriculum Have Start Batch Smaller than {batchName}"));
-            }
             var CurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             return Ok(new BaseResponse(false, "list Curriculum", CurriculumRespone));
         }
