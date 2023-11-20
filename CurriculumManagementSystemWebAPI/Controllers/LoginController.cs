@@ -23,7 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
-        private static string accessToken = null;
+        private string accessToken = null;
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
@@ -117,7 +117,29 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Login Google Authenticator False. Please Try Login Google Again.", null));
             }
         }
+        [HttpPost("get-refresh-token")]
+        [AllowAnonymous]
+        public ActionResult GetRefreshToken(string refreshToken)
+        {
 
+            User user = repo.GetUserByRefreshToken(refreshToken);
+            if (user == null)
+            {
+                return BadRequest(new BaseResponse(true, "Token refreshed not avaiable!", null));
+            }
+            var token = GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+            repo.SaveRefreshTokenUser(user.user_id, refreshToken);
+            var data = new[]
+                {
+                   new {
+                       Token = token,
+                       RefreshToken = newRefreshToken
+                       },
+                 };
+
+            return Ok(new BaseResponse(false, "Token refreshed successfully!", data));
+        }
         [HttpPost("Logout")]
         [AllowAnonymous]
         public async Task<ActionResult> Logout()
@@ -171,29 +193,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return refreshToken;
         }
 
-        [HttpPost("get-refresh-token")]
-        [AllowAnonymous]
-        public ActionResult GetRefreshToken(string refreshToken)
-        {
-          
-            User user = repo.GetUserByRefreshToken(refreshToken);
-            if(user == null)
-            {
-                return BadRequest(new BaseResponse(true, "Token refreshed not avaiable!", null));
-            }
-            var token = GenerateToken(user);
-            var newRefreshToken = GenerateRefreshToken();
-            repo.SaveRefreshTokenUser(user.user_id, refreshToken);
-            var data = new[]
-                {
-                   new {
-                       Token = token,
-                       RefreshToken = newRefreshToken
-                       },
-                 };
-
-            return Ok(new BaseResponse(false, "Token refreshed successfully!", data));
-        }
+   
 
 
         //[HttpGet("get-current-user")]
