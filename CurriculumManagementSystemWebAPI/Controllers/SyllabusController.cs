@@ -841,7 +841,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 for (int j = 1; j <= k; j++)
                 {
-                    gradingStruture[i + j].assessment_method_name = "Đánh giá " + gradingStruture[i].assessment_method_name + "GĐ" + j;
+                    gradingStruture[i + j].assessment_method_name = gradingStruture[i].assessment_method_name + " " + j;
                 }
             }
 

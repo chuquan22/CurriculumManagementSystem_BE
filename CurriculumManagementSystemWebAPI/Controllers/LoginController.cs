@@ -84,7 +84,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 });
                 var userInfo = services.Users.GetProfile("me").Execute();
                 string userEmail = userInfo.EmailAddress;
-                accessToken = token.AccessToken;
                 if (!userEmail.EndsWith("@fpt.edu.vn"))
                 {
                     return Ok(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account.", null));
@@ -129,7 +128,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var token = GenerateToken(user);
             var newRefreshToken = GenerateRefreshToken();
-            repo.SaveRefreshTokenUser(user.user_id, refreshToken);
+            repo.SaveRefreshTokenUser(user.user_id, newRefreshToken);
             var data = new[]
                 {
                    new {
@@ -140,20 +139,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Token refreshed successfully!", data));
         }
+
         [HttpPost("Logout")]
         [AllowAnonymous]
         public async Task<ActionResult> Logout()
         {
-
             try
             {
-                if (accessToken == null)
+                var currentUser = GetCurrentUser();
+                if (currentUser == null)
                 {
                     return BadRequest(new BaseResponse(true, "Logout failed. User not logged in system."));
                 }
-                var httpClient = new HttpClient();
-                var revokeTokenEndpoint = $"https://oauth2.googleapis.com/revoke?token={accessToken}";
-                var response = await httpClient.PostAsync(revokeTokenEndpoint, null);
+                repo.DeleteRefreshToken(currentUser.user_id);
                 return Ok(new BaseResponse(false, "Logout system successfully!", null));
             }
             catch (Exception ex)
@@ -161,6 +159,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
+
         private User AuthenticateUser(string email)
         {
             User userLogged = repo.Login(email);
@@ -183,7 +182,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Role,user.Role.role_name),
             };
 
-            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(2), signingCredentials: credentials);
+            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(1), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private string GenerateRefreshToken()
@@ -193,28 +192,28 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return refreshToken;
         }
 
-   
 
 
-        //[HttpGet("get-current-user")]
-        //public UserLoginResponse GetCurrentUser()
-        //{
-        //    var identity = HttpContext.User.Identity as ClaimsIdentity;
-        //    if (identity != null)
-        //    {
-        //        var userClaims = identity.Claims;
-        //        UserLoginResponse data = new UserLoginResponse
-        //        {
-        //            user_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value),
-        //            user_name = identity.FindFirst(ClaimTypes.Name)?.Value,
-        //            user_email = identity.FindFirst(ClaimTypes.Email)?.Value,
-        //            full_name = identity.FindFirst(ClaimTypes.Surname)?.Value,
-        //            role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
-        //        };
-        //        return data;
-        //    }
-        //    return null;
-        //}
+
+        [HttpGet("get-current-user")]
+        public UserLoginResponse GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                UserLoginResponse data = new UserLoginResponse
+                {
+                    user_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.NameIdentifier)?.Value),
+                    user_name = identity.FindFirst(ClaimTypes.Name)?.Value,
+                    user_email = identity.FindFirst(ClaimTypes.Email)?.Value,
+                    full_name = identity.FindFirst(ClaimTypes.Surname)?.Value,
+                    role_id = Convert.ToInt32(identity.FindFirst(ClaimTypes.Role)?.Value),
+                };
+                return data;
+            }
+            return null;
+        }
 
 
     }

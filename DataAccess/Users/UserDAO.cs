@@ -29,6 +29,16 @@ namespace DataAccess.Users
             return response;
         }
 
+        public void DeleteRefreshToken(int user_id)
+        {
+            var user = _cmsDbContext.User.Include(x => x.Role).Where(x => x.user_id == user_id).FirstOrDefault();
+            if(user != null)
+            {
+                user.refresh_token = null;
+                _cmsDbContext.SaveChanges();    
+            }
+        }
+
         public List<User> GetAllUser()
         {
             var listUser = _cmsDbContext.User.Include(x => x.Role).ToList();
@@ -44,6 +54,7 @@ namespace DataAccess.Users
         public User GetUserByRefreshToken(string refreshToken)
         {
             var user = _cmsDbContext.User.Include(x => x.Role).Where(x => x.refresh_token.Equals(refreshToken)).FirstOrDefault();
+           
             return user;
         }
 

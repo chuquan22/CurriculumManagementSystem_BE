@@ -22,6 +22,11 @@ namespace Repositories.Users
             return userDAO.CreateUser(user);
         }
 
+        public void DeleteRefreshToken(int user_id)
+        {
+            userDAO.DeleteRefreshToken(user_id);
+        }
+
         public string DeleteUser(User user)
         {
             return userDAO.DeleteUser(user);
