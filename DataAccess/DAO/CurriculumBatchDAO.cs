@@ -33,7 +33,6 @@ namespace DataAccess.DAO
 
         }
 
-       
 
         public bool CheckCurriculumBatchDuplicate(int curriId, int batchId)
         {

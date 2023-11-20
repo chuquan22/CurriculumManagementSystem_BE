@@ -302,8 +302,13 @@ namespace DataAccess.DAO
         {
             try
             {
-                SemesterPlan semesterPlan = _cmsDbContext.SemesterPlan.Where(s => s.semester_id == semester_id).FirstOrDefault();
-                _cmsDbContext.SemesterPlan.Remove(semesterPlan);
+                List<SemesterPlan> semesterPlan = _cmsDbContext.SemesterPlan.Where(s => s.semester_id == semester_id).ToList();
+                foreach (var item in semesterPlan)
+                {
+
+                    _cmsDbContext.SemesterPlan.Remove(item);
+                    _cmsDbContext.SaveChanges();
+                }
                 _cmsDbContext.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }

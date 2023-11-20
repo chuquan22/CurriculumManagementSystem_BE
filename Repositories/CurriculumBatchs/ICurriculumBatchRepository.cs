@@ -11,7 +11,7 @@ namespace Repositories.CurriculumBatchs
     {
         List<CurriculumBatch> GetAllCurriculumBatch();
         List<CurriculumBatch> GetCurriculumBatchByBatchId(int batchId);
-       
+
         bool CheckCurriculumBatchDuplicate(int curriId, int batchId);
         string CreateCurriculumBatch(CurriculumBatch curriculumBatch);
         string UpdateCurriculumBatch(CurriculumBatch curriculumBatch);
