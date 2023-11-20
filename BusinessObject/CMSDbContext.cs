@@ -141,12 +141,12 @@ namespace BusinessObject
                 .HasForeignKey(x => x.curriculum_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-           
+
             modelBuilder.Entity<Role>().HasData(
-                new Role { role_id = 1, role_name = "Dispatcher" },
-                new Role { role_id = 2, role_name = "Manager" },
-                new Role { role_id = 3, role_name = "Admin" }
-                );
+               new Role { role_id = 1, role_name = "Dispatcher" },
+               new Role { role_id = 2, role_name = "Manager" },
+               new Role { role_id = 3, role_name = "Admin" }
+               );
 
             modelBuilder.Entity<User>().HasData(
                 new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 3, user_email = "quancqhe153661@fpt.edu.vn", user_name = "QuanCQ", is_active = true },
@@ -160,27 +160,27 @@ namespace BusinessObject
                 new DegreeLevel { degree_level_id = 3, degree_level_code = "TC", degree_level_name = "Phổ Thông Cao Đẳng", degree_level_english_name = "Vocational Secondary" }
                 );
 
-            modelBuilder.Entity<Semester>().HasData(
-               new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, start_batch_id = 6 },
-               new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/08/2023"), school_year = 2023, start_batch_id = 5 },
-               new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/04/2023"), school_year = 2023, start_batch_id = 4 },
-               new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, start_batch_id = 8 },
-               new Semester { semester_id = 4, semester_name = "Summer", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 7 },
-               new Semester { semester_id = 4, semester_name = "Spring", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 9 }
-               );
-    
-
             modelBuilder.Entity<Batch>().HasData(
               new Batch { batch_id = 1, batch_name = "7.1", batch_order = 1, degree_level_id = 2 },
               new Batch { batch_id = 2, batch_name = "17", batch_order = 1, degree_level_id = 3 },
               new Batch { batch_id = 3, batch_name = "18", batch_order = 2, degree_level_id = 3 },
-              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 3, degree_level_id = 1 },
-              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 4, degree_level_id = 1 },
-              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 5, degree_level_id = 1 },
-              new Batch { batch_id = 7, batch_name = "18.2", batch_order = 1, degree_level_id = 1 },
-              new Batch { batch_id = 8, batch_name = "18.3", batch_order = 2, degree_level_id = 1 },
-              new Batch { batch_id = 9, batch_name = "20.1", batch_order = 6, degree_level_id = 1 }
+              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 4, degree_level_id = 1 },
+              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 5, degree_level_id = 1 },
+              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 6, degree_level_id = 1 },
+              new Batch { batch_id = 7, batch_name = "18.2", batch_order = 2, degree_level_id = 1 },
+              new Batch { batch_id = 8, batch_name = "18.3", batch_order = 3, degree_level_id = 1 },
+              new Batch { batch_id = 9, batch_name = "20.1", batch_order = 6, degree_level_id = 1 },
+              new Batch { batch_id = 10, batch_name = "18.1", batch_order = 1, degree_level_id = 1 }
               );
+
+            modelBuilder.Entity<Semester>().HasData(
+                new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, start_batch_id = 6 },
+                new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/08/2023"), school_year = 2023, start_batch_id = 5 },
+                new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/04/2023"), school_year = 2023, start_batch_id = 4 },
+                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, start_batch_id = 8 },
+                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 7 },
+                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 9 }
+                );
 
             modelBuilder.Entity<Major>().HasData(
                 new Major { major_id = 1, major_code = "6210402", major_name = "Thiết kế đồ họa", major_english_name = "Graphic Design", degree_level_id = 1, is_active = true },
@@ -192,32 +192,28 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Specialization>().HasData(
-                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "6216432", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and Exterior Design", semester_id = 1, is_active = true },
-                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "6215463", specialization_name = "Dựng phim và quảng cáo", specialization_english_name = "Film Making and Advertising", semester_id = 2, is_active = true },
+                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "6210402", specialization_name = "Thiết kế đồ họa", specialization_english_name = "Graphic Design", semester_id = 1, is_active = true },
+                new Specialization { specialization_id = 2, major_id = 2, specialization_code = "6215463", specialization_name = "Xử lý dữ liệu", specialization_english_name = "Data Processing", semester_id = 4, is_active = true },
                 new Specialization { specialization_id = 3, major_id = 2, specialization_code = "6526432", specialization_name = "Lập trình Game", specialization_english_name = "Game Development", semester_id = 3, is_active = true },
                 new Specialization { specialization_id = 4, major_id = 2, specialization_code = "6480201", specialization_name = "Ứng dụng phần mềm", specialization_english_name = "Software Application", semester_id = 1, is_active = true },
                 new Specialization { specialization_id = 5, major_id = 5, specialization_code = "5340404", specialization_name = "Digital Marketing", specialization_english_name = "Digital Marketing", semester_id = 6, is_active = true },
-                new Specialization { specialization_id = 6, major_id = 6, specialization_code = "6480207", specialization_name = "Phân tích dữ liệu", specialization_english_name = "Data Analytics", semester_id = 5, is_active = true }
+                new Specialization { specialization_id = 6, major_id = 6, specialization_code = "6480207", specialization_name = "Phân tích dữ liệu", specialization_english_name = "Data Analytics", semester_id = 5, is_active = true },
+                new Specialization { specialization_id = 7, major_id = 4, specialization_code = "6510305", specialization_name = "Cnktđk & Tự Động Hóa", specialization_english_name = "Automotive Engineering", semester_id = 4, is_active = true }
                 );
 
+            modelBuilder.Entity<Combo>().HasData(
+               new Combo { combo_id = 1, combo_code = "CN1", combo_name = "Thiết kế nội và ngoại thất", combo_english_name = "Interior and Exterior Design", specialization_id = 1, is_active = true },
+               new Combo { combo_id = 2, combo_code = "CN2", combo_name = "Dựng phim và quảng cáo", combo_english_name = "Film Making and Advertising", specialization_id = 1, is_active = true }
+               );
+
             modelBuilder.Entity<Curriculum>().HasData(
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD-IED-CD-18.3", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 2, curriculum_code = "GD-IED-IC-19.1", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 3, curriculum_code = "SE-SE-IC-18", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 4, curriculum_code = "SE-SE-CD-17", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 5, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 5, curriculum_code = "CM-FMA-TC-19.3", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", total_semester = 6, specialization_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 6, curriculum_code = "SS-IED-TC-19", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 6, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 7, curriculum_code = "SWP-WP-TC-7.1", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 6, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 8, curriculum_code = "SS-IED-TC-18.2", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD-GD-CD-19.3", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD-GD-CD-19.2", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumBatch>().HasData(
-                new CurriculumBatch { curriculum_id = 1, batch_id = 1 },
-                new CurriculumBatch { curriculum_id = 2, batch_id = 1 },
-                new CurriculumBatch { curriculum_id = 1, batch_id = 2 },
-                new CurriculumBatch { curriculum_id = 3, batch_id = 2 },
-                new CurriculumBatch { curriculum_id = 6, batch_id = 4 },
-                new CurriculumBatch { curriculum_id = 7, batch_id = 6 }
+                new CurriculumBatch { curriculum_id = 1, batch_id = 6 },
+                new CurriculumBatch { curriculum_id = 2, batch_id = 5 }
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
@@ -353,12 +349,7 @@ namespace BusinessObject
                 new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, combo_id = 3, subject_group = "Option Subject", option = true }
                 );
 
-            modelBuilder.Entity<Combo>().HasData(
-                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", specialization_id = 4, is_active = true },
-                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", specialization_id = 3, is_active = true },
-                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", specialization_id = 2, is_active = false },
-                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", specialization_id = 1, is_active = true }
-                );
+
 
             modelBuilder.Entity<ClassSessionType>().HasData(
                 new ClassSessionType { class_session_type_id = 1, class_session_type_name = "Online" },
