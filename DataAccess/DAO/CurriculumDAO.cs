@@ -158,6 +158,41 @@ namespace DataAccess.DAO
             return list;
         }
 
+        public List<Curriculum> GetCurriculumByBatch(int degreeLevel, string batchName)
+        {
+            var listMajor = _cmsDbContext.Major.Include(x => x.Specialization).Where(x => x.degree_level_id == degreeLevel).ToList();
+            var listSpe = new List<BusinessObject.Specialization>();
+            var listCurri = new List<Curriculum>();
+            foreach (var major in listMajor)
+            {
+                var spes = major.Specialization;
+                foreach (var spe in spes)
+                {
+                    listSpe.Add(spe);
+                }
+            }
+
+            foreach (var spe in listSpe)
+            {
+                var curri = _cmsDbContext.Curriculum.Where(x => x.specialization_id == spe.specialization_id).ToList();
+                foreach (var item in curri)
+                {
+                    listCurri.Add(item);
+                }
+            }
+            var list = new List<Curriculum>();
+            foreach (var curri in listCurri)
+            {
+                var curriCode = curri.curriculum_code.Split("-");
+                var start_batch_name = curriCode[curriCode.Length - 1];
+                if (double.Parse(batchName) >= double.Parse(start_batch_name))
+                {
+                    list.Add(curri);
+                }
+            }
+            return list;
+        }
+
         public Curriculum GetCurriculum(string code)
         {
             var curriculum = _cmsDbContext.Curriculum

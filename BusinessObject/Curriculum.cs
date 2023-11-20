@@ -39,6 +39,5 @@ namespace BusinessObject
         public virtual ICollection<SemesterPlan>? Semesters { get; set; }
         public virtual ICollection<CurriculumBatch>? CurriculumBatchs { get; set; }
         public virtual ICollection<CurriculumSubject>? CurriculumSubjects { get; set; }
-        public virtual ICollection<ComboCurriculum>? ComboCurriculum { get; set; }
     }
 }
