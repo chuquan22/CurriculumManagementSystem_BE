@@ -97,6 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var batch = _batchRepository.GetBatchById(batchId);
             var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
+            curriBacthDTO.curriculum = new List<CurriculumResponse>();
            
             var listCurriBatch = _curriculumBatchRepository.GetCurriculumBatchByBatchId(batchId);
             

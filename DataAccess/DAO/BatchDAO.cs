@@ -70,7 +70,11 @@ namespace DataAccess.DAO
 
         public Batch GetBatchById(int id)
         {
-            var batch = _context.Batch.Where(x => x.batch_id == id).FirstOrDefault();
+            var batch = _context.Batch
+                .Include(x => x.CurriculumBatchs)
+                .ThenInclude(x => x.Curriculum)
+                .Include(x => x.DegreeLevel)
+                .Where(x => x.batch_id == id).FirstOrDefault();
             return batch;
         }
 
