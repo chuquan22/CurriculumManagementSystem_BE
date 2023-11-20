@@ -26,6 +26,7 @@ namespace DataAccess.DAO
         public List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch)
         {
             IQueryable<Batch> query = _context.Batch
+                .Include(x => x.DegreeLevel)
                 .Include(x => x.CurriculumBatchs);
 
             if (!string.IsNullOrEmpty(txtSearch))

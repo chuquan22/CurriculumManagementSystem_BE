@@ -11,6 +11,7 @@ namespace Repositories.Curriculums
     {
         List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId);
         List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? majorId);
+        List<Curriculum> GetCurriculumByBatch(int degreeLevel, string batchName);
         Curriculum GetCurriculum(string code);
         List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode);
         string GetCurriculumCode(int batchId, int speId);

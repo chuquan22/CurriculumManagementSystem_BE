@@ -21,6 +21,7 @@ namespace Repositories.Curriculums
 
         public Curriculum GetCurriculum(string code) => curriculumDAO.GetCurriculum(code);
 
+        public List<Curriculum> GetCurriculumByBatch(int degreeLevel, string batchName) => curriculumDAO.GetCurriculumByBatch(degreeLevel, batchName);
         
 
         public Curriculum GetCurriculumById(int id) => curriculumDAO.GetCurriculumById(id);
