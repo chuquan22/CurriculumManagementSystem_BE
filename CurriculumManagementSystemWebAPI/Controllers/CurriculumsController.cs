@@ -632,6 +632,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
 
                             }
+                            else if (r.Title.Equals("Approved date"))
+                            {
+                                DateTime date;
+                                if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                {
+                                    return $"{r.Details} must ";
+                                }
+                            }
                         }
 
 
