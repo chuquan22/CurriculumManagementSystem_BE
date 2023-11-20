@@ -12,6 +12,7 @@ namespace DataAccess.Models.DTO.response
         public int batch_id { get; set; }
         public string batch_name { get; set; }
         public int batch_order { get; set; }
+        public int degree_level_id { get; set; }
         public string degree_level_name { get; set; }
         public List<CurriculumResponse> curriculum { get; set; }
 
