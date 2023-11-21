@@ -635,7 +635,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             else if (r.Title.Equals("Approved date"))
                             {
                                 DateTime date;
-                                if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) && !DateTime.TryParseExact(r.Details, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) &&
+                                    !DateTime.TryParseExact(r.Details, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                                 {
                                     return $"Check to Approved Date: {r.Details}";
                                 }
@@ -812,7 +813,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 else if (r.Title.Equals("Approved date"))
                 {
                     DateTime date;
-                    if (DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) || DateTime.TryParseExact(r.Details, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    if (DateTime.TryParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) )
+                    {
+                        curriculum.approved_date = date;
+                    }else if (DateTime.TryParseExact(r.Details, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                     {
                         curriculum.approved_date = date;
                     }
