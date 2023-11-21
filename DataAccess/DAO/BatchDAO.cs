@@ -31,7 +31,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()) || x.DegreeLevel.degree_level_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningMethod = query
@@ -48,7 +48,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()) || x.DegreeLevel.degree_level_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningMethod = query

@@ -637,7 +637,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 DateTime date;
                                 if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                                 {
-                                    return $"{r.Details} must ";
+                                    return $"{r.Details} must format dd/MM/yyyy ";
                                 }
                             }
                         }
