@@ -25,6 +25,8 @@ namespace BusinessObject
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
+        //[Required]
+        //public int start_batch_id { get; set; }
         [AllowNull]
         public string? decision_No { get;set; }
         [Required]

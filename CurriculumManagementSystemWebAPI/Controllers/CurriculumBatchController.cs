@@ -90,7 +90,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "list Curriculum", CurriculumRespone));
         }
 
-        [HttpGet("GetListCurriculumByBatch/{degree_level_id}/{batchName}")]
+        [HttpPost("GetListCurriculumByBatch/{degree_level_id}/{batchName}")]
         public async Task<IActionResult> GetListCurriculumByBatch(int degree_level_id, string batchName, [FromBody] List<string> curriculumCode)
         {
             var listCurriculum = _curriculumRepository.GetCurriculumByBatch(degree_level_id, batchName);
