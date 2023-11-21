@@ -25,12 +25,12 @@ namespace BusinessObject
         public string curriculum_description { get; set; }
         [ForeignKey("Specialization")]
         public int specialization_id { get; set; }
-        [Required]
-        public string decision_No { get;set; }
+        [AllowNull]
+        public string? decision_No { get;set; }
         [Required]
         public string Formality { get; set; }
-        [Required]
-        public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
         [Required]
         public bool is_active { get; set; }
 

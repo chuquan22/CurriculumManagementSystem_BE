@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
         public string curriculum_name { get; set; }
         public string english_curriculum_name { get; set; }
         public string curriculum_description { get; set; }
+        public int specialization_id { get; set; }
         public string specialization_name { get; set; }
         public string batch_name { get; set; }
         public string decision_No { get; set; }

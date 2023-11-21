@@ -33,6 +33,7 @@ using System.Text.Json;
 using System.Text;
 using Repositories.CurriculumBatchs;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -260,7 +261,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
                 ["decision_No"] = curriculum.decision_No,
-                ["approved_date"] = $"Ngày {curriculum.approved_date.Day} tháng {curriculum.approved_date.Month} năm {curriculum.approved_date.Year}",
+                ["approved_date"] = $"Ngày {curriculum.approved_date.Value.Day} tháng {curriculum.approved_date.Value.Month} năm {curriculum.approved_date.Value.Year}",
                 ["major_name"] = major.major_name,
                 ["major_english_name"] = major.major_english_name,
                 ["major_code"] = major.major_code,
@@ -340,11 +341,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             try
                             {
                                 curriculum_id = await CreateCurriculumsAPI(curriculumExcel);
-                                _curriculumRepository.GetCurriculumById(curriculum_id);
+                                curriculum =  _curriculumRepository.GetCurriculumById(curriculum_id);
                             }
                             catch (Exception ex)
                             {
-                                _curriculumRepository.RemoveCurriculum(curriculum);
                                 return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum!"));
                             }
 
@@ -589,6 +589,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 {
                                     return "Curriculum Code must format ex:GD-GD-CD-19.3";
                                 }
+
+                                if (CheckCurriculumExists(r.Details))
+                                {
+                                    return $"Curriculum {r.Details} is Duplicate!";
+                                }
                                 string[] parts = r.Details.Split('-');
                                 // get part have index 2 in array string ex: 19.4
                                 var batch_name = parts[3];
@@ -626,6 +631,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
                                 }
 
+                            }
+                            else if (r.Title.Equals("Approved date"))
+                            {
+                                DateTime date;
+                                if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                {
+                                    return $"{r.Details} must format dd/MM/yyyy ";
+                                }
                             }
                         }
 
@@ -756,9 +769,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return "File import cancelled due to errors";
             }
         }
-
-
-
         private CurriculumRequest GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
         {
             var curriculum = new CurriculumRequest();
@@ -801,7 +811,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // if Title equal Approved date -> set approved_date = value in coloum detail
                 else if (r.Title.Equals("Approved date"))
                 {
-                    curriculum.approved_date = DateTime.Parse(r.Details);
+                    DateTime date;
+                    if (DateTime.TryParseExact(r.Details, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                    {
+                        curriculum.approved_date = date;
+                    }
                 }
                 else if (r.Title.Equals("Vocational Code"))
                 {
@@ -822,7 +836,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (double.TryParse(batch_name, out batchValue))
             {
-                if (batchValue <= 19.2)
+                if (batchValue < 19.2)
                 {
                     curriculum.total_semester = 7;
                 }

@@ -31,7 +31,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()) || x.DegreeLevel.degree_level_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningMethod = query
@@ -48,7 +48,7 @@ namespace DataAccess.DAO
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
-                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()));
+                query = query.Where(x => x.batch_name.ToLower().Contains(txtSearch.ToLower().Trim()) || x.DegreeLevel.degree_level_name.ToLower().Contains(txtSearch.ToLower().Trim()));
             }
 
             var listLearningMethod = query
@@ -86,14 +86,14 @@ namespace DataAccess.DAO
         }
 
 
-        public bool CheckBatchDuplicate(string batch_name, int degree_Id)
+        public bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.degree_level_id == degree_Id)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) || x.batch_order == batchOrder && x.degree_level_id == degree_Id)).GetValueOrDefault();
         }
 
-        public bool CheckBatchUpdateDuplicate(int id, string batch_name,int degree_Id)
+        public bool CheckBatchUpdateDuplicate(int id, int batchOrder, int degree_Id)
         {
-            return (_context.Batch?.Any(x => x.batch_name.Equals(batch_name) && x.batch_id != id && x.degree_level_id == degree_Id)).GetValueOrDefault();
+            return (_context.Batch?.Any(x => x.batch_order == batchOrder && x.degree_level_id == degree_Id && x.batch_id != id)).GetValueOrDefault();
         }
 
         public bool CheckBatchExsit(int id)

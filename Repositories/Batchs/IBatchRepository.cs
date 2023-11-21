@@ -16,8 +16,8 @@ namespace Repositories.Batchs
         List<Batch> GetBatchBySpe(int speId);
         List<Batch> GetBatchByDegreeLevel(int degreeLevelId);
         Batch GetBatchById(int id);
-        bool CheckBatchDuplicate(string batch_name, int degree_Id);
-        bool CheckBatchUpdateDuplicate(int id, string batch_name, int degree_Id);
+        bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id);
+        bool CheckBatchUpdateDuplicate(int id, int batchOrder, int degree_Id);
         bool CheckBatchExsit(int id);
         string CreateBatch(Batch batch);
         string UpdateBatch(Batch batch);
