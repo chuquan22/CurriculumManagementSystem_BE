@@ -10,6 +10,7 @@ using Repositories.Batchs;
 using Repositories.CurriculumBatchs;
 using Repositories.Curriculums;
 using Repositories.LearningMethods;
+using System.Security.Policy;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -73,6 +74,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 listCurriculumBatch.Add(curriBacthDTO);
             }
 
+            listCurriculumBatch = listCurriculumBatch.OrderBy(x => x.degree_level_name).ThenBy(x => x.batch_order).ToList();
+
             var total = _batchRepository.GetTotalCurriculumBatch(txtSearch);
             return Ok(new BaseResponse(false, "List Curriculum Batch", new BaseListResponse(page, limit, total, listCurriculumBatch)));
         }
@@ -88,12 +91,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("GetListCurriculumByBatch/{degree_level_id}/{batchName}")]
-        public async Task<IActionResult> GetListCurriculumByBatch(int degree_level_id, string batchName)
+        public async Task<IActionResult> GetListCurriculumByBatch(int degree_level_id, string batchName, [FromBody] List<string> curriculumCode)
         {
             var listCurriculum = _curriculumRepository.GetCurriculumByBatch(degree_level_id, batchName);
             var CurriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            var itemsToRemove = new List<CurriculumResponse>();
+
+            foreach (var code in curriculumCode)
+            {
+                var spilitCode = code.Split("-");
+                foreach (var item in CurriculumRespone)
+                {
+                    var splitItem = item.curriculum_code.Split("-");
+                    if(!code.Equals(item.curriculum_code) && spilitCode[1].Equals(splitItem[1]))
+                    {
+                        itemsToRemove.Add(item);
+                    }
+                }
+            }
+
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                CurriculumRespone.Remove(itemToRemove);
+            }
+
             return Ok(new BaseResponse(false, "list Curriculum", CurriculumRespone));
         }
+
 
 
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
