@@ -80,8 +80,8 @@ namespace DataAccess.DAO
         public bool CheckAssmentMethodExsit(int id)
         {
             var isExsitInSubject = _context.Subject.Where(x => x.assessment_method_id == id).FirstOrDefault();
-            var isExsitInGradingStructure = _context.GradingStruture.Where(x => x.assessment_method_id == id).FirstOrDefault();
-            if(isExsitInSubject == null &&  isExsitInGradingStructure == null)
+            //var isExsitInGradingStructure = _context.GradingStruture.Where(x => x.assessment_method_id == id).FirstOrDefault();
+            if (isExsitInSubject == null)
             {
                 return false;
             }

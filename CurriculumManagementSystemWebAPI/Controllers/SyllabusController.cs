@@ -27,7 +27,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {
@@ -527,7 +527,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var r in row)
             {
                 if (r == null) { }
-                r.SessionNo = r.SessionNo.Trim();
+                if(r.SessionNo == null) { r.SessionNo = ""; }
+                
                 GradingStruture g = new GradingStruture();
                 g.type_of_questions = r.type_of_questions;
                 g.number_of_questions = r.number_of_questions;
@@ -541,46 +542,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.scope_knowledge = r.scope;
                 g.how_granding_structure = r.how;
                 g.grading_note = r.Note;
-                try
-                {
-                    if(r.Reference != null && (r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")))
-                    {
-                        g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
-                    }
-                    if(r.Reference != null && r.SessionNo.Trim() != null)
-                    {
-                        g.assessment_method_id = GetAssessmentMethodByName(r.Reference, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
-                    }
-                    if(r.Reference == null && (r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")) )
-                    {
-                        g.assessment_method_id = GetAssessmentMethodByName(r.assessment_component, GetAssessmentTypeByName(r.assessment_type).assessment_type_id).assessment_method_id;
-
-                    }
-                }
-                catch (Exception)
-                {
-                    gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllaId);
-                    sessionRepository.DeleteSessionBySyllabusId(syllaId);
-                    cloRepository.DeleteCLOsBySyllabusId(syllaId);
-                    materialsRepository.DeleteMaterialBySyllabusId(syllaId);
-                    syllabusRepository.DeleteSyllabus(syllaId);
-                    throw new Exception("Import syllabus fail at sheet GradingStruture! Wrong Assessment Method!");
-                }
+                g.assessment_component = r.assessment_component;
+                g.assessment_type = r.assessment_type;
+               
                 g.clo_name = r.CLO;
                 result.Add(g);
 
             }
             return result;
-        }
-
-        private AssessmentMethod GetAssessmentMethodByName(string assessment_type, int id)
-        {
-            return assessmentMethodRepository.GetAssessmentMethodByNameAndTypeId(assessment_type, id);
-        }
-
-        private AssessmentType GetAssessmentTypeByName(string assessment_type)
-        {
-            return assessmentTypeRepository.GetAssessmentTypeByName(assessment_type);
         }
 
         private List<Session> GetScheduleExcel(IEnumerable<ScheduleExcel> row, Syllabus syllabus)
@@ -831,19 +800,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var materials = _mapper.Map<List<MaterialExportExcel>>(materials1);
             var clos = _mapper.Map <List<CLOsExportExcel>>(clos1);
             var schedule = _mapper.Map<List<SessionExcelExport>>(schedule1);
-            for (int i = 0; i < gradingStruture.Count - 1; i++)
-            {
-                int k = 0;
-                while (i + k + 1 < gradingStruture.Count && gradingStruture[i + k + 1].assessment_method_name.Contains(gradingStruture[i + k].assessment_method_name))
-                {
-                    k++;
-                }
-
-                for (int j = 1; j <= k; j++)
-                {
-                    gradingStruture[i + j].assessment_method_name = gradingStruture[i].assessment_method_name + " " + j;
-                }
-            }
+           
 
             for (int i = 0; i < gradingStruture.Count; i++)
             {
@@ -861,6 +818,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 schedule[i].no = i + 1;
             }
+            DateTime approvedDate = (DateTime)syllabus.approved_date;
+
+            string formattedDate = approvedDate.ToString("dd/MM/yyyy");
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
@@ -881,7 +841,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["note"] = syllabus.syllabus_note,
                 ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
                 ["scoring_scale"] = syllabus.scoring_scale,
-                ["approved_date"] = syllabus.approved_date,
+                ["approved_date"] = formattedDate,
                 //Tab Materials
                 ["materials"] = materials,
                 //Tab CLO

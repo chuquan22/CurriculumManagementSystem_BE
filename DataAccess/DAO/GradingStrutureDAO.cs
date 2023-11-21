@@ -142,7 +142,8 @@ namespace DataAccess.DAO
             oldGra.number_of_questions = gra.number_of_questions;
             oldGra.scope_knowledge = oldGra.scope_knowledge;
             oldGra.how_granding_structure = gra.how_granding_structure;
-            oldGra.assessment_method_id = gra.assessment_method_id;
+            oldGra.assessment_component = gra.assessment_component;
+            oldGra.assessment_type = gra.assessment_type;
             oldGra.grading_note = gra.grading_note;
             var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == gra.grading_id).ToList();
             foreach (var cLo in listCLo)

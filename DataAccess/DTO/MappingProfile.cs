@@ -90,8 +90,8 @@ namespace DataAccess.Models.DTO
             CreateMap<GradingStrutureRequest, GradingStruture>().ReverseMap();
             CreateMap<Syllabus, SyllabusRequest>().ReverseMap();
             CreateMap<GradingStruture, GradingStrutureExportExcel>()
-            .ForMember(dest => dest.assessment_method_name, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
-            .ForMember(dest => dest.assessment_type_name, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
+            .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.assessment_component))
+            .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_type))
             .ReverseMap();
 
             //
@@ -106,7 +106,8 @@ namespace DataAccess.Models.DTO
                  .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.grading_duration))
                  .ForMember(dest => dest.scope, opt => opt.MapFrom(src => src.scope_knowledge))
                  .ForMember(dest => dest.how, opt => opt.MapFrom(src => src.how_granding_structure))
-                 .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_method_id))
+                 .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_type))
+                     .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.assessment_component))
                  .ReverseMap();
 
             //Syllabus
@@ -177,9 +178,8 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
             //GradingStruture
             CreateMap<BusinessObject.GradingStruture, GradingStrutureResponse>()
-                 .ForMember(dest => dest.assessment_method_id, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_id))
-                 .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.AssessmentMethod.assessment_method_component))
-                 .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.AssessmentMethod.AssessmentType.assessment_type_name))
+                 .ForMember(dest => dest.assessment_component, opt => opt.MapFrom(src => src.assessment_component))
+                 .ForMember(dest => dest.assessment_type, opt => opt.MapFrom(src => src.assessment_type))
                  .ForMember(dest => dest.listCLO, opt => opt.MapFrom(src => src.GradingCLOs
                  .Where(gc => gc.grading_id == src.grading_id)
                  .Select(gc => new ListCLOsResponse { CLO_name = gc.CLO.CLO_name, CLO_id = gc.CLO.CLO_id })

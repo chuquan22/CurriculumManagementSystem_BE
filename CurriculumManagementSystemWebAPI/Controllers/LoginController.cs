@@ -182,7 +182,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Role,user.Role.role_name),
             };
 
-            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(1), signingCredentials: credentials);
+            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(2), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private string GenerateRefreshToken()
