@@ -120,11 +120,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [AllowAnonymous]
         public ActionResult GetRefreshToken(string refreshToken)
         {
-
+           
             User user = repo.GetUserByRefreshToken(refreshToken);
             if (user == null)
-            {
+            {                        
                 return BadRequest(new BaseResponse(true, "Token refreshed not avaiable!", null));
+            }
+            string[] splitRefresh = refreshToken.Split("|");
+            if (DateTime.Now > Convert.ToDateTime(splitRefresh[1]))
+            {
+                repo.DeleteRefreshTokenUser(user.user_id);
+                return BadRequest(new BaseResponse(true, "Refresh Token Has Expired!", null));
+
             }
             var token = GenerateToken(user);
             var newRefreshToken = GenerateRefreshToken();
@@ -182,13 +189,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Role,user.Role.role_name),
             };
 
-            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(2), signingCredentials: credentials);
+            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
         private string GenerateRefreshToken()
         {
-            var refreshToken = Guid.NewGuid().ToString();
-
+            var refreshToken = Guid.NewGuid().ToString() + "|" + DateTime.Now.AddHours(2);
             return refreshToken;
         }
 

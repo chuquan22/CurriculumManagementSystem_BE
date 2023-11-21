@@ -21,5 +21,6 @@ namespace Repositories.Users
         User GetUserByRefreshToken(string refreshToken);
 
         void SaveRefreshTokenUser(int user_id,string refreshToken);
+        void DeleteRefreshTokenUser(int user_id);
     }
 }
