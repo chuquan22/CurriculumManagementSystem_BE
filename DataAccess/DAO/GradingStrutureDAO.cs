@@ -51,6 +51,8 @@ namespace DataAccess.DAO
             if(gra.session_no == null)
             {
                 _cmsDbContext.GradingStruture.Add(gra);
+                gra.grading_part = 0;
+                //gra.grading_weight = 0;
                 _cmsDbContext.SaveChanges();
             }
             else
@@ -63,6 +65,7 @@ namespace DataAccess.DAO
                     _cmsDbContext.GradingStruture.Add(gra);
                     var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
                     father.grading_part += 1;
+                   father.grading_weight = father.grading_weight + gra.grading_weight;
                     _cmsDbContext.SaveChanges();
                 }
                 else
@@ -123,6 +126,7 @@ namespace DataAccess.DAO
            
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
             father.grading_part -= 1;
+           
             _cmsDbContext.GradingStruture.Remove(oldGra);
             _cmsDbContext.SaveChanges();
             return oldGra;
