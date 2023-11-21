@@ -14,7 +14,7 @@ namespace Repositories.AssessmentMethods
 
         public bool CheckAssmentMethodDuplicate(int id, string assmentMethod, int type)
         {
-            return assessmentMethodDAO.CheckAssmentMethodDuplicate(id,assmentMethod, type);
+            return assessmentMethodDAO.CheckAssmentMethodDuplicate(id, assmentMethod, type);
         }
 
         public bool CheckAssmentMethodExsit(int id)

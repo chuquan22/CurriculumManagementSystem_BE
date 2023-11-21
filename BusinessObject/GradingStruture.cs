@@ -37,8 +37,10 @@ namespace BusinessObject
         public string? scope_knowledge { get; set; }
         [AllowNull]
         public string? how_granding_structure { get; set;}
-        [ForeignKey("AssessmentMethod")]
-        public int assessment_method_id { get; set; }
+        [Required]
+        public string assessment_component { get; set; }
+        [Required]
+        public string assessment_type { get; set; }
         [AllowNull]
         public string? grading_note { get; set; }
         [AllowNull]

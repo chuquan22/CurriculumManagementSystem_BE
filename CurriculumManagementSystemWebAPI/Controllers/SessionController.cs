@@ -13,7 +13,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [Authorize(Roles = "Manager, Dispatcher")]
-
     [ApiController]
     public class SessionController : ControllerBase
     {
