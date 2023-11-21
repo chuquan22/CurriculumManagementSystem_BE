@@ -135,7 +135,6 @@ namespace DataAccess.DAO
                     var spe = semesterPlanForCurriculum.Curriculum.Specialization.specialization_english_name;
                     var totalSemester = semesterPlanForCurriculum.Curriculum.total_semester;
                     var semester = semesterPlanForCurriculum.Semester.semester_name + " " + semesterPlanForCurriculum.Semester.school_year;
-
                     int order = semester_root.Batch.batch_order - semesterPlanForCurriculum.Curriculum.total_semester;
                     var validSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > order && x.Batch.batch_order <= semester_root.Batch.batch_order).Where(x => x.Batch.degree_level_id == degreeLv).OrderByDescending(x => x.Batch.batch_order).ToList();
                     List<SemesterBatchResponse> batchResponses = new List<SemesterBatchResponse>();
@@ -254,9 +253,11 @@ namespace DataAccess.DAO
                         .Where(x => x.curriculum_id == item.curriculumId)
                         .OrderByDescending(x => x.Batch.batch_order)
                         .ToList();
+                    List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > (order - 7) && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
                     semesterPlanDetails.specialization_name = semesterPlan[i - 1].Curriculum.Specialization.specialization_english_name;
                     semesterPlanDetails.major_name = semesterPlan[i - 1].Curriculum.Specialization.Major.major_english_name;
                     semesterPlanDetails.specializationId = semesterPlan[i - 1].Curriculum.Specialization.specialization_id;
+                    semesterPlanDetails.validBatch = listSemesterValid.Select(x => new SemesterPlanBatchResponse() { batchName = x.Batch.batch_name, batchOrder = x.Batch.batch_order }).ToList();
                     dataTermNo = new DataTermNoResponse
                     {
                         term_no = semesterPlan[i - 1].term_no,
