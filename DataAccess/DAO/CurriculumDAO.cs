@@ -88,7 +88,8 @@ namespace DataAccess.DAO
             var curriculum = _cmsDbContext.Curriculum
                 .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
-                .Include(x => x.Semesters)
+                .ThenInclude(x => x.Semester)
+                .ThenInclude(x => x.Batch)
                 .Include(x => x.Specialization.Major)
                 .Include(x => x.Specialization.Major.DegreeLevel)
                 .Include(x => x.CurriculumSubjects)

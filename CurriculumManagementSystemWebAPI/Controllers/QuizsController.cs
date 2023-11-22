@@ -231,8 +231,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             ListQuestion = Listquestion,
                         };
 
-                        //Create Quiz
+                        if (_quizRepository.CheckQuizDuplicate(sheetName, subjectId))
+                        {
+                            return BadRequest(new BaseResponse(true, $"Import Fail. Please check {sheetName} is Duplicate in this subject"));
+                        }
 
+                        //Create Quiz
                         var quiz = new QuizDTORequest { quiz_name = sheetName, subject_id = subjectId };
 
                         var quizId = 0;

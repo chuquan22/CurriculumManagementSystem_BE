@@ -97,7 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 if (curriSubject.combo_id != 0 && curriSubject.combo_id != null)
                 {
-                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
+                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_code;
                 }
 
                 foreach (var curriSubjectResponse in curriculumSubjectResponse)

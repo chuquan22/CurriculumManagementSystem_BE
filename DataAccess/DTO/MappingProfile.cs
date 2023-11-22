@@ -221,6 +221,8 @@ namespace DataAccess.Models.DTO
             //Curriculum
             CreateMap<Curriculum, CurriculumResponse>()
             .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name))
+            .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Specialization.Semester.Batch.batch_name))
+            .ForMember(dest => dest.Semester, opt => opt.MapFrom(src => src.Specialization.Semester.school_year))
             .ForMember(dest => dest.vocational_code, opt => opt.MapFrom(src => src.Specialization.Major.major_code))
             .ForMember(dest => dest.vocational_name, opt => opt.MapFrom(src => src.Specialization.Major.major_name))
             .ForMember(dest => dest.vocational_english_name, opt => opt.MapFrom(src => src.Specialization.Major.major_english_name))
