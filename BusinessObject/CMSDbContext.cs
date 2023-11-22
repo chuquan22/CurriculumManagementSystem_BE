@@ -207,8 +207,8 @@ namespace BusinessObject
                );
 
             modelBuilder.Entity<Curriculum>().HasData(
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD-GD-CD-19.3", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 2, curriculum_code = "GD-GD-CD-19.2", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD-GD-CD-19.3", start_batch_id = 6, curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD-GD-CD-19.2", start_batch_id = 5, curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumBatch>().HasData(

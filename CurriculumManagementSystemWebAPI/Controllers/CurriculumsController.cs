@@ -117,17 +117,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
 
-            var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            var curriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
             
 
-            foreach (var curriculum in subjectRespone)
+            foreach (var curriculum in curriculumRespone)
             {
-                var array = curriculum.curriculum_code.Split("-");
-                curriculum.batch_name = array[3];
+                curriculum.batch_name = _batchRepository.GetBatchById(curriculum.start_batch_id).batch_name;
                 curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
             }
 
-            return Ok(new BaseResponse(false, "Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, subjectRespone)));
+            return Ok(new BaseResponse(false, "Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, curriculumRespone)));
 
         }
 
@@ -188,8 +187,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumRequest.batch_id ,curriculum.specialization_id);
-            curriculum.is_active = true;
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.start_batch_id ,curriculum.specialization_id);
+           
+            curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
+
             if (CheckCurriculumExists(curriculum.curriculum_code))
             {
                 return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} is Duplicate!"));
@@ -632,13 +633,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 }
 
                             }
-                            else if (r.Title.Equals("Approved date"))
+                            else if (r.Title.Equals("Approved date") && r.Details != null && r.Details != "")
                             {
-                                DateTime date;
-                                if (!DateTime.TryParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) &&
-                                    !DateTime.TryParseExact(r.Details, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                string[] date = r.Details.Split(' ');
+                               if(DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
                                 {
-                                    return $"Check to Approved Date: {r.Details}";
+                                    return $"Check approved date {date[0]}";
                                 }
                             }
                         }
@@ -810,16 +810,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     curriculum.decision_No = r.Details;
                 }
                 // if Title equal Approved date -> set approved_date = value in coloum detail
-                else if (r.Title.Equals("Approved date"))
+                else if (r.Title.Equals("Approved date") && r.Details != null && r.Details != "")
                 {
-                    DateTime date;
-                    if (DateTime.TryParseExact(r.Details, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date) )
-                    {
-                        curriculum.approved_date = date;
-                    }else if (DateTime.TryParseExact(r.Details, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
-                    {
-                        curriculum.approved_date = date;
-                    }
+                    string[] date = r.Details.Split(' ');
+                    curriculum.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
                 else if (r.Title.Equals("Vocational Code"))
                 {

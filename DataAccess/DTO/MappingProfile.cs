@@ -232,6 +232,7 @@ namespace DataAccess.Models.DTO
                     .ForMember(dest => dest.english_curriculum_name, opt => opt.MapFrom(src => src.english_curriculum_name.Trim()))
                     .ForMember(dest => dest.curriculum_name, opt => opt.MapFrom(src => src.curriculum_name.Trim()))
                     .ForMember(dest => dest.curriculum_description, opt => opt.MapFrom(src => src.curriculum_description.Trim()))
+                    .ForMember(dest => dest.start_batch_id, opt => opt.MapFrom(src => src.batch_id))
                     .ReverseMap();
 
             CreateMap<CurriculumUpdateRequest, Curriculum>()

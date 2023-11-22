@@ -61,7 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPut("UpdatePLOs/{id}")]
         public async Task<IActionResult> PutPLOs(int id, [FromBody]PLOsDTORequest pLOsDTORequest)
         {
-            if (PLOsExists(pLOsDTORequest.PLO_name, pLOsDTORequest.curriculum_id))
+            if (_plosRepository.CheckPLONameUpdateDuplicate(id, pLOsDTORequest.PLO_name, pLOsDTORequest.curriculum_id))
             {
                 return BadRequest(new BaseResponse(true, $"{pLOsDTORequest.PLO_name} is Duplicate!"));
             }

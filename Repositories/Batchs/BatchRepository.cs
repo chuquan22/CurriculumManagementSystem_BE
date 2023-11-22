@@ -62,6 +62,11 @@ namespace Repositories.Batchs
             return _batchDAO.GetBatchIDByName(batchName);
         }
 
+        public List<Batch> GetBatchNotExsitInSemester()
+        {
+            return _batchDAO.GetBatchNotExsitInSemester();
+        }
+
         public int GetTotalCurriculumBatch(string? txtSearch)
         {
             return _batchDAO.GetTotalCurriculumBatch(txtSearch);

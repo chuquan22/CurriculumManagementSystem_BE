@@ -12,6 +12,7 @@ namespace DataAccess.Models.DTO.response
         public string english_curriculum_name { get; set; }
         public string curriculum_description { get; set; }
         public int specialization_id { get; set; }
+        public int start_batch_id { get; set; }
         public string specialization_name { get; set; }
         public string batch_name { get; set; }
         public string decision_No { get; set; }
@@ -24,8 +25,5 @@ namespace DataAccess.Models.DTO.response
         public string vocational_name { get; set; }
         public string vocational_english_name { get; set; }
         public DateTime approved_date { get; set; }
-        public DateTime? updated_date { get; set; }
-       
-
     }
 }

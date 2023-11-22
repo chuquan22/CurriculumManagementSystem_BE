@@ -19,8 +19,7 @@ namespace DataAccess.DAO
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major)
-                .Where(x => x.is_active == true);
+                .Include(x => x.Specialization.Major);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {

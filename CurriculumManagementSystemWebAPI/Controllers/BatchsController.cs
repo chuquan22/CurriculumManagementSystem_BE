@@ -33,6 +33,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
+        [HttpGet("GetBatchNotExsitInSemester")]
+        public ActionResult GetBatchNotExsitInSemester()
+        {
+            var listBatch = batchRepository.GetBatchNotExsitInSemester();
+            var listBatchResponse = _mapper.Map<List<CurriculumBatchDTOResponse>>(listBatch);
+            return Ok(new BaseResponse(false, "List Batch", listBatchResponse));
+        }
+
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
         {

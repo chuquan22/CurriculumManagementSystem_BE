@@ -26,6 +26,11 @@ namespace DataAccess.DAO
             return (_context.PLOs?.Any(x => x.curriculum_id == curriId && x.PLO_name.Equals(ploName))).GetValueOrDefault();
         }
 
+        public bool CheckPLONameUpdateDuplicate(int id, string ploName, int curriId)
+        {
+            return (_context.PLOs?.Any(x => x.curriculum_id == curriId && x.PLO_name.Equals(ploName) && x.PLO_id != id)).GetValueOrDefault();
+        }
+
         public PLOs GetPLOsByName(string ploName, int curriId)
         {
             var plo = _context.PLOs?.FirstOrDefault(x => x.PLO_name.Equals(ploName) && x.curriculum_id == curriId);

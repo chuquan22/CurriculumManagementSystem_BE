@@ -81,10 +81,17 @@ namespace DataAccess.DAO
 
         public List<Batch> GetBatchByDegreeLevel(int degreeId)
         {
-            var listBatch = _context.Batch.Where(x => x.degree_level_id == degreeId).ToList(); ;
+            var listBatch = _context.Batch.Where(x => x.degree_level_id == degreeId).ToList();
             return listBatch;
         }
 
+        public List<Batch> GetBatchNotExsitInSemester()
+        {
+            var listBatchInSemester = _context.Semester.Include(x => x.Batch).Select(x => x.Batch).ToList();
+            var listBatch = GetAllBatch();
+            var listBatchNotInSemester = listBatch.Except(listBatchInSemester).ToList();
+            return listBatchNotInSemester;
+        }
 
         public bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id)
         {
