@@ -578,13 +578,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         foreach (var r in row)
                         {
-                            if (r.Title != null && r.Details == null)
-                            {
-                                return $"{r.Title} in sheet Curriculum must not be null";
-                            }
                             // Check format of curriculum code
                             string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
-                            if (r.Title.Equals("Curriculum Code"))
+                            if(r.Title == null) { }
+                            else if (r.Title.Equals("Curriculum Code"))
                             {
                                 if (!Regex.IsMatch(r.Details, pattern))
                                 {

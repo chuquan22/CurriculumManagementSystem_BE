@@ -33,7 +33,7 @@ namespace DataAccess.Combos
             List<Combo> rs = new List<Combo>();
             try
             {
-                var curriculum = db.Curriculum.FirstOrDefault(x => x.curriculum_id == curriId && x.is_active == true);
+                var curriculum = db.Curriculum.FirstOrDefault(x => x.curriculum_id == curriId);
                 rs = GetListCombo(curriculum.specialization_id);
             }
             catch (Exception)

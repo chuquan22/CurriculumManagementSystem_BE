@@ -42,8 +42,7 @@ namespace DataAccess.DAO
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major)
-                .Where(x => x.is_active == true);
+                .Include(x => x.Specialization.Major);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -93,7 +92,6 @@ namespace DataAccess.DAO
                 .Include(x => x.Specialization.Major)
                 .Include(x => x.Specialization.Major.DegreeLevel)
                 .Include(x => x.CurriculumSubjects)
-                .Where(x => x.is_active == true)
                 .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
         }

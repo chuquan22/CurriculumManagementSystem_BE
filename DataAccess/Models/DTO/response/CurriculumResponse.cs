@@ -15,7 +15,7 @@ namespace DataAccess.Models.DTO.response
         public int start_batch_id { get; set; }
         public string specialization_name { get; set; }
         public string batch_name { get; set; }
-        public string decision_No { get; set; }
+        public string? decision_No { get; set; }
         public int total_credit { get; set; }
         public int total_semester { get; set; }
         public string degree_level { get; set; }
@@ -24,6 +24,6 @@ namespace DataAccess.Models.DTO.response
         public string vocational_code { get; set; }
         public string vocational_name { get; set; }
         public string vocational_english_name { get; set; }
-        public DateTime approved_date { get; set; }
+        public DateTime? approved_date { get; set; }
     }
 }
