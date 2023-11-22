@@ -79,7 +79,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Combo rs = _mapper.Map<Combo>(cb);
-                bool checkCode = comboRepository.IsCodeExist(rs.combo_code);
+                bool checkCode = comboRepository.IsCodeExist(rs.combo_code,rs.specialization_id);
                 if (checkCode == false)
                 {
                     rs = comboRepository.CreateCombo(rs);

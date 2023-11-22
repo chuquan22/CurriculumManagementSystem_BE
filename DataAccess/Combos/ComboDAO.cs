@@ -67,13 +67,17 @@ namespace DataAccess.Combos
             }
         }
 
-        public bool IsCodeExist(string code)
+        public bool IsCodeExist(string code, int speId)
         {
             var combo = new Combo();
             try
             {
-                combo = db.Combo.Where(x => x.combo_code.Equals(code.Trim())).FirstOrDefault();
-                if(combo != null)
+                var spe = db.Specialization
+            .Where(x => x.specialization_id == speId && x.Combos.Any(c => c.combo_code.Equals(code)))
+            .FirstOrDefault();
+
+               
+                if(spe != null)
                 {
                     return true;
                 }

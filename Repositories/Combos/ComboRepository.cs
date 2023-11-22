@@ -48,9 +48,9 @@ namespace Repositories.Combos
         } 
 
 
-        public bool IsCodeExist(string code)
+        public bool IsCodeExist(string code, int speId)
         {
-           return db.IsCodeExist(code);
+           return db.IsCodeExist(code,speId);
 
         }
 

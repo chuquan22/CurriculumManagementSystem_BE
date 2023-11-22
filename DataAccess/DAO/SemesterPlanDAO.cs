@@ -23,12 +23,12 @@ namespace DataAccess.DAO
             int degreeLevel = Semester.Batch.degree_level_id;
             var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
             int validBatchOrder = StartBatch.batch_order - 7;
-            if (validBatchOrder <= 1)
+            if (validBatchOrder <= 0)
             {
-                validBatchOrder = 1;
+                validBatchOrder = 0;
             }
             var listValidSemesterCurri = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
-                    .Where(x => x.Batch.batch_order >= validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                    .Where(x => x.Batch.batch_order > validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
                     .OrderByDescending(x => x.Batch.batch_order)
                     .ToList();
             var ListCurri = getListValidCurri(listValidSemesterCurri);
@@ -36,13 +36,13 @@ namespace DataAccess.DAO
             foreach (var item in ListCurri)
             {
                 var Curriculum = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == item.curriculum_id).FirstOrDefault();
-                int validOrder = StartBatch.batch_order - Curriculum.total_semester;
-                if (validOrder <= 1)
+                int validOrder = StartBatch.batch_order - 7;
+                if (validOrder <= 0)
                 {
-                    validOrder = 1;
+                    validOrder = 0;
                 }
                 var listValidSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
-                    .Where(x => x.Batch.batch_order >= validOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                    .Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= StartBatch.batch_order)
                     .OrderByDescending(x => x.Batch.batch_order)
                     .ToList();
                 int specializationId = Curriculum.specialization_id;
@@ -202,6 +202,11 @@ namespace DataAccess.DAO
         {
             var Semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.semester_id == semester_id).FirstOrDefault();
             int order = Semester.Batch.batch_order;
+            int validOrder = order - 7;
+            if (validOrder <= 0)
+            {
+                validOrder = 0;
+            }
             var responseList = new SemesterPlanDetailsResponse
             {
                 spe = new List<SemesterPlanDetailsTermResponse>(),
@@ -247,13 +252,15 @@ namespace DataAccess.DAO
                         .ThenInclude(x => x.CurriculumSubjects)
                         .ThenInclude(x => x.Subject)
                         .ThenInclude(x => x.LearningMethod)
+                        .Where(x => x.semester_id == semester_id)
                         .Where(x => x.curriculum_id == item.curriculumId)
                         .ToList();
                     var curriBatch = _cmsDbContext.CurriculumBatch.Include(x => x.Batch)
                         .Where(x => x.curriculum_id == item.curriculumId)
+                        .Where(x => x.Batch.batch_order <= order && x.Batch.batch_order > validOrder)
                         .OrderByDescending(x => x.Batch.batch_order)
                         .ToList();
-                    List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > (order - 7) && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
+                    List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
                     semesterPlanDetails.specialization_name = semesterPlan[i - 1].Curriculum.Specialization.specialization_english_name;
                     semesterPlanDetails.major_name = semesterPlan[i - 1].Curriculum.Specialization.Major.major_english_name;
                     semesterPlanDetails.specializationId = semesterPlan[i - 1].Curriculum.Specialization.specialization_id;
