@@ -124,13 +124,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             User user = repo.GetUserByRefreshToken(refreshToken);
             if (user == null)
             {                        
-                return BadRequest(new BaseResponse(true, "Token refreshed not avaiable!", null));
+                return Unauthorized(new BaseResponse(true, "Token refreshed not avaiable!", null));
             }
             string[] splitRefresh = refreshToken.Split("|");
             if (DateTime.Now > Convert.ToDateTime(splitRefresh[1]))
             {
                 repo.DeleteRefreshTokenUser(user.user_id);
-                return BadRequest(new BaseResponse(true, "Refresh Token Has Expired!", null));
+                return Unauthorized(new BaseResponse(true, "Refresh Token Has Expired!", null));
 
             }
             var token = GenerateToken(user);
