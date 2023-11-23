@@ -308,7 +308,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.SaveAsByTemplate(templatePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
-            return Ok(fileContents);
+            return Ok(new BaseResponse(false, $"Curriculum-{curriculum.curriculum_code}-{curriculum.english_curriculum_name}", fileContents));
             // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
         }
 
