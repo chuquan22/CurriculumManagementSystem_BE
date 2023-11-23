@@ -596,7 +596,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     foreach (var r in row)
                     {
                         // Check format of curriculum code
-                        string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
+                        string pattern = @"^[A-Z]+-[A-Z]+-[A-Z]+-\d+(\.\d+)?$";
                         if (r.Title == null) { }
                         else if (r.Title.Equals("Curriculum Code"))
                         {
