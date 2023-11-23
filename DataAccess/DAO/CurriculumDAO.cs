@@ -233,7 +233,7 @@ namespace DataAccess.DAO
             }
             else
             {
-                Abbreviations = parts[0].ToUpper();
+                Abbreviations = parts[0].Substring(0, 1);
             }
             return Abbreviations;
         }

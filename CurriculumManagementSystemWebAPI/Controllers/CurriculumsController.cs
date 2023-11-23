@@ -647,8 +647,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             dateTime = r.Details;
                             string[] date = r.Details.Split(' ');
-
-
                             if (DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
                             {
                                 return $"Check approved date {date[0]}";
