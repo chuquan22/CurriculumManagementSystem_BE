@@ -16,6 +16,11 @@ namespace Repositories.GradingStruture
             return db.CreateGradingStruture(gra);
         }
 
+        public BusinessObject.GradingStruture CreateGradingStrutureAPI(BusinessObject.GradingStruture gra)
+        {
+            return db.CreateGradingStrutureAPI(gra);
+        }
+
         public BusinessObject.GradingStruture DeleteGradingStruture(int id)
         {
             return db.DeleteGradingStruture(id);

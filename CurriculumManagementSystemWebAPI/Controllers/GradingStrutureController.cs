@@ -100,7 +100,49 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
+        [HttpPost("CreateGradingStructureAPI")]
+        public ActionResult CreateGradingStructureAPI(GradingStrutureCreateRequest gra)
+        {
+            if (gra == null)
+            {
+                return BadRequest(new BaseResponse(true, "Invalid request. 'gra' is null.", null));
+            }
 
+            if (gra.gradingStruture == null || gra.gradingCLORequest == null)
+            {
+                return BadRequest(new BaseResponse(true, "Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.", null));
+            }
+
+            try
+            {
+                GradingStruture rs = _mapper.Map<GradingStruture>(gra.gradingStruture);
+                if (rs.number_of_questions == null)
+                {
+                    rs.number_of_questions = "";
+                }
+                rs = gradingStrutureRepository.CreateGradingStrutureAPI(rs);
+
+                if (rs != null)
+                {
+                    foreach (var g in gra.gradingCLORequest.CLO_id)
+                    {
+                        GradingCLO rs2 = new GradingCLO
+                        {
+                            CLO_id = g,
+                            grading_id = rs.grading_id
+                        };
+
+                        var rs3 = gradingCLOsRepository.CreateGradingCLO(rs2);
+                    }
+                }
+
+                return Ok(new BaseResponse(false, "Successfully", rs));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+            }
+        }
         [HttpPut]
         public ActionResult UpdateStruture(GradingStrutureUpdateRequest gra)
         {

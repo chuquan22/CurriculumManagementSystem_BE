@@ -75,7 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUserRole/{id}")]
-        public ActionResult UpdateUser(int id, [FromBody]UserUpdateRequest userUpdateRequest)
+        public ActionResult UpdateUserRole(int id, [FromBody]UserUpdateRequest userUpdateRequest)
         {
 
             var user = _usersRepository.GetUserById(id);
@@ -86,6 +86,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             user.role_id = userUpdateRequest.role_id;
             user.is_active = userUpdateRequest.is_active;
             
+            string updateResult = _usersRepository.UpdateUser(user);
+            if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
+            }
+            var userResponse = _mapper.Map<UserResponse>(user);
+            return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateUser/{id}")]
+        public ActionResult UpdateUser(int id, [FromBody] UserUpdateRequest userUpdateRequest)
+        {
+
+            var user = _usersRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found User"));
+            }
+            user.role_id = userUpdateRequest.role_id;
+            user.is_active = userUpdateRequest.is_active;
+            user.full_name = userUpdateRequest.fu
             string updateResult = _usersRepository.UpdateUser(user);
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
