@@ -44,13 +44,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
-        [HttpGet("GetAllMajorSubject")]
-        public ActionResult GetAllMajorSubject()
+        [HttpGet("GetAllMajorSubjectByDegreeLevel/{degree_id}")]
+        public ActionResult GetAllMajorSubject(int degree_id)
         {
             List<Major> rs = new List<Major>();
             try
             {
-                rs = majorRepository.GetAllMajor();
+                rs = majorRepository.GetMajorByDegreeLevel(degree_id);
                 var listMajorRespone = _mapper.Map<List<MajorSubjectDTOResponse>>(rs);
 
                 foreach (var major in listMajorRespone)
