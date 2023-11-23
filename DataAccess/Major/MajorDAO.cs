@@ -100,7 +100,7 @@ namespace DataAccess.Major
 
         public BusinessObject.Major CheckMajorbyMajorCode(string code)
         {
-            return db.Major?.FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()));
+            return db.Major?.Include(x =>x.DegreeLevel).FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()));
         }
 
         public BusinessObject.Major CheckMajorbyMajorName(string name)

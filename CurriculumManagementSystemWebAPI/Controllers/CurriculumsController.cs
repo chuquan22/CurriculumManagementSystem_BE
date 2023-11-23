@@ -835,8 +835,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 else if (r.Title.Equals("Vocational Code"))
                 {
-                    // set major_code = value in coloum detail
-                    major.major_code = r.Details;
+                    major = _majorRepository.CheckMajorbyMajorCode(r.Details);
                 }
                 else if (r.Title.Equals("Formality"))
                 {
@@ -846,20 +845,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                 }
-
+              
             }
-            double batchValue;
-
-            if (double.TryParse(batch_name, out batchValue))
+            
+            if(major.DegreeLevel.degree_level_english_name.Equals("Associate Degree"))
             {
-                if (batchValue < 19.2)
-                {
-                    curriculum.total_semester = 7;
-                }
-                else
-                {
-                    curriculum.total_semester = 6;
-                }
+                curriculum.total_semester = double.Parse(batch_name) >= 19.2 ? 6 : 7;
+            }else if (major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
+            {
+                curriculum.total_semester = int.Parse(batch_name) >= 19 ? 6 : 7;
+            }
+            else
+            {
+
             }
 
             return curriculum;
