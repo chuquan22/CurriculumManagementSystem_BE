@@ -106,7 +106,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             user.role_id = userUpdateRequest.role_id;
             user.is_active = userUpdateRequest.is_active;
-            user.full_name = userUpdateRequest.fu
             string updateResult = _usersRepository.UpdateUser(user);
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
