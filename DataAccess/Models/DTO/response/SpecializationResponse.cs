@@ -13,5 +13,8 @@ namespace DataAccess.Models.DTO.response
         public string specialization_code { get; set; }
         public string specialization_name { get; set; }
         public string specialization_english_name { get; set; }
+        public int semester_id { get; set; }
+        public int major_id { get; set; }
+        public string Degree_level_code { get; set; }
     }
 }

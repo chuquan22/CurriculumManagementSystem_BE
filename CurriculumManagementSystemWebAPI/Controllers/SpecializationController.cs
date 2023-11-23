@@ -32,7 +32,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = specializationRepository.GetSpecialization();
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var speResponse = _mapper.Map<List<SpecializationResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", speResponse));
             }
             catch (Exception ex)
             {

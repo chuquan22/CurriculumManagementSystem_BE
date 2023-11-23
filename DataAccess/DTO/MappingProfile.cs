@@ -147,11 +147,12 @@ namespace DataAccess.Models.DTO
                 .ReverseMap();
 
             CreateMap<SpecializationUpdateRequest, BusinessObject.Specialization>()
-                 .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.specialization_name.Trim()))
+                .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.specialization_name.Trim()))
                 .ForMember(dest => dest.specialization_english_name, opt => opt.MapFrom(src => src.specialization_english_name.Trim()))
                 .ReverseMap();
 
             CreateMap<BusinessObject.Specialization, SpecializationResponse>()
+               .ForMember(dest => dest.Degree_level_code, opt => opt.MapFrom(src => src.Major.DegreeLevel.degree_level_code))
                .ReverseMap();
             //AssessmentType
             CreateMap<BusinessObject.AssessmentType, AssessmentTypeResponse>().ReverseMap();

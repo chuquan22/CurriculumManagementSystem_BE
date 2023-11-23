@@ -19,7 +19,7 @@ namespace DataAccess.Specialization
             List<BusinessObject.Specialization> list = new List<BusinessObject.Specialization>();
             try
             {
-               list = db.Specialization.ToList();              
+               list = db.Specialization.Include(x => x.Major.DegreeLevel).ToList();              
             }
             catch (Exception)
             {

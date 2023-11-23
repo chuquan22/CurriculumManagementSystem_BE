@@ -93,7 +93,7 @@ namespace DataAccess.DAO
             }
             else if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
             {
-                totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 7;
+                totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 8;
             }
             else
             {
