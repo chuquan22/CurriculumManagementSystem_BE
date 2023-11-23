@@ -44,6 +44,7 @@ namespace DataAccess.Models.DTO
 
             CreateMap<BusinessObject.Major, MajorResponse>()
              .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_english_name))
+             .ForMember(dest => dest.degree_level_code, opt => opt.MapFrom(src => src.DegreeLevel.degree_level_code))
              .ReverseMap();
 
             CreateMap<BusinessObject.Major, MajorSubjectDTOResponse>()

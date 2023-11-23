@@ -13,6 +13,7 @@ namespace DataAccess.Models.DTO.response
         public string major_name { get; set; }
         public string major_english_name { get; set; }
         public string degree_level_name { get; set; }
+        public string degree_level_code { get; set; }
         public bool is_active { get; set; }
     }
 }
