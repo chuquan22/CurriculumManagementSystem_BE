@@ -96,7 +96,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUser/{id}")]
-        public ActionResult UpdateUser(int id, [FromBody] UserUpdateRequest userUpdateRequest)
+        public ActionResult UpdateUser(int id, [FromBody] UpdateUserRequest userUpdateRequest)
         {
 
             var user = _usersRepository.GetUserById(id);
@@ -104,8 +104,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found User"));
             }
-            user.role_id = userUpdateRequest.role_id;
-            user.is_active = userUpdateRequest.is_active;
+            user.user_name = userUpdateRequest.user_name;
+            user.full_name = userUpdateRequest.full_name;
             string updateResult = _usersRepository.UpdateUser(user);
             if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
             {
@@ -114,6 +114,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var userResponse = _mapper.Map<UserResponse>(user);
             return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
         }
+
+
         [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser/{id}")]
         public ActionResult DeleteUser(int id)
