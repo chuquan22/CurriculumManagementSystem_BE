@@ -170,6 +170,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             _mapper.Map(curriculumRequest, curriculum);
+            curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
+
             string updateResult = _curriculumRepository.UpdateCurriculum(curriculum);
 
             if (!updateResult.Equals("OK"))
