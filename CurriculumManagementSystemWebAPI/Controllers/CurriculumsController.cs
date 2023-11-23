@@ -145,6 +145,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
         }
 
+        // GET: api/Curriculums/GetCurriculum/5
+        [HttpGet("GetTotalSemester/{speId}/{batchId}")]
+        public async Task<ActionResult<CurriculumResponse>> GetTotalSemester(int speId, int batchId)
+        {
+            var totalSemester = _curriculumRepository.GetTotalSemester(speId, batchId);
+            return Ok(new BaseResponse(false, "total", totalSemester));
+        }
+
         // GET: api/Curriculums/GetListBatchNotInCurriculum/code
         [HttpGet("GetListBatchNotInCurriculum/{curriculumCode}")]
         public async Task<ActionResult<Batch>> GetlistBatch(string curriculumCode)

@@ -154,7 +154,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, deleteResult));
             }
 
-            return Ok(new BaseResponse(false, "Delete Success!", semester));
+            return Ok(new BaseResponse(false, "Delete Success!"));
         }
     }
 }
