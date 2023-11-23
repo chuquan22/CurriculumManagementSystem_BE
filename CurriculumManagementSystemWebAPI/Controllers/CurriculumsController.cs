@@ -258,13 +258,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
+            //if(curriculum.decision_No == null)
+            //{
+            //    return BadRequest(new BaseResponse(true, $"Export Fail.Curriculum not yet applied"));
+            //}
+
             var subjectN1 = GetArraySubject(subject1, subject2, subject3);
             var subjectN2 = GetArraySubject(subject4, subject5, subject6);
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
-                ["decision_No"] = curriculum.decision_No,
-                ["approved_date"] = $"Ngày {curriculum.approved_date.Value.Day} tháng {curriculum.approved_date.Value.Month} năm {curriculum.approved_date.Value.Year}",
+                ["decision_No"] = curriculum.decision_No == null ? "..." : curriculum.decision_No,
+                ["approved_date"] = curriculum.approved_date == null ? "" : $"Ngày {curriculum.approved_date.Value.Day} tháng {curriculum.approved_date.Value.Month} năm {curriculum.approved_date.Value.Year} ",
                 ["major_name"] = major.major_name,
                 ["major_english_name"] = major.major_english_name,
                 ["major_code"] = major.major_code,
