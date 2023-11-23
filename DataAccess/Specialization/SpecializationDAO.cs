@@ -62,7 +62,7 @@ namespace DataAccess.Specialization
 
         public BusinessObject.Specialization GetSpeById(int speId)
         {
-            var spe = db.Specialization.Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
             return spe;
         }
 

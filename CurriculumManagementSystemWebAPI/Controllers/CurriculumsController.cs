@@ -102,7 +102,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "list Batch", listBatch));
         }
 
-       
+
 
 
         // GET: api/Curriculums/Pagination/5/6/search/1
@@ -118,7 +118,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
 
             var curriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
-            
+
 
             foreach (var curriculum in curriculumRespone)
             {
@@ -189,8 +189,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.start_batch_id ,curriculum.specialization_id);
-           
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.start_batch_id, curriculum.specialization_id);
+
             curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
 
             if (CheckCurriculumExists(curriculum.curriculum_code))
@@ -344,7 +344,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             try
                             {
                                 curriculum_id = await CreateCurriculumsAPI(curriculumExcel);
-                                curriculum =  _curriculumRepository.GetCurriculumById(curriculum_id);
+                                curriculum = _curriculumRepository.GetCurriculumById(curriculum_id);
                             }
                             catch (Exception ex)
                             {
@@ -413,7 +413,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var group_name = "";
                             var groupNames = new List<string>
                                 {
-                                     "General Subject", "Basic Subject", "Specialization Subject", "Elective Subject" 
+                                     "General Subject", "Basic Subject", "Specialization Subject", "Elective Subject"
                                 };
                             using (var package = new ExcelPackage(stream))
                             {
@@ -562,212 +562,228 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private string ValidationDataExcel(string path, List<string> sheetNames, FileStream stream)
         {
-            try
+
+            List<Subject> listSubject = new List<Subject>();
+            List<PLOs> listPLO = new List<PLOs>();
+            if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
             {
-                List<Subject> listSubject = new List<Subject>();
-                List<PLOs> listPLO = new List<PLOs>();
-                if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
+                return "File is not in a supported format.";
+            }
+            for (int i = 0; i < sheetNames.Count; i++)
+            {
+                // validate data sheet 1
+                if (i == 0)
                 {
-                    return "File is not in a supported format.";
-                }
-                for (int i = 0; i < sheetNames.Count; i++)
-                {
-                    // validate data sheet 1
-                    if (i == 0)
+                    var major = new Major();
+                    var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                    string batch_name = "";
+                    bool checkApproved = false;
+                    string decicionNo = null;
+                    string dateTime = null;
+                    foreach (var r in row)
                     {
-                        var major = new Major();
-                        var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-
-                        foreach (var r in row)
+                        // Check format of curriculum code
+                        string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
+                        if (r.Title == null) { }
+                        else if (r.Title.Equals("Curriculum Code"))
                         {
-                            // Check format of curriculum code
-                            string pattern = @"^([A-Z]{2}-[A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
-                            if(r.Title == null) { }
-                            else if (r.Title.Equals("Curriculum Code"))
+                            if (!Regex.IsMatch(r.Details, pattern))
                             {
-                                if (!Regex.IsMatch(r.Details, pattern))
-                                {
-                                    return "Curriculum Code must format ex:GD-GD-CD-19.3";
-                                }
-
-                                if (CheckCurriculumExists(r.Details))
-                                {
-                                    return $"Curriculum {r.Details} is Duplicate!";
-                                }
-                                string[] parts = r.Details.Split('-');
-                                // get part have index 2 in array string ex: 19.4
-                                var batch_name = parts[3];
-                                // get batch_id by batch_name
-                                if (_batchRepository.GetBatchIDByName(batch_name) == 0)
-                                {
-                                    return $"Batch {batch_name} Not Exsit";
-                                }
-
+                                return "Curriculum Code must format ex:GD-GD-CD-19.3";
                             }
-                            // Check Major Exsit
-                            else if (r.Title.Equals("Vocational Code"))
+
+                            if (CheckCurriculumExists(r.Details))
                             {
-                                major = _majorRepository.CheckMajorbyMajorCode(r.Details);
-                                //if major not exsit in database
-                                if (major == null)
-                                {
-                                    return $"Major not Exsit. Please Create Major {r.Details}";
-                                }
+                                return $"Curriculum {r.Details} is Duplicate!";
                             }
-                            // Check Spe exsit
-                            else if (r.Title.Equals("Specialization Code"))
+                            string[] parts = r.Details.Split('-');
+                            // get part have index 2 in array string ex: 19.4
+                            batch_name = parts[3];
+                            // get batch_id by batch_name
+                            if (_batchRepository.GetBatchIDByName(batch_name) == 0)
                             {
-                                var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
-                                var spe = _specializationRepository.GetSpeById(spe_id);
-
-                                //if major not exsit in database
-                                if (spe_id == 0)
-                                {
-                                    return $"Specialization not Exsit. Please Create Specialization {r.Details}";
-                                }
-
-                                if (spe.major_id != major.major_id)
-                                {
-                                    return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
-                                }
-
+                                return $"Batch {batch_name} Not Exsit";
                             }
-                            else if (r.Title.Equals("Approved date") && r.Details != null && r.Details != "")
+
+                        }
+                        // Check Major Exsit
+                        else if (r.Title.Equals("Vocational Code"))
+                        {
+                            major = _majorRepository.CheckMajorbyMajorCode(r.Details);
+                            //if major not exsit in database
+                            if (major == null)
                             {
-                                string[] date = r.Details.Split(' ');
-                               if(DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
-                                {
-                                    return $"Check approved date {date[0]}";
-                                }
+                                return $"Major not Exsit. Please Create Major {r.Details}";
                             }
                         }
-
-
-                    }
-
-                    // validate data sheet 2
-                    if (i == 1)
-                    {
-                        // check PLO Exsit
-                        var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                        foreach (var item in row)
+                        // Check Spe exsit
+                        else if (r.Title.Equals("Specialization Code"))
                         {
-                            if (item.No != null && item.PLO_name == null || item.PLO_description == null)
-                            {
-                                return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
-                            }
-                            var plo = new PLOs();
-                            plo.PLO_name = item.PLO_name;
+                            var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
+                            var spe = _specializationRepository.GetSpeById(spe_id);
 
-                            foreach (var PLO in listPLO)
+                            //if major not exsit in database
+                            if (spe_id == 0)
                             {
-                                if (plo.PLO_name.Equals(PLO.PLO_name))
-                                {
-                                    return $"Only one {plo.PLO_name} in Sheet PLO";
-                                }
-                                if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
-                                {
-                                    return "PLO must start with 'PLO' and no cointain space ";
-                                }
+                                return $"Specialization not Exsit. Please Create Specialization {r.Details}";
                             }
-                            listPLO.Add(plo);
+
+                            if (spe.major_id != major.major_id)
+                            {
+                                return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
+                            }
+
+                            if (double.Parse(spe.Semester.Batch.batch_name) >= double.Parse(batch_name))
+                            {
+                                return $"Curriculum must start batch greater than {spe.Semester.Batch.batch_name}";
+                            }
+
                         }
-                    }
-
-                    // validate data sheet 3
-                    if (i == 2)
-                    {
-                        // Check Subject Exsit
-                        var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null);
-                        foreach (var item in row)
+                        else if (r.Title.Equals("Decision No."))
                         {
-                            if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
-                            {
-                                return "Must be fill all data in sheet Curriculum Subject";
-                            }
-                            if (item.subject_code != null && item.subject_code != "")
-                            {
-                                var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
-                                if (subject == null)
-                                {
-                                    return $"Subject {item.subject_code} Not Found. Please Create Subject";
-                                }
-                                listSubject.Add(new Subject { subject_code = item.subject_code });
-                            }
-                            string combo_code = item.combo_code;
-                            if (combo_code != null && combo_code != "")
-                            {
-                                var combo = _comboRepository.FindComboByCode(item.combo_code);
-                                if (combo == null)
-                                {
-                                    return $"Combo {item.combo_code} Not Found. Please Create Combo";
-                                }
-                            }
+                            decicionNo = r.Details;
+                        }
+                        else if (r.Title.Equals("Approved date"))
+                        {
+                            dateTime = r.Details;
+                            string[] date = r.Details.Split(' ');
 
-                            int count = row.Count(data => data.option != null && data.option.Equals("True") && data.term_no == item.term_no);
-                            if (count % 2 != 0)
+
+                            if (DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
                             {
-                                return $"Subject have option in term no {item.term_no} must even number";
+                                return $"Check approved date {date[0]}";
                             }
 
                         }
 
-
                     }
-                    // validate data sheet 4
-                    if (i == 3)
+                    if (!((decicionNo == null && dateTime == null) || (decicionNo != null && dateTime != null)))
                     {
-                        using (var package = new ExcelPackage(stream))
-                        {
-                            var worksheet = package.Workbook.Worksheets[3];
-
-                            for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                            {
-                                for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
-                                {
-                                    var celplo = worksheet.Cells[2, col];
-                                    bool found_plo = false;
-                                    bool found_subject = false;
-                                    foreach (var plo in listPLO)
-                                    {
-                                        if (plo.PLO_name.Equals(celplo.Text))
-                                        {
-                                            found_plo = true;
-
-                                        }
-                                    }
-                                    if (!found_plo)
-                                    {
-                                        return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
-                                    }
-
-                                    var subjectCode = worksheet.Cells[row, 1];
-                                    foreach (var subject in listSubject)
-                                    {
-                                        if (subject.subject_code.Equals(subjectCode.Text))
-                                        {
-                                            found_subject = true;
-                                        }
-
-                                    }
-                                    if (!found_subject && !subjectCode.Text.Contains(" "))
-                                    {
-                                        return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
-                                    }
-
-                                }
-                            }
-                        }
+                        return $"Both the Decicion No and Approved Date fields must have a value or be blank";
                     }
+
 
                 }
 
-                return "Success";
+                // validate data sheet 2
+                if (i == 1)
+                {
+                    // check PLO Exsit
+                    var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                    foreach (var item in row)
+                    {
+                        if (item.No != null && item.PLO_name == null || item.PLO_description == null)
+                        {
+                            return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
+                        }
+                        var plo = new PLOs();
+                        plo.PLO_name = item.PLO_name;
+
+                        foreach (var PLO in listPLO)
+                        {
+                            if (plo.PLO_name.Equals(PLO.PLO_name))
+                            {
+                                return $"Only one {plo.PLO_name} in Sheet PLO";
+                            }
+                            if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
+                            {
+                                return "PLO must start with 'PLO' and no cointain space ";
+                            }
+                        }
+                        listPLO.Add(plo);
+                    }
+                }
+
+                // validate data sheet 3
+                if (i == 2)
+                {
+                    // Check Subject Exsit
+                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null);
+                    foreach (var item in row)
+                    {
+                        if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
+                        {
+                            return "Must be fill all data in sheet Curriculum Subject";
+                        }
+                        if (item.subject_code != null && item.subject_code != "")
+                        {
+                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                            if (subject == null)
+                            {
+                                return $"Subject {item.subject_code} Not Found. Please Create Subject";
+                            }
+                            listSubject.Add(new Subject { subject_code = item.subject_code });
+                        }
+                        string combo_code = item.combo_code;
+                        if (combo_code != null && combo_code != "")
+                        {
+                            var combo = _comboRepository.FindComboByCode(item.combo_code);
+                            if (combo == null)
+                            {
+                                return $"Combo {item.combo_code} Not Found. Please Create Combo";
+                            }
+                        }
+
+                        int count = row.Count(data => data.option != null && data.option.Equals("True") && data.term_no == item.term_no);
+                        if (count % 2 != 0)
+                        {
+                            return $"Subject have option in term no {item.term_no} must even number";
+                        }
+
+                    }
+
+
+                }
+                // validate data sheet 4
+                if (i == 3)
+                {
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[3];
+
+                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                            {
+                                var celplo = worksheet.Cells[2, col];
+                                bool found_plo = false;
+                                bool found_subject = false;
+                                foreach (var plo in listPLO)
+                                {
+                                    if (plo.PLO_name.Equals(celplo.Text))
+                                    {
+                                        found_plo = true;
+
+                                    }
+                                }
+                                if (!found_plo)
+                                {
+                                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                }
+
+                                var subjectCode = worksheet.Cells[row, 1];
+                                foreach (var subject in listSubject)
+                                {
+                                    if (subject.subject_code.Equals(subjectCode.Text))
+                                    {
+                                        found_subject = true;
+                                    }
+
+                                }
+                                if (!found_subject && !subjectCode.Text.Contains(" "))
+                                {
+                                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
+                                }
+
+                            }
+                        }
+                    }
+                }
+
             }
-            catch (Exception)
-            {
-                return "File import cancelled due to errors";
-            }
+
+            return "Success";
+
         }
         private CurriculumRequest GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
         {
@@ -904,7 +920,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var haveSubject = _context.CurriculumSubject?.FirstOrDefault(e => e.curriculum_id == id);
             var haveBatch = _context.CurriculumBatch?.FirstOrDefault(e => e.curriculum_id == id);
-            if(haveSubject == null && haveBatch == null)
+            if (haveSubject == null && haveBatch == null)
             {
                 return false;
             }
