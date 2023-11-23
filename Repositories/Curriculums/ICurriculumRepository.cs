@@ -16,6 +16,7 @@ namespace Repositories.Curriculums
         List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode);
         string GetCurriculumCode(int batchId, int speId);
         Curriculum GetCurriculumById(int id);
+        int GetTotalSemester(int speId, int batchId);
         int GetTotalCredit(int curriculumId);
         List<Batch> GetBatchByCurriculumCode(string curriculumCode);
         List<Curriculum> GetListCurriculumByBatchName(int batchId, string batchName);

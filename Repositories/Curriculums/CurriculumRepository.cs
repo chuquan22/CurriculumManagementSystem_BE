@@ -36,7 +36,9 @@ namespace Repositories.Curriculums
        
 
         public int GetTotalCredit(int curriculumId) => curriculumDAO.GetTotalCredit(curriculumId);
-        
+
+        public int GetTotalSemester(int speId, int batchId) => curriculumDAO.GetTotalSemester(speId, batchId);
+       
 
         public List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? majorId) => curriculumDAO.PanigationCurriculum(page,limit, txtSearch, majorId);  
         

@@ -82,7 +82,25 @@ namespace DataAccess.DAO
             return total;
         }
 
+        public int GetTotalSemester(int speId, int batchId)
+        {
+            int totalSemester = 0;
+            var batch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var spe = _cmsDbContext.Specialization.Include(x => x.Major.DegreeLevel).FirstOrDefault(x => x.specialization_id == speId);
+            if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Associate Degree"))
+            {
+                totalSemester = double.Parse(batch.batch_name) >= 19.2 ? 6 : 7;
+            }
+            else if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
+            {
+                totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 7;
+            }
+            else
+            {
 
+            }
+            return totalSemester;
+        }
         public Curriculum GetCurriculumById(int id)
         {
             var curriculum = _cmsDbContext.Curriculum

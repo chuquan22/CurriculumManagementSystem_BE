@@ -190,7 +190,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
             curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.start_batch_id, curriculum.specialization_id);
-
+            curriculum.total_semester = _curriculumRepository.GetTotalSemester(curriculum.specialization_id, curriculum.start_batch_id);
             curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
 
             if (CheckCurriculumExists(curriculum.curriculum_code))
@@ -791,8 +791,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private CurriculumRequest GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
         {
             var curriculum = new CurriculumRequest();
-            var major = new Major();
-            var batch_name = "";
+            curriculum.total_semester = 7;
             foreach (var r in row)
             {
                 // if title is null -> nothing
@@ -808,7 +807,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     // Split string ex: GD-GD-CD-19.4
                     string[] parts = r.Details.Split('-');
                     // get part have index 2 in array string ex: 19.4
-                    batch_name = parts[3];
+                   var batch_name = parts[3];
                     // get batch_id by batch_name
                     curriculum.batch_id = _batchRepository.GetBatchIDByName(batch_name);
                 }
@@ -833,10 +832,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     string[] date = r.Details.Split(' ');
                     curriculum.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
-                else if (r.Title.Equals("Vocational Code"))
-                {
-                    major = _majorRepository.CheckMajorbyMajorCode(r.Details);
-                }
                 else if (r.Title.Equals("Formality"))
                 {
                     curriculum.Formality = r.Details;
@@ -845,20 +840,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                 }
-              
+                
             }
             
-            if(major.DegreeLevel.degree_level_english_name.Equals("Associate Degree"))
-            {
-                curriculum.total_semester = double.Parse(batch_name) >= 19.2 ? 6 : 7;
-            }else if (major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
-            {
-                curriculum.total_semester = int.Parse(batch_name) >= 19 ? 6 : 7;
-            }
-            else
-            {
-
-            }
+            
 
             return curriculum;
         }
