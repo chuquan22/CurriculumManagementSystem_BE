@@ -22,6 +22,11 @@ namespace Repositories.Batchs
             return _batchDAO.CheckBatchExsit(id);
         }
 
+        public bool CheckBatchNameExsit(string batchName, int degreeId)
+        {
+            return _batchDAO.CheckBatchNameExsit(batchName, degreeId);
+        }
+
         public bool CheckBatchUpdateDuplicate(int id, int batchOrder, int degree_Id)
         {
             return _batchDAO.CheckBatchUpdateDuplicate(id, batchOrder, degree_Id);

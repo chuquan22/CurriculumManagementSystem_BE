@@ -612,11 +612,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             string[] parts = r.Details.Split('-');
                             // get part have index 2 in array string ex: 19.4
                             batch_name = parts[3];
-                            // get batch_id by batch_name
-                            if (_batchRepository.GetBatchIDByName(batch_name) == 0)
-                            {
-                                return $"Batch {batch_name} Not Exsit";
-                            }
+                           
 
                         }
                         // Check Major Exsit
@@ -628,6 +624,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 return $"Major not Exsit. Please Create Major {r.Details}";
                             }
+
                         }
                         // Check Spe exsit
                         else if (r.Title.Equals("Specialization Code"))
@@ -672,7 +669,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         return $"Both the Decicion No and Approved Date fields must have a value or be blank";
                     }
-
+                    if(!_batchRepository.CheckBatchNameExsit(batch_name, major.degree_level_id))
+                    {
+                        return $"Batch {batch_name} Not Exsit In Degree Level {major.DegreeLevel.degree_level_english_name}";
+                    }
 
                 }
 

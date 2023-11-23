@@ -113,6 +113,11 @@ namespace DataAccess.DAO
             return true;
         }
 
+        public bool CheckBatchNameExsit(string batchName, int degreeId)
+        {
+            return (_context.Batch?.Any(x => x.batch_name.Equals(batchName) && x.degree_level_id == degreeId)).GetValueOrDefault();
+        }
+
         public List<Batch> GetBatchBySpe(int speId)
         {
             var specialization = _context.Specialization

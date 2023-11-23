@@ -19,6 +19,7 @@ namespace Repositories.Batchs
         Batch GetBatchById(int id);
         bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id);
         bool CheckBatchUpdateDuplicate(int id, int batchOrder, int degree_Id);
+        bool CheckBatchNameExsit(string batchName, int degreeId);
         bool CheckBatchExsit(int id);
         string CreateBatch(Batch batch);
         string UpdateBatch(Batch batch);
