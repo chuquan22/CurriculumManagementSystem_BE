@@ -121,7 +121,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs.number_of_questions = "";
                 }
                 rs = gradingStrutureRepository.CreateGradingStrutureAPI(rs);
+                if(rs == null)
+                {
+                    return BadRequest(new BaseResponse(true, "Error: False when create grading struture | Please check weight!" , null));
 
+                }
                 if (rs != null)
                 {
                     foreach (var g in gra.gradingCLORequest.CLO_id)
