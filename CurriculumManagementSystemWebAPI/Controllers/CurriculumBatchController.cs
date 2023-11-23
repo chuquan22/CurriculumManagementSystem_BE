@@ -74,8 +74,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 listCurriculumBatch.Add(curriBacthDTO);
             }
 
-            listCurriculumBatch = listCurriculumBatch.OrderBy(x => x.degree_level_name).ThenBy(x => x.batch_order).ToList();
-
             var total = _batchRepository.GetTotalCurriculumBatch(txtSearch);
             return Ok(new BaseResponse(false, "List Curriculum Batch", new BaseListResponse(page, limit, total, listCurriculumBatch)));
         }

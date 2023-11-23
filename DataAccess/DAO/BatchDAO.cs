@@ -35,6 +35,8 @@ namespace DataAccess.DAO
             }
 
             var listLearningMethod = query
+                .OrderBy(x => x.degree_level_id)
+                .ThenBy(x => x.batch_order)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
