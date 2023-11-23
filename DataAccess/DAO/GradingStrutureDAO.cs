@@ -147,7 +147,7 @@ namespace DataAccess.DAO
            
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
             father.grading_part -= 1;
-           
+            father.grading_weight = father.grading_weight - oldGra.grading_weight;
             _cmsDbContext.GradingStruture.Remove(oldGra);
             _cmsDbContext.SaveChanges();
             return oldGra;
@@ -182,8 +182,14 @@ namespace DataAccess.DAO
                 gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
-            _cmsDbContext.GradingStruture.Update(oldGra);
-            _cmsDbContext.SaveChanges();
+            bool check = CheckGrading(gra);
+            if (check)
+            {
+                oldGra.grading_part += 1;
+                oldGra.grading_weight = oldGra.grading_weight + gra.grading_weight;
+                _cmsDbContext.GradingStruture.Update(oldGra);
+                _cmsDbContext.SaveChanges();
+            }
             return Result.updateSuccessfull.ToString();
         }
     }
