@@ -65,38 +65,63 @@ namespace DataAccess.DAO
                     _cmsDbContext.GradingStruture.Add(gra);
                     var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
                     father.grading_part += 1;
-                    // father.grading_weight = father.grading_weight + gra.grading_weight;
                     _cmsDbContext.SaveChanges();
+                    return gra;
+
                 }
                 else
                 {
                     throw new Exception("False at creating grading struture! Wrong weight!");
                 }
             }
-            return gra;
+            return null;
 
         }
-
         public GradingStruture CreateGradingStrutureAPI(GradingStruture gra)
         {
-                bool check = CheckGrading(gra);
+            
+                bool check = CheckGradingWeight(gra);
+
                 if (check == true)
                 {
                     _cmsDbContext.GradingStruture.Add(gra);
                     var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
                     father.grading_part += 1;
                     father.grading_weight = father.grading_weight + gra.grading_weight;
+                    _cmsDbContext.GradingStruture.Update(father);
                     _cmsDbContext.SaveChanges();
-                }
-                else
-                {
-                    throw new Exception("False at creating grading struture! Wrong weight!");
-                }
-            return gra;
+                return gra;
+
+            }
+
+
+            return null;
 
         }
+        public bool CheckGradingWeight(GradingStruture gra)
+        {
+            var father = _cmsDbContext.GradingStruture.Where(x =>  x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
+            var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
-
+            if (father == null)
+            {
+                throw new Exception("No Grading Strutude References When Importing this References!.");
+            }
+            decimal weight = 0;
+            foreach (var item in father)
+            {
+                weight = weight + item.grading_weight;
+              
+            }
+            weight = weight - oldGra.grading_weight + gra.grading_weight;
+            if(weight > 100)
+            {
+                return false;
+            }
+            return true;
+           
+        }
+      
         public bool CheckGrading(GradingStruture gra)
         {
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references &&  x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
@@ -120,29 +145,7 @@ namespace DataAccess.DAO
                 return true;
             }
         }
-        public bool CheckGrading2(GradingStruture gra)
-        {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
-            if (father == null)
-            {
-                throw new Exception("No Grading Strutude References When Importing this References!.");
-            }
-            decimal weightAll = father.grading_weight;
-            var listReferences = _cmsDbContext.GradingStruture.Where(x => x.session_no != null && x.references == gra.references && x.syllabus_id == gra.syllabus_id && gra.grading_id != x.grading_id).ToList();
-            decimal weightSon = 0;
-            foreach (var reference in listReferences)
-            {
-                weightSon += reference.grading_weight;
-            }
-            if ((weightSon + gra.grading_weight) > weightAll)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+
         public GradingStruture GetGradingStrutureById(int id)
         {
             var oldGra = _cmsDbContext.GradingStruture
@@ -170,16 +173,16 @@ namespace DataAccess.DAO
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
             father.grading_part -= 1;
             father.grading_weight = father.grading_weight - oldGra.grading_weight;
+            _cmsDbContext.GradingStruture.Update(father);
             _cmsDbContext.GradingStruture.Remove(oldGra);
             _cmsDbContext.SaveChanges();
             return oldGra;
         }
-
+        
         public string UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
-            oldGra.grading_weight = gra.grading_weight;
-            oldGra.grading_part = gra.grading_part;
+         
             oldGra.syllabus_id = gra.syllabus_id;
             oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion; 
             oldGra.grading_duration = gra.grading_duration;
@@ -204,27 +207,30 @@ namespace DataAccess.DAO
                 gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
-            bool check = CheckGrading2(gra);
+            bool check = CheckGradingWeight(gra);
             if (check)
             {
                 var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
-                if(oldGra.grading_weight > gra.grading_weight)
+                if (oldGra.grading_weight > gra.grading_weight)
                 {
-                    father.grading_weight = father.grading_weight - gra.grading_weight;
+                    father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
                 }
-                else if(oldGra.grading_weight < gra.grading_weight)
+                else if (oldGra.grading_weight < gra.grading_weight)
+
                 {
-                    father.grading_weight = father.grading_weight + gra.grading_weight;
+                    father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
                 }
+                oldGra.grading_weight = gra.grading_weight;
+                oldGra.grading_part = gra.grading_part;
                 _cmsDbContext.GradingStruture.Update(oldGra);
+                _cmsDbContext.GradingStruture.Update(father);
                 _cmsDbContext.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             else
             {
-                throw new Exception("Grading Structure Update False!");
+                throw new Exception("Error: Update Structure Update False! Please Check Weight!");
             }
-           
         }
     }
 }
