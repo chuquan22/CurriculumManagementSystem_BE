@@ -45,6 +45,7 @@ namespace Repositories.Subjects
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);
 
+
         public List<Subject> GetSubjectBySpecialization(int speId) => subjectDAO.GetSubjectBySpecialization(speId);
         
 

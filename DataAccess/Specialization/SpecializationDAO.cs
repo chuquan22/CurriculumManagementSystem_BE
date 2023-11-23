@@ -100,11 +100,16 @@ namespace DataAccess.Specialization
         public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId, int majorId)
         {
             var bacth = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
-            var semester = db.Semester.FirstOrDefault(x => x.start_batch_id == batchId);
-
-            var spe = db.Specialization.Where(x => x.major_id == majorId && x.Semester.Batch.batch_name.CompareTo(bacth.batch_name) >= 0 && x.is_active == true).ToList();
-
-            return spe;
+            var listSpe = new List<BusinessObject.Specialization>();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var item in spe)
+            {
+                if (double.Parse(item.Semester.Batch.batch_name) <= double.Parse(bacth.batch_name))
+                {
+                    listSpe.Add(item);
+                }
+            }
+            return listSpe;
         }
 
         public bool IsCodeExist(string code)
