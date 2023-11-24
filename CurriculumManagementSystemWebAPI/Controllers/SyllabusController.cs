@@ -819,6 +819,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 schedule[i].no = i + 1;
             }
+
+            List<PreRequisite> pre = syllabusRepository.GetPre(syllabus.Subject.subject_id);
+            var pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
+            string pre_requiredText = "";
+            foreach (var item in pre_required)
+            {
+                pre_requiredText = pre_requiredText + item.prequisite_name + ": " + item.prequisite_subject_name + "\n";
+            }
             DateTime approvedDate = (DateTime)syllabus.approved_date;
 
             string formattedDate = approvedDate.ToString("dd/MM/yyyy");
@@ -843,6 +851,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["min_gpa_to_pass"] = syllabus.min_GPA_to_pass,
                 ["scoring_scale"] = syllabus.scoring_scale,
                 ["approved_date"] = formattedDate,
+                ["pre_requiredText"] = pre_requiredText,
                 //Tab Materials
                 ["materials"] = materials,
                 //Tab CLO
