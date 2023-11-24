@@ -94,7 +94,7 @@ namespace DataAccess.DAO
                 rs = context.PreRequisite
                     .Include(x => x.Subject)
                     .Include(x => x.PreRequisiteType)
-
+                    .Include( x => x.PreSubject)
                     .Where(x => x.subject_id == id )
                     .ToList();  
             }
