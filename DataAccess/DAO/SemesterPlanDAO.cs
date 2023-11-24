@@ -21,75 +21,171 @@ namespace DataAccess.DAO
         {
             var Semester = _cmsDbContext.Semester.Where(x => x.semester_id == semester_id).FirstOrDefault();
             int degreeLevel = Semester.Batch.degree_level_id;
-            var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
-            int validBatchOrder = StartBatch.batch_order - 7;
-            if (validBatchOrder <= 0)
+            if (degreeLevel == 1)
             {
-                validBatchOrder = 0;
-            }
-            var listValidSemesterCurri = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
-                    .Where(x => x.Batch.batch_order > validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
-                    .OrderByDescending(x => x.Batch.batch_order)
-                    .ToList();
-            var ListCurri = getListValidCurri(listValidSemesterCurri);
-            List<SemesterPlanDTO> listResponse = new List<SemesterPlanDTO>();
-            foreach (var item in ListCurri)
-            {
-                var Curriculum = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == item.curriculum_id).FirstOrDefault();
-                int validOrder = StartBatch.batch_order - 7;
-                if (validOrder <= 0)
+                var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
+                int validBatchOrder = StartBatch.batch_order - 7;
+                if (validBatchOrder <= 0)
                 {
-                    validOrder = 0;
+                    validBatchOrder = 0;
                 }
-                var listValidSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
-                    .Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= StartBatch.batch_order)
-                    .OrderByDescending(x => x.Batch.batch_order)
-                    .ToList();
-                int specializationId = Curriculum.specialization_id;
-                var validBatchIds = listValidSemester.Select(validSemester => validSemester.Batch.batch_id).ToList();
-                string speName = Curriculum.Specialization.specialization_english_name;
-                var listCurriValid = _cmsDbContext.CurriculumBatch.Include(x => x.Curriculum).ThenInclude(x => x.Specialization)
-                    .Where(x => validBatchIds.Contains(x.batch_id))
-                    .Where(x => x.Curriculum.specialization_id == specializationId)
-                    .OrderByDescending(x => x.Batch.batch_order)
-                    .ToList();
-                int termNo = 1;
-                List<SemesterPlan> list = new List<SemesterPlan>();
-                foreach (var curri in listCurriValid)
+                var listValidSemesterCurri = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
+                        .Where(x => x.Batch.batch_order > validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                var ListCurri = getListValidCurri(listValidSemesterCurri);
+                List<SemesterPlanDTO> listResponse = new List<SemesterPlanDTO>();
+                foreach (var item in ListCurri)
                 {
-                    foreach (var batch in listValidSemester)
+                    var Curriculum = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == item.curriculum_id).FirstOrDefault();
+                    int validOrder = StartBatch.batch_order - 7;
+                    if (validOrder <= 0)
                     {
-                        if (curri.batch_id == batch.start_batch_id)
-                        {
-                            SemesterPlan s = new SemesterPlan();
-                            s.curriculum_id = curri.Curriculum.curriculum_id;
-                            s.semester_id = semester_id;
-                            s.term_no = termNo;
-                            list.Add(s);
-                        }
-                        termNo++;
+                        validOrder = 0;
                     }
-                    termNo = 1;
+                    var listValidSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
+                        .Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                    int specializationId = Curriculum.specialization_id;
+                    var validBatchIds = listValidSemester.Select(validSemester => validSemester.Batch.batch_id).ToList();
+                    string speName = Curriculum.Specialization.specialization_english_name;
+                    var listCurriValid = _cmsDbContext.CurriculumBatch.Include(x => x.Curriculum).ThenInclude(x => x.Specialization)
+                        .Where(x => validBatchIds.Contains(x.batch_id))
+                        .Where(x => x.Curriculum.specialization_id == specializationId)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                    int termNo = 1;
+                    List<SemesterPlan> list = new List<SemesterPlan>();
+                    foreach (var curri in listCurriValid)
+                    {
+                        foreach (var batch in listValidSemester)
+                        {
+                            if (curri.batch_id == batch.start_batch_id)
+                            {
+                                SemesterPlan s = new SemesterPlan();
+                                s.curriculum_id = curri.Curriculum.curriculum_id;
+                                s.semester_id = semester_id;
+                                s.term_no = termNo;
+                                list.Add(s);
+                            }
+                            termNo++;
+                        }
+                        termNo = 1;
+                    }
+                    SemesterPlanDTO sDTO = new SemesterPlanDTO { listSemester = new List<SemesterPlan>() };
+                    sDTO.speName = speName;
+                    sDTO.listSemester = list;
+                    listResponse.Add(sDTO);
                 }
-                SemesterPlanDTO sDTO = new SemesterPlanDTO { listSemester = new List<SemesterPlan>() };
-                sDTO.speName = speName;
-                sDTO.listSemester = list;
-                listResponse.Add(sDTO);
-
-            }
-            foreach (var item in listResponse)
-            {
-                foreach (var semester in item.listSemester)
+                foreach (var item in listResponse)
                 {
-                    SemesterPlan sw = new SemesterPlan();
-                    sw.semester_id = semester.semester_id;
-                    sw.curriculum_id = semester.curriculum_id;
-                    sw.term_no = semester.term_no;
-                    _cmsDbContext.SemesterPlan.Add(sw);
-                    _cmsDbContext.SaveChanges();
+                    foreach (var semester in item.listSemester)
+                    {
+                        SemesterPlan sw = new SemesterPlan();
+                        sw.semester_id = semester.semester_id;
+                        sw.curriculum_id = semester.curriculum_id;
+                        sw.term_no = semester.term_no;
+                        _cmsDbContext.SemesterPlan.Add(sw);
+                        _cmsDbContext.SaveChanges();
+                    }
                 }
+                return listResponse;
             }
-            return listResponse;
+            else if (degreeLevel == 3)
+            {
+                int count = 2;
+                var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
+                if (StartBatch.batch_order < 4)
+                {
+                    count = 3;
+                }
+                int validBatchOrder = StartBatch.batch_order - count;
+                if (validBatchOrder <= 0)
+                {
+                    validBatchOrder = 0;
+                }
+                var listValidSemesterCurri = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
+                        .Where(x => x.Batch.batch_order > validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                var ListCurri = getListValidCurri(listValidSemesterCurri);
+                List<SemesterPlanDTO> listResponse = new List<SemesterPlanDTO>();
+                foreach (var item in ListCurri)
+                {
+                    var Curriculum = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == item.curriculum_id).FirstOrDefault();
+                    int validOrder = StartBatch.batch_order - count;
+                    if (validOrder <= 0)
+                    {
+                        validOrder = 0;
+                    }
+                    var listValidSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
+                        .Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                    int specializationId = Curriculum.specialization_id;
+                    var validBatchIds = listValidSemester.Select(validSemester => validSemester.Batch.batch_id).ToList();
+                    string speName = Curriculum.Specialization.specialization_english_name;
+                    var listCurriValid = _cmsDbContext.CurriculumBatch.Include(x => x.Curriculum).ThenInclude(x => x.Specialization)
+                        .Where(x => validBatchIds.Contains(x.batch_id))
+                        .Where(x => x.Curriculum.specialization_id == specializationId)
+                        .OrderByDescending(x => x.Batch.batch_order)
+                        .ToList();
+                    int termNo = 1;
+                    List<SemesterPlan> list = new List<SemesterPlan>();
+                    foreach (var curri in listCurriValid)
+                    {
+                        termNo = 1;
+                        foreach (var batch in listValidSemester)
+                        {
+                            if (curri.batch_id == batch.start_batch_id)
+                            {
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    if (termNo > 8)
+                                    {
+                                        break;
+                                    }
+                                    SemesterPlan s = new SemesterPlan();
+                                    s.curriculum_id = curri.Curriculum.curriculum_id;
+                                    s.semester_id = semester_id;
+                                    s.term_no = termNo;
+                                    list.Add(s);
+                                    termNo++;
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                termNo += 3;
+                            }
+                        }
+
+                    }
+                    SemesterPlanDTO sDTO = new SemesterPlanDTO { listSemester = new List<SemesterPlan>() };
+                    sDTO.speName = speName;
+                    sDTO.listSemester = list;
+                    listResponse.Add(sDTO);
+                }
+                foreach (var item in listResponse)
+                {
+                    foreach (var semester in item.listSemester)
+                    {
+                        SemesterPlan sw = new SemesterPlan();
+                        sw.semester_id = semester.semester_id;
+                        sw.curriculum_id = semester.curriculum_id;
+                        sw.term_no = semester.term_no;
+                        _cmsDbContext.SemesterPlan.Add(sw);
+                        _cmsDbContext.SaveChanges();
+                    }
+                }
+                return listResponse;
+            }
+            else
+            {
+                return null;
+            }
+            return null;
         }
         private List<CurriculumBatch> getListValidCurri(List<Semester> semesters)
         {
@@ -177,124 +273,261 @@ namespace DataAccess.DAO
             var result = new List<CreateSemesterPlanResponse>();
 
             var semester = _cmsDbContext.Semester.Include(x => x.Batch.DegreeLevel).FirstOrDefault(x => x.semester_id == semester_id);
-            string degreeLevel = semester.Batch.DegreeLevel.degree_level_english_name;
-            var startBatch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == semester.start_batch_id);
-            int order = startBatch.batch_order;
-            int validOrder = order - 7;
-            List<Semester> semesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == semester.Batch.degree_level_id).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order).OrderByDescending(x => x.Batch.batch_order).ToList();
-            int termNO = 1;
-            foreach (var batch in semesterValid)
+            if (semester.Batch.degree_level_id == 1)
             {
-                var response = new CreateSemesterPlanResponse();
-                response.semester_batch_id = startBatch.batch_id;
-                response.semester_id = semester.semester_id;
-                response.batch_id = batch.Batch.batch_id;
-                response.batch_name = batch.Batch.batch_name;
-                response.term_no = termNO;
-                response.degree_level = degreeLevel;
-                result.Add(response);
-                termNO++;
+                string degreeLevel = semester.Batch.DegreeLevel.degree_level_english_name;
+                var startBatch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == semester.start_batch_id);
+                int order = startBatch.batch_order;
+                int validOrder = order - 7;
+                List<Semester> semesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == semester.Batch.degree_level_id).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order).OrderByDescending(x => x.Batch.batch_order).ToList();
+                int termNO = 1;
+                foreach (var batch in semesterValid)
+                {
+                    var response = new CreateSemesterPlanResponse();
+                    response.semester_batch_id = startBatch.batch_id;
+                    response.semester_id = semester.semester_id;
+                    response.batch_id = batch.Batch.batch_id;
+                    response.batch_name = batch.Batch.batch_name;
+                    response.term_no = termNO;
+                    response.degree_level = degreeLevel;
+                    result.Add(response);
+                    termNO++;
+                }
             }
-
+            else if (semester.Batch.degree_level_id == 3)
+            {
+                int count = 2;
+                string degreeLevel = semester.Batch.DegreeLevel.degree_level_english_name;
+                var startBatch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == semester.start_batch_id);
+                int order = startBatch.batch_order;
+                if (order < 4)
+                {
+                    count = 3;
+                }
+                int validOrder = order - count;
+                List<Semester> semesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == semester.Batch.degree_level_id).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order).OrderByDescending(x => x.Batch.batch_order).ToList();
+                int termNO = 1;
+                foreach (var batch in semesterValid)
+                {
+                    var response = new CreateSemesterPlanResponse();
+                    response.semester_batch_id = startBatch.batch_id;
+                    response.semester_id = semester.semester_id;
+                    response.batch_id = batch.Batch.batch_id;
+                    response.batch_name = batch.Batch.batch_name;
+                    response.term_no = termNO;
+                    response.degree_level = degreeLevel;
+                    result.Add(response);
+                    termNO += 3;
+                }
+            }
             return result;
         }
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
         {
             var Semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.semester_id == semester_id).FirstOrDefault();
             int order = Semester.Batch.batch_order;
-            int validOrder = order - 7;
-            if (validOrder <= 0)
+            if (Semester.Batch.degree_level_id == 1)
             {
-                validOrder = 0;
-            }
-            var responseList = new SemesterPlanDetailsResponse
-            {
-                spe = new List<SemesterPlanDetailsTermResponse>(),
-            };
-            responseList.semesterName = Semester.semester_name + " - " + Semester.school_year;
-            var SemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Curriculum).Include(x => x.Semester).Where(x => x.semester_id == Semester.semester_id).ToList();
-            List<SemesterPlanCount> listCount = new List<SemesterPlanCount>();
-
-            List<SemesterPlanDetailsTermResponse> SemesterPlanDetails = new List<SemesterPlanDetailsTermResponse>();
-            foreach (var item in SemesterPlan)
-            {
-                var existingCount = listCount.FirstOrDefault(x => x.curriculumId == item.curriculum_id);
-
-                if (existingCount != null)
+                int validOrder = order - 7;
+                if (validOrder <= 0)
                 {
-                    existingCount.count++;
+                    validOrder = 0;
                 }
-                else
+                var responseList = new SemesterPlanDetailsResponse
                 {
-                    listCount.Add(new SemesterPlanCount
-                    {
-                        curriculumId = item.curriculum_id,
-                        count = 1,
-                    });
-                }
-            }
-            foreach (var item in listCount)
-            {
-                var semesterPlanDetails = new SemesterPlanDetailsTermResponse
-                {
-                    specialization_name = "",
-                    major_name = "",
-                    courses = new List<DataTermNoResponse>(),
+                    spe = new List<SemesterPlanDetailsTermResponse>(),
                 };
-                var dataTermNo = new DataTermNoResponse();
-                for (int i = 1; i <= item.count; i++)
+                responseList.semesterName = Semester.semester_name + " - " + Semester.school_year;
+                var SemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Curriculum).Include(x => x.Semester).Where(x => x.semester_id == Semester.semester_id).ToList();
+                List<SemesterPlanCount> listCount = new List<SemesterPlanCount>();
+
+                List<SemesterPlanDetailsTermResponse> SemesterPlanDetails = new List<SemesterPlanDetailsTermResponse>();
+                foreach (var item in SemesterPlan)
                 {
-                    var semesterPlan = _cmsDbContext.SemesterPlan
-                        .Include(x => x.Curriculum)
-                        .ThenInclude(x => x.Specialization)
-                        .ThenInclude(x => x.Major)
-                        .Include(x => x.Curriculum)
-                        .ThenInclude(x => x.CurriculumSubjects)
-                        .ThenInclude(x => x.Subject)
-                        .ThenInclude(x => x.LearningMethod)
-                        .Where(x => x.semester_id == semester_id)
-                        .Where(x => x.curriculum_id == item.curriculumId)
-                        .ToList();
-                    var curriBatch = _cmsDbContext.CurriculumBatch.Include(x => x.Batch)
-                        .Where(x => x.curriculum_id == item.curriculumId)
-                        .Where(x => x.Batch.batch_order <= order && x.Batch.batch_order > validOrder)
-                        .OrderByDescending(x => x.Batch.batch_order)
-                        .ToList();
-                    List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
-                    semesterPlanDetails.specialization_name = semesterPlan[i - 1].Curriculum.Specialization.specialization_english_name;
-                    semesterPlanDetails.major_name = semesterPlan[i - 1].Curriculum.Specialization.Major.major_english_name;
-                    semesterPlanDetails.specializationId = semesterPlan[i - 1].Curriculum.Specialization.specialization_id;
-                    semesterPlanDetails.validBatch = listSemesterValid.Select(x => new SemesterPlanBatchResponse() { batchName = x.Batch.batch_name, batchOrder = x.Batch.batch_order }).ToList();
-                    dataTermNo = new DataTermNoResponse
+                    var existingCount = listCount.FirstOrDefault(x => x.curriculumId == item.curriculum_id);
+
+                    if (existingCount != null)
                     {
-                        term_no = semesterPlan[i - 1].term_no,
-                        batch = curriBatch[i - 1].Batch.batch_name,
-                        batch_order = curriBatch[i - 1].Batch.batch_order,
-                        batch_check = curriBatch[i - 1].Batch.batch_name,
-                        curriculum_code = semesterPlan[i - 1].Curriculum.curriculum_code,
-                        subjectData = semesterPlan[i - 1].Curriculum.CurriculumSubjects
-                            .Where(cs => cs.term_no == (order - curriBatch[i - 1].Batch.batch_order + 1) && cs.Subject.subject_code != null)
-                            .Select(cs => new DataSubjectReponse
-                            {
-                                subject_code = cs.Subject.subject_code,
-                                subject_name = cs.Subject.english_subject_name,
-                                credit = cs.Subject.credit,
-                                total = cs.Subject.total_time,
-                                @class = cs.Subject.total_time_class,
-                                @exam = cs.Subject.exam_total,
-                                method = cs.Subject.LearningMethod.learning_method_name,
-                                optional = cs.option.ToString(),
-                                combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
-                            })
-                            .ToList(),
-                    };
-
-                    semesterPlanDetails.courses.Add(dataTermNo);
+                        existingCount.count++;
+                    }
+                    else
+                    {
+                        listCount.Add(new SemesterPlanCount
+                        {
+                            curriculumId = item.curriculum_id,
+                            count = 1,
+                        });
+                    }
                 }
+                foreach (var item in listCount)
+                {
+                    var semesterPlanDetails = new SemesterPlanDetailsTermResponse
+                    {
+                        specialization_name = "",
+                        major_name = "",
+                        courses = new List<DataTermNoResponse>(),
+                    };
+                    var dataTermNo = new DataTermNoResponse();
+                    for (int i = 1; i <= item.count; i++)
+                    {
+                        var semesterPlan = _cmsDbContext.SemesterPlan
+                            .Include(x => x.Curriculum)
+                            .ThenInclude(x => x.Specialization)
+                            .ThenInclude(x => x.Major)
+                            .Include(x => x.Curriculum)
+                            .ThenInclude(x => x.CurriculumSubjects)
+                            .ThenInclude(x => x.Subject)
+                            .ThenInclude(x => x.LearningMethod)
+                            .Where(x => x.semester_id == semester_id)
+                            .Where(x => x.curriculum_id == item.curriculumId)
+                            .ToList();
+                        var curriBatch = _cmsDbContext.CurriculumBatch.Include(x => x.Batch)
+                            .Where(x => x.curriculum_id == item.curriculumId)
+                            .Where(x => x.Batch.batch_order <= order && x.Batch.batch_order > validOrder)
+                            .OrderByDescending(x => x.Batch.batch_order)
+                            .ToList();
+                        List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
+                        semesterPlanDetails.specialization_name = semesterPlan[i - 1].Curriculum.Specialization.specialization_english_name;
+                        semesterPlanDetails.major_name = semesterPlan[i - 1].Curriculum.Specialization.Major.major_english_name;
+                        semesterPlanDetails.specializationId = semesterPlan[i - 1].Curriculum.Specialization.specialization_id;
+                        semesterPlanDetails.validBatch = listSemesterValid.Select(x => new SemesterPlanBatchResponse() { batchName = x.Batch.batch_name, batchOrder = x.Batch.batch_order }).ToList();
+                        dataTermNo = new DataTermNoResponse
+                        {
+                            term_no = semesterPlan[i - 1].term_no,
+                            batch = curriBatch[i - 1].Batch.batch_name,
+                            batch_order = curriBatch[i - 1].Batch.batch_order,
+                            batch_check = curriBatch[i - 1].Batch.batch_name,
+                            curriculum_code = semesterPlan[i - 1].Curriculum.curriculum_code,
+                            subjectData = semesterPlan[i - 1].Curriculum.CurriculumSubjects
+                                .Where(cs => cs.term_no == (order - curriBatch[i - 1].Batch.batch_order + 1) && cs.Subject.subject_code != null)
+                                .Select(cs => new DataSubjectReponse
+                                {
+                                    subject_code = cs.Subject.subject_code,
+                                    subject_name = cs.Subject.english_subject_name,
+                                    credit = cs.Subject.credit,
+                                    total = cs.Subject.total_time,
+                                    @class = cs.Subject.total_time_class,
+                                    @exam = cs.Subject.exam_total,
+                                    method = cs.Subject.LearningMethod.learning_method_name,
+                                    optional = cs.option.ToString(),
+                                    combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
+                                })
+                                .ToList(),
+                        };
+                        semesterPlanDetails.courses.Add(dataTermNo);
+                    }
 
-                responseList.spe.Add(semesterPlanDetails);
+                    responseList.spe.Add(semesterPlanDetails);
+                }
+                return responseList;
             }
-            return responseList;
+            else if (Semester.Batch.degree_level_id == 3)
+            {
+                int count = 2;
+                if (Semester.Batch.batch_order < 4)
+                {
+                    count = 3;
+                }
+                int validOrder = order - count;
+                if (validOrder <= 0)
+                {
+                    validOrder = 0;
+                }
+                var responseList = new SemesterPlanDetailsResponse
+                {
+                    spe = new List<SemesterPlanDetailsTermResponse>(),
+                };
+                responseList.semesterName = Semester.semester_name + " - " + Semester.school_year;
+                var SemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Curriculum).Include(x => x.Semester).Where(x => x.semester_id == Semester.semester_id).ToList();
+                List<SemesterPlanCount> listCount = new List<SemesterPlanCount>();
+                List<SemesterPlanDetailsTermResponse> SemesterPlanDetails = new List<SemesterPlanDetailsTermResponse>();
+                foreach (var item in SemesterPlan)
+                {
+                    var existingCount = listCount.FirstOrDefault(x => x.curriculumId == item.curriculum_id);
+
+                    if (existingCount != null)
+                    {
+                        existingCount.count++;
+                    }
+                    else
+                    {
+                        listCount.Add(new SemesterPlanCount
+                        {
+                            curriculumId = item.curriculum_id,
+                            count = 1,
+                        });
+                    }
+                }
+                foreach (var item in listCount)
+                {
+                    var semesterPlanDetails = new SemesterPlanDetailsTermResponse
+                    {
+                        specialization_name = "",
+                        major_name = "",
+                        courses = new List<DataTermNoResponse>(),
+                    };
+                    var dataTermNo = new DataTermNoResponse();
+                    int temp = 0;
+                    for (int i = 1; i <= item.count; i++)
+                    {
+                        if (i != 1 && (i - 1) % 3 == 0)
+                        {
+                            temp++;
+                        }
+                        var semesterPlan = _cmsDbContext.SemesterPlan
+                            .Include(x => x.Curriculum)
+                            .ThenInclude(x => x.Specialization)
+                            .ThenInclude(x => x.Major)
+                            .Include(x => x.Curriculum)
+                            .ThenInclude(x => x.CurriculumSubjects)
+                            .ThenInclude(x => x.Subject)
+                            .ThenInclude(x => x.LearningMethod)
+                            .Where(x => x.semester_id == semester_id)
+                            .Where(x => x.curriculum_id == item.curriculumId)
+                            .ToList();
+                        var curriBatch = _cmsDbContext.CurriculumBatch.Include(x => x.Batch)
+                            .Where(x => x.curriculum_id == item.curriculumId)
+                            .Where(x => x.Batch.batch_order <= order && x.Batch.batch_order > validOrder)
+                            .OrderByDescending(x => x.Batch.batch_order)
+                            .ToList();
+                        List<Semester> listSemesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order && x.Batch.degree_level_id == Semester.Batch.degree_level_id).ToList();
+                        semesterPlanDetails.specialization_name = semesterPlan[i - 1].Curriculum.Specialization.specialization_english_name;
+                        semesterPlanDetails.major_name = semesterPlan[i - 1].Curriculum.Specialization.Major.major_english_name;
+                        semesterPlanDetails.specializationId = semesterPlan[i - 1].Curriculum.Specialization.specialization_id;
+                        semesterPlanDetails.validBatch = listSemesterValid.Select(x => new SemesterPlanBatchResponse() { batchName = x.Batch.batch_name, batchOrder = x.Batch.batch_order }).ToList();
+                        dataTermNo = new DataTermNoResponse
+                        {
+                            term_no = semesterPlan[i - 1].term_no,
+                            batch = curriBatch[temp].Batch.batch_name,
+                            batch_order = curriBatch[temp].Batch.batch_order,
+                            batch_check = curriBatch[temp].Batch.batch_name,
+                            curriculum_code = semesterPlan[i - 1].Curriculum.curriculum_code,
+                            subjectData = semesterPlan[i - 1].Curriculum.CurriculumSubjects
+                                .Where(cs => cs.term_no == (order - curriBatch[temp].Batch.batch_order + 1) && cs.Subject.subject_code != null)
+                                .Select(cs => new DataSubjectReponse
+                                {
+                                    subject_code = cs.Subject.subject_code,
+                                    subject_name = cs.Subject.english_subject_name,
+                                    credit = cs.Subject.credit,
+                                    total = cs.Subject.total_time,
+                                    @class = cs.Subject.total_time_class,
+                                    @exam = cs.Subject.exam_total,
+                                    method = cs.Subject.LearningMethod.learning_method_name,
+                                    optional = cs.option.ToString(),
+                                    combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
+                                })
+                                .ToList(),
+                        };
+                        semesterPlanDetails.courses.Add(dataTermNo);
+                    }
+
+                    responseList.spe.Add(semesterPlanDetails);
+                }
+                return responseList;
+            }
+            return null;
+
+
         }
 
 
@@ -348,3 +581,4 @@ namespace DataAccess.DAO
         }
     }
 }
+
