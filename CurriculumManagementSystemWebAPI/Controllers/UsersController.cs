@@ -94,7 +94,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var userResponse = _mapper.Map<UserResponse>(user);
             return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Manager, Dispatcher")]
         [HttpPut("UpdateUser/{id}")]
         public ActionResult UpdateUser(int id, [FromBody] UpdateUserRequest userUpdateRequest)
         {
