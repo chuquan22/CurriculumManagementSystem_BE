@@ -98,11 +98,14 @@ namespace DataAccess.Major
             return major;
         }
 
+        public BusinessObject.Major CheckMajorbyMajorCode(string code,int degree_level_id)
+        {
+            return db.Major?.Include(x =>x.DegreeLevel).FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()) && e.degree_level_id==degree_level_id);
+        }
         public BusinessObject.Major CheckMajorbyMajorCode(string code)
         {
-            return db.Major?.Include(x =>x.DegreeLevel).FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()));
+            return db.Major?.Include(x => x.DegreeLevel).FirstOrDefault(e => e.major_code.ToLower().Equals(code.ToLower()));
         }
-
         public BusinessObject.Major CheckMajorbyMajorName(string name)
         {
             return db.Major?.FirstOrDefault(e => e.major_name.ToLower().Equals(name.ToLower()));

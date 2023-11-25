@@ -94,7 +94,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Major rs = _mapper.Map<Major>(major);
-                Major checkCode = majorRepository.CheckMajorbyMajorCode(rs.major_code);
+                Major checkCode = majorRepository.CheckMajorbyMajorCode(rs.major_code,rs.degree_level_id);
                 if(checkCode != null)
                 {
                     return BadRequest(new BaseResponse(true, "Major Code Duplicate!.", null));

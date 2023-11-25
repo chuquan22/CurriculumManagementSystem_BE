@@ -16,6 +16,11 @@ namespace Repositories.Major
             return db.AddMajor(major);
         }
 
+        public BusinessObject.Major CheckMajorbyMajorCode(string code, int degree_level_id)
+        {
+            return db.CheckMajorbyMajorCode(code, degree_level_id);
+        }
+
         public BusinessObject.Major CheckMajorbyMajorCode(string code)
         {
             return db.CheckMajorbyMajorCode(code);
