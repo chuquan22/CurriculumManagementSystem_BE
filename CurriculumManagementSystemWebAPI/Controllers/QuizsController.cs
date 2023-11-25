@@ -465,6 +465,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                         }
 
+                        // Set horizontal alignment for the entire column D (ANSWER)
+                        worksheet.Column(4).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+
                         // Highlight correct answer in red and bold
                         for (int i = 0; i < 4; i++)
                         {
@@ -474,6 +477,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 worksheet.Cells[row + i, 4].Style.Font.Bold = true;
                             }
                         }
+
 
                         // Merge and center cells in column A for each question và căn giữa theo chiều dọc
                         worksheet.Cells[row, 1, row + 3, 1].Merge = true;
