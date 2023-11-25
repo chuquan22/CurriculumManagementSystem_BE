@@ -95,6 +95,8 @@ namespace DataAccess.DAO
                 )
                 .ToList();
 
+            listSubjects = listSubjects.Distinct().ToList();
+
             return listSubjects;
         }
 

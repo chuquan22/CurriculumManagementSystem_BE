@@ -55,8 +55,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 foreach (var major in listMajorRespone)
                 {
-                    major.listSubjects = _mapper.Map<List<SubjectDTO>>(subjectRepository.GetSubjectByMajorId(major.major_id));
+                    var list = _mapper.Map<List<SubjectDTO>>(subjectRepository.GetSubjectByMajorId(major.major_id));
+                    major.listSubjects = list.OrderBy(x => x.subject_name).ToList();
                 }
+
+                listMajorRespone = listMajorRespone
+                    .OrderBy(x => x.major_english_name)
+                    .ToList();
+
 
                 return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
             }
