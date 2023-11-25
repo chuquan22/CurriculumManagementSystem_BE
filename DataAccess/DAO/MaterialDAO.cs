@@ -27,7 +27,7 @@ namespace DataAccess.DAO
             var listSyllabus = new List<Syllabus>();
             foreach (var subject in subjects)
             {
-                var ListSyllabus = _context.Syllabus.Where(x => x.subject_id == subject.subject_id && x.syllabus_approved == true).ToList();
+                var ListSyllabus = _context.Syllabus.Where(x => x.subject_id == subject.subject_id && x.syllabus_approved == true && x.syllabus_status == true).ToList();
                 foreach (var syllabus in ListSyllabus)
                 {
                     listSyllabus.Add(syllabus);

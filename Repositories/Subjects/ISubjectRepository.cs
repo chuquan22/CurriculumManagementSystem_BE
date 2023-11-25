@@ -19,7 +19,7 @@ namespace Repositories.Subjects
         List<Subject> GetListSubjectByTermNo(int term_no, int curriculum_id);
         List<Subject> GetSubjectByCurriculum(int curriculumId);
         List<Subject> GetSubjectByLearningMethod(int learningMethodId);
-        List<Subject> GetSubjectBySpecialization(int speId);
+        List<Subject> GetSubjectBySpecialization(int speId, string batch_name);
         int GetNumberSubjectNoSyllabus(List<Subject> subjects);
         List<Subject> GetSubjectByMajorId(int majorId);
         string CreateNewSubject(Subject subject);

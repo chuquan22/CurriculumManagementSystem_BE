@@ -43,11 +43,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _learningResourceRepository = new LearningResourceRepository();
         }
 
-        [HttpGet("ReportTKOLChart/{SpeId}")]
-        public IActionResult ReportTKOLChart(int SpeId)
+        [HttpGet("ReportTKOLChart/{batchId}/{SpeId}")]
+        public IActionResult ReportTKOLChart(int batchId, int SpeId)
         {
             var spe = _specializationRepository.GetSpeById(SpeId);
-            var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
+            var batch = _batchRepository.GetBatchById(batchId);
+            var subject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id, batch.batch_name);
             var tkolReport = new TKOLReport { specialization_name = spe.specialization_english_name, total_subject = subject.Count() };
 
             var learningMethod = _learningMethodRepository.GetAllLearningMethods();
@@ -116,7 +117,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                     foreach (var s in spe)
                     {
-                        var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id);
+                        var subject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batch.batch_name);
                         var tkolReport = new TKOLReport { specialization_name = s.specialization_english_name, total_subject = subject.Count() };
 
 
@@ -199,7 +200,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 foreach (var s in spe)
                 {
-                    var listSubject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id);
+                    var listSubject = _subjectRepository.GetSubjectBySpecialization(s.specialization_id, batch.batch_name);
                     var textBookReport = new TextBookReport
                     {
                         specialization_name = s.specialization_english_name,
@@ -253,12 +254,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Text Book Table Report", listTextBookReport));
         }
 
-        [HttpGet("ReportTextBookChart/{speId}")]
-        public IActionResult ReportTextBookChart(int speId)
+        [HttpGet("ReportTextBookChart/{batchId}/{speId}")]
+        public IActionResult ReportTextBookChart(int batchId,int speId)
         {
             var spe = _specializationRepository.GetSpeById(speId);
-
-            var listSubject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id);
+            var batch = _batchRepository.GetBatchById(batchId);
+            var listSubject = _subjectRepository.GetSubjectBySpecialization(spe.specialization_id, batch.batch_name);
             var textBookReport = new TextBookReport
             {
                 specialization_name = spe.specialization_english_name,

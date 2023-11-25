@@ -65,28 +65,41 @@ namespace DataAccess.DAO
 
         }
 
-        public List<Subject> GetSubjectBySpecialization(int speId)
+        public List<Subject> GetSubjectBySpecialization(int speId, string batch_name)
         {
-            var listcurri = CMSDbContext.Curriculum.Where(x => x.specialization_id == speId && x.is_active == true).ToList();
-            var listSubjects = new List<Subject>();
-            foreach (var item in listcurri)
-            {
-                var Subjects = CMSDbContext.Curriculum
-               .Include(x => x.CurriculumSubjects)
-               .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
-               .Join(CMSDbContext.CurriculumSubject.Include(x => x.Subject),
-                   curriculum => curriculum.curriculum_id,
-                   curriculumSubject => curriculumSubject.curriculum_id,
-                    (curriculum, curriculumSubject) => curriculumSubject.Subject)
-               .ToList();
+            var listcurri = CMSDbContext.Curriculum
+                .Where(x => x.specialization_id == speId && x.is_active == true)
+                .ToList();
 
-                foreach (var subject in Subjects)
-                {
-                    listSubjects.Add(subject);
-                }
+            if (batch_name != null)
+            {
+                listcurri = listcurri
+                    .Where(curri =>
+                    {
+                        var batch = CMSDbContext.Batch.FirstOrDefault(x => x.batch_id == curri.start_batch_id);
+                        return batch != null && string.Compare(batch.batch_name, batch_name, StringComparison.Ordinal) == 0;
+                    })
+                    .ToList();
             }
+
+            var listSubjects = listcurri
+                .SelectMany(item => CMSDbContext.Curriculum
+                    .Include(x => x.CurriculumSubjects)
+                    .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
+                    .Join(
+                        CMSDbContext.CurriculumSubject.Include(x => x.Subject),
+                        curriculum => curriculum.curriculum_id,
+                        curriculumSubject => curriculumSubject.curriculum_id,
+                        (curriculum, curriculumSubject) => curriculumSubject.Subject
+                    )
+                )
+                .ToList();
+
             return listSubjects;
         }
+
+
+
 
         public List<Subject> GetSubjectByMajorId(int majorId)
         {
@@ -94,7 +107,7 @@ namespace DataAccess.DAO
             var listSpe = CMSDbContext.Specialization.Where(x => x.major_id == majorId && x.is_active == true).ToList();
             foreach (var spe in listSpe)
             {
-                var subjects = GetSubjectBySpecialization(spe.specialization_id);
+                var subjects = GetSubjectBySpecialization(spe.specialization_id, null);
                 foreach (var s in subjects)
                 {
                     listSubject.Add(s);
