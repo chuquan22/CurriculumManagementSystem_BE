@@ -370,16 +370,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Sucessfully!", fileBytes));
 
         }
-
         [HttpPost("ExportQuizExcel/{subjectId}")]
         public async Task<IActionResult> ExportQuizExcel(int subjectId)
         {
             var quizTemplate = "QuizTemplate.xlsx";
             // Get List Quiz
             var listQuiz = _quizRepository.GetQUizBySubjectId(subjectId);
-            if(listQuiz == null)
+            if (listQuiz == null)
             {
-                return BadRequest(new BaseResponse(false,"List Quiz does not exist !",null));
+                return BadRequest(new BaseResponse(false, "List Quiz does not exist!", null));
             }
             using (ExcelPackage excelPackage = new ExcelPackage())
             {
@@ -393,22 +392,30 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     worksheet.Cells[1, 3].Value = "ABC";
                     worksheet.Cells[1, 4].Value = "ANSWER";
                     worksheet.Cells[1, 5].Value = "CORRECT";
-                    using (var range = worksheet.Cells["A1:E1"])
+                    worksheet.Cells[1, 6].Value = "TYPE"; // New column for Type
+                    using (var range = worksheet.Cells["A1:F1"])
                     {
                         range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                         range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
                         range.Style.Font.Bold = true;
+                        range.Style.Font.Name = "Times New Roman";
+                        range.Style.Font.Size = 14;
                     }
-                    // Set width for columns A, B, C, D, and E
+                    // Set width for columns A, B, C, D, E, and F
                     worksheet.Column(1).Width = 5; // Adjust the value as needed
-                    worksheet.Column(2).Width = 70; // Adjust the value as needed
-                    worksheet.Column(3).Width = 5; // Adjust the value as needed
-                    worksheet.Column(4).Width = 70; // Adjust the value as needed
-                    worksheet.Column(5).Width = 5; // Adjust the value as needed
+                    worksheet.Column(2).Width = 60; // Adjust the value as needed
+                    worksheet.Column(3).Width = 6; // Adjust the value as needed
+                    worksheet.Column(4).Width = 60; // Adjust the value as needed
+                    worksheet.Column(5).Width = 14; // Adjust the value as needed
+                    worksheet.Column(6).Width = 10; // Adjust the value as needed
 
-                    for (int i = 1; i <= 5; i++)
+                    for (int i = 1; i <= 6; i++)
                     {
-                        worksheet.Cells[1, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                        if (i != 4)
+                        {
+                            worksheet.Cells[1, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                            worksheet.Cells[1, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
                     }
                     int row = 2;
                     int index = 1;
@@ -423,36 +430,70 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         worksheet.Cells[row + 3, 3].Value = "D";
 
                         worksheet.Cells[row, 4].Value = question.answers_A;
+
+                        // Cột ANSWER không cần text align center
                         worksheet.Cells[row + 1, 4].Value = question.answers_B;
                         worksheet.Cells[row + 2, 4].Value = question.answers_C;
                         worksheet.Cells[row + 3, 4].Value = question.answers_D;
 
                         string correctAnswer = question.correct_answer;
-                       
-                         worksheet.Cells[row + 3, 5].Value = correctAnswer;
-                       
+                        worksheet.Cells[row + 3, 5].Value = correctAnswer;
+
+                        // Add Type column
+                        if (question.question_type.Equals("Single Choice"))
+                        {
+                            worksheet.Cells[row, 6].Value = 0;
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, 6].Value = 1;
+                        }
+
+                        // Thêm Wrap Text cho các ô trong cột QUESTION, ANSWER và TYPE
+                        worksheet.Cells[row, 2, row + 3, 2].Style.WrapText = true; // Cột QUESTION
+                        worksheet.Cells[row, 4, row + 3, 4].Style.WrapText = true; // Cột ANSWER
+                        worksheet.Cells[row, 6, row + 3, 6].Style.WrapText = true; // Cột TYPE
+
                         // Thêm đường viền cho mỗi dòng dữ liệu
-                        for (int i = 1; i <= 5; i++)
+                        for (int i = 1; i <= 6; i++)
                         {
                             for (int j = 0; j < 4; j++)
                             {
                                 worksheet.Cells[row + j, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                                worksheet.Cells[row + j, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                                worksheet.Cells[row + j, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                             }
                         }
-                        // Merge and center cells in column A for each question
+
+                        // Highlight correct answer in red and bold
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (correctAnswer.Contains(worksheet.Cells[row + i, 3].Text))
+                            {
+                                worksheet.Cells[row + i, 4].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                                worksheet.Cells[row + i, 4].Style.Font.Bold = true;
+                            }
+                        }
+
+                        // Merge and center cells in column A for each question và căn giữa theo chiều dọc
                         worksheet.Cells[row, 1, row + 3, 1].Merge = true;
                         worksheet.Cells[row, 1, row + 3, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, 1, row + 3, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center; // Căn giữa trên
 
-                        // Merge and center cells in column B for each question
+                        // Merge and center cells in column B for each question và căn giữa theo chiều dọc
                         worksheet.Cells[row, 2, row + 3, 2].Merge = true;
                         worksheet.Cells[row, 2, row + 3, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, 2, row + 3, 2].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center; // Căn giữa trên
+
+                        // Merge and center cells in column F for each question và căn giữa theo chiều dọc
+                        worksheet.Cells[row, 6, row + 3, 6].Merge = true;
+                        worksheet.Cells[row, 6, row + 3, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, 6, row + 3, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center; // Căn giữa trên
 
                         index += 4; // Mỗi câu hỏi chiếm 4 hàng
                         row += 4;
                         no = no + 1;
                     }
-
-
                 }
 
                 // Lưu tệp Excel
@@ -462,7 +503,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
             //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
-            return Ok(new BaseResponse(false, "Sucessfully!", fileContents));
+            return Ok(new BaseResponse(false, "Successfully!", fileContents));
         }
 
         private int ExtractNumber(string input)
