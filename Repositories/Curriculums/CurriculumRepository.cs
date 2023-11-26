@@ -14,7 +14,7 @@ namespace Repositories.Curriculums
         public string CreateCurriculum(Curriculum curriculum) => curriculumDAO.CreateCurriculum(curriculum);
        
 
-        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId) => curriculumDAO.GetAllCurriculum(txtSearch, majorId);
+        public List<Curriculum> GetAllCurriculum(int degree_level_id, string? txtSearch, int? majorId) => curriculumDAO.GetAllCurriculum(degree_level_id, txtSearch, majorId);
 
         public List<Batch> GetBatchByCurriculumCode(string curriculumCode) => curriculumDAO.GetBatchByCurriculumCode(curriculumCode);
        

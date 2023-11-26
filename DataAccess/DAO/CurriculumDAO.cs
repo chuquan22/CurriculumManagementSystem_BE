@@ -14,12 +14,13 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId)
+        public List<Curriculum> GetAllCurriculum(int degree_level_id, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
                 .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major);
+                .Include(x => x.Specialization.Major)
+                .Where(x => x.Specialization.Major.degree_level_id == degree_level_id);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {

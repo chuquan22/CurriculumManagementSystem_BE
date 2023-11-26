@@ -9,7 +9,7 @@ namespace Repositories.Curriculums
 {
     public interface ICurriculumRepository
     {
-        List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId);
+        List<Curriculum> GetAllCurriculum(int degree_level_id, string? txtSearch, int? majorId);
         List<Curriculum> PanigationCurriculum(int page, int limit, int degree_level_id, string txtSearch, int? majorId);
         List<Curriculum> GetCurriculumByBatch(int degreeLevel, string batchName);
         Curriculum GetCurriculum(string code);

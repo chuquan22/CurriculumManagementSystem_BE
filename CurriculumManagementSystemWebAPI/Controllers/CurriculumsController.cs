@@ -115,7 +115,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return Ok(new BaseResponse(true, "Not Found Subject"));
             }
-            var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
+            var totalElement = _curriculumRepository.GetAllCurriculum(degree_level_id, txtSearch, majorId).Count();
 
             var curriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
 
