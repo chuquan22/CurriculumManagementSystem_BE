@@ -74,7 +74,7 @@ namespace DataAccess.DAO
                .Include(x => x.Semester.Batch)
                .FirstOrDefault(x => x.specialization_id == speId);
             var batch_name = specialization.Semester.Batch.batch_name; 
-            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == specialization.Major.degree_level_id).ToList();
+            var semester = _cmsDbContext.Semester.Include(x => x.Batch).Include(x => x.Batch.DegreeLevel).Where(x => x.Batch.degree_level_id == specialization.Major.degree_level_id).ToList();
             var listSemester = new List<Semester>();
             foreach(var s in semester)
             {

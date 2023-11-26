@@ -303,6 +303,7 @@ namespace DataAccess.Models.DTO
              .ForMember(dest => dest.batch_name, opt => opt.MapFrom(src => src.Batch.batch_name))
              .ForMember(dest => dest.batch_order, opt => opt.MapFrom(src => src.Batch.batch_order))
              .ForMember(dest => dest.degree_level_name, opt => opt.MapFrom(src => src.Batch.DegreeLevel.degree_level_english_name))
+             .ForMember(dest => dest.degree_level_id, opt => opt.MapFrom(src => src.Batch.degree_level_id))
              .ForMember(dest => dest.semester_start_date, opt => opt.MapFrom(src => src.semester_start_date.ToString("yyyy-MM-dd")))
              .ForMember(dest => dest.semester_end_date, opt => opt.MapFrom(src => src.semester_end_date.ToString("yyyy-MM-dd")))
              .ReverseMap();
