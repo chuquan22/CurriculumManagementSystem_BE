@@ -106,10 +106,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
         // GET: api/Curriculums/Pagination/5/6/search/1
-        [HttpGet("Pagination/{page}/{limit}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, [FromQuery] string? txtSearch, [FromQuery] int? majorId)
+        [HttpGet("Pagination/{page}/{limit}/{degree_level_id}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, int degree_level_id ,[FromQuery] string? txtSearch, [FromQuery] int? majorId)
         {
-            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, txtSearch, majorId);
+            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, degree_level_id, txtSearch, majorId);
 
             if (listCurriculum.Count == 0)
             {

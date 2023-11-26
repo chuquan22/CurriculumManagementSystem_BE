@@ -40,7 +40,7 @@ namespace Repositories.Curriculums
         public int GetTotalSemester(int speId, int batchId) => curriculumDAO.GetTotalSemester(speId, batchId);
        
 
-        public List<Curriculum> PanigationCurriculum(int page, int limit, string txtSearch, int? majorId) => curriculumDAO.PanigationCurriculum(page,limit, txtSearch, majorId);  
+        public List<Curriculum> PanigationCurriculum(int page, int limit, int degree_level_id, string txtSearch, int? majorId) => curriculumDAO.PanigationCurriculum(page,limit, degree_level_id, txtSearch, majorId);  
         
 
         public string RemoveCurriculum(Curriculum curriculum) => curriculumDAO.DeleteCurriculum(curriculum);
