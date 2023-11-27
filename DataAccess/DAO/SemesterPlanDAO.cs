@@ -187,6 +187,7 @@ namespace DataAccess.DAO
             }
             return null;
         }
+
         private List<CurriculumBatch> getListValidCurri(List<Semester> semesters)
         {
             var result = new List<CurriculumBatch>();
@@ -431,6 +432,7 @@ namespace DataAccess.DAO
                 int validOrder = order - count;
                 if (validOrder <= 0)
                 {
+
                     validOrder = 0;
                 }
                 var responseList = new SemesterPlanDetailsResponse
@@ -529,8 +531,6 @@ namespace DataAccess.DAO
 
 
         }
-
-
 
         public string CreateSemesterPlan(SemesterPlan semesterPlan)
         {
