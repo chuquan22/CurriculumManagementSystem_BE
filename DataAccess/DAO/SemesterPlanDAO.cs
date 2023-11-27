@@ -187,6 +187,7 @@ namespace DataAccess.DAO
             }
             return null;
         }
+
         private List<CurriculumBatch> getListValidCurri(List<Semester> semesters)
         {
             var result = new List<CurriculumBatch>();
@@ -220,15 +221,16 @@ namespace DataAccess.DAO
 
             var responseList = new List<SemesterPlanResponse>();
 
-            var uniqueCurriculumIds = listSemesterPlan.Select(sp => sp.Curriculum.specialization_id).Distinct().ToList();
+            var uniqueCurriculumIds = listSemesterPlan.Select(sp => sp.Curriculum.curriculum_id).ToList();
 
             foreach (var curriculumId in uniqueCurriculumIds)
             {
-                var semesterPlanForCurriculum = listSemesterPlan.FirstOrDefault(sp => sp.Curriculum.specialization_id == curriculumId);
+                var semesterPlanForCurriculum = listSemesterPlan.FirstOrDefault(sp => sp.Curriculum.curriculum_id == curriculumId);
 
                 if (semesterPlanForCurriculum != null)
                 {
-                    var spe = semesterPlanForCurriculum.Curriculum.Specialization.specialization_english_name;
+                    var spe_name = semesterPlanForCurriculum.Curriculum.Specialization.specialization_english_name;
+                    var spe_id = semesterPlanForCurriculum.Curriculum.Specialization.specialization_id;
                     var totalSemester = semesterPlanForCurriculum.Curriculum.total_semester;
                     var semester = semesterPlanForCurriculum.Semester.semester_name + " " + semesterPlanForCurriculum.Semester.school_year;
                     int order = semester_root.Batch.batch_order - semesterPlanForCurriculum.Curriculum.total_semester;
@@ -250,9 +252,10 @@ namespace DataAccess.DAO
                     i = 1;
                     var semesterPlanResponse = new SemesterPlanResponse
                     {
-                        spe = spe,
+                        spe = spe_name,
+                        specialization_id = spe_id,
                         totalSemester = totalSemester,
-                        semester = semester,
+                        semester = semester_name,
                         batch = batchResponses
                     };
 
@@ -431,6 +434,7 @@ namespace DataAccess.DAO
                 int validOrder = order - count;
                 if (validOrder <= 0)
                 {
+
                     validOrder = 0;
                 }
                 var responseList = new SemesterPlanDetailsResponse
@@ -530,8 +534,6 @@ namespace DataAccess.DAO
 
         }
 
-
-
         public string CreateSemesterPlan(SemesterPlan semesterPlan)
         {
             try
@@ -580,5 +582,6 @@ namespace DataAccess.DAO
             }
         }
     }
+
 }
 
