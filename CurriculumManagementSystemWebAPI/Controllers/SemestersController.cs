@@ -41,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
             return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationSemester(int page, int limit, [FromQuery] string? txtSearch)
         {

@@ -41,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Assessment Method", assessmentMethodResponse));
         }
 
-
+        [Authorize(Roles = "Manager")]
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationAssessmentMethod(int page, int limit, [FromQuery] string? txtSearch)
         {
@@ -54,6 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listAssessmentMethodResponse = _mapper.Map<List<AssessmentMethodDTOResponse>>(listAssessmentMethod);
             return Ok(new BaseResponse(false, "List Assessment Method", new BaseListResponse(page, limit, total, listAssessmentMethodResponse)));
         }
+
         [Authorize(Roles = "Manager")]
 
         [HttpPost("CreateAssessmentMethod")]

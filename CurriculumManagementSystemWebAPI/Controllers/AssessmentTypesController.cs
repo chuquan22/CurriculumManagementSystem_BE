@@ -31,7 +31,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listAssessmentTypeResponse = _mapper.Map<List<AssessmentTypeResponse>>(listAssessmentType);
             return Ok(new BaseResponse(false, "Sucessfully", listAssessmentTypeResponse));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationAssessmentType(int page, int limit, [FromQuery] string? txtSearch)
         {

@@ -33,12 +33,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.AllowAnyOrigin()
-        .AllowAnyMethod()
-       .AllowAnyHeader();
-    });
+    options.AddPolicy("AllowOrigin",
+        builder =>
+        {
+            builder.WithOrigins("https://cmsfpoly.azurewebsites.net")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
 });
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 builder.Services.Configure<ForwardedHeadersOptions>(options =>

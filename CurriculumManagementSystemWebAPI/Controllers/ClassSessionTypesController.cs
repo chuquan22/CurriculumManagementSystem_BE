@@ -43,7 +43,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var classSessionTypeResponse = _mapper.Map<ClassSessionTypeResponse>(classSessionType);
             return Ok(new BaseResponse(false, "Sucessfully", classSessionTypeResponse));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationClassSessionType(int page, int limit, [FromQuery] string? txtSearch)
         {
