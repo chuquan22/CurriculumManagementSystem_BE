@@ -2,6 +2,7 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ClassSessionTypes;
@@ -11,6 +12,7 @@ using Repositories.SessionCLOs;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SessionController : ControllerBase
     {
@@ -42,12 +44,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return Ok(new BaseResponse(false, "Sucessfully", result));
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost]
         public ActionResult CreateSession(SessionCreateRequest request)
@@ -82,7 +84,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
 
         }
         [HttpPut]
@@ -102,7 +103,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPatch]
 
@@ -112,6 +112,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 foreach (var item in request)
                 {
+                    if(item.remote_learning < 0 || item.ass_defense < 0 || item.eos_exam < 0 ||  item.video_learning < 0 || item.IVQ < 0 || item.online_lab < 0 || item.online_lab < 0 || item.assigment < 0)
+                    {
+                        return BadRequest(new BaseResponse(true, "Value of time allocation musts > 0.", null));
+                    }
                     Session rs = _mapper.Map<Session>(item);
 
                     //   rs = repo.GetSession(syllabus_id);
@@ -122,10 +126,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Sucessfully", null));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
 
         }
@@ -136,15 +141,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string rs = sessionRepository.DeleteSession(id);
-                // rs = repo.GetSession(syllabus_id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("GetSessionById/{id}")]
         public ActionResult GetSessionById(int id)
@@ -157,12 +161,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

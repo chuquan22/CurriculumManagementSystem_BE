@@ -1,5 +1,6 @@
 ﻿using BusinessObject;
 using DataAccess.Models.DTO.response;
+using DataAccess.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,17 @@ namespace DataAccess.DAO
             return oldCol;
         }
 
+        public string DeleteCLOsBySyllabusId(int syllabus_id)
+        {
+            var oldMate = _cmsDbContext.CLO.Where(a => a.syllabus_id == syllabus_id).ToList();
+            foreach (var item in oldMate)
+            {
+                _cmsDbContext.CLO.Remove(item);
+            }
+            _cmsDbContext.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
+        }
+
         public CLO GetCLOByName(string name)
         {
             var rs = _cmsDbContext.CLO.Where(c => c.CLO_name.Equals(name)).FirstOrDefault();
@@ -52,19 +64,54 @@ namespace DataAccess.DAO
         }
         public CLO CreateCLOs(CLO clo)
         {
-            var rs = _cmsDbContext.CLO.Where(c => c.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()) && c.syllabus_id == clo.syllabus_id).FirstOrDefault();
+            if (!IsValidCLOName(clo.CLO_name))
+            {
+                throw new Exception("Invalid CLO name. It must start with 'CLO' and be followed by at least one number, and not contain spaces.");
+            }
+
+            var rs = _cmsDbContext.CLO
+                .Where(c => c.CLO_name.ToLower().Trim().Equals(clo.CLO_name.ToLower().Trim()) && c.syllabus_id == clo.syllabus_id)
+                .FirstOrDefault();
+
             if (rs == null)
             {
-
-            _cmsDbContext.CLO.Add(clo);
-            _cmsDbContext.SaveChanges();
-            return clo;
+                _cmsDbContext.CLO.Add(clo);
+                _cmsDbContext.SaveChanges();
+                return clo;
             }
             else
             {
-                throw new Exception("CLO name already exist in system.");
+                throw new Exception("CLO name already exists in the system.");
             }
         }
+
+        // Validation method for CLO name
+        private bool IsValidCLOName(string cloName)
+        {
+            const string prefix = "CLO";
+
+            // Check if it starts with 'CLO'
+            if (!cloName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // Check if it has at least one number after 'CLO'
+            int numberStartIndex = prefix.Length;
+            if (numberStartIndex >= cloName.Length || !char.IsDigit(cloName[numberStartIndex]))
+            {
+                return false;
+            }
+
+            // Check if it does not contain spaces 
+            if (cloName.Contains(" "))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
         public CLO UpdateCOLs(CLO clo)
         {

@@ -23,13 +23,10 @@ namespace DataAccess.Models.DTO.Excel
         public string? grading_duration { get; set; }
         public string? scope_knowledge { get; set; }
         public string? how_granding_structure { get; set; }
-        public int assessment_method_id { get; set; }
+        public string assessment_component { get; set; }
+        public string assessment_type { get; set; }
         public string? grading_note { get; set; }
 
         public string? clo_name { get; set; }
-
-        public string? assessment_method_name { get; set; }
-
-        public string? assessment_type_name { get; set; }
     }
 }

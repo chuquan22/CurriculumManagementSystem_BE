@@ -17,6 +17,8 @@ namespace DataAccess.Models.DTO.Excel
         public int syllabus_id { get; set; }
         public string? material_note { get; set; }
         public int learning_resource_id { get; set; }
+        public string learning_resource_name { get; set; }
+
         public string? material_author { get; set; }
         public string? material_publisher { get; set; }
         public DateTime? material_published_date { get; set; }

@@ -22,6 +22,11 @@ namespace Repositories.Materials
            return db.DeleteMaterial(id);
         }
 
+        public string DeleteMaterialBySyllabusId(int syllabus_id)
+        {
+            return db.DeleteMaterialBySyllabusId(syllabus_id);
+        }
+
         public Material EditMaterial(Material mate)
         {
             return db.EditMaterial(mate);
@@ -35,6 +40,11 @@ namespace Repositories.Materials
         public Material GetMaterialById(int id)
         {
             return db.GetMaterialById(id);
+        }
+
+        public List<Material> GetMaterialListBysubject(List<Subject> subjects)
+        {
+            return db.GetMaterialListBysubject(subjects);
         }
     }
 }

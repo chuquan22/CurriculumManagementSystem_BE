@@ -14,7 +14,7 @@ namespace Repositories.AssessmentTypes
         int GetTotalAssessmentType(string? txtSearch);
         AssessmentType GetAsssentTypeById(int id);
         public AssessmentType GetAssessmentTypeByName(string name);
-        bool CheckAssmentTypeDuplicate(string name);
+        bool CheckAssmentTypeDuplicate(int id, string name);
         bool CheckAssmentTypeExsit(int id);
         string CreateAssessmentType(AssessmentType type);
         string UpdateAssessmentType(AssessmentType type);

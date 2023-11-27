@@ -13,6 +13,7 @@ using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
 using Repositories.LearningMethods;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -80,13 +81,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // PUT: api/PreRequisiteTypes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPreRequisiteType(int id, [FromForm] PreRequisiteTypeRequest preRequisiteTypeRequest)
+        public async Task<IActionResult> PutPreRequisiteType(int id, [FromBody] PreRequisiteTypeRequest preRequisiteTypeRequest)
         {
             if (!PreRequisiteTypeExists(id))
             {
                 return NotFound(new BaseResponse(true, "Pre-Requisite-Type Not Found"));
             }
+
+            if(_preRequisiteType.CheckPreRequisiteTypeDuplicate(id, preRequisiteTypeRequest.pre_requisite_type_name))
+            {
+                return BadRequest(new BaseResponse(true, $"Pre-Requisite-Type {preRequisiteTypeRequest.pre_requisite_type_name} is Duplicate!"));
+            }
+
             var preRequisiteType = _preRequisiteType.GetPreRequisiteType(id);
             _mapper.Map(preRequisiteTypeRequest, preRequisiteType);
 
@@ -99,12 +107,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Update Successfull!", preRequisiteType));
         }
 
-        // POST: api/PreRequisiteTypes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<PreRequisiteType>> PostPreRequisiteType([FromBody]PreRequisiteTypeRequest preRequisiteTypeRequest)
         {
-            
+            if (_preRequisiteType.CheckPreRequisiteTypeDuplicate(0, preRequisiteTypeRequest.pre_requisite_type_name))
+            {
+                return BadRequest(new BaseResponse(true, $"Pre-Requisite-Type {preRequisiteTypeRequest.pre_requisite_type_name} is Duplicate!"));
+            }
+
             var preRequisiteType = _mapper.Map<PreRequisiteType>(preRequisiteTypeRequest);
 
             string createResult = _preRequisiteType.CreatePreRequisiteType(preRequisiteType);
@@ -118,6 +129,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         // DELETE: api/PreRequisiteTypes/5
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePreRequisiteType(int id)
         {

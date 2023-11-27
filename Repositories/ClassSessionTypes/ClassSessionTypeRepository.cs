@@ -12,9 +12,9 @@ namespace Repositories.ClassSessionTypes
     {
         public ClassSessionTypesDAO db = new ClassSessionTypesDAO();
 
-        public bool CheckClassSessionTypeDuplicate(string name)
+        public bool CheckClassSessionTypeDuplicate(int id, string name)
         {
-            return db.CheckClassSessionTypeDuplicate(name);
+            return db.CheckClassSessionTypeDuplicate(id, name);
         }
 
         public bool CheckClassSessionTypeExsit(int id)

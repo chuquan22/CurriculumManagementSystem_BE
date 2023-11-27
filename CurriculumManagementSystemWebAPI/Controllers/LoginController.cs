@@ -5,10 +5,14 @@ using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Repositories.Users;
 using AutoMapper;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Auth.OAuth2;
+
+using Google.Apis.Auth.OAuth2.Flows;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -19,46 +23,159 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
-
+        private string accessToken = null;
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
             repo = new UsersRepository();
-            _mapper = mapper;  
+            _mapper = mapper;
         }
-       
-        [AllowAnonymous]
-        [HttpPost]
-        public ActionResult Login([FromBody] UserLoginRequest userLoginRequest)
+        public static string[] Scopes =
         {
-            User user = AuthenticateUser(userLoginRequest);
-            if (user != null)
+            GmailService.Scope.GmailCompose,
+            GmailService.Scope.GmailSend
+        };
+        [AllowAnonymous]
+        [HttpGet]
+        public ActionResult GoogleOAuthLogin()
+        {
+            try
             {
-                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
-                var token = GenerateToken(user);
-                var data = new[]
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
+                    ClientSecrets = new ClientSecrets
+                    {
+                        ClientId = config["Authentication:Google:ClientId"],
+                        ClientSecret = config["Authentication:Google:ClientSecret"]
+                    },
+                    Scopes = Scopes
+                });
+
+                var authUri = flow.CreateAuthorizationCodeRequest(config["Authentication:Google:CallBackUrl"]).Build();
+                return Ok(authUri.AbsoluteUri);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to initiate Google OAuth login: " + ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("CallBack")]
+        public async Task<ActionResult> GoogleOAuthCallback(string? code, string? scope)
+        {
+            try
+            {
+
+                var flow = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
+                {
+                    ClientSecrets = new ClientSecrets
+                    {
+                        ClientId = config["Authentication:Google:ClientId"],
+                        ClientSecret = config["Authentication:Google:ClientSecret"]
+                    },
+                    Scopes = Scopes
+                });
+                var token = await flow.ExchangeCodeForTokenAsync("user", code, config["Authentication:Google:CallBackUrl"], CancellationToken.None);
+                var credential = new UserCredential(flow, "user", token);
+                var services = new GmailService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+                var userInfo = services.Users.GetProfile("me").Execute();
+                string userEmail = userInfo.EmailAddress;
+                if (!userEmail.EndsWith("@fpt.edu.vn"))
+                {
+                    return Ok(new BaseResponse(true, "To access the system, you must log in with @fpt.edu.vn account.", null));
+                }
+                User user = AuthenticateUser(userEmail);
+                if (user == null)
+                {
+                    return Ok(new BaseResponse(true, "User authentication failed. Contact adminstrator cmspoly@fpt.edu.vn.", null));
+                }
+                if (user.is_active == false)
+                {
+                    return Ok(new BaseResponse(true, "Your account has been locked. Please contact the adminstrator cmspoly@fpt.edu.vn if you have questions about the locked issue.", null));
+                }
+                UserLoginResponse userResponse = _mapper.Map<UserLoginResponse>(user);
+                var tokenJWTuser = GenerateToken(user);
+                var refreshToken = GenerateRefreshToken();
+                repo.SaveRefreshTokenUser(user.user_id, refreshToken);
+                var data = new[]
+                    {
                    new {
-                       Token = token,
+                       Token = tokenJWTuser,
+                       RefreshToken = refreshToken,
                        UserData = userResponse
                        },
                  };
-                return Ok(new BaseResponse(false, "Login Successful", data));
+                return Ok(new BaseResponse(false, "Login Successfully!", data));
             }
-            return Unauthorized(new BaseResponse(false, "Login False", null));
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, "Login Google Authenticator False. Please Try Login Google Again.", null));
+            }
+        }
+        [HttpPost("get-refresh-token")]
+        [AllowAnonymous]
+        public ActionResult GetRefreshToken(string refreshToken)
+        {
+           
+            User user = repo.GetUserByRefreshToken(refreshToken);
+            if (user == null)
+            {                        
+                return Unauthorized(new BaseResponse(true, "Token refreshed not avaiable!", null));
+            }
+            string[] splitRefresh = refreshToken.Split("|");
+            if (DateTime.Now > Convert.ToDateTime(splitRefresh[1]))
+            {
+                repo.DeleteRefreshTokenUser(user.user_id);
+                return Unauthorized(new BaseResponse(true, "Refresh Token Has Expired!", null));
+
+            }
+            var token = GenerateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+            repo.SaveRefreshTokenUser(user.user_id, newRefreshToken);
+            var data = new[]
+                {
+                   new {
+                       Token = token,
+                       RefreshToken = newRefreshToken
+                       },
+                 };
+
+            return Ok(new BaseResponse(false, "Token refreshed successfully!", data));
         }
 
-        private User AuthenticateUser(UserLoginRequest request)
+        [HttpPost("Logout")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Logout()
         {
-            User userLogged = repo.Login(request.email, request.password);
+            try
+            {
+                var currentUser = GetCurrentUser();
+                if (currentUser == null)
+                {
+                    return BadRequest(new BaseResponse(true, "Logout failed. User not logged in system."));
+                }
+               //repo.DeleteRefreshToken(currentUser.user_id);
+                return Ok(new BaseResponse(false, "Logout system successfully!", null));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+            }
+        }
+
+        private User AuthenticateUser(string email)
+        {
+            User userLogged = repo.Login(email);
             if (userLogged == null)
             {
                 return null;
             }
             return userLogged;
-
         }
-        [HttpPost("get-token")]
         private string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]));
@@ -69,12 +186,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 new Claim(ClaimTypes.Name,user.full_name),
                 new Claim(ClaimTypes.Email,user.user_email),
                 new Claim(ClaimTypes.Surname,user.full_name),
-                new Claim(ClaimTypes.Role,user.role_id.ToString()),
+                new Claim(ClaimTypes.Role,user.Role.role_name),
             };
 
-            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddMinutes(5), signingCredentials: credentials);
+            var token = new JwtSecurityToken(config["JWT:Issuer"], config["JWT:Issuer"], claims, expires: DateTime.Now.AddHours(1), signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+        private string GenerateRefreshToken()
+        {
+            var refreshToken = Guid.NewGuid().ToString() + "|" + DateTime.Now.AddHours(2);
+            return refreshToken;
+        }
+
+
+
 
         [HttpGet("get-current-user")]
         public UserLoginResponse GetCurrentUser()
@@ -95,5 +220,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return null;
         }
+
+
     }
 }

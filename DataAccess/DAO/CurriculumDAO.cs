@@ -1,4 +1,6 @@
 ﻿using BusinessObject;
+using DataAccess.Major;
+using DataAccess.Specialization;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,13 +14,13 @@ namespace DataAccess.DAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
-        public List<Curriculum> GetAllCurriculum(string? txtSearch, int? majorId)
+        public List<Curriculum> GetAllCurriculum(int degree_level_id, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
-                .Where(x => x.is_active == true);
+                .Where(x => x.Specialization.Major.degree_level_id == degree_level_id);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -32,19 +34,17 @@ namespace DataAccess.DAO
 
             var curriculumList = query
                 .AsEnumerable()
-                .OrderByDescending(x => x.Batch.batch_name)  // Sắp xếp theo Batch Name giảm dần
-                .ThenBy(x => x.curriculum_code)
                 .ToList();
             return curriculumList;
         }
 
-        public List<Curriculum> PanigationCurriculum(int page, int limit, string? txtSearch, int? majorId)
+        public List<Curriculum> PanigationCurriculum(int page, int limit, int degree_level_id, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
-                .Where(x => x.is_active == true);
+                .Where(x => x.Specialization.Major.degree_level_id == degree_level_id);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -56,19 +56,16 @@ namespace DataAccess.DAO
                 query = query.Where(x => x.Specialization.Major.major_id == majorId);
             }
 
-            var curriculumList = query
-                .OrderByDescending(x => x.Batch.batch_name) 
-                .ThenBy(x => x.curriculum_code) 
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .ToList();
+            var sortedCurriculumList = query
+            .ToList()
+            .OrderByDescending(x => x.curriculum_code.Split('-')[3].Trim('.'))
+            .ThenBy(x => x.curriculum_code)
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .ToList();
 
-            return curriculumList;
+            return sortedCurriculumList;
         }
-
-
-
-
 
         public int GetTotalCredit(int curriculumId)
         {
@@ -87,35 +84,43 @@ namespace DataAccess.DAO
             return total;
         }
 
-        public List<Curriculum> GetCurriculumByDegreeLevel(string degree_level)
+        public int GetTotalSemester(int speId, int batchId)
         {
-            var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
-                .Include(x => x.Specialization)
-                .Include(x => x.Specialization.Major)
-                .Include(x => x.CurriculumSubjects)
-                .Where(x => x.degree_level.Equals(degree_level))
-                .ToList();
-            return curriculum;
+            int totalSemester = 0;
+            var batch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var spe = _cmsDbContext.Specialization.Include(x => x.Major.DegreeLevel).FirstOrDefault(x => x.specialization_id == speId);
+            if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Associate Degree"))
+            {
+                totalSemester = double.Parse(batch.batch_name) >= 19.2 ? 6 : 7;
+            }
+            else if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
+            {
+                totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 8;
+            }
+            else
+            {
+
+            }
+            return totalSemester;
         }
-
-
         public Curriculum GetCurriculumById(int id)
         {
             var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
+                .ThenInclude(x => x.Semester)
+                .ThenInclude(x => x.Batch)
                 .Include(x => x.Specialization.Major)
+                .Include(x => x.Specialization.Major.DegreeLevel)
                 .Include(x => x.CurriculumSubjects)
-                .Where(x => x.is_active == true)
                 .FirstOrDefault(x => x.curriculum_id == id);
             return curriculum;
         }
 
         public List<Batch> GetListBatchNotExsitInCurriculum(string curriculumCode)
         {
-            var batchIdsInCurriculum = _cmsDbContext.Curriculum
-                .Where(curriculum => curriculum.curriculum_code.Equals(curriculumCode) && curriculum.is_active == true)
+            var batchIdsInCurriculum = _cmsDbContext.CurriculumBatch
+                .Where(curriculum => curriculum.Curriculum.curriculum_code.Equals(curriculumCode) && curriculum.Curriculum.is_active == true)
                 .Select(curriculum => curriculum.batch_id)
                 .ToList();
 
@@ -134,48 +139,97 @@ namespace DataAccess.DAO
         {
             var listBatch = _cmsDbContext.Curriculum
                 .Where(x => x.curriculum_code.Equals(curriculumCode) && x.is_active == true)
-                .Join(_cmsDbContext.Batch,
-                      curriculum => curriculum.batch_id,
+                .Join(_cmsDbContext.CurriculumBatch,
+                      curriculum => curriculum.curriculum_id,
                       batch => batch.batch_id,
-                      (curriculum, batch) => batch)
+                      (curriculum, batch) => batch.Batch)
                 .ToList();
 
             return listBatch;
         }
 
 
-        public Curriculum GetCurriculum(string code, int batchId)
+        public List<Curriculum> GetListCurriculumByBatchName(int batchId, string batchName)
+        {
+            SpecializationDAO dao = new SpecializationDAO();
+            var listSpe = dao.GetSpeByBatchId(batchId);
+
+            var list = new List<Curriculum>();
+            var listCurri = new List<Curriculum>();
+            foreach (var spe in listSpe)
+            {
+                var curri = _cmsDbContext.Curriculum.Where(x => x.specialization_id == spe.specialization_id).ToList();
+                foreach (var item in curri)
+                {
+                    listCurri.Add(item);
+                }
+            }
+            foreach (var curri in listCurri)
+            {
+                var curriCode = curri.curriculum_code.Split("-");
+                var start_batch_name = curriCode[curriCode.Length -1];
+                if(double.Parse(batchName) >= double.Parse(start_batch_name))
+                {
+                    list.Add(curri);
+                }
+            }
+            return list;
+        }
+
+        public List<Curriculum> GetCurriculumByBatch(int degreeLevel, string batchName)
+        {
+            var listMajor = _cmsDbContext.Major.Include(x => x.Specialization).Where(x => x.degree_level_id == degreeLevel).ToList();
+            var listSpe = new List<BusinessObject.Specialization>();
+            var listCurri = new List<Curriculum>();
+            foreach (var major in listMajor)
+            {
+                var spes = major.Specialization;
+                foreach (var spe in spes)
+                {
+                    listSpe.Add(spe);
+                }
+            }
+
+            foreach (var spe in listSpe)
+            {
+                var curri = _cmsDbContext.Curriculum.Where(x => x.specialization_id == spe.specialization_id).ToList();
+                foreach (var item in curri)
+                {
+                    listCurri.Add(item);
+                }
+            }
+            var list = new List<Curriculum>();
+            foreach (var curri in listCurri)
+            {
+                var curriCode = curri.curriculum_code.Split("-");
+                var start_batch_name = curriCode[curriCode.Length - 1];
+                if (double.Parse(batchName) >= double.Parse(start_batch_name))
+                {
+                    list.Add(curri);
+                }
+            }
+            return list;
+        }
+
+        public Curriculum GetCurriculum(string code)
         {
             var curriculum = _cmsDbContext.Curriculum
-                .Include(x => x.Batch)
+                .Include(x => x.CurriculumBatchs)
                 .Include(x => x.Specialization)
                 .Include(x => x.Specialization.Major)
                 .Where(x => x.is_active == true)
-                .FirstOrDefault(x => x.curriculum_code.Equals(code) && x.batch_id == batchId);
+                .FirstOrDefault(x => x.curriculum_code.Equals(code));
 
             return curriculum;
         }
 
-        public string GetCurriculumCode(int batchId, int speId, string degree_level)
+        public string GetCurriculumCode(int batchId, int speId)
         {
             var specialization = _cmsDbContext.Specialization.Find(speId);
-            var major = _cmsDbContext.Major.Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
+            var major = _cmsDbContext.Major.Include(x => x.DegreeLevel).Where(x => x.is_active == true).FirstOrDefault(x => x.major_id == specialization.major_id);
             var batch = _cmsDbContext.Batch.Find(batchId);
-            var abbreviationDgree = "";
-            if(degree_level.ToLower().Equals("associate degree"))
-            {
-                abbreviationDgree = "CD";
-            }else if(degree_level.ToLower().Equals("international associate degree"))
-            {
-                abbreviationDgree = "IC";
-            }
-            else if (degree_level.ToLower().Equals("vocational secondary"))
-            {
-                abbreviationDgree = "TC";
-            }
 
-
-            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + abbreviationDgree + "-" + batch.batch_name;
+            var curriCode = GetAbbreviations(major.major_english_name.ToUpper()) + "-" + GetAbbreviations(specialization.specialization_english_name.ToUpper()) + "-" + major.DegreeLevel.degree_level_code + "-" + batch.batch_name;
 
             return curriCode;
         }
@@ -199,7 +253,7 @@ namespace DataAccess.DAO
             }
             else
             {
-                Abbreviations = parts[0].ToUpper();
+                Abbreviations = parts[0].Substring(0, 1);
             }
             return Abbreviations;
         }

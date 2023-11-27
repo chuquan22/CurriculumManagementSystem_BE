@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ClassSessionTypes;
@@ -56,11 +57,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Class Session Type", new BaseListResponse(page, limit, total, listAssessmentTypeResponse)));
         }
 
-
+        [Authorize(Roles = "Manager")]
         [HttpPost("CreateClassSessionType")]
         public ActionResult CreateClassSessionType([FromBody] ClassSessionTypeRequest classSessionTypeRequest)
         {
-            if(classSessionTypeRepository.CheckClassSessionTypeDuplicate(classSessionTypeRequest.class_session_type_name))
+            if(classSessionTypeRepository.CheckClassSessionTypeDuplicate(0, classSessionTypeRequest.class_session_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Class Session Type is Duplicate!"));
             }
@@ -74,7 +75,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", classSessionTypeRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateClassSessionType/{id}")]
         public ActionResult UpdateClassSessionType(int id,[FromBody] ClassSessionTypeRequest classSessionTypeRequest)
         {
@@ -84,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found Class Session Type !"));
             }
 
-            if (classSessionTypeRepository.CheckClassSessionTypeDuplicate(classSessionTypeRequest.class_session_type_name))
+            if (classSessionTypeRepository.CheckClassSessionTypeDuplicate(id, classSessionTypeRequest.class_session_type_name))
             {
                 return BadRequest(new BaseResponse(true, "Class Session Type is Duplicate!"));
             }
@@ -99,7 +100,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Success!", classSessionTypeRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpDelete("DeleteClassSessionType/{id}")]
         public ActionResult DeleteClassSessionType(int id)
         {

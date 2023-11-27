@@ -1,7 +1,10 @@
 ﻿using BusinessObject;
+using DataAccess.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,8 +16,43 @@ namespace DataAccess.DAO
 
         public List<BusinessObject.Material> GetMaterial(int id)
         {
-            List<BusinessObject.Material> mt = _context.Material.Where(x => x.syllabus_id == id).ToList();
+            List<BusinessObject.Material> mt = _context.Material
+                .Include(x => x.LearningResource)
+                .Where(x => x.syllabus_id == id).ToList();
             return mt;
+        }
+
+        public List<Material> GetMaterialListBysubject(List<Subject> subjects) 
+        {
+            var listSyllabus = new List<Syllabus>();
+            foreach (var subject in subjects)
+            {
+                var ListSyllabus = _context.Syllabus.Where(x => x.subject_id == subject.subject_id && x.syllabus_approved == true && x.syllabus_status == true).ToList();
+                foreach (var syllabus in ListSyllabus)
+                {
+                    listSyllabus.Add(syllabus);
+                }
+            }
+            
+            var listMaterials = new List<Material>();
+            foreach (var syllabus in listSyllabus)
+            {
+                var listMaterial = _context.Syllabus
+                .Include(x => x.Materials)
+                .Where(x => x.syllabus_id == syllabus.syllabus_id)
+                .Join(_context.Material,
+                    syllabus => syllabus.syllabus_id,
+                    material => material.syllabus_id,
+                     (syllabus, material) => material)
+                .ToList();
+
+                foreach (var material in listMaterial)
+                {
+                    listMaterials.Add(material);
+                }
+            }
+
+            return listMaterials;
         }
 
         public Material CreateMaterial(Material material)
@@ -51,10 +89,21 @@ namespace DataAccess.DAO
             _context.SaveChanges();
             return oldMate;
         }
-
+        public string DeleteMaterialBySyllabusId(int syllabus_id)
+        {
+            var oldMate = _context.Material.Where(a => a.syllabus_id == syllabus_id).ToList();
+            foreach (var item in oldMate)
+            {
+                _context.Material.Remove(item);
+            }
+            _context.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
+        }
         public Material GetMaterialById(int id)
         {
-            var oldMate = _context.Material.Where(a => a.material_id == id).FirstOrDefault();
+            var oldMate = _context.Material
+                 .Include(x => x.LearningResource)
+                .Where(a => a.material_id == id).FirstOrDefault();
             if(oldMate == null)
             {
                 return null;

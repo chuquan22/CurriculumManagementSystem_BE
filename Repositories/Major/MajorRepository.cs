@@ -16,6 +16,11 @@ namespace Repositories.Major
             return db.AddMajor(major);
         }
 
+        public BusinessObject.Major CheckMajorbyMajorCode(string code, int degree_level_id)
+        {
+            return db.CheckMajorbyMajorCode(code, degree_level_id);
+        }
+
         public BusinessObject.Major CheckMajorbyMajorCode(string code)
         {
             return db.CheckMajorbyMajorCode(code);
@@ -49,6 +54,21 @@ namespace Repositories.Major
         public List<BusinessObject.Major> GetAllMajor()
         {
             return db.GetAllMajor();
+        }
+
+        public List<BusinessObject.Major> GetMajorByBatch(int batchId)
+        {
+            return db.GetMajorByBatch(batchId);
+        }
+
+        public List<BusinessObject.Major> GetMajorByDegreeLevel(int degreeId)
+        {
+            return db.GetMajorByDegreeLevel(degreeId);
+        }
+
+        public BusinessObject.Major GetMajorBySubjectId(int subjectId)
+        {
+            return db.GetMajorBySubjectId(subjectId);
         }
     }
 }

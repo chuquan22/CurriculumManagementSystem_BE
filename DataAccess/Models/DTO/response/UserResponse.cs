@@ -11,6 +11,7 @@ namespace DataAccess.Models.DTO.response
 {
     public class UserResponse
     {
+        public int user_id { get; set; }
         public string user_name { get; set; }
         public string user_email { get; set; }
         public int? user_phone { get; set; }

@@ -20,7 +20,7 @@ namespace DataAccess.DAO
                 rs = context.Syllabus
                                    .Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
-                                   .Where(s => s.syllabus_status == true)
+                                   .Include(s => s.DegreeLevel)
                                    .OrderByDescending(x => x.approved_date).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -40,6 +40,20 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public string DeleteSyllabus(int syllabusId)
+        {
+            using (var context = new CMSDbContext())
+            {
+                var oldMate = context.Syllabus.Where(a => a.syllabus_id == syllabusId).ToList();
+                foreach (var item in oldMate)
+                {
+                    context.Syllabus.Remove(item);
+                }
+                context.SaveChanges();
+            }
+            return Result.deleteSuccessfull.ToString();
+        }
+
         public Syllabus CreateSyllabus(Syllabus rs)
         {
             using (var context = new CMSDbContext())
@@ -49,6 +63,23 @@ namespace DataAccess.DAO
                 {
                     rs.syllabus_approved = true;
                 }
+                if(rs.scoring_scale == null)
+                {
+                    rs.scoring_scale = 5;
+                }
+                if(rs.min_GPA_to_pass == null)
+                {
+                    rs.scoring_scale = 10;
+                }
+                if(rs.scoring_scale < 0 && rs.scoring_scale >= 10)
+                {
+                    throw new Exception("Scoring scale must be > 0 and <= 10.");
+                }
+                if (rs.min_GPA_to_pass < 0 && rs.min_GPA_to_pass >= 10)
+                {
+                    throw new Exception("Min GPA to pass must be > 0 and <= 10.");
+                }
+                
                 context.Syllabus.Add(rs);
                 context.SaveChanges();
             }
@@ -63,6 +94,7 @@ namespace DataAccess.DAO
                 rs = context.PreRequisite
                     .Include(x => x.Subject)
                     .Include(x => x.PreRequisiteType)
+                    .Include( x => x.PreSubject)
                     .Where(x => x.subject_id == id )
                     .ToList();  
             }
@@ -74,7 +106,8 @@ namespace DataAccess.DAO
             using (var context = new CMSDbContext())
             {
                 var query = context.Syllabus.Include(s => s.Subject)
-                                            .Where(s => s.syllabus_status == true);
+                                            .Include(s => s.DegreeLevel)
+                                            .Where(s => s.syllabus_status == true || s.syllabus_status == false);
 
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
@@ -87,8 +120,8 @@ namespace DataAccess.DAO
                 {
                     query = query.Where(sy => sy.Subject.subject_code.Contains(subjectCode));
                 }
-
-                return query.Count();
+                var total = query.Count();
+                return total;
             }
         }
 
@@ -100,11 +133,15 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
             }
             return rs;
         }
+
+        
+
         public bool SetStatus(int id)
         {
             Syllabus rs = new Syllabus();
@@ -112,16 +149,21 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
-                if(rs.syllabus_status == true)
+
+                var listSyllabusFalse = context.Syllabus.Where(s => s.subject_id == rs.subject_id && s.syllabus_id != rs.syllabus_id).ToList();
+                foreach (var item in listSyllabusFalse)
                 {
-                    rs.syllabus_status = false;
-                    context.Syllabus.Update(rs);
-                    context.SaveChanges();
-                    return true;
+                    item.syllabus_status = false;
+                    context.Syllabus.Update(item);
                 }
-                
+                rs.syllabus_status = true;
+                context.Syllabus.Update(rs);
+                context.SaveChanges();
+                return true;
+
             }
             return false;
         }
@@ -132,6 +174,7 @@ namespace DataAccess.DAO
             {
                 rs = context.Syllabus.Include(s => s.Subject)
                                    .Include(s => s.Subject.LearningMethod)
+                                    .Include(s => s.DegreeLevel)
                                    .Where(s => s.syllabus_id == id)
                                    .FirstOrDefault();
                 rs.syllabus_approved = true;
@@ -151,6 +194,7 @@ namespace DataAccess.DAO
             {
                 var oldRs = context.Syllabus
                .Include(s => s.Subject)
+                .Include(s => s.DegreeLevel)
                .Include(s => s.Subject.LearningMethod)
                .Where(s => s.syllabus_id == syllabus.syllabus_id)
                .FirstOrDefault();
@@ -160,23 +204,36 @@ namespace DataAccess.DAO
                     if (syllabus.syllabus_description != null)
                         oldRs.syllabus_description = syllabus.syllabus_description;
 
-                    if (syllabus.degree_level != null)
-                        oldRs.degree_level = syllabus.degree_level;
+                    if (syllabus.degree_level_id != null)
+                        oldRs.degree_level_id = syllabus.degree_level_id;
 
                     if (syllabus.syllabus_tool != null )
                         oldRs.syllabus_tool = syllabus.syllabus_tool;
                     if(syllabus.time_allocation!=null)
+
                         oldRs.time_allocation = syllabus.time_allocation;
                     if (syllabus.student_task != null)
+
                         oldRs.student_task = syllabus.student_task;
                     if (syllabus.syllabus_note != null)
+
                         oldRs.syllabus_note = syllabus.syllabus_note;
                     if (syllabus.min_GPA_to_pass != null)
+
                         oldRs.min_GPA_to_pass = syllabus.min_GPA_to_pass;
                     if (syllabus.scoring_scale != null)
                         oldRs.scoring_scale = syllabus.scoring_scale;
 
+                    if (syllabus.approved_date != null)
+                    {
+                        oldRs.approved_date = syllabus.approved_date;
+                        oldRs.syllabus_approved = true;
 
+                    }else if(syllabus.approved_date == null){
+                        oldRs.approved_date = null;
+                        oldRs.syllabus_approved = false;
+
+                    }
                     context.Syllabus.Update(oldRs);
                     context.SaveChanges();
                 }

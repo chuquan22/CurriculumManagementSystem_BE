@@ -15,8 +15,8 @@ namespace DataAccess.Models.DTO.response
         public int @class { get; set; }
         public int @exam { get; set; }
         public string method { get; set; }
-        public string assessment { get; set; }
-
+        public string optional { get; set; }
+        public string combo { get; set; }
 
     }
 }

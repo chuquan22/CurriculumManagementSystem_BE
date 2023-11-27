@@ -11,8 +11,8 @@ using Repositories.Batchs;
 using Repositories.CLOS;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
-{   
-   // [Authorize]
+{
+    [Authorize(Roles = "Manager")]
     [Route("api/[controller]")]
     [ApiController]
     public class BatchsController : ControllerBase
@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             batchRepository = new BatchRepository();
         }
-        //[Authorize(Roles = "Admin")]
+
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
         {
@@ -33,10 +33,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
+        [HttpGet("GetBatchNotExsitInSemester")]
+        public ActionResult GetBatchNotExsitInSemester()
+        {
+            var listBatch = batchRepository.GetBatchNotExsitInSemester();
+            var listBatchResponse = _mapper.Map<List<CurriculumBatchDTOResponse>>(listBatch);
+            return Ok(new BaseResponse(false, "List Batch", listBatchResponse));
+        }
+
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
         {
             var listBatch = batchRepository.GetBatchBySpe(speId);
+            return Ok(new BaseResponse(false, "List Batch", listBatch));
+        }
+
+        [HttpGet("GetBatchByDegreeLevel/{degree_level_Id}")]
+        public ActionResult GetBatchByDegreeLevel(int degree_level_Id)
+        {
+            var listBatch = batchRepository.GetBatchByDegreeLevel(degree_level_Id);
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
 
@@ -47,23 +62,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Batch", Batch));
         }
 
-        [HttpPost("CreateBatch")]
-        public ActionResult CreateBatch([FromBody] BatchRequest batchRequest)
-        {
-            if (batchRepository.CheckBatchDuplicate(batchRequest.batch_name))
-            {
-                return BadRequest(new BaseResponse(true, "Batch is duplicate!"));
-            }
-
-            var batch = _mapper.Map<Batch>(batchRequest);
-            string createResult = batchRepository.CreateBatch(batch);
-            if(!createResult.Equals(Result.createSuccessfull.ToString()))
-            {
-                return BadRequest(new BaseResponse(true, $"Fail to create Batch {batch.batch_name}"));
-            }
-
-            return Ok(new BaseResponse(false, $"Create Batch {batch.batch_name} Success!", batchRequest));
-        }
+        
 
         [HttpDelete("DeleteBatch/{id}")]
         public ActionResult DeleteBatch(int id)

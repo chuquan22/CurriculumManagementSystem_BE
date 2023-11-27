@@ -20,10 +20,10 @@ namespace BusinessObject
         [AllowNull] 
         public string? CLO_description { get; set; }  
         
-        public virtual Syllabus Syllabus { get; set; }
+        public virtual Syllabus? Syllabus { get; set; }
         
-        public virtual ICollection<SessionCLO> SessionCLO { get; set; }
-        public virtual ICollection<GradingCLO> GradingCLOs { get; set; }    
+        public virtual ICollection<SessionCLO>? SessionCLO { get; set; }
+        public virtual ICollection<GradingCLO>? GradingCLOs { get; set; }    
 
     }
 }

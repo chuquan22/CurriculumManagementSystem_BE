@@ -13,10 +13,12 @@ using DataAccess.Models.DTO.response;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
 using Repositories.Combos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
@@ -95,7 +97,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 if (curriSubject.combo_id != 0 && curriSubject.combo_id != null)
                 {
-                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_english_name;
+                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_code;
                 }
 
                 foreach (var curriSubjectResponse in curriculumSubjectResponse)

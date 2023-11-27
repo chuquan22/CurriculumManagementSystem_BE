@@ -19,8 +19,8 @@ namespace BusinessObject
         public string program { get; set; }
         [Required]
         public string decision_No { get; set; }
-        [Required]
-        public string degree_level { get; set; }
+        [ForeignKey("DegreeLevel")]
+        public int degree_level_id { get; set; }
         [Required]
         public string syllabus_description { get; set; }
         [ForeignKey("Subject")]
@@ -48,6 +48,7 @@ namespace BusinessObject
         public virtual ICollection<GradingStruture>? Gradings { get; set; }
         public virtual ICollection<Material>? Materials { get; set; }
         public virtual Subject? Subject { get; set; }
+        public virtual DegreeLevel? DegreeLevel { get; set; }
         public virtual ICollection<Session>? Sessions { get; set; }
     }
 }

@@ -20,15 +20,12 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public int batch_id { get; set; }
         [Required]
-        public string degree_level { get; set; }
-        [Required]
         public string Formality { get; set; }
-        [Required]
-        public string decision_No { get; set; }
+        [AllowNull]
+        public string? decision_No { get; set; }
         
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime approved_date { get; set; }
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
         
 
     }

@@ -14,15 +14,12 @@ namespace DataAccess.Users
     public class UserDAO
     {
         public readonly CMSDbContext _cmsDbContext = new CMSDbContext();
-        public User Login(string email, string password)
+        public User Login(string email)
         {
-            UserLoginRequest request = new UserLoginRequest();
-            request.email = email;
-            request.password = password;
             User response = new User();
             try
             {
-                response = _cmsDbContext.User.Where(u => u.user_email.Equals(email) && u.user_password.Equals(password)).FirstOrDefault();
+                response = _cmsDbContext.User.Include(x => x.Role).Where(u => u.user_email.Equals(email)).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -30,6 +27,16 @@ namespace DataAccess.Users
                 throw;
             }
             return response;
+        }
+
+        public void DeleteRefreshToken(int user_id)
+        {
+            var user = _cmsDbContext.User.Include(x => x.Role).Where(x => x.user_id == user_id).FirstOrDefault();
+            if(user != null)
+            {
+                user.refresh_token = null;
+                _cmsDbContext.SaveChanges();    
+            }
         }
 
         public List<User> GetAllUser()
@@ -41,6 +48,13 @@ namespace DataAccess.Users
         public User GetUserById(int id)
         {
             var user = _cmsDbContext.User.Include(x => x.Role).FirstOrDefault(x => x.user_id == id);
+            return user;
+        }
+
+        public User GetUserByRefreshToken(string refreshToken)
+        {
+            var user = _cmsDbContext.User.Include(x => x.Role).Where(x => x.refresh_token.Equals(refreshToken)).FirstOrDefault();
+           
             return user;
         }
 
@@ -59,6 +73,16 @@ namespace DataAccess.Users
                 .Take(limit)
                 .ToList();
             return listUser;
+        }
+
+        public void SaveRefreshTokenUser(int user_id, string refreshToken)
+        {
+            var user = GetUserById(user_id);
+            if(user != null)
+            {
+                user.refresh_token = refreshToken;
+                _cmsDbContext.SaveChanges();
+            }
         }
 
         public int GetTotalUser(string? txtSearch)

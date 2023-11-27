@@ -18,6 +18,6 @@ namespace Repositories.Combos
         Combo FindComboByCode(string comboCode);
         bool DisableCombo(int id);
 
-        bool IsCodeExist(string code);
+        bool IsCodeExist(string code, int speId);
     }
 }

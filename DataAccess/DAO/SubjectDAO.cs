@@ -16,10 +16,23 @@ namespace DataAccess.DAO
         public readonly CMSDbContext CMSDbContext = new CMSDbContext();
 
 
-        public List<Subject> GetAllSubjects()
+        public List<Subject> GetAllSubjects(string txtSearch)
         {
-            var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true).ToList();
-            return list;
+            IQueryable<Subject> query = CMSDbContext.Subject
+               .Include(x => x.AssessmentMethod.AssessmentType)
+               .Include(x => x.LearningMethod)
+               .Include(x => x.CurriculumSubjects)
+               .Where(x => x.is_active == true);
+
+            if (!string.IsNullOrEmpty(txtSearch))
+            {
+                query = query.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()));
+            }
+
+            var subjectList = query
+                .AsEnumerable()
+                .ToList();
+            return subjectList;
         }
 
         public Subject GetSubjectById(int id)
@@ -40,6 +53,7 @@ namespace DataAccess.DAO
             var listSubjectIds = CMSDbContext.Curriculum
                 .Include(x => x.CurriculumSubjects)
                 .Where(x => x.curriculum_id == curriculumId)
+
                 .Join(CMSDbContext.CurriculumSubject.Include(x => x.Subject),
                     curriculum => curriculum.curriculum_id,
                     curriculumSubject => curriculumSubject.curriculum_id,
@@ -51,14 +65,81 @@ namespace DataAccess.DAO
 
         }
 
+        public List<Subject> GetSubjectBySpecialization(int speId, string batch_name)
+        {
+            var listcurri = CMSDbContext.Curriculum
+                .Where(x => x.specialization_id == speId && x.is_active == true)
+                .ToList();
+
+            if (batch_name != null)
+            {
+                listcurri = listcurri
+                    .Where(curri =>
+                    {
+                        var batch = CMSDbContext.Batch.FirstOrDefault(x => x.batch_id == curri.start_batch_id);
+                        return batch != null && string.Compare(batch.batch_name, batch_name, StringComparison.Ordinal) == 0;
+                    })
+                    .ToList();
+            }
+
+            var listSubjects = listcurri
+                .SelectMany(item => CMSDbContext.Curriculum
+                    .Include(x => x.CurriculumSubjects)
+                    .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
+                    .Join(
+                        CMSDbContext.CurriculumSubject.Include(x => x.Subject),
+                        curriculum => curriculum.curriculum_id,
+                        curriculumSubject => curriculumSubject.curriculum_id,
+                        (curriculum, curriculumSubject) => curriculumSubject.Subject
+                    )
+                )
+                .ToList();
+
+            listSubjects = listSubjects.Distinct().ToList();
+
+            return listSubjects;
+        }
+
+
+
+
+        public List<Subject> GetSubjectByMajorId(int majorId)
+        {
+            var listSubject = new List<Subject>();
+            var listSpe = CMSDbContext.Specialization.Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var spe in listSpe)
+            {
+                var subjects = GetSubjectBySpecialization(spe.specialization_id, null);
+                foreach (var s in subjects)
+                {
+                    listSubject.Add(s);
+                }
+            }
+            return listSubject;
+        }
+
         public Subject GetSubjectBySyllabus(int syllabus_id)
         {
-            var syllabus = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.syllabus_id ==  syllabus_id);
+            var syllabus = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.syllabus_id == syllabus_id);
             var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == syllabus.subject_id);
 
             return subject;
 
 
+        }
+
+        public int GetNumberSubjectNoSyllabus(List<Subject> subjects)
+        {
+            var count = 0;
+            foreach (var subject in subjects)
+            {
+                var syllabus = CMSDbContext.Syllabus.Where(x => x.subject_id == subject.subject_id).FirstOrDefault();
+                if (syllabus == null)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         public List<Subject> GetSubjectByName(string name)
@@ -74,11 +155,24 @@ namespace DataAccess.DAO
             }
         }
 
+        public List<Subject> GetSubjectByLearningMethod(int learningMethodId)
+        {
+            try
+            {
+                var list = CMSDbContext.Subject.Include(x => x.AssessmentMethod).Include(x => x.LearningMethod).Where(x => x.is_active == true && x.learning_method_id == learningMethodId).ToList();
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public Subject GetSubjectByCode(string code)
         {
             try
             {
-                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.Equals(code.ToUpper()));
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.ToUpper().Equals(code.ToUpper()));
                 return subject;
             }
             catch (Exception ex)

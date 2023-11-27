@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,11 @@ namespace DataAccess.Models.DTO.request
         public string english_curriculum_name { get; set; }
         [Required]
         public string curriculum_description { get; set; }
-        [Required]
-        public string decision_No { get; set; }
-        [Required]
-        public string degree_level { get; set; }
+        [AllowNull]
+        public string? decision_No { get; set; }
+
+        [AllowNull]
+        public DateTime? approved_date { get; set; }
+
     }
 }

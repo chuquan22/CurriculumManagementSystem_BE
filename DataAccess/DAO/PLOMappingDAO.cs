@@ -22,6 +22,7 @@ namespace DataAccess.DAO
                     x => x.subject_id,
                     y => y.subject_id,
                     (x, y) => y)
+                
                 .ToList();
 
             var listPloMapping = new List<PLOMapping>();

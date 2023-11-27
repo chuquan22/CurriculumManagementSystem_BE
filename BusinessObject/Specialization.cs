@@ -27,11 +27,8 @@ namespace BusinessObject
         public bool is_active { get; set; }
 
         public virtual Major Major { get; set; }
-
         public virtual ICollection<Combo> Combos { get; set; }
-
         public virtual ICollection<Curriculum> Curriculums { get; set; }
-        public virtual ICollection<SpecializationSubject> SpecializationSubjects { get; set; }
         public virtual Semester Semester { get; set; }
 
     }
