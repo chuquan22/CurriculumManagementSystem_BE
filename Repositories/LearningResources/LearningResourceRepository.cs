@@ -42,6 +42,11 @@ namespace Repositories.LearningResources
             return db.GetLearningResource(id);
         }
 
+        public LearningResource GetLearningResourceByName(string name)
+        {
+            return db.GetLearningResourceByName(name);
+        }
+
         public int GetTotalLearningResource(string? txtSearch)
         {
             return db.GetTotalLearningResource(txtSearch);

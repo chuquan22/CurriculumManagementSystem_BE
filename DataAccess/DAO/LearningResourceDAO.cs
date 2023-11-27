@@ -16,7 +16,6 @@ namespace DataAccess.DAO
         public List<LearningResource> GetLearningResource()
         {
             var rs = _cmsDbContext.LearningResource
-               
                 .ToList();
             return rs;
         }
@@ -49,6 +48,11 @@ namespace DataAccess.DAO
             var listLearningResource = query
                 .ToList();
             return listLearningResource.Count;
+        }
+
+        public LearningResource GetLearningResourceByName(string name)
+        {
+            return _cmsDbContext.LearningResource.Where(r => r.learning_resource_type.ToLower().Trim().Equals(name.ToLower().Trim())).FirstOrDefault();
         }
 
         public bool CheckLearningResourceDuplicate(int id, string type)

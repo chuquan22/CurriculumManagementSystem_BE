@@ -12,9 +12,9 @@ namespace Repositories.AssessmentTypes
     {
         private readonly AssessmentTypeDAO db = new AssessmentTypeDAO();
 
-        public bool CheckAssmentTypeDuplicate(string name)
+        public bool CheckAssmentTypeDuplicate(int id, string name)
         {
-            return db.CheckAssmentTypeDuplicate(name);
+            return db.CheckAssmentTypeDuplicate(id,name);
         }
 
         public bool CheckAssmentTypeExsit(int id)

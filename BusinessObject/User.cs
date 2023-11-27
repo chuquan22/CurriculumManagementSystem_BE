@@ -17,11 +17,6 @@ namespace BusinessObject
         public string user_name { get; set; }
         [Required]
         public string user_email { get; set;}
-        [Required]
-        public string user_password { get; set; }
-        [AllowNull]
-        public int? user_phone { get; set; }
-
         [Required, MaxLength(255)]
         public string full_name { get; set; }
         [ForeignKey("Role")]
@@ -29,6 +24,8 @@ namespace BusinessObject
 
         [Required]
         public bool is_active { get; set; }
+        [AllowNull]
+        public string? refresh_token { get; set; }
 
         public virtual Role Role { get; set; }  
     }

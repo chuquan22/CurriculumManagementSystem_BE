@@ -20,11 +20,12 @@ namespace Repositories.Subjects
         public string DeleteSubject(Subject subject) => subjectDAO.DeleteSubject(subject);
        
 
-        public List<Subject> GetAllSubject() => subjectDAO.GetAllSubjects();
+        public List<Subject> GetAllSubject(string txtSearch) => subjectDAO.GetAllSubjects(txtSearch);
 
         public List<Subject> GetListSubjectByTermNo(int term_no, int curriculumId) => subjectDAO.GetListSubjectByTermNo(term_no, curriculumId);
-      
 
+        public int GetNumberSubjectNoSyllabus(List<Subject> subjects) => subjectDAO.GetNumberSubjectNoSyllabus(subjects);
+        
         public Subject GetSubjectByCode(string code)
         {
             return subjectDAO.GetSubjectByCode(code);
@@ -36,9 +37,17 @@ namespace Repositories.Subjects
         }
 
         public Subject GetSubjectById(int id) => subjectDAO.GetSubjectById(id);
+
+        public List<Subject> GetSubjectByLearningMethod(int learningMethodId) => subjectDAO.GetSubjectByLearningMethod(learningMethodId);
+
+        public List<Subject> GetSubjectByMajorId(int majorId) => subjectDAO.GetSubjectByMajorId(majorId);
        
 
         public List<Subject> GetSubjectByName(string name) => subjectDAO.GetSubjectByName(name);
+
+
+        public List<Subject> GetSubjectBySpecialization(int speId, string batch_name) => subjectDAO.GetSubjectBySpecialization(speId, batch_name);
+        
 
         public Subject GetSubjectBySyllabus(int syllabus_id) => subjectDAO.GetSubjectBySyllabus(syllabus_id);
         

@@ -14,7 +14,13 @@ namespace BusinessObject
         public int batch_id { get; set; }
         [Required] 
         public string batch_name { get; set; }
-        public virtual ICollection<Curriculum> Curriculums { get; set;}
-        public virtual ICollection<SemesterBatch> SemesterBatches { get; set; }
+        [Required]
+        public int batch_order { get; set; }
+        [ForeignKey("DegreeLevel")]
+        public int degree_level_id { get; set; }
+
+        public virtual ICollection<CurriculumBatch> CurriculumBatchs { get; set;}
+        public virtual DegreeLevel DegreeLevel { get; set; }
+       
     }
 }

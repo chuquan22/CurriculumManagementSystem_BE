@@ -11,6 +11,7 @@ namespace Repositories.Semesters
     {
         public List<Semester> GetSemesters();
         List<Semester> PaginationSemester(int page, int limit, string? txtSearch);
+        List<Semester> GetSemesterBySpe(int speId);
         int GetTotalSemester(string? txtSearch);
         Semester GetSemester(int id);
         bool CheckSemesterDuplicate(int id, string name, int schoolYear);
@@ -18,5 +19,8 @@ namespace Repositories.Semesters
         string CreateSemester(Semester semester);
         string UpdateSemester(Semester semester);
         string DeleteSemester(Semester semester);
+
+        List<Semester> GetAllSemestersByMajorId(int id);
+        List<Semester> GetSemesterByDegreeLevel(int id);
     }
 }

@@ -3,8 +3,10 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.LearningMethods;
 using Repositories.LearningResources;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
@@ -31,10 +33,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = learningResourceRepository.GetLearningResource();
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error"));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
         }
 
@@ -60,7 +63,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var total = learningResourceRepository.GetTotalLearningResource(txtSearch);
             return Ok(new BaseResponse(false, "List Learning Resource", new BaseListResponse(page, limit, total, listLearningResource)));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPost("CreateLearningResource")]
         public ActionResult CreateLearningResource([FromBody] LearningResourceRequest learningResourceRequest)
         {
@@ -69,7 +72,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Learning Resource is Duplicate!"));
             }
 
-            var learningResource = _mapper.Map<LearningResource>(learningResourceRequest); 
+            var learningResource = _mapper.Map<LearningResource>(learningResourceRequest);
+            learningResource.learning_resouce_code = "T0" + (learningResourceRepository.GetLearningResource().Count + 1);
 
             string createResult = learningResourceRepository.CreateLearningResource(learningResource);
             if(!createResult.Equals(Result.createSuccessfull.ToString()))
@@ -79,7 +83,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Learning Resource Success!", learningResourceRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateLearningResource/{id}")]
         public ActionResult UpdateLearningResource(int id,[FromBody] LearningResourceRequest learningResourceRequest)
         {
@@ -104,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Update Learning Resource Success!", learningResourceRequest));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpDelete("RemoveLearningResource/{id}")]
         public ActionResult RemoveLearningResource(int id)
         {

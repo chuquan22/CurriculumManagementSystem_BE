@@ -12,14 +12,24 @@ namespace Repositories.Batchs
     {
         private readonly BatchDAO _batchDAO = new BatchDAO();
 
-        public bool CheckBatchDuplicate(string batch_name)
+        public bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id)
         {
-            return _batchDAO.CheckBatchDuplicate(batch_name);
+            return _batchDAO.CheckBatchDuplicate(batch_name, batchOrder ,degree_Id);
         }
 
         public bool CheckBatchExsit(int id)
         {
             return _batchDAO.CheckBatchExsit(id);
+        }
+
+        public bool CheckBatchNameExsit(string batchName, int degreeId)
+        {
+            return _batchDAO.CheckBatchNameExsit(batchName, degreeId);
+        }
+
+        public bool CheckBatchUpdateDuplicate(int id, int batchOrder, int degree_Id)
+        {
+            return _batchDAO.CheckBatchUpdateDuplicate(id, batchOrder, degree_Id);
         }
 
         public string CreateBatch(Batch batch)
@@ -37,6 +47,11 @@ namespace Repositories.Batchs
             return _batchDAO.GetAllBatch(); 
         }
 
+        public List<Batch> GetBatchByDegreeLevel(int degreeLevelId)
+        {
+            return _batchDAO.GetBatchByDegreeLevel(degreeLevelId);
+        }
+
         public Batch GetBatchById(int id)
         {
             return _batchDAO.GetBatchById(id);
@@ -52,14 +67,24 @@ namespace Repositories.Batchs
             return _batchDAO.GetBatchIDByName(batchName);
         }
 
-        public int GetTotalBatch(string? txtSearch)
+        public List<Batch> GetBatchNotExsitInSemester()
         {
-            return _batchDAO.GetTotalBatch(txtSearch);
+            return _batchDAO.GetBatchNotExsitInSemester();
         }
 
-        public List<Batch> PaginationBatch(int page, int limit, string? txtSearch)
+        public int GetTotalCurriculumBatch(string? txtSearch)
         {
-            return _batchDAO.PaginationBatch(page, limit, txtSearch);
+            return _batchDAO.GetTotalCurriculumBatch(txtSearch);
+        }
+
+        public List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch)
+        {
+            return _batchDAO.PaginationCurriculumBatch(page, limit, txtSearch);
+        }
+
+        public string UpdateBatch(Batch batch)
+        {
+            return _batchDAO.UpdateBatch(batch);
         }
     }
 }

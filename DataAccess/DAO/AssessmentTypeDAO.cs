@@ -53,7 +53,7 @@ namespace DataAccess.DAO
 
         public AssessmentType GetAssessmentTypeByName(string name)
         {
-            var ass = _context.AssessmentType.Where(x => x.assessment_type_name.Equals(name.Trim())).FirstOrDefault();
+            var ass = _context.AssessmentType.Where(x => x.assessment_type_name.ToLower().Trim().Equals(name.Trim().ToLower())).FirstOrDefault();
             return ass;
         }
 
@@ -63,9 +63,9 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public bool CheckAssmentTypeDuplicate(string name)
+        public bool CheckAssmentTypeDuplicate(int id,string name)
         {
-            return (_context.AssessmentType?.Any(x => x.assessment_type_name == name)).GetValueOrDefault();
+            return (_context.AssessmentType?.Any(x => x.assessment_type_name == name && x.assessment_type_id != id)).GetValueOrDefault();
         }
 
         public bool CheckAssmentTypeExsit(int id)

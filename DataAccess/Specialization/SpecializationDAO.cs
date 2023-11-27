@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using DataAccess.Combos;
 using DataAccess.DAO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace DataAccess.Specialization
             List<BusinessObject.Specialization> list = new List<BusinessObject.Specialization>();
             try
             {
-               list = db.Specialization.ToList();              
+               list = db.Specialization.Include(x => x.Major.DegreeLevel).ToList();              
             }
             catch (Exception)
             {
@@ -61,9 +62,56 @@ namespace DataAccess.Specialization
 
         public BusinessObject.Specialization GetSpeById(int speId)
         {
-            var spe = db.Specialization.Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.specialization_id == speId).ToList().FirstOrDefault();
             return spe;
         }
+
+        public List<BusinessObject.Specialization> GetSpeByMajorId(int majorId, string batch_name)
+        {
+            var listSpe = new List<BusinessObject.Specialization>();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var item in spe)
+            {
+                if (double.Parse(item.Semester.Batch.batch_name) <= double.Parse(batch_name))
+                {
+                    listSpe.Add(item);
+                }
+            }
+            return listSpe;
+        }
+
+        public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId)
+        {
+            var listSpe = new List<BusinessObject.Specialization>();
+            var batch = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var major = db.Major.Where(x => x.degree_level_id == batch.degree_level_id && x.is_active == true).ToList();
+
+            foreach (var item in major)
+            {
+                var spe = db.Specialization.Where(x => x.major_id == item.major_id  && x.is_active == true).ToList();
+                foreach (var item1 in spe)
+                {
+                    listSpe.Add(item1);
+                }
+            }
+            return listSpe;
+        }
+
+        public List<BusinessObject.Specialization> GetSpeByBatchId(int batchId, int majorId)
+        {
+            var bacth = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
+            var listSpe = new List<BusinessObject.Specialization>();
+            var spe = db.Specialization.Include(x => x.Semester.Batch).Where(x => x.major_id == majorId && x.is_active == true).ToList();
+            foreach (var item in spe)
+            {
+                if (double.Parse(item.Semester.Batch.batch_name) <= double.Parse(bacth.batch_name))
+                {
+                    listSpe.Add(item);
+                }
+            }
+            return listSpe;
+        }
+
         public bool IsCodeExist(string code)
         {
             var spe = db.Specialization.Where(x => x.specialization_code.Equals(code)).ToList().FirstOrDefault();

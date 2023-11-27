@@ -17,14 +17,29 @@ namespace Repositories.SemesterPlans
             return db.CreateSemesterPlan(semesterPlans);
         }
 
-        public List<SemesterPlanResponse> GetSemesterPlan(int semesterId, string degree_level)
+        public string DeleteSemesterPlan(int semester_id)
         {
-            return db.GetAllSemesterPlan(semesterId, degree_level);
+            return db.DeleteSemesterPlan(semester_id);
         }
 
-        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semesterId, string degree_level)
+        public List<SemesterPlanDTO> GetSemesterPlan(int semester_id)
         {
-            return db.GetSemesterPlanDetails(semesterId, degree_level);
+            return db.GetSemesterPlan(semester_id);
+        }
+
+        public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
+        {
+            return db.GetSemesterPlanDetails(semester_id);
+        }
+
+        public List<CreateSemesterPlanResponse> GetSemesterPlanOverView(int semester_id)
+        {
+            return db.GetSemesterPlanOverView(semester_id);
+        }
+
+        public List<SemesterPlanResponse> GetSemesterPlanOverViewDetails(int semester_id)
+        {
+            return db.GetSemesterPlanOverViewDetails(semester_id);
         }
     }
 }

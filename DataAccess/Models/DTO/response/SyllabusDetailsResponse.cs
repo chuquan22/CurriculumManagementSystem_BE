@@ -19,6 +19,8 @@ namespace DataAccess.Models.DTO.response
         public string subject_code { get; set; }
         public string learning_teaching_method { get; set; }
         public string credit { get; set; }
+        public int degree_level_id { get; set; }
+
 
         public string degree_level { get; set; }
         public string? time_allocation { get; set; }

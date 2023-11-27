@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +20,13 @@ namespace BusinessObject
         [ForeignKey("Quiz")]
         public int quiz_id { get; set; }
         [Required]
-        public string answers_1 { get; set; }
+        public string answers_A { get; set; }
         [Required]
-        public string answers_2 { get; set; }
-        [Required]
-        public string answers_3 { get; set; }
-        [Required]
-        public string answers_4 { get; set; }
+        public string answers_B { get; set; }
+        [AllowNull]
+        public string? answers_C { get; set; }
+        [AllowNull]
+        public string? answers_D { get; set; }
         [Required]
         public string correct_answer { get; set; }
 

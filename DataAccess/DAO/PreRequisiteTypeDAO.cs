@@ -84,7 +84,7 @@ namespace DataAccess.DAO
             {
                 _cmsDbContext.PreRequisiteType.Update(preRequisiteType);
                 _cmsDbContext.SaveChanges();
-                return Result.createSuccessfull.ToString();
+                return Result.updateSuccessfull.ToString();
             }
             catch (DbUpdateConcurrencyException ex)
             {

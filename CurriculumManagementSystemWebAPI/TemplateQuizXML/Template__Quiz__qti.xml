@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE questestinterop SYSTEM "ims_qtiasiv1p2p1.dtd">
+<questestinterop>
+	<item sxRepeat="question in questions" ident="il_10000_qst_{{$index}}" title="{{question.question_name_title}}..." maxattempts="0">
+		<qticomment/>
+		<duration>P0Y0M0DT0H1M0S</duration>
+		<itemmetadata>
+			<qtimetadata>
+				<qtimetadatafield>
+					<fieldlabel>ILIAS_VERSION</fieldlabel>
+					<fieldentry>5.2.0 2017-02-07</fieldentry>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>QUESTIONTYPE</fieldlabel>
+					<fieldentry>{{question.question_type}}</fieldentry>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>AUTHOR</fieldlabel>
+					<fieldentry>FPT Polytechnic</fieldentry>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>additional_cont_edit_mode</fieldlabel>
+					<fieldentry>default</fieldentry>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>externalId</fieldlabel>
+					<fieldentry>59966463711866.50123823</fieldentry>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>thumb_size</fieldlabel>
+					<fieldentry/>
+				</qtimetadatafield>
+				<qtimetadatafield>
+					<fieldlabel>feedback_setting</fieldlabel>
+					<fieldentry>2</fieldentry>
+				</qtimetadatafield>
+			</qtimetadata>
+		</itemmetadata>
+		<presentation label="{{question.question_name_title}}...">
+			<flow>
+				<material>
+					<mattext texttype="text/xhtml">{{question.question_name}}</mattext>
+				</material>
+				<response_lid ident="MCSR" rcardinality="Single">
+					<render_choice shuffle="Yes">
+						<response_label sxRepeat="answer in question.answers" ident="{{$index}}">
+							<material>
+								<mattext texttype="text/xhtml">{{answer}}</mattext>
+							</material>
+						</response_label>
+					</render_choice>
+				</response_lid>
+			</flow>
+		</presentation>
+		<resprocessing>
+			<outcomes>
+				<decvar/>
+			</outcomes>
+			<respcondition sxRepeat="correct in question.corrects" continue="Yes">
+				<conditionvar>
+					<varequal respident="MCSR">{{$index}}</varequal>
+				</conditionvar>
+				<setvar action="Add">{{correct}}</setvar>
+				<displayfeedback feedbacktype="Response" linkrefid="response_{{$index}}"/>
+			</respcondition>
+		</resprocessing>
+		<itemfeedback sxRepeat="answer in question.answers" ident="response_{{$index}}" view="All">
+			<flow_mat>
+				<material>
+					<mattext texttype="text/plain"/>
+				</material>
+			</flow_mat>
+		</itemfeedback>
+	</item>
+</questestinterop>

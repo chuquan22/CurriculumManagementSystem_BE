@@ -28,14 +28,28 @@ using Repositories.PLOMappings;
 using Microsoft.AspNetCore.Routing.Template;
 using Repositories.Combos;
 using System.Text.RegularExpressions;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
+using Repositories.CurriculumBatchs;
+using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
         private readonly CMSDbContext _context;
+        private readonly HttpClient client = null;
+        public static string API_PORT = "https://localhost:8080";
+        public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
+        public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
+        public static string API_PLO = "/api/PLOs";
+        public static string API_PLOMAPPING = "/api/PLOMappings/UpdatePLOMapping";
         private readonly IMapper _mapper;
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly ICurriculumSubjectRepository _curriculumsubjectRepository = new CurriculumSubjectRepository();
@@ -46,11 +60,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IPLOMappingRepository _ploMappingRepository = new PLOMappingRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
+        private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
 
         public CurriculumsController(CMSDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            client = new HttpClient();
+
+            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+            client.DefaultRequestHeaders.Accept.Add(contentType);
         }
 
         // GET: api/Curriculums/GetCurriculumByBatch/code/5
@@ -61,7 +80,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound();
             }
-            var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode, batchId);
+            var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode);
             if (Curriculum == null)
             {
                 return Ok(new BaseResponse(true, "Not Found Curriculum"));
@@ -84,26 +103,30 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
+
+
         // GET: api/Curriculums/Pagination/5/6/search/1
-        [HttpGet("Pagination/{page}/{limit}")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, [FromQuery] string? txtSearch, [FromQuery] int? majorId)
+        [HttpGet("Pagination/{page}/{limit}/{degree_level_id}")]
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> PaginationCurriculum(int page, int limit, int degree_level_id ,[FromQuery] string? txtSearch, [FromQuery] int? majorId)
         {
-            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, txtSearch, majorId);
+            var listCurriculum = _curriculumRepository.PanigationCurriculum(page, limit, degree_level_id, txtSearch, majorId);
 
             if (listCurriculum.Count == 0)
             {
                 return Ok(new BaseResponse(true, "Not Found Subject"));
             }
-            var totalElement = _curriculumRepository.GetAllCurriculum(txtSearch, majorId).Count();
+            var totalElement = _curriculumRepository.GetAllCurriculum(degree_level_id, txtSearch, majorId).Count();
 
-            var subjectRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
+            var curriculumRespone = _mapper.Map<List<CurriculumResponse>>(listCurriculum);
 
-            foreach (var curriculum in subjectRespone)
+
+            foreach (var curriculum in curriculumRespone)
             {
+                curriculum.batch_name = _batchRepository.GetBatchById(curriculum.start_batch_id).batch_name;
                 curriculum.total_credit = _curriculumRepository.GetTotalCredit(curriculum.curriculum_id);
             }
 
-            return Ok(new BaseResponse(false, "Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, subjectRespone)));
+            return Ok(new BaseResponse(false, "Get List Curriculum Sucessfully", new BaseListResponse(page, limit, totalElement, curriculumRespone)));
 
         }
 
@@ -118,7 +141,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            //curriculumResponse.Semester = _context.Semester.Where(x => x.start_batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
+        }
+
+        // GET: api/Curriculums/GetCurriculum/5
+        [HttpGet("GetTotalSemester/{speId}/{batchId}")]
+        public async Task<ActionResult<CurriculumResponse>> GetTotalSemester(int speId, int batchId)
+        {
+            var totalSemester = _curriculumRepository.GetTotalSemester(speId, batchId);
+            return Ok(new BaseResponse(false, "total", totalSemester));
         }
 
         // GET: api/Curriculums/GetListBatchNotInCurriculum/code
@@ -146,8 +178,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             _mapper.Map(curriculumRequest, curriculum);
-            curriculum.updated_date = DateTime.Today;
-            
+            curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
 
             string updateResult = _curriculumRepository.UpdateCurriculum(curriculum);
 
@@ -166,9 +197,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculum = _mapper.Map<Curriculum>(curriculumRequest);
 
-            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.batch_id, curriculum.specialization_id, curriculum.degree_level);
-            curriculum.is_active = true;
-            if (CheckCurriculumExists(curriculum.curriculum_code, curriculum.batch_id))
+            curriculum.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculum.start_batch_id, curriculum.specialization_id);
+            curriculum.total_semester = _curriculumRepository.GetTotalSemester(curriculum.specialization_id, curriculum.start_batch_id);
+            curriculum.is_active = (curriculum.decision_No != null && curriculum.decision_No != "") ? true : false;
+
+            if (CheckCurriculumExists(curriculum.curriculum_code))
             {
                 return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} is Duplicate!"));
             }
@@ -177,22 +210,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, createResult));
             }
-
-            return Ok(new BaseResponse(false, "Create Curriculum Success!", curriculumRequest));
+            var curriResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            return Ok(new BaseResponse(false, "Create Curriculum Success!", curriResponse));
         }
 
         // DELETE: api/Curriculums/DeleteCurriculum/5
         [HttpDelete("DeleteCurriculum/{id}")]
         public async Task<IActionResult> DeleteCurriculum(int id)
         {
-            if (CheckCurriculumCanDelete(id))
-            {
-                return BadRequest(new BaseResponse(true, "Can not Delete Curriculum Had Subject!"));
-            }
             var curriculum = _curriculumRepository.GetCurriculumById(id);
             if (curriculum == null)
             {
                 return NotFound(new BaseResponse(true, "Not found this curriculum"));
+            }
+
+            if (CheckCurriculumCanDelete(id))
+            {
+                return BadRequest(new BaseResponse(true, $"Curriculum {curriculum.curriculum_code} Had Used. Can't Delete!"));
             }
 
             string deleteResult = _curriculumRepository.RemoveCurriculum(curriculum);
@@ -232,13 +266,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
+            //if(curriculum.decision_No == null)
+            //{
+            //    return BadRequest(new BaseResponse(true, $"Export Fail.Curriculum not yet applied"));
+            //}
+
             var subjectN1 = GetArraySubject(subject1, subject2, subject3);
             var subjectN2 = GetArraySubject(subject4, subject5, subject6);
 
             Dictionary<string, object> value = new Dictionary<string, object>()
             {
-                ["decision_No"] = curriculum.decision_No,
-                ["approved_date"] = $"Ngày {curriculum.approved_date.Day} tháng {curriculum.approved_date.Month} năm {curriculum.approved_date.Year}",
+                ["decision_No"] = curriculum.decision_No == null ? "..." : curriculum.decision_No,
+                ["approved_date"] = curriculum.approved_date == null ? "" : $"Ngày {curriculum.approved_date.Value.Day} tháng {curriculum.approved_date.Value.Month} năm {curriculum.approved_date.Value.Year} ",
                 ["major_name"] = major.major_name,
                 ["major_english_name"] = major.major_english_name,
                 ["major_code"] = major.major_code,
@@ -246,7 +285,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 ["specialization_english_name"] = specialization.specialization_english_name,
 
                 ["curriculum_code"] = curriculum.curriculum_code,
-                ["degree_level"] = curriculum.degree_level,
+                ["degree_level"] = major.DegreeLevel.degree_level_english_name,
                 ["formality"] = curriculum.Formality,
 
                 ["Combo"] = comboExcel,
@@ -282,8 +321,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.SaveAsByTemplate(templatePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
-            return Ok(fileContents);
-           // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
+            return Ok(new BaseResponse(false, $"Curriculum-{curriculum.curriculum_code}-{curriculum.english_curriculum_name}", fileContents));
+            // return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum.xlsx");
         }
 
 
@@ -293,10 +332,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-                List<CurriculumSubject> listCurriSubject = new List<CurriculumSubject>();
+                List<CurriculumSubjectRequest> listCurriSubject = new List<CurriculumSubjectRequest>();
 
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
+                var curriculum = new Curriculum();
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileCurriculum.CopyToAsync(stream);
@@ -314,23 +354,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             var curriculumExcel = GetCurriculumInExcel(row);
-                            if(curriculumExcel == null)
+                            try
                             {
-                                return BadRequest(new BaseResponse(true, "Can't Read Data Curriculum. PLease Check File Import!"));
+                                curriculum_id = await CreateCurriculumsAPI(curriculumExcel);
+                                curriculum = _curriculumRepository.GetCurriculumById(curriculum_id);
                             }
-                            curriculumExcel.curriculum_code = _curriculumRepository.GetCurriculumCode(curriculumExcel.batch_id, curriculumExcel.specialization_id, curriculumExcel.degree_level);
-                            var curri = _curriculumRepository.GetCurriculum(curriculumExcel.curriculum_code, curriculumExcel.batch_id);
-                            if (curri != null)
+                            catch (Exception ex)
                             {
-                                return BadRequest(new BaseResponse(true, $"Curriculum {curriculumExcel.curriculum_code} Duplicate!"));
+                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum!"));
                             }
 
-                            string createResult = _curriculumRepository.CreateCurriculum(curriculumExcel);
-                            if (curriculumExcel.curriculum_id == 0)
-                            {
-                                return BadRequest(new BaseResponse(true, createResult));
-                            }
-                            curriculum_id = curriculumExcel.curriculum_id;
 
 
                         }
@@ -340,17 +373,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                             foreach (var item in row)
                             {
-                                var plo = new PLOs();
+                                var plo = new PLOsDTORequest();
                                 plo.curriculum_id = curriculum_id;
                                 plo.PLO_name = item.PLO_name;
                                 plo.PLO_description = item.PLO_description;
 
                                 if (!_ploRepository.CheckPLONameExsit(plo.PLO_name, plo.curriculum_id))
                                 {
-                                    string createResult = _ploRepository.CreatePLOs(plo);
-                                    if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                                    try
                                     {
-                                        return BadRequest(new BaseResponse(true, createResult));
+                                        await CreatePLOsAPI(plo);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _curriculumRepository.RemoveCurriculum(curriculum);
+                                        return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO!"));
                                     }
                                 }
 
@@ -362,7 +399,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var row = MiniExcel.Query<CurriculumSubjectExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             foreach (var item in row)
                             {
-                                var curriculumSubject = new CurriculumSubject();
+                                var curriculumSubject = new CurriculumSubjectRequest();
                                 curriculumSubject.curriculum_id = curriculum_id;
                                 if (item.subject_code != null && item.subject_code != "")
                                 {
@@ -386,8 +423,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         else
                         if (i == 3)
                         {
-                            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                             var group_name = "";
+                            var groupNames = new List<string>
+                                {
+                                     "General Subject", "Basic Subject", "Specialization Subject", "Elective Subject"
+                                };
                             using (var package = new ExcelPackage(stream))
                             {
                                 var worksheet = package.Workbook.Worksheets[3];
@@ -398,17 +438,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         var cell = worksheet.Cells[row, col];
                                         string cellValue = cell.Text;
-                                        if (cellValue.Equals("Khối Kiến thức chung"))
+                                        if (groupNames.FirstOrDefault(x => x.ToUpper().Equals(cellValue.ToUpper().Trim())) != null)
                                         {
-                                            group_name = "General Subject";
-                                        }
-                                        else if (cellValue.Equals("Khối kiến thức ngành"))
-                                        {
-                                            group_name = "Basic Subject";
-                                        }
-                                        else if (cellValue.Equals("Khối kiến thức chọn theo chuyên ngành hẹp"))
-                                        {
-                                            group_name = "Specialization Subject";
+                                            group_name = cellValue;
                                         }
 
                                         var subjectCode = worksheet.Cells[row, 1].Text;
@@ -418,11 +450,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             if (subjects != null && subject.subject_id == subjects.subject_id)
                                             {
                                                 subject.subject_group = group_name;
+                                                break;
                                             }
-
                                         }
 
-                                        if (cellValue.Equals("ü"))
+                                        if (cellValue.Trim().Equals("ü"))
                                         {
                                             var subject_code = worksheet.Cells[row, 1].Text;
                                             var plo_name = worksheet.Cells[2, col].Text;
@@ -438,23 +470,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
                                             if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                             {
-                                                return BadRequest(new BaseResponse(true, "Create PLO Mapping Fail"));
+                                                _curriculumRepository.RemoveCurriculum(curriculum);
+                                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
                                             }
                                         }
                                     }
                                 }
                             }
-                            foreach (var subject in listCurriSubject)
+                            try
                             {
-                                string createResult = _curriculumsubjectRepository.CreateCurriculumSubject(subject);
-                                if (createResult != Result.createSuccessfull.ToString())
-                                {
-                                    return BadRequest(new BaseResponse(true, createResult));
-                                }
+                                await CreateCurriculumsAPI(listCurriSubject);
                             }
+                            catch (Exception ex)
+                            {
+                                _curriculumRepository.RemoveCurriculum(curriculum);
+                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum Subject and PLO Mapping!"));
+                            }
+
+
+
                         }
                     }
-                    var list = listCurriSubject;
                     return Ok(new BaseResponse(false, "Import Success", curriculum_id));
                 }
             }
@@ -464,13 +500,87 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
+        private async Task<int> CreateCurriculumsAPI(CurriculumRequest cu)
+        {
+            string apiUrl = API_PORT + API_CURRICULUM;
+            var jsonData = JsonSerializer.Serialize(cu);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            response.EnsureSuccessStatusCode();
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
+
+            int syllabusId = responseObject.GetProperty("data").GetProperty("curriculum_id").GetInt32();
+
+            return syllabusId;
+        }
+
+        private async Task<PLOsDTORequest> CreatePLOsAPI(PLOsDTORequest plo)
+        {
+            string apiUrl = API_PORT + API_PLO;
+            var jsonData = JsonSerializer.Serialize(plo);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            response.EnsureSuccessStatusCode();
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            PLOsDTORequest rs = JsonSerializer.Deserialize<PLOsDTORequest>(strData, options);
+            return rs;
+        }
+
+        private async Task<CurriculumSubjectRequest> CreateCurriculumsAPI(List<CurriculumSubjectRequest> curri)
+        {
+            string apiUrl = API_PORT + API_CURRICULUMSUBJECT;
+            var jsonData = JsonSerializer.Serialize(curri);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+
+            response.EnsureSuccessStatusCode();
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            CurriculumSubjectRequest rs = JsonSerializer.Deserialize<CurriculumSubjectRequest>(strData, options);
+            return rs;
+        }
+
+
         private string ValidationDataExcel(string path, List<string> sheetNames, FileStream stream)
         {
+
             List<Subject> listSubject = new List<Subject>();
             List<PLOs> listPLO = new List<PLOs>();
             if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
             {
-                return "Please using file import template";
+                return "File is not in a supported format.";
             }
             for (int i = 0; i < sheetNames.Count; i++)
             {
@@ -479,30 +589,31 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     var major = new Major();
                     var row = MiniExcel.Query<CurriculumExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
-                    
+                    string batch_name = "";
+                    bool checkApproved = false;
+                    string decicionNo = null;
+                    string dateTime = null;
                     foreach (var r in row)
                     {
-                        if(r.Title != null && r.Details == null)
-                        {
-                            return $"{r.Title} in sheet Curriculum must not be null";
-                        }
                         // Check format of curriculum code
-                        string pattern = @"^([A-Z]{2}-[A-Z]{2}-\d{2}.\d{1})$";
-                        if (r.Title.Equals("Curriculum Code"))
+                        string pattern = @"^[A-Z]+-[A-Z]+-[A-Z]+-\d+(\.\d+)?$";
+                        if (r.Title == null) { }
+                        else if (r.Title.Equals("Curriculum Code"))
                         {
                             if (!Regex.IsMatch(r.Details, pattern))
                             {
-                                return "Curriculum Code must format ex:GD-GD-19.3 (GD: Graphic Design)";
+                                return "Curriculum Code must format ex:GD-GD-CD-19.3";
+                            }
+
+                            if (CheckCurriculumExists(r.Details))
+                            {
+                                return $"Curriculum {r.Details} is Duplicate!";
                             }
                             string[] parts = r.Details.Split('-');
                             // get part have index 2 in array string ex: 19.4
-                            var batch_name = parts[2];
-                            // get batch_id by batch_name
-                            if (_batchRepository.GetBatchIDByName(batch_name) == 0)
-                            {
-                                return $"Batch {batch_name} Not Exsit";
-                            }
-                            
+                            batch_name = parts[3];
+                           
+
                         }
                         // Check Major Exsit
                         else if (r.Title.Equals("Vocational Code"))
@@ -513,6 +624,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             {
                                 return $"Major not Exsit. Please Create Major {r.Details}";
                             }
+
                         }
                         // Check Spe exsit
                         else if (r.Title.Equals("Specialization Code"))
@@ -531,8 +643,37 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
                             }
 
+                            if (double.Parse(spe.Semester.Batch.batch_name) >= double.Parse(batch_name))
+                            {
+                                return $"Curriculum must start batch greater than {spe.Semester.Batch.batch_name}";
+                            }
+
                         }
+                        else if (r.Title.Equals("Decision No."))
+                        {
+                            decicionNo = r.Details;
+                        }
+                        else if (r.Title.Equals("Approved date"))
+                        {
+                            dateTime = r.Details;
+                            string[] date = r.Details.Split(' ');
+                            if (DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
+                            {
+                                return $"Check approved date {date[0]}";
+                            }
+
+                        }
+
                     }
+                    if (!((decicionNo == null && dateTime == null) || (decicionNo != null && dateTime != null)))
+                    {
+                        return $"Both the Decicion No and Approved Date fields must have a value or be blank";
+                    }
+                    if(!_batchRepository.CheckBatchNameExsit(batch_name, major.degree_level_id))
+                    {
+                        return $"Batch {batch_name} Not Exsit In Degree Level {major.DegreeLevel.degree_level_english_name}";
+                    }
+
                 }
 
                 // validate data sheet 2
@@ -542,7 +683,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<PLOExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                     foreach (var item in row)
                     {
-                        if(item.No != null && item.PLO_name == null || item.PLO_description == null)
+                        if (item.No != null && item.PLO_name == null || item.PLO_description == null)
                         {
                             return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
                         }
@@ -567,12 +708,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // validate data sheet 3
                 if (i == 2)
                 {
-
                     // Check Subject Exsit
-                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null) ;
+                    var row = MiniExcel.Query<CurriculumSubjectExcel>(path, sheetName: sheetNames[i], excelType: ExcelType.XLSX).TakeWhile(row => row.subject_code != null || row.subject_name != null || row.english_subject_name != null);
                     foreach (var item in row)
                     {
-                       if(item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
+                        if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
                         {
                             return "Must be fill all data in sheet Curriculum Subject";
                         }
@@ -595,7 +735,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                         }
 
+                        int count = row.Count(data => data.option != null && data.option.Equals("True") && data.term_no == item.term_no);
+                        if (count % 2 != 0)
+                        {
+                            return $"Subject have option in term no {item.term_no} must even number";
+                        }
+
                     }
+
+
                 }
                 // validate data sheet 4
                 if (i == 3)
@@ -646,15 +794,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             return "Success";
+
         }
-
-
-
-        private Curriculum GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
+        private CurriculumRequest GetCurriculumInExcel(IEnumerable<CurriculumExcel> row)
         {
-            var curriculum = new Curriculum();
-            var major = new Major();
-            var batch_name = "";
+            var curriculum = new CurriculumRequest();
+            curriculum.total_semester = 7;
             foreach (var r in row)
             {
                 // if title is null -> nothing
@@ -667,11 +812,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // if Title equal Curriculum Code -> set curriculum_code = value in coloum detail
                 else if (r.Title.Equals("Curriculum Code"))
                 {
-                    curriculum.curriculum_code = r.Details;
-                    // Split string ex: GD-GD-19.4
+                    // Split string ex: GD-GD-CD-19.4
                     string[] parts = r.Details.Split('-');
                     // get part have index 2 in array string ex: 19.4
-                    batch_name = parts[2];
+                   var batch_name = parts[3];
                     // get batch_id by batch_name
                     curriculum.batch_id = _batchRepository.GetBatchIDByName(batch_name);
                 }
@@ -691,18 +835,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     curriculum.decision_No = r.Details;
                 }
                 // if Title equal Approved date -> set approved_date = value in coloum detail
-                else if (r.Title.Equals("Approved date"))
+                else if (r.Title.Equals("Approved date") && r.Details != null && r.Details != "")
                 {
-                    curriculum.approved_date = DateTime.Parse(r.Details);
-                }
-                else if (r.Title.Equals("Vocational Code"))
-                {
-                    // set major_code = value in coloum detail
-                    major.major_code = r.Details;
-                }
-                else if (r.Title.Equals("Degree level"))
-                {
-                    curriculum.degree_level = r.Details;
+                    string[] date = r.Details.Split(' ');
+                    curriculum.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 }
                 else if (r.Title.Equals("Formality"))
                 {
@@ -712,17 +848,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     curriculum.specialization_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
                 }
-
+                
             }
-            if (double.Parse(batch_name) <= 19.2)
-            {
-                curriculum.total_semester = 7;
-            }
-            else
-            {
-                curriculum.total_semester = 6;
-            }
-            curriculum.is_active = true;
+            
+            
 
             return curriculum;
         }
@@ -776,14 +905,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
         }
 
-        private bool CheckCurriculumExists(string code, int batchId)
+        private bool CheckCurriculumExists(string code)
         {
-            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code) && e.batch_id == batchId)).GetValueOrDefault();
+            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code))).GetValueOrDefault();
         }
 
         private bool CheckCurriculumCanDelete(int id)
         {
-            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
+            var haveSubject = _context.CurriculumSubject?.FirstOrDefault(e => e.curriculum_id == id);
+            var haveBatch = _context.CurriculumBatch?.FirstOrDefault(e => e.curriculum_id == id);
+            if (haveSubject == null && haveBatch == null)
+            {
+                return false;
+            }
+            return true;
         }
+
+
     }
 }

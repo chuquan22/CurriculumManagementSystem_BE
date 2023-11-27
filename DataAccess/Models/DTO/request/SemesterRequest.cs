@@ -19,6 +19,7 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public int school_year { get; set; }
         [Required]
-        public int batch_id { get; set; }
+        public int start_batch_id { get; set; }
+      
     }
 }

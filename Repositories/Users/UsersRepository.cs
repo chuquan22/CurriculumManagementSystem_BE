@@ -22,6 +22,16 @@ namespace Repositories.Users
             return userDAO.CreateUser(user);
         }
 
+        public void DeleteRefreshToken(int user_id)
+        {
+            userDAO.DeleteRefreshToken(user_id);
+        }
+
+        public void DeleteRefreshTokenUser(int user_id)
+        {
+            userDAO.DeleteRefreshToken(user_id);
+        }
+
         public string DeleteUser(User user)
         {
             return userDAO.DeleteUser(user);
@@ -42,14 +52,24 @@ namespace Repositories.Users
             return userDAO.GetUserById(id);
         }
 
-        public User Login(string username, string password)
+        public User GetUserByRefreshToken(string refreshToken)
         {
-            return userDAO.Login(username, password);
+            return userDAO.GetUserByRefreshToken(refreshToken);
+        }
+
+        public User Login(string email)
+        {
+            return userDAO.Login(email);
         }
 
         public List<User> PaginationUser(int page, int limit, string? txtSearch)
         {
             return userDAO.PaginationUser(page, limit, txtSearch);
+        }
+
+        public void SaveRefreshTokenUser(int user_id, string refreshToken)
+        {
+            userDAO.SaveRefreshTokenUser(user_id, refreshToken);
         }
 
         public string UpdateUser(User user)

@@ -33,7 +33,7 @@ namespace DataAccess.Combos
             List<Combo> rs = new List<Combo>();
             try
             {
-                var curriculum = db.Curriculum.FirstOrDefault(x => x.curriculum_id == curriId && x.is_active == true);
+                var curriculum = db.Curriculum.FirstOrDefault(x => x.curriculum_id == curriId);
                 rs = GetListCombo(curriculum.specialization_id);
             }
             catch (Exception)
@@ -67,13 +67,17 @@ namespace DataAccess.Combos
             }
         }
 
-        public bool IsCodeExist(string code)
+        public bool IsCodeExist(string code, int speId)
         {
             var combo = new Combo();
             try
             {
-                combo = db.Combo.Where(x => x.combo_code.Equals(code.Trim())).FirstOrDefault();
-                if(combo != null)
+                var spe = db.Specialization
+            .Where(x => x.specialization_id == speId && x.Combos.Any(c => c.combo_code.Equals(code)))
+            .FirstOrDefault();
+
+               
+                if(spe != null)
                 {
                     return true;
                 }

@@ -17,6 +17,11 @@ namespace Repositories.PLOS
             return _plosDAO.CheckPLONameExsit(ploName, curriId);
         }
 
+        public bool CheckPLONameUpdateDuplicate(int id, string ploName, int curriId)
+        {
+            return _plosDAO.CheckPLONameUpdateDuplicate(id, ploName, curriId);
+        }
+
         public string CreatePLOs(PLOs plo)
         {
             return _plosDAO.CreatePLOs(plo);

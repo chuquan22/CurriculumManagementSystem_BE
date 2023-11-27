@@ -2,6 +2,7 @@
 using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Materials;
@@ -9,6 +10,8 @@ using Repositories.Materials;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
+
     [ApiController]
     public class MaterialsController : ControllerBase
     {
@@ -27,14 +30,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var result = _mapper.Map<List<MaterialsResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPost]
@@ -47,13 +50,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = repo.CreateMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
 
                 
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpPut]
@@ -66,12 +68,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = repo.EditMaterial(rs);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpDelete]
         public ActionResult DeleteMaterial(int id)
@@ -82,11 +83,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = repo.DeleteMaterial(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpGet("id")]
         public ActionResult GetMaterialById(int id)
@@ -95,13 +95,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterialById(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var result = _mapper.Map<MaterialsResponse>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "False", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
+
         }
     }
 }

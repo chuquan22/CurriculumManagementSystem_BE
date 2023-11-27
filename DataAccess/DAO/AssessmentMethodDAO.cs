@@ -54,13 +54,12 @@ namespace DataAccess.DAO
 
         public AssessmentMethod GetAsssentMethodByName(string name, int id)
         {
-            string[] name2 = name.Split(' ');
 
             var rs = _context.AssessmentMethod
                 .Include(a => a.AssessmentType)
                 .Where(x =>
-                    (x.assessment_method_component.ToUpper().Trim().Contains(name2[0].ToUpper().Trim()) ||
-                     x.assessment_method_component.ToUpper().Trim().Contains(name.ToUpper().Trim())) &&
+                    
+                     x.assessment_method_component.ToUpper().Trim().Contains(name.ToUpper().Trim()) &&
                     x.assessment_type_id == id)
                 .FirstOrDefault();
 
@@ -73,16 +72,16 @@ namespace DataAccess.DAO
             return rs;
         }
 
-        public bool CheckAssmentMethodDuplicate(int id,string name)
+        public bool CheckAssmentMethodDuplicate(int id,string name, int type)
         {
-            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.Equals(name) && x.assessment_method_id != id)).GetValueOrDefault();
+            return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.ToLower().Equals(name.ToLower()) && x.assessment_type_id == type && x.assessment_method_id != id)).GetValueOrDefault();
         }
 
         public bool CheckAssmentMethodExsit(int id)
         {
             var isExsitInSubject = _context.Subject.Where(x => x.assessment_method_id == id).FirstOrDefault();
-            var isExsitInGradingStructure = _context.GradingStruture.Where(x => x.assessment_method_id == id).FirstOrDefault();
-            if(isExsitInSubject == null &&  isExsitInGradingStructure == null)
+            //var isExsitInGradingStructure = _context.GradingStruture.Where(x => x.assessment_method_id == id).FirstOrDefault();
+            if (isExsitInSubject == null)
             {
                 return false;
             }

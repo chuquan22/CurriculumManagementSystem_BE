@@ -18,6 +18,7 @@ namespace Repositories.CLOS
 
         public BusinessObject.CLO GetCLOsById(int id);
         public BusinessObject.CLO GetCLOByName(string name);
+        public string DeleteCLOsBySyllabusId(int syllabus_id);
 
     }
 }

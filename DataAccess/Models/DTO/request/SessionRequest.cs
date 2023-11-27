@@ -16,7 +16,7 @@ namespace DataAccess.Models.DTO.request
         public string ITU { get; set; }
         public string schedule_student_task { get; set; }
         public string? student_material { get; set; }
-        public string lecturer_material { get; set; }
+        public string? lecturer_material { get; set; }
         public string schedule_lecturer_task { get; set; }
         public string? student_material_link { get; set; }
         public string? lecturer_material_link { get; set; }

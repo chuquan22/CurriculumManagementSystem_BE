@@ -15,10 +15,12 @@ using Newtonsoft.Json.Linq;
 using Repositories.PreRequisites;
 using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SubjectsController : ControllerBase
     {
@@ -37,13 +39,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Subjects
         [HttpGet("GetAllSubject")]
-        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject()
+        public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
         {
             if (_context.Subject == null)
             {
                 return NotFound();
             }
-            var subject = _subjectRepository.GetAllSubject();
+            var subject = _subjectRepository.GetAllSubject(txtSearch);
             if (subject == null)
             {
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
@@ -129,7 +131,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var subject = _mapper.Map<Subject>(subjectPreRequisitesRequest.SubjectRequest);
             if (CheckCodeExist(subject.subject_code))
             {
-                return BadRequest(new BaseResponse(true, "Subject had Exsited!"));
+                return BadRequest(new BaseResponse(true, $"Subject {subject.subject_code} is Duplicate!"));
             }
             string createResult = _subjectRepository.CreateNewSubject(subject);
 
@@ -152,7 +154,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
-            return Ok(new BaseResponse(false, "create subject with preRequisite successfull!", subjectPreRequisitesRequest));
+            return Ok(new BaseResponse(false, $"Create Subject {subject.subject_code} successfull!", subjectPreRequisitesRequest));
         }
 
 
@@ -190,7 +192,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
 
-            return Ok(new BaseResponse(false, "Edit subject with prerequisites successful!", subjectPreRequisitesRequest));
+            return Ok(new BaseResponse(false, $"Edit subject {subject.subject_code} successful!", subjectPreRequisitesRequest));
         }
 
 
@@ -215,7 +217,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
-            if(CheckIdExist(id))
+            if(CheckIdExistInSyllabus(id))
             {
                 return BadRequest(new BaseResponse(true, "Subject used by Syllabus. Can't Delete!"));
             }
@@ -242,14 +244,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
 
-            return Ok(new BaseResponse(false, "Delete successfull!", subjectRespone));
+            return Ok(new BaseResponse(false, $"Delete Subject {subjectRespone.subject_code} successfull!", subjectRespone));
         }
 
+        private bool CheckIdExistInSyllabus(int id)
+        {
+            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
+            return true;
+        }
 
         [NonAction]
         public bool CheckIdExist(int id)
         {
-            if (_context.Subject.Find(id) == null) return false;
+            if (_context.Subject.FirstOrDefault(x => x.subject_id == id) == null) return false;
             return true;
         }
 

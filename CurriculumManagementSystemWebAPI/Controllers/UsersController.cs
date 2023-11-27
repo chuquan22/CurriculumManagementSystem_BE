@@ -3,6 +3,7 @@ using BusinessObject;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.AssessmentMethods;
@@ -51,7 +52,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "User", userResponse));
 
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateUser")]
         public ActionResult CreateUser([FromBody] UserCreateRequest userCreateRequest)
         {
@@ -61,7 +62,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
 
             var user = _mapper.Map<User>(userCreateRequest);
-            user.user_password = "123@";
+
             user.is_active = true;
             
             string createResult = _usersRepository.CreateUser(user);
@@ -72,9 +73,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create SuccessFull!", user));
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateUserRole/{id}")]
-        public ActionResult UpdateUser(int id, [FromBody]UserUpdateRequest userUpdateRequest)
+        public ActionResult UpdateUserRole(int id, [FromBody]UserUpdateRequest userUpdateRequest)
         {
 
             var user = _usersRepository.GetUserById(id);
@@ -90,10 +91,32 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, updateResult));
             }
+            var userResponse = _mapper.Map<UserResponse>(user);
+            return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
+        }
+        [Authorize(Roles = "Admin, Manager, Dispatcher")]
+        [HttpPut("UpdateUser/{id}")]
+        public ActionResult UpdateUser(int id, [FromBody] UpdateUserRequest userUpdateRequest)
+        {
 
-            return Ok(new BaseResponse(false, "Update SuccessFull!", user));
+            var user = _usersRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found User"));
+            }
+            user.user_name = userUpdateRequest.user_name;
+            user.full_name = userUpdateRequest.full_name;
+            string updateResult = _usersRepository.UpdateUser(user);
+            if (!updateResult.Equals(Result.updateSuccessfull.ToString()))
+            {
+                return BadRequest(new BaseResponse(true, updateResult));
+            }
+            var userResponse = _mapper.Map<UserResponse>(user);
+            return Ok(new BaseResponse(false, "Update SuccessFull!", userResponse));
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteUser/{id}")]
         public ActionResult DeleteUser(int id)
         {

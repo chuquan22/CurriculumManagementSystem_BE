@@ -9,7 +9,7 @@ namespace Repositories.Users
 {
     public interface IUsersRepository
     {
-        public User Login(string username, string password);
+        public User Login(string email);
         List<User> GetAllUser();
         User GetUserById(int id);
         List<User> PaginationUser(int page, int limit, string? txtSearch);
@@ -18,5 +18,9 @@ namespace Repositories.Users
         string CreateUser(User user);
         string UpdateUser(User user);
         string DeleteUser(User user);
+        User GetUserByRefreshToken(string refreshToken);
+
+        void SaveRefreshTokenUser(int user_id,string refreshToken);
+        void DeleteRefreshTokenUser(int user_id);
     }
 }
