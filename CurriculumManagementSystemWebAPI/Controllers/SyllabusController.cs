@@ -33,7 +33,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://localhost:8080";
+        public static string API_PORT = "https://cmsfpoly.azurewebsites.net";
         public static string API_SYLLABUS = "/api/Syllabus";    
         public static string API_MATERIALS = "/api/Materials";
         public static string API_GRADING_STRUTURE = "/api/GradingStruture";

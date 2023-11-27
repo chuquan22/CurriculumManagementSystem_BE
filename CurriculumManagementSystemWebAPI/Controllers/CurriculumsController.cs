@@ -45,7 +45,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly CMSDbContext _context;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://localhost:8080";
+        public static string API_PORT = "https://cmsfpoly.azurewebsites.net";
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
         public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
         public static string API_PLO = "/api/PLOs";

@@ -44,7 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IMajorRepository _majorRepository;
 
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://localhost:8080";
+        public static string API_PORT = "https://cmsfpoly.azurewebsites.net";
         public static string API_Quiz = "/api/Quizs/CreateQuiz";
         public static string API_Question = "/api/Quizs/CreateQuestion";
 
