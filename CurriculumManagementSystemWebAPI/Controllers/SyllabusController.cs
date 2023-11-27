@@ -50,8 +50,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IClassSessionTypeRepository classSessionTypeRepository;
         private IDegreeLevelRepository degreeLevelRepository;
         private ILearningResourceRepository learningResourceRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private static int syllaId = 0;
-        public SyllabusController(IMapper mapper)
+        public SyllabusController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             syllabusRepository = new SyllabusRepository();
@@ -69,6 +70,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
         public ActionResult GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
@@ -791,7 +793,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ExportSyllabus/{syllabus_id}")]
         public async Task<IActionResult> ExportSyllabus(int syllabus_id)
         {
-            string templatePath = "SyllabusExcel.xlsx";
+            string wwwrootPath = _hostingEnvironment.WebRootPath;
+
+            string filePath = System.IO.Path.Combine(wwwrootPath, "SyllabusExcel.xlsx");
             var syllabus = syllabusRepository.GetSyllabusById(syllabus_id);
             var materials1 = materialsRepository.GetMaterial(syllabus_id);
             var clos1 = cloRepository.GetCLOs(syllabus_id);
@@ -863,7 +867,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             };
 
 
-            MiniExcel.SaveAsByTemplate("exported.xlsx", templatePath, value);
+            MiniExcel.SaveAsByTemplate("exported.xlsx", filePath, value);
 
             byte[] fileContents = System.IO.File.ReadAllBytes("exported.xlsx");
             return Ok(fileContents);

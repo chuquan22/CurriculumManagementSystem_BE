@@ -42,13 +42,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
         private IMajorRepository _majorRepository;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
         private readonly HttpClient client = null;
         public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
         public static string API_Quiz = "/api/Quizs/CreateQuiz";
         public static string API_Question = "/api/Quizs/CreateQuestion";
 
-        public QuizsController(IMapper mapper)
+        public QuizsController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             _quizRepository = new QuizRepository();
@@ -58,6 +59,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("GetAllQuiz")]
@@ -279,9 +281,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ExportQuizXML/{quizId}")]
         public IActionResult ExportQuizXML(int quizId)
         {
-            var templateQTI = "./TemplateQuizXML/Template__Quiz__qti.xml";
-            var templateQPL = "./TemplateQuizXML/Template__Quiz__qpl.xml";
-            var folder = "./TemplateQuizXML";
+            string wwwrootPath = _hostingEnvironment.WebRootPath;
+
+            var templateQTI = Path.Combine(wwwrootPath, "TemplateQuizXML", "Template__Quiz__qti.xml");
+            var templateQPL = Path.Combine(wwwrootPath, "TemplateQuizXML", "Template__Quiz__qpl.xml");
+            var folder = Path.Combine(wwwrootPath, "TemplateQuizXML");
 
             // change file xml to DTDProcessing (fix error DTD prohibited)
             XmlReaderSettings settings = new XmlReaderSettings();
