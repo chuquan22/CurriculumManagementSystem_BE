@@ -662,11 +662,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             dateTime = r.Details;
                             string[] date = r.Details.Split(' ');
-                            if (DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture) == null)
+                            try
                             {
-                                return $"Check approved date {date[0]}";
+                                DateTime? CheckDate = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                DateTime.TryParse(r.Details, out DateTime validDate);
                             }
-
+                            catch (FormatException fm)
+                            {
+                                return $"Approved Date {date[0]} not valid Date";
+                            }
                         }
 
                     }
@@ -751,50 +755,50 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 }
                 // validate data sheet 4
-                if (i == 3)
-                {
-                    using (var package = new ExcelPackage(stream))
-                    {
-                        var worksheet = package.Workbook.Worksheets[3];
+                //if (i == 3)
+                //{
+                //    using (var package = new ExcelPackage(stream))
+                //    {
+                //        var worksheet = package.Workbook.Worksheets[3];
 
-                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                        {
-                            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
-                            {
-                                var celplo = worksheet.Cells[2, col];
-                                bool found_plo = false;
-                                bool found_subject = false;
-                                foreach (var plo in listPLO)
-                                {
-                                    if (plo.PLO_name.Equals(celplo.Text))
-                                    {
-                                        found_plo = true;
+                //        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                //        {
+                //            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                //            {
+                //                var celplo = worksheet.Cells[2, col];
+                //                bool found_plo = false;
+                //                bool found_subject = false;
+                //                foreach (var plo in listPLO)
+                //                {
+                //                    if (plo.PLO_name.Equals(celplo.Text))
+                //                    {
+                //                        found_plo = true;
 
-                                    }
-                                }
-                                if (!found_plo)
-                                {
-                                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
-                                }
+                //                    }
+                //                }
+                //                if (!found_plo)
+                //                {
+                //                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                //                }
 
-                                var subjectCode = worksheet.Cells[row, 1];
-                                foreach (var subject in listSubject)
-                                {
-                                    if (subject.subject_code.Equals(subjectCode.Text))
-                                    {
-                                        found_subject = true;
-                                    }
+                //                var subjectCode = worksheet.Cells[row, 1];
+                //                foreach (var subject in listSubject)
+                //                {
+                //                    if (subject.subject_code.Equals(subjectCode.Text))
+                //                    {
+                //                        found_subject = true;
+                //                    }
 
-                                }
-                                if (!found_subject && !subjectCode.Text.Contains(" "))
-                                {
-                                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
-                                }
+                //                }
+                //                if (!found_subject && !subjectCode.Text.Contains(" "))
+                //                {
+                //                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
+                //                }
 
-                            }
-                        }
-                    }
-                }
+                //            }
+                //        }
+                //    }
+                //}
 
             }
 
