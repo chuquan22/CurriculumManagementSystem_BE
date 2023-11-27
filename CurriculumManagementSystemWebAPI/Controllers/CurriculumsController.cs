@@ -61,8 +61,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
         private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CurriculumsController(CMSDbContext context, IMapper mapper)
+        public CurriculumsController(CMSDbContext context, IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _mapper = mapper;
@@ -70,6 +71,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: api/Curriculums/GetCurriculumByBatch/code/5
@@ -242,7 +244,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ExportCurriculum/{curriculumId}")]
         public async Task<IActionResult> ExportCurriculum(int curriculumId)
         {
-            string templatePath = "Curriculum.xlsx";
+            string wwwrootPath = _hostingEnvironment.WebRootPath;
+
+            string filePath = System.IO.Path.Combine(wwwrootPath, "Curriculum.xlsx");
+
             var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
             var specialization = _specializationRepository.GetSpeById(curriculum.specialization_id);
             var major = _majorRepository.FindMajorById(curriculum.Specialization.major_id);
@@ -318,7 +323,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             };
 
             MemoryStream memoryStream = new MemoryStream();
-            memoryStream.SaveAsByTemplate(templatePath, value);
+            memoryStream.SaveAsByTemplate(filePath, value);
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
             return Ok(new BaseResponse(false, $"Curriculum-{curriculum.curriculum_code}-{curriculum.english_curriculum_name}", fileContents));

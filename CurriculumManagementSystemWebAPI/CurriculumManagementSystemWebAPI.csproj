@@ -46,4 +46,15 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Curriculum.xlsx" />
+    <None Include="wwwroot\exported.xlsx" />
+    <None Include="wwwroot\exported_quiz.xlsx" />
+    <None Include="wwwroot\QuizExported.xlsx" />
+    <None Include="wwwroot\QuizTemplate.xlsx" />
+    <None Include="wwwroot\SyllabusExcel.xlsx" />
+    <None Include="wwwroot\TemplateQuizXML\Template__Quiz__qpl.xml" />
+    <None Include="wwwroot\TemplateQuizXML\Template__Quiz__qti.xml" />
+  </ItemGroup>
+
 </Project>
