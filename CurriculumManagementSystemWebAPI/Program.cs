@@ -80,10 +80,7 @@ else
 }
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(builder =>
-{
-    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-});
+app.UseCors("AllowOrigin");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
