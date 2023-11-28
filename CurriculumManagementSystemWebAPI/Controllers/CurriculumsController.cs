@@ -339,7 +339,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 List<CurriculumSubjectRequest> listCurriSubject = new List<CurriculumSubjectRequest>();
                 var subjectGroup = new Dictionary<string, string>();
-                var PLOMappings = new Dictionary<string, string>();
+                var PLOMappings = new List<PLOMapping>();
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
                 var curriculum = new Curriculum();
@@ -469,16 +469,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         {
                                             var plo_name = worksheet.Cells[2, col].Text;
 
-                                            PLOMappings.Add(subject_code, plo_name);
+                                            var subject = _subjectRepository.GetSubjectByCode(subject_code);
+                                            var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
 
-                                            //var subject = _subjectRepository.GetSubjectByCode(subject_code);
-                                            //var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
-
-                                            //var ploMapping = new PLOMapping()
-                                            //{
-                                            //    PLO_id = plo.PLO_id,
-                                            //    subject_id = subject.subject_id
-                                            //};
+                                            var ploMapping = new PLOMapping()
+                                            {
+                                                PLO_id = plo.PLO_id,
+                                                subject_id = subject.subject_id
+                                            };
+                                            PLOMappings.Add(ploMapping);
                                             //string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
                                             //if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                             //{
@@ -511,15 +510,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                             foreach(var pm in PLOMappings)
                             {
-                                var subject = _subjectRepository.GetSubjectByCode(pm.Key);
-                                var plo = _ploRepository.GetPLOsByName(pm.Value, curriculum_id);
-
-                                var ploMapping = new PLOMapping()
-                                {
-                                    PLO_id = plo.PLO_id,
-                                    subject_id = subject.subject_id
-                                };
-                                string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
+                                string createResult = _ploMappingRepository.CreatePLOMapping(pm);
                                 if (!createResult.Equals(Result.createSuccessfull.ToString()))
                                 {
                                     _curriculumRepository.RemoveCurriculum(curriculum);
