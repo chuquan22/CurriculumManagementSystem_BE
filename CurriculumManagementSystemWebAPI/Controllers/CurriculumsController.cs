@@ -335,6 +335,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("ImportCurriculum")]
         public async Task<IActionResult> ImportCurriculum(IFormFile fileCurriculum)
         {
+            var curriculum = new Curriculum();
             try
             {
                 List<CurriculumSubjectRequest> listCurriSubject = new List<CurriculumSubjectRequest>();
@@ -342,7 +343,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var PLOMappings = new List<PLOMapping>();
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
-                var curriculum = new Curriculum();
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileCurriculum.CopyToAsync(stream);
@@ -459,11 +459,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         //        break;
                                         //    }
                                         //}
-                                        if(_subjectRepository.GetSubjectByCode(subject_code) != null)
+                                        if (_subjectRepository.GetSubjectByCode(subject_code) != null && !subjectGroup.Keys.Contains(subject_code))
                                         {
                                             subjectGroup.Add(subject_code, group_name);
                                         }
-                                        
+
 
                                         if (cellValue.Trim().Equals("ü"))
                                         {
@@ -525,7 +525,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(false, "Error: " + ex.InnerException.Message));
+                _curriculumRepository.RemoveCurriculum(curriculum);
+                return BadRequest(new BaseResponse(false, "Error: " + ex.Message));
             }
         }
 
