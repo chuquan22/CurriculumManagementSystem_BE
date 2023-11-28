@@ -338,7 +338,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 List<CurriculumSubjectRequest> listCurriSubject = new List<CurriculumSubjectRequest>();
-
+                var subjectGroup = new Dictionary<string, string>();
+                var PLOMappings = new Dictionary<string, string>();
                 var filePath = Path.GetTempFileName();
                 var curriculum_id = 0;
                 var curriculum = new Curriculum();
@@ -448,37 +449,53 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                             group_name = cellValue;
                                         }
 
-                                        var subjectCode = worksheet.Cells[row, 1].Text;
-                                        foreach (var subject in listCurriSubject)
+                                        var subject_code = worksheet.Cells[row, 1].Text;
+                                        //foreach (var subject in listCurriSubject)
+                                        //{
+                                        //    var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
+                                        //    if (subjects != null && subject.subject_id == subjects.subject_id)
+                                        //    {
+                                        //        subject.subject_group = group_name;
+                                        //        break;
+                                        //    }
+                                        //}
+                                        if(_subjectRepository.GetSubjectByCode(subject_code) != null)
                                         {
-                                            var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
-                                            if (subjects != null && subject.subject_id == subjects.subject_id)
-                                            {
-                                                subject.subject_group = group_name;
-                                                break;
-                                            }
+                                            subjectGroup.Add(subject_code, group_name);
                                         }
+                                        
 
                                         if (cellValue.Trim().Equals("ü"))
                                         {
-                                            var subject_code = worksheet.Cells[row, 1].Text;
                                             var plo_name = worksheet.Cells[2, col].Text;
 
-                                            var subject = _subjectRepository.GetSubjectByCode(subject_code);
-                                            var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
+                                            PLOMappings.Add(subject_code, plo_name);
 
-                                            var ploMapping = new PLOMapping()
-                                            {
-                                                PLO_id = plo.PLO_id,
-                                                subject_id = subject.subject_id
-                                            };
-                                            string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
-                                            if (!createResult.Equals(Result.createSuccessfull.ToString()))
-                                            {
-                                                _curriculumRepository.RemoveCurriculum(curriculum);
-                                                return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
-                                            }
+                                            //var subject = _subjectRepository.GetSubjectByCode(subject_code);
+                                            //var plo = _ploRepository.GetPLOsByName(plo_name, curriculum_id);
+
+                                            //var ploMapping = new PLOMapping()
+                                            //{
+                                            //    PLO_id = plo.PLO_id,
+                                            //    subject_id = subject.subject_id
+                                            //};
+                                            //string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
+                                            //if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                                            //{
+                                            //    _curriculumRepository.RemoveCurriculum(curriculum);
+                                            //    return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
+                                            //}
                                         }
+                                    }
+                                }
+                                
+                                foreach(var subject in subjectGroup)
+                                {
+                                    var s = _subjectRepository.GetSubjectByCode(subject.Key);
+                                    var subjects = listCurriSubject.FirstOrDefault(x => x.subject_id == s.subject_id);
+                                    if(subjects != null)
+                                    {
+                                        subjects.subject_group = subject.Value;
                                     }
                                 }
                             }
@@ -492,7 +509,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet Curriculum Subject and PLO Mapping!"));
                             }
 
+                            foreach(var pm in PLOMappings)
+                            {
+                                var subject = _subjectRepository.GetSubjectByCode(pm.Key);
+                                var plo = _ploRepository.GetPLOsByName(pm.Value, curriculum_id);
 
+                                var ploMapping = new PLOMapping()
+                                {
+                                    PLO_id = plo.PLO_id,
+                                    subject_id = subject.subject_id
+                                };
+                                string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
+                                if (!createResult.Equals(Result.createSuccessfull.ToString()))
+                                {
+                                    _curriculumRepository.RemoveCurriculum(curriculum);
+                                    return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
+                                }
+                            }
 
                         }
                     }
