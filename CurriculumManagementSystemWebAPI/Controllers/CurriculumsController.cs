@@ -38,12 +38,12 @@ using System.Globalization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+   // [Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
+        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly HttpClient client = null;
         public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
@@ -52,7 +52,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public static string API_PLOMAPPING = "/api/PLOMappings/UpdatePLOMapping";
         private readonly IMapper _mapper;
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
-        private readonly ICurriculumSubjectRepository _curriculumsubjectRepository = new CurriculumSubjectRepository();
         private readonly IBatchRepository _batchRepository = new BatchRepository();
         private readonly IMajorRepository _majorRepository = new MajorRepository();
         private readonly ISpecializationRepository _specializationRepository = new SpecializationRepository();
@@ -63,9 +62,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CurriculumsController(CMSDbContext context, IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public CurriculumsController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
-            _context = context;
             _mapper = mapper;
             client = new HttpClient();
 
@@ -78,10 +76,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetCurriculumByBatch/{curriculumCode}/{batchId}")]
         public async Task<ActionResult<IEnumerable<CurriculumResponse>>> GetCurriculumByBatch(string curriculumCode, int batchId)
         {
-            if (_context.Curriculum == null)
-            {
-                return NotFound();
-            }
             var Curriculum = _curriculumRepository.GetCurriculum(curriculumCode);
             if (Curriculum == null)
             {
@@ -115,7 +109,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (listCurriculum.Count == 0)
             {
-                return Ok(new BaseResponse(true, "Not Found Subject"));
+                return Ok(new BaseResponse(true, "List Curriculum is Empty"));
             }
             var totalElement = _curriculumRepository.GetAllCurriculum(degree_level_id, txtSearch, majorId).Count();
 
@@ -140,19 +134,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (curriculum == null)
             {
-                return BadRequest(new BaseResponse(true, "Not Found This Curriculum!"));
+                return NotFound(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
             //curriculumResponse.Semester = _context.Semester.Where(x => x.start_batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
-        }
-
-        // GET: api/Curriculums/GetCurriculum/5
-        [HttpGet("GetTotalSemester/{speId}/{batchId}")]
-        public async Task<ActionResult<CurriculumResponse>> GetTotalSemester(int speId, int batchId)
-        {
-            var totalSemester = _curriculumRepository.GetTotalSemester(speId, batchId);
-            return Ok(new BaseResponse(false, "total", totalSemester));
         }
 
         // GET: api/Curriculums/GetListBatchNotInCurriculum/code
