@@ -111,15 +111,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
-            // Sort by combo and option curriculumSubjectResponse
+            
             foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
                 curriSubjectResponse.list = curriSubjectResponse.list
                     .OrderBy(x => x.combo_id == 0 ? 0 : 1)
                     .ThenBy(x => x.option == false ? 0 : 1)
                     .ToList();
-
-
             }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));

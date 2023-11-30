@@ -35,13 +35,13 @@ namespace CMS_UnitTests.Controllers
         public void Setup()
         {
             fixture = new Fixture();
-            curriculumRepositoryMock = new Mock<ICurriculumRepository>();
+            curriculumRepositoryMock = fixture.Freeze<Mock<ICurriculumRepository>>();
             batchRepositoryMock = new Mock<IBatchRepository>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
-            curriculumController = new CurriculumsController(_mapper, hostingEnvironmentMock.Object);
+            curriculumController = new CurriculumsController(_mapper ,hostingEnvironmentMock.Object);
         }
 
         [Test]
@@ -98,11 +98,12 @@ namespace CMS_UnitTests.Controllers
             curriculumRepositoryMock.Setup(repo => repo.PanigationCurriculum(page, limit, degreeLevelId, txtSearch, majorId))
                 .Returns(listCurri);
            mapperMock.Setup(mapper => mapper.Map<List<CurriculumResponse>>(listCurri)).Returns(listCurriResponse);
-
             // Act
             var result = await curriculumController.PaginationCurriculum(page, limit, degreeLevelId, txtSearch, majorId);
 
             // Assert
+           
+
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
             var okObjectResult = result.Result as OkObjectResult;
@@ -114,7 +115,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Get List Curriculum Sucessfully", baseResponse.message);
 
-            Assert.IsNotNull(listCurriResponse);
+            Assert.IsEmpty(listCurriResponse);
 
         }
 
@@ -180,9 +181,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetCurriculum_ReturnsNotFoundResult()
         {
             // Arrange
-            var curriculumId = 20;
-            var expectedCurriculumResponse = new CurriculumResponse();
-            var curriculum = new Curriculum();
+            var curriculumId = 200;
 
             // Act
             var result = await curriculumController.GetCurriculum(curriculumId);
@@ -190,10 +189,10 @@ namespace CMS_UnitTests.Controllers
             // Assert
             Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
 
-            var okObjectResult = result.Result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            var ObjectResult = result.Result as NotFoundObjectResult;
+            Assert.IsNotNull(ObjectResult);
 
-            var baseResponse = okObjectResult.Value as BaseResponse;
+            var baseResponse = ObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
@@ -206,7 +205,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetListBatchNotInCurriculum_ReturnsOkResult()
         {
             // Arrange
-            var curriculumCode = "yourCurriculumCode";
+            var curriculumCode = "GD-GD-CD-19.2";
 
             // Act
             var result = await curriculumController.GetlistBatch(curriculumCode);
@@ -254,10 +253,45 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
+        public async Task PostCurriculum_ReturnsBadRequestResult_WhenCurriculumDuplicate()
+        {
+            // Arrange
+            var curriculumRequest = new CurriculumRequest
+            {
+                curriculum_name = "Sample Curriculum",
+                english_curriculum_name = "Sample English Curriculum",
+                curriculum_description = "Sample Curriculum Description",
+                total_semester = 7,
+                specialization_id = 7,
+                batch_id = 5,
+                Formality = "Sample Formality",
+                decision_No = "Sample Decision No",
+                approved_date = DateTime.Now
+            };
+           
+            // Act
+            var result = await curriculumController.PostCurriculum(curriculumRequest);
+
+            // Assert
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
+
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestObjectResult);
+
+            var baseResponse = badRequestObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsTrue(baseResponse.error);
+            Assert.IsTrue(baseResponse.message.Contains("Duplicate!"));
+
+        }
+
+
+        [Test]
         public async Task PutCurriculum_ReturnsOkResult()
         {
             // Arrange
-            var curriculumId = 44;
+            var curriculumId = 40;
             var curriculumRequest = new CurriculumUpdateRequest
             {
                 curriculum_name = "Sample Update Curriculum",
@@ -286,7 +320,35 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Update Curriculum Success!", baseResponse.message);
         }
 
-        
+        [Test]
+        public async Task PutCurriculum_ReturnsNotFoundResult_WhenNotFoundCurriculumUpdate()
+        {
+            // Arrange
+            var curriculumId = 400;
+            var curriculumRequest = new CurriculumUpdateRequest
+            {
+                curriculum_name = "Sample Update Curriculum",
+                english_curriculum_name = "Sample Update English Curriculum",
+                curriculum_description = "Sample Curriculum Description",
+                decision_No = "Sample Update Decision No",
+                approved_date = DateTime.Now
+            };
+
+            // Act
+            var result = await curriculumController.PutCurriculum(curriculumId, curriculumRequest);
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+
+            var objectResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(objectResult);
+
+            var baseResponse = objectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsTrue(baseResponse.error);
+            Assert.AreEqual("Can't Update because not found curriculum", baseResponse.message);
+        }
 
         [Test]
         public async Task DeleteCurriculum_ReturnsOkResult()
