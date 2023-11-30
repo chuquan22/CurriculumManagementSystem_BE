@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
@@ -46,6 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
             }
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+            
             return Ok(new BaseResponse(false, "success!", curriculumSubjectResponse));
         }
 
@@ -116,7 +117,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 curriSubjectResponse.list = curriSubjectResponse.list
                     .OrderBy(x => x.combo_id == 0 ? 0 : 1)
-                    .ThenBy(x => x.option == false ? 0 : 1)
+                    .ThenBy(x => x.subject_option != null  ? 0 : 1)
                     .ToList();
 
 

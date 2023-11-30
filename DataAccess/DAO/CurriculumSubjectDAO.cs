@@ -78,10 +78,10 @@ namespace DataAccess.DAO
             var curriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Curriculum)
                 .Include(x => x.Subject)
-                .FirstOrDefault(x => x.term_no == term_no 
-                && x.subject_group.Equals(subjectGroup) 
-                && x.subject_id != subjectId
-                && x.option == true);
+                .FirstOrDefault(x => x.term_no == term_no
+                && x.subject_group.Equals(subjectGroup)
+                && x.subject_id != subjectId);
+               // && x.option == true);
             return curriculumSubject;
         }
 

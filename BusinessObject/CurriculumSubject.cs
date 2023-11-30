@@ -21,8 +21,8 @@ namespace BusinessObject
         public int? combo_id { get; set; }
         [Required]
         public string subject_group { get; set; }
-        [Required]
-        public bool option { get; set; }
+        [AllowNull]
+        public int? subject_id_option { get; set; }
 
         public virtual Curriculum? Curriculum { get; set; }
         public virtual Subject? Subject { get; set; }

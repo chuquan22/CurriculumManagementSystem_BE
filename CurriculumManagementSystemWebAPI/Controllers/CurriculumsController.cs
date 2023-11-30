@@ -38,14 +38,14 @@ using System.Globalization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
         private readonly CMSDbContext _context;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        public static string API_PORT = "https://localhost:8080";
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
         public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
         public static string API_PLO = "/api/PLOs";
@@ -419,7 +419,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         var combo = _comboRepository.FindComboByCode(item.combo_code);
                                         curriculumSubject.combo_id = combo.combo_id;
                                     }
-                                    curriculumSubject.option = (item.option == null || item.option.Equals("") || item.option.Equals("False")) ? false : true;
+                                    
+                                    curriculumSubject.subject_id_option = item.option == null ? null : _subjectRepository.GetSubjectByCode(item.option).subject_id;
 
                                     listCurriSubject.Add(curriculumSubject);
                                 }
@@ -450,15 +451,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
 
                                         var subject_code = worksheet.Cells[row, 1].Text;
-                                        //foreach (var subject in listCurriSubject)
-                                        //{
-                                        //    var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
-                                        //    if (subjects != null && subject.subject_id == subjects.subject_id)
-                                        //    {
-                                        //        subject.subject_group = group_name;
-                                        //        break;
-                                        //    }
-                                        //}
+                                        
                                         if (_subjectRepository.GetSubjectByCode(subject_code) != null && !subjectGroup.Keys.Contains(subject_code))
                                         {
                                             subjectGroup.Add(subject_code, group_name);
@@ -478,12 +471,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                                 subject_id = subject.subject_id
                                             };
                                             PLOMappings.Add(ploMapping);
-                                            //string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
-                                            //if (!createResult.Equals(Result.createSuccessfull.ToString()))
-                                            //{
-                                            //    _curriculumRepository.RemoveCurriculum(curriculum);
-                                            //    return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
-                                            //}
+                                            
                                         }
                                     }
                                 }
@@ -536,8 +524,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(cu);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -562,8 +550,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(plo);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -585,8 +573,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(curri);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -779,51 +767,51 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
                 }
-                // validate data sheet 4
-                //if (i == 3)
-                //{
-                //    using (var package = new ExcelPackage(stream))
-                //    {
-                //        var worksheet = package.Workbook.Worksheets[3];
+                //validate data sheet 4
+                if (i == 3)
+                {
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[3];
 
-                //        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                //        {
-                //            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
-                //            {
-                //                var celplo = worksheet.Cells[2, col];
-                //                bool found_plo = false;
-                //                bool found_subject = false;
-                //                foreach (var plo in listPLO)
-                //                {
-                //                    if (plo.PLO_name.Equals(celplo.Text))
-                //                    {
-                //                        found_plo = true;
+                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                            {
+                                var celplo = worksheet.Cells[2, col];
+                                bool found_plo = false;
+                                bool found_subject = false;
+                                foreach (var plo in listPLO)
+                                {
+                                    if (plo.PLO_name.Equals(celplo.Text))
+                                    {
+                                        found_plo = true;
 
-                //                    }
-                //                }
-                //                if (!found_plo)
-                //                {
-                //                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
-                //                }
+                                    }
+                                }
+                                if (!found_plo)
+                                {
+                                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                }
 
-                //                var subjectCode = worksheet.Cells[row, 1];
-                //                foreach (var subject in listSubject)
-                //                {
-                //                    if (subject.subject_code.Equals(subjectCode.Text))
-                //                    {
-                //                        found_subject = true;
-                //                    }
+                                var subjectCode = worksheet.Cells[row, 1];
+                                foreach (var subject in listSubject)
+                                {
+                                    if (subject.subject_code.Equals(subjectCode.Text))
+                                    {
+                                        found_subject = true;
+                                    }
 
-                //                }
-                //                if (!found_subject && !subjectCode.Text.Contains(" "))
-                //                {
-                //                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
-                //                }
+                                }
+                                if (!found_subject && !subjectCode.Text.Contains(" "))
+                                {
+                                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
+                                }
 
-                //            }
-                //        }
-                //    }
-                //}
+                            }
+                        }
+                    }
+                }
 
             }
 
