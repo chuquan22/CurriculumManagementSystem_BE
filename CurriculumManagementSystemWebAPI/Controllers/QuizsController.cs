@@ -508,10 +508,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 FileInfo excelFile = new FileInfo("QuizExported.xlsx");
                 excelPackage.SaveAs(excelFile);
             }
+            Subject subject = new Subject();
+
+            try
+            {
+                subject = listQuiz[0].Subject;
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
 
             byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
             //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
-            return Ok(new BaseResponse(false, "Successfully!", fileContents));
+            return Ok(new BaseResponse(false, subject.subject_code + " - " + subject.english_subject_name, fileContents));
         }
 
         private int ExtractNumber(string input)
