@@ -15,6 +15,7 @@ namespace DataAccess.DAO
     public class SemesterPlanDAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
+        private readonly SubjectDAO _dao = new SubjectDAO();
         public string errorSemesterPlan = "";
 
         public List<SemesterPlanDTO> GetSemesterPlan(int semester_id)
@@ -410,7 +411,7 @@ namespace DataAccess.DAO
                                     @class = cs.Subject.total_time_class,
                                     @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
-                                    //optional = cs.option.ToString(),
+                                    optional = _dao.GetSubjectById((int)cs.subject_id_option).subject_code,
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
                                 })
                                 .ToList(),
@@ -515,7 +516,7 @@ namespace DataAccess.DAO
                                     @class = cs.Subject.total_time_class,
                                     @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
-                                   // optional = cs.option.ToString(),
+                                    optional = _dao.GetSubjectById((int)cs.subject_id_option).subject_code,
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
                                 })
                                 .ToList(),
