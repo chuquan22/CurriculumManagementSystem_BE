@@ -24,6 +24,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             classSessionTypeRepository = new ClassSessionTypeRepository();
         }
 
+        [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet]
         public ActionResult GetListClassSessionType()
         {
@@ -31,7 +32,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listClassTypeResponse = _mapper.Map<List<ClassSessionTypeResponse>>(listClassSessionType);
             return Ok(new BaseResponse(false, "Sucessfully", listClassTypeResponse));
         }
-
+        [Authorize(Roles = "Manager")]
         [HttpGet("{id}")]
         public ActionResult GetClassSessionTypeById(int id)
         {

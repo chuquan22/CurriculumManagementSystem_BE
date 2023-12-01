@@ -14,7 +14,7 @@ namespace DataAccess.Models.DTO.response
         public string combo_name { get; set; }
         public int specialization_id { get; set; }
         public int term_no { get; set; }
-        public bool option { get; set; }
+        public int? option { get; set; }
         
     }
 }

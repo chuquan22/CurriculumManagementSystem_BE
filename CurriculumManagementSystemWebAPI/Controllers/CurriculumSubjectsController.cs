@@ -14,6 +14,7 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.Enums;
 using Repositories.Combos;
 using Microsoft.AspNetCore.Authorization;
+using Repositories.Subjects;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -27,6 +28,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
+        private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
 
         public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
         {
@@ -46,6 +48,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
             }
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
+
             return Ok(new BaseResponse(false, "success!", curriculumSubjectResponse));
         }
 
@@ -86,19 +89,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 };
                 curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
             }
-
             foreach (var curriSubject in curriculumSubject)
             {
                 var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
-                if (curriSubject.combo_id == null)
-                {
-                    curriSubject.combo_id = 0;
-                }
 
                 if (curriSubject.combo_id != 0 && curriSubject.combo_id != null)
                 {
                     curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_code;
                 }
+
+                
 
                 foreach (var curriSubjectResponse in curriculumSubjectResponse)
                 {
@@ -110,21 +110,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     curriSubjectResponse.total_all_time = curriSubjectResponse.list.Sum(x => x.total_time);
                 }
             }
-
+            
             // Sort by combo and option curriculumSubjectResponse
             foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
                 curriSubjectResponse.list = curriSubjectResponse.list
                     .OrderBy(x => x.combo_id == 0 ? 0 : 1)
-                    .ThenBy(x => x.option == false ? 0 : 1)
+                    .ThenBy(x => x.option == null ? 0 : 1)
+                    .ThenBy(x => x.option)
                     .ToList();
-
-
             }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
         }
-
 
         // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
         [HttpGet("GetSubjectNotExsitCurriculum/{curriculumId}")]
@@ -143,6 +141,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculumSubject")]
         public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
         {
+            if(curriculumSubjectRequest.Count == 2 && curriculumSubjectRequest.First(x => x.subject_group.Equals("Elective subjects")) != null)
+            {
+               int maxOption = (int)_curriculumSubjectRepository.GetListCurriculumSubject(curriculumSubjectRequest.First().curriculum_id).Where(x => x.term_no == curriculumSubjectRequest.First().term_no).Max(x => x.option);
+                foreach (var item in curriculumSubjectRequest)
+                {
+                    item.option = maxOption + 1;
+                }
+            }
+
             foreach (var subject in curriculumSubjectRequest)
             {
                 var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
@@ -166,10 +173,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
-            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_group, subId);
+            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, (int)curriculumSubject.option);
 
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
-            if(curriculumSubject2 != null)
+            if (curriculumSubject2 != null)
             {
                 string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
                 if (deleteResult2 != Result.deleteSuccessfull.ToString())

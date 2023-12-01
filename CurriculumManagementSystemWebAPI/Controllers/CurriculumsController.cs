@@ -38,14 +38,14 @@ using System.Globalization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
         private readonly CMSDbContext _context;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        public static string API_PORT = "https://localhost:8080";
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
         public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
         public static string API_PLO = "/api/PLOs";
@@ -419,7 +419,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         var combo = _comboRepository.FindComboByCode(item.combo_code);
                                         curriculumSubject.combo_id = combo.combo_id;
                                     }
-                                    curriculumSubject.option = (item.option == null || item.option.Equals("") || item.option.Equals("False")) ? false : true;
+                                    
+                                    curriculumSubject.option = item.option == null ? null : int.Parse(item.option);
 
                                     listCurriSubject.Add(curriculumSubject);
                                 }
@@ -450,15 +451,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
 
                                         var subject_code = worksheet.Cells[row, 1].Text;
-                                        //foreach (var subject in listCurriSubject)
-                                        //{
-                                        //    var subjects = _subjectRepository.GetSubjectByCode(subjectCode);
-                                        //    if (subjects != null && subject.subject_id == subjects.subject_id)
-                                        //    {
-                                        //        subject.subject_group = group_name;
-                                        //        break;
-                                        //    }
-                                        //}
+                                        
                                         if (_subjectRepository.GetSubjectByCode(subject_code) != null && !subjectGroup.Keys.Contains(subject_code))
                                         {
                                             subjectGroup.Add(subject_code, group_name);
@@ -478,12 +471,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                                 subject_id = subject.subject_id
                                             };
                                             PLOMappings.Add(ploMapping);
-                                            //string createResult = _ploMappingRepository.CreatePLOMapping(ploMapping);
-                                            //if (!createResult.Equals(Result.createSuccessfull.ToString()))
-                                            //{
-                                            //    _curriculumRepository.RemoveCurriculum(curriculum);
-                                            //    return BadRequest(new BaseResponse(true, "Import Fail. Please Check Sheet PLO Mapping!"));
-                                            //}
+                                            
                                         }
                                     }
                                 }
@@ -525,7 +513,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _curriculumRepository.RemoveCurriculum(curriculum);
+                if(curriculum.curriculum_id != 0)
+                {
+                    _curriculumRepository.RemoveCurriculum(curriculum);
+                }
                 return BadRequest(new BaseResponse(false, "Error: " + ex.Message));
             }
         }
@@ -536,8 +527,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(cu);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -562,8 +553,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(plo);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -585,8 +576,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var jsonData = JsonSerializer.Serialize(curri);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
+            //string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
@@ -608,12 +599,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             List<Subject> listSubject = new List<Subject>();
             List<PLOs> listPLO = new List<PLOs>();
+            var spe = new Specialization();
             if (!sheetNames[0].Equals("Curriculum") || !sheetNames[1].Equals("PLO") || !sheetNames[2].Equals("Curriculum Subject") || !sheetNames[3].Equals("PLO Mappings"))
             {
                 return "File is not in a supported format.";
             }
             for (int i = 0; i < sheetNames.Count; i++)
             {
+                string error = "Error in sheet " + sheetNames[i] + " : ";
                 // validate data sheet 1
                 if (i == 0)
                 {
@@ -632,12 +625,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             if (!Regex.IsMatch(r.Details, pattern))
                             {
-                                return "Curriculum Code must format ex:GD-GD-CD-19.3";
+                                return error + "Curriculum Code must format ex:GD-GD-CD-19.3";
                             }
 
                             if (CheckCurriculumExists(r.Details))
                             {
-                                return $"Curriculum {r.Details} is Duplicate!";
+                                return error + $"Curriculum {r.Details} is Duplicate!";
                             }
                             string[] parts = r.Details.Split('-');
                             // get part have index 2 in array string ex: 19.4
@@ -660,22 +653,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         else if (r.Title.Equals("Specialization Code"))
                         {
                             var spe_id = _specializationRepository.GetSpecializationIdByCode(r.Details);
-                            var spe = _specializationRepository.GetSpeById(spe_id);
+                            spe = _specializationRepository.GetSpeById(spe_id);
 
                             //if major not exsit in database
                             if (spe_id == 0)
                             {
-                                return $"Specialization not Exsit. Please Create Specialization {r.Details}";
+                                return error + $"Specialization not Exsit. Please Create Specialization {r.Details}";
                             }
 
                             if (spe.major_id != major.major_id)
                             {
-                                return $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
+                                return error + $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
                             }
 
                             if (double.Parse(spe.Semester.Batch.batch_name) >= double.Parse(batch_name))
                             {
-                                return $"Curriculum must start batch greater than {spe.Semester.Batch.batch_name}";
+                                return error + $"Curriculum must start batch greater than {spe.Semester.Batch.batch_name}";
                             }
 
                         }
@@ -694,18 +687,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             catch (FormatException fm)
                             {
-                                return $"Approved Date {date[0]} not valid Date";
+                                return error + $"Approved Date {date[0]} not valid Date";
                             }
                         }
 
                     }
                     if (!((decicionNo == null && dateTime == null) || (decicionNo != null && dateTime != null)))
                     {
-                        return $"Both the Decicion No and Approved Date fields must have a value or be blank";
+                        return error + $"Both the Decicion No and Approved Date fields must have a value or be blank";
                     }
                     if(!_batchRepository.CheckBatchNameExsit(batch_name, major.degree_level_id))
                     {
-                        return $"Batch {batch_name} Not Exsit In Degree Level {major.DegreeLevel.degree_level_english_name}";
+                        return error + $"Batch {batch_name} Not Exsit In Degree Level {major.DegreeLevel.degree_level_english_name}";
                     }
 
                 }
@@ -719,7 +712,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         if (item.No != null && item.PLO_name == null || item.PLO_description == null)
                         {
-                            return "Data in colounm PLO name and PLO description in sheet PLO must not be null!";
+                            return error + "Data in colounm PLO name and PLO description must not be null!";
                         }
                         var plo = new PLOs();
                         plo.PLO_name = item.PLO_name;
@@ -728,11 +721,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             if (plo.PLO_name.Equals(PLO.PLO_name))
                             {
-                                return $"Only one {plo.PLO_name} in Sheet PLO";
+                                return error + $"Only one {plo.PLO_name} in Sheet PLO";
                             }
                             if (!plo.PLO_name.StartsWith("PLO") || plo.PLO_name.Contains(" "))
                             {
-                                return "PLO must start with 'PLO' and no cointain space ";
+                                return error + "PLO must start with 'PLO' and no cointain space ";
                             }
                         }
                         listPLO.Add(plo);
@@ -748,14 +741,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         if (item.subject_code == null || item.subject_name == null || item.english_subject_name == null || item.term_no == 0 || item.credit == 0)
                         {
-                            return "Must be fill all data in sheet Curriculum Subject";
+                            return error + "Must be fill all data in sheet Curriculum Subject";
                         }
                         if (item.subject_code != null && item.subject_code != "")
                         {
                             var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
                             if (subject == null)
                             {
-                                return $"Subject {item.subject_code} Not Found. Please Create Subject";
+                                return error + $"Subject {item.subject_code} Not Found. Please Create Subject";
                             }
                             listSubject.Add(new Subject { subject_code = item.subject_code });
                         }
@@ -765,65 +758,77 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var combo = _comboRepository.FindComboByCode(item.combo_code);
                             if (combo == null)
                             {
-                                return $"Combo {item.combo_code} Not Found. Please Create Combo";
+                                return error + $"Combo {item.combo_code} Not Found. Please Create Combo";
+                            }
+                            if(combo.specialization_id != spe.specialization_id)
+                            {
+                                return error + $"Combo {item.combo_code} Not Exsit in Specialization {spe.specialization_english_name}!";
                             }
                         }
 
-                        int count = row.Count(data => data.option != null && data.option.Equals("True") && data.term_no == item.term_no);
-                        if (count % 2 != 0)
+                        if(item.option != null && item.combo_code != null)
                         {
-                            return $"Subject have option in term no {item.term_no} must even number";
+                            return error + $"Subject {item.subject_code} must only option or combo";
                         }
+                    }
 
+                    var listOption = row.Select(x => x.option).Distinct().ToList();
+                    foreach (var option in listOption)
+                    {
+                        int count = row.Where(x => x.option == option).Count();
+                        if(count != 2)
+                        {
+                            return error + $"Option {option} only two subject";
+                        }
                     }
 
 
                 }
-                // validate data sheet 4
-                //if (i == 3)
-                //{
-                //    using (var package = new ExcelPackage(stream))
-                //    {
-                //        var worksheet = package.Workbook.Worksheets[3];
+                //validate data sheet 4
+                if (i == 3)
+                {
+                    using (var package = new ExcelPackage(stream))
+                    {
+                        var worksheet = package.Workbook.Worksheets[3];
 
-                //        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
-                //        {
-                //            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
-                //            {
-                //                var celplo = worksheet.Cells[2, col];
-                //                bool found_plo = false;
-                //                bool found_subject = false;
-                //                foreach (var plo in listPLO)
-                //                {
-                //                    if (plo.PLO_name.Equals(celplo.Text))
-                //                    {
-                //                        found_plo = true;
+                        for (int row = 2; row <= worksheet.Dimension.End.Row; row++)
+                        {
+                            for (int col = 2; col <= worksheet.Dimension.End.Column; col++)
+                            {
+                                var celplo = worksheet.Cells[2, col];
+                                bool found_plo = false;
+                                bool found_subject = false;
+                                foreach (var plo in listPLO)
+                                {
+                                    if (plo.PLO_name.Equals(celplo.Text))
+                                    {
+                                        found_plo = true;
 
-                //                    }
-                //                }
-                //                if (!found_plo)
-                //                {
-                //                    return $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
-                //                }
+                                    }
+                                }
+                                if (!found_plo)
+                                {
+                                    return error + $"PLO {celplo.Text} in header table PLO Mapping not mapp in sheet PLO";
+                                }
 
-                //                var subjectCode = worksheet.Cells[row, 1];
-                //                foreach (var subject in listSubject)
-                //                {
-                //                    if (subject.subject_code.Equals(subjectCode.Text))
-                //                    {
-                //                        found_subject = true;
-                //                    }
+                                var subjectCode = worksheet.Cells[row, 1];
+                                foreach (var subject in listSubject)
+                                {
+                                    if (subject.subject_code.Equals(subjectCode.Text))
+                                    {
+                                        found_subject = true;
+                                    }
 
-                //                }
-                //                if (!found_subject && !subjectCode.Text.Contains(" "))
-                //                {
-                //                    return $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
-                //                }
+                                }
+                                if (!found_subject && !subjectCode.Text.Contains(" "))
+                                {
+                                    return error + $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
+                                }
 
-                //            }
-                //        }
-                //    }
-                //}
+                            }
+                        }
+                    }
+                }
 
             }
 

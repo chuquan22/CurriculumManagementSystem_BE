@@ -73,15 +73,13 @@ namespace DataAccess.DAO
             return curriculumSubject;
         }
 
-        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId)
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, int option)
         {
             var curriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Curriculum)
                 .Include(x => x.Subject)
-                .FirstOrDefault(x => x.term_no == term_no 
-                && x.subject_group.Equals(subjectGroup) 
-                && x.subject_id != subjectId
-                && x.option == true);
+                .FirstOrDefault(x => x.term_no == term_no
+                && x.option == option);
             return curriculumSubject;
         }
 

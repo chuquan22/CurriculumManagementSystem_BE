@@ -15,6 +15,7 @@ namespace DataAccess.DAO
     public class SemesterPlanDAO
     {
         private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
+        private readonly SubjectDAO _dao = new SubjectDAO();
         public string errorSemesterPlan = "";
 
         public List<SemesterPlanDTO> GetSemesterPlan(int semester_id)
