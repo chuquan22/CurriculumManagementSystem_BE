@@ -365,6 +365,22 @@ namespace CMS_UnitTests.Controllers
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
+
+        [Test]
+        public async Task DeleteCurriculum_ReturnsNotFoundResult_WhenNotFoundCurriculum()
+        {
+            // Arrange
+            int curriculumId = 200;
+
+            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());
+            curriculumRepositoryMock.Setup(repo => repo.RemoveCurriculum(It.IsAny<Curriculum>())).Returns("OK");
+
+            // Act
+            var result = await curriculumController.DeleteCurriculum(curriculumId);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
     }
 }
 
