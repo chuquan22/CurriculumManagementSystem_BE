@@ -22,7 +22,7 @@ namespace BusinessObject
         [Required]
         public string subject_group { get; set; }
         [AllowNull]
-        public int? subject_id_option { get; set; }
+        public int? option { get; set; }
 
         public virtual Curriculum? Curriculum { get; set; }
         public virtual Subject? Subject { get; set; }

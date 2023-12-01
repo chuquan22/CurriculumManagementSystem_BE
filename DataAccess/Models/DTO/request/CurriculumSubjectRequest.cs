@@ -17,6 +17,6 @@ namespace DataAccess.Models.DTO.request
         [AllowNull]
         public int? combo_id { get; set; }
         [AllowNull]
-        public int? subject_id_option { get; set; }
+        public int? option { get; set; }
     }
 }

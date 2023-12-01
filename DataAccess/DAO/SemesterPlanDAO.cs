@@ -411,7 +411,7 @@ namespace DataAccess.DAO
                                     @class = cs.Subject.total_time_class,
                                     @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
-                                    optional = _dao.GetSubjectById((int)cs.subject_id_option).subject_code,
+                                    optional = cs.option.ToString(),
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
                                 })
                                 .ToList(),
@@ -516,7 +516,7 @@ namespace DataAccess.DAO
                                     @class = cs.Subject.total_time_class,
                                     @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
-                                    optional = _dao.GetSubjectById((int)cs.subject_id_option).subject_code,
+                                    optional = cs.option.ToString(),
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
                                 })
                                 .ToList(),

@@ -22,8 +22,8 @@ namespace BusinessObject
                                                .AddJsonFile("appsettings.json", true, true)
                                                .Build();
             string? con = connectionString.GetConnectionString("CMSDb");
-            optionsBuilder.UseSqlServer(con);
-            //optionsBuilder.UseMySql(con, ServerVersion.AutoDetect(con));
+            //optionsBuilder.UseSqlServer(con);
+            optionsBuilder.UseMySql(con, ServerVersion.AutoDetect(con));
         }
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }
@@ -141,11 +141,13 @@ namespace BusinessObject
                 .HasForeignKey(x => x.curriculum_id)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+
+
             modelBuilder.Entity<Role>().HasData(
-              new Role { role_id = 1, role_name = "Dispatcher" },
-              new Role { role_id = 2, role_name = "Manager" },
-              new Role { role_id = 3, role_name = "Admin" }
-              );
+               new Role { role_id = 1, role_name = "Dispatcher" },
+               new Role { role_id = 2, role_name = "Manager" },
+               new Role { role_id = 3, role_name = "Admin" }
+               );
 
             modelBuilder.Entity<User>().HasData(
                 new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 3, user_email = "quancqhe153661@fpt.edu.vn", user_name = "QuanCQ", is_active = true },
@@ -160,23 +162,25 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Batch>().HasData(
-
-              new Batch { batch_id = 1, batch_name = "7.1", batch_order = 1, degree_level_id = 3 },
-              new Batch { batch_id = 2, batch_name = "17", batch_order = 1, degree_level_id = 2 },
-              new Batch { batch_id = 3, batch_name = "18", batch_order = 2, degree_level_id = 2 },
-              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 1, degree_level_id = 1 },
-              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 2, degree_level_id = 1 },
-              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 3, degree_level_id = 1 }
+              new Batch { batch_id = 1, batch_name = "7.1", batch_order = 1, degree_level_id = 2 },
+              new Batch { batch_id = 2, batch_name = "17", batch_order = 1, degree_level_id = 3 },
+              new Batch { batch_id = 3, batch_name = "18", batch_order = 2, degree_level_id = 3 },
+              new Batch { batch_id = 4, batch_name = "19.1", batch_order = 4, degree_level_id = 1 },
+              new Batch { batch_id = 5, batch_name = "19.2", batch_order = 5, degree_level_id = 1 },
+              new Batch { batch_id = 6, batch_name = "19.3", batch_order = 6, degree_level_id = 1 },
+              new Batch { batch_id = 7, batch_name = "18.2", batch_order = 2, degree_level_id = 1 },
+              new Batch { batch_id = 8, batch_name = "18.3", batch_order = 3, degree_level_id = 1 },
+              new Batch { batch_id = 9, batch_name = "20.1", batch_order = 6, degree_level_id = 1 },
+              new Batch { batch_id = 10, batch_name = "18.1", batch_order = 1, degree_level_id = 1 }
               );
 
             modelBuilder.Entity<Semester>().HasData(
                 new Semester { semester_id = 1, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2023"), semester_end_date = DateTime.Parse("12/12/2023"), school_year = 2023, start_batch_id = 6 },
                 new Semester { semester_id = 2, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2023"), semester_end_date = DateTime.Parse("08/08/2023"), school_year = 2023, start_batch_id = 5 },
                 new Semester { semester_id = 3, semester_name = "Spring", semester_start_date = DateTime.Parse("01/03/2023"), semester_end_date = DateTime.Parse("04/04/2023"), school_year = 2023, start_batch_id = 4 },
-                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, start_batch_id = 3 },
-                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("05/05/2022"), semester_end_date = DateTime.Parse("08/08/2022"), school_year = 2022, start_batch_id = 2 },
-                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/01/2022"), semester_end_date = DateTime.Parse("04/04/2022"), school_year = 2022, start_batch_id = 1 }
-
+                new Semester { semester_id = 4, semester_name = "Fall", semester_start_date = DateTime.Parse("09/09/2022"), semester_end_date = DateTime.Parse("12/12/2022"), school_year = 2022, start_batch_id = 8 },
+                new Semester { semester_id = 5, semester_name = "Summer", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 7 },
+                new Semester { semester_id = 6, semester_name = "Spring", semester_start_date = DateTime.Parse("01/09/2022"), semester_end_date = DateTime.Parse("04/01/2022"), school_year = 2022, start_batch_id = 9 }
                 );
 
             modelBuilder.Entity<Major>().HasData(
@@ -189,32 +193,28 @@ namespace BusinessObject
                 );
 
             modelBuilder.Entity<Specialization>().HasData(
-                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "6216432", specialization_name = "Thiết kế nội và ngoại thất", specialization_english_name = "Interior and Exterior Design", semester_id = 1, is_active = true },
-                new Specialization { specialization_id = 2, major_id = 1, specialization_code = "6215463", specialization_name = "Dựng phim và quảng cáo", specialization_english_name = "Film Making and Advertising", semester_id = 2, is_active = true },
+                new Specialization { specialization_id = 1, major_id = 1, specialization_code = "6210402", specialization_name = "Thiết kế đồ họa", specialization_english_name = "Graphic Design", semester_id = 1, is_active = true },
+                new Specialization { specialization_id = 2, major_id = 2, specialization_code = "6215463", specialization_name = "Xử lý dữ liệu", specialization_english_name = "Data Processing", semester_id = 4, is_active = true },
                 new Specialization { specialization_id = 3, major_id = 2, specialization_code = "6526432", specialization_name = "Lập trình Game", specialization_english_name = "Game Development", semester_id = 3, is_active = true },
                 new Specialization { specialization_id = 4, major_id = 2, specialization_code = "6480201", specialization_name = "Ứng dụng phần mềm", specialization_english_name = "Software Application", semester_id = 1, is_active = true },
                 new Specialization { specialization_id = 5, major_id = 5, specialization_code = "5340404", specialization_name = "Digital Marketing", specialization_english_name = "Digital Marketing", semester_id = 6, is_active = true },
-                new Specialization { specialization_id = 6, major_id = 6, specialization_code = "6480207", specialization_name = "Phân tích dữ liệu", specialization_english_name = "Data Analytics", semester_id = 5, is_active = true }
+                new Specialization { specialization_id = 6, major_id = 6, specialization_code = "6480207", specialization_name = "Phân tích dữ liệu", specialization_english_name = "Data Analytics", semester_id = 5, is_active = true },
+                new Specialization { specialization_id = 7, major_id = 4, specialization_code = "6510305", specialization_name = "Cnktđk & Tự Động Hóa", specialization_english_name = "Automotive Engineering", semester_id = 4, is_active = true }
                 );
 
+            modelBuilder.Entity<Combo>().HasData(
+               new Combo { combo_id = 1, combo_code = "CN1", combo_name = "Thiết kế nội và ngoại thất", combo_english_name = "Interior and Exterior Design", specialization_id = 1, is_active = true },
+               new Combo { combo_id = 2, combo_code = "CN2", combo_name = "Dựng phim và quảng cáo", combo_english_name = "Film Making and Advertising", specialization_id = 1, is_active = true }
+               );
+
             modelBuilder.Entity<Curriculum>().HasData(
-                new Curriculum { curriculum_id = 1, curriculum_code = "GD-IED-CD-18.3", curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 2, curriculum_code = "GD-IED-IC-19.1", curriculum_name = "Thiết kế mĩ thuật số", english_curriculum_name = "Graphic Design", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 3, curriculum_code = "SE-SE-IC-18", curriculum_name = "kĩ sư phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 4, curriculum_code = "SE-SE-CD-17", curriculum_name = "kĩ thuật phần mềm", english_curriculum_name = "Software Engineering", total_semester = 7, specialization_id = 5, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 5, curriculum_code = "CM-FMA-TC-19.3", curriculum_name = "quản lí học liệu", english_curriculum_name = "Curriculum Management", total_semester = 6, specialization_id = 2, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 6, curriculum_code = "SS-IED-TC-19", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 6, specialization_id = 4, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 7, curriculum_code = "SWP-WP-TC-7.1", curriculum_name = "kĩ năng lập trình web", english_curriculum_name = "Skill Web Program", total_semester = 7, specialization_id = 6, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
-                new Curriculum { curriculum_id = 8, curriculum_code = "SS-IED-TC-18.2", curriculum_name = "kĩ năng mềm", english_curriculum_name = "Soft Skill", total_semester = 7, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
+                new Curriculum { curriculum_id = 1, curriculum_code = "GD-GD-CD-19.3", start_batch_id = 6, curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true },
+                new Curriculum { curriculum_id = 2, curriculum_code = "GD-GD-CD-19.2", start_batch_id = 5, curriculum_name = "Thiết kế đồ họa", english_curriculum_name = "Graphic Design", total_semester = 6, specialization_id = 1, curriculum_description = "", approved_date = DateTime.Today, decision_No = "360/QĐ-CĐFPL", Formality = "formal education", is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumBatch>().HasData(
-                new CurriculumBatch { curriculum_id = 1, batch_id = 1 },
-                new CurriculumBatch { curriculum_id = 2, batch_id = 1 },
-                new CurriculumBatch { curriculum_id = 1, batch_id = 2 },
-                new CurriculumBatch { curriculum_id = 3, batch_id = 2 },
-                new CurriculumBatch { curriculum_id = 6, batch_id = 4 },
-                new CurriculumBatch { curriculum_id = 7, batch_id = 6 }
+                new CurriculumBatch { curriculum_id = 1, batch_id = 6 },
+                new CurriculumBatch { curriculum_id = 2, batch_id = 5 }
                 );
 
             modelBuilder.Entity<LearningMethod>().HasData(
@@ -251,15 +251,15 @@ namespace BusinessObject
 
 
             modelBuilder.Entity<Subject>().HasData(
-                new Subject { subject_id = 1, subject_code = "PRE209", subject_name = "Quản trị khủng hoảng truyền thông", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Conmunication crisis management", credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
-                new Subject { subject_id = 2, subject_code = "PRO109", subject_name = "Thực tập tốt nghiệp(TMDT)", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "Graduation Intership (Digital Marketing)", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
+                new Subject { subject_id = 1, subject_code = "PRE209", subject_name = "Quản trị khủng hoảng truyền thông", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Communication crisis management", credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 2, subject_code = "PRO109", subject_name = "Thực tập tốt nghiệp(TMDT)", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "Graduation Internship (Digital Marketing)", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
                 new Subject { subject_id = 3, subject_code = "ENT2227", subject_name = "Tiếng anh 2.2", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "English 2.2", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
                 new Subject { subject_id = 4, subject_code = "ENT2127", subject_name = "Tiếng anh 2.1", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "English 2.1", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
                 new Subject { subject_id = 5, subject_code = "ENT1227", subject_name = "Tiếng anh 1.2", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "English 1.2", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 6, subject_code = "ENT2226", subject_name = "Tiếng anh 2.2", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English 2.2", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 7, subject_code = "ENT2126", subject_name = "Tiếng anh 2.1", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English 2.1", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 8, subject_code = "ENT1127", subject_name = "Tiếng anh 1.1", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English 1.1", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
-                new Subject { subject_id = 9, subject_code = "ENT1226", subject_name = "Tiếng anh 1.2", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English 1.2", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
+                new Subject { subject_id = 9, subject_code = "ENT1226", subject_name = "Tiếng anh 1.2", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English 1.2", credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
                 new Subject { subject_id = 10, subject_code = "EHO0101", subject_name = "Tiếng anh chuyên ngành 3 (NHKS)", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English for Hopitality 3", credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
                 new Subject { subject_id = 11, subject_code = "ENT1128", subject_name = "Tiếng anh 1.1", assessment_method_id = 1, learning_method_id = 3, english_subject_name = "English 1.1", credit = 3, total_time = 90, total_time_class = 31, exam_total = 56, is_active = true },
                 new Subject { subject_id = 12, subject_code = "EHO102", subject_name = "Tiếng anh chuyên ngành 1 (NHKS)", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "English for Hopitality 1", credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
@@ -306,24 +306,51 @@ namespace BusinessObject
                 new Subject { subject_id = 53, subject_code = "LOG211", subject_name = "Bảo hiểm vận tải", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Transportation Insurance", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 54, subject_code = "TOU2033", subject_name = "Nghiệp vụ hướng dẫn 1", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Tourguide Operations 1", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
                 new Subject { subject_id = 55, subject_code = "TOU2032", subject_name = "Nghiệp vụ hướng dẫn 1", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Tourguide Operations 1", credit = 3, total_time = 70, total_time_class = 40, exam_total = 4, is_active = true },
-                new Subject { subject_id = 56, subject_code = "LOG105", subject_name = "Nghiệp vụ mua sắm", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Procurement Oprerations", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true }
-
+                new Subject { subject_id = 56, subject_code = "LOG105", subject_name = "Nghiệp vụ mua sắm", assessment_method_id = 1, learning_method_id = 2, english_subject_name = "Procurement Oprerations", credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
+                new Subject { subject_id = 57, subject_code = "AUT102", subject_name = "Mạch điện và an toàn điện", english_subject_name = "Electrical circuits and electrical safety", learning_method_id = 3, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 58, subject_code = "AUT103", subject_name = "Điện tử cơ bản", english_subject_name = "Basic electronics", learning_method_id = 3, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 59, subject_code = "AUT104", subject_name = "Thiết kế mạch điện - điện tử", english_subject_name = "Electrical and electronic circuit design", learning_method_id = 2, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 60, subject_code = "AUT105", subject_name = "Kỹ thuật xung số", english_subject_name = "Pulse & Digital Engineering", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 61, subject_code = "AUT106", subject_name = "Mạch điện tử và ứng dụng", english_subject_name = "Electronic circuits and applications", learning_method_id = 3, assessment_method_id = 1, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 62, subject_code = "AUT107", subject_name = "Lắp đặt hệ thống điện", english_subject_name = "Installation of electrical systems", learning_method_id = 3, assessment_method_id = 1, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 63, subject_code = "AUT108", subject_name = "Lắp đặt tủ điện công nghiệp", english_subject_name = "Installation of industrial electrical cabinets", learning_method_id = 3, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 64, subject_code = "AUT110", subject_name = "Kỹ thuật cảm biến", english_subject_name = "Sensor engineering", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 65, subject_code = "INE202", subject_name = "Truyền động điện", english_subject_name = "Electric drive", learning_method_id = 3, assessment_method_id = 1, credit = 3, total_time = 75, total_time_class = 34, exam_total = 41, is_active = true },
+                new Subject { subject_id = 66, subject_code = "PRO125", subject_name = "Dự án 1 (TĐH)", english_subject_name = "Project 1 (Automation Engineering )", learning_method_id = 3, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 67, subject_code = "AUT109", subject_name = "Lý thuyết điều khiển tự động", english_subject_name = "Automatic control theory", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 68, subject_code = "AUT206", subject_name = "PLC cơ bản", english_subject_name = "Basic Programmable Logic Controller", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 69, subject_code = "AUT208", subject_name = "Lập trình Arduino", english_subject_name = "Arduino Programming", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 70, subject_code = "AUT209", subject_name = "Mạng truyền thông công nghiệp", english_subject_name = "Industrial communication network", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 71, subject_code = "AUT210", subject_name = "Thiết kế bằng phần mềm", english_subject_name = "Software design", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 72, subject_code = "AUT211", subject_name = "Điều khiển thủy lực và khí nén", english_subject_name = "Hydraulic & Pneumatic Control", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 73, subject_code = "INE214", subject_name = "Vi điều khiển", english_subject_name = "Microcontrollers", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 74, subject_code = "AUT207", subject_name = "PLC nâng cao", english_subject_name = "Advanced Programmable Logic Controller", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 75, subject_code = "AUT212", subject_name = "Lập trình nhúng", english_subject_name = "Embedded programming", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 76, subject_code = "AUT213", subject_name = "Năng lượng tái tạo", english_subject_name = "Recycled energy", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 60, total_time_class = 34, exam_total = 6, is_active = true },
+                new Subject { subject_id = 77, subject_code = "AUT214", subject_name = "Tự động hóa quá trình công nghệ", english_subject_name = "Process automation technology", learning_method_id = 3, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 78, subject_code = "AUT215", subject_name = "Phát triển ứng dụng IoTs", english_subject_name = "IoTs application development", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 79, subject_code = "AUT216", subject_name = "Robot công nghiệp", english_subject_name = "Industrial Robots", learning_method_id = 3, assessment_method_id = 4, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 80, subject_code = "AUT217", subject_name = "Robot di động", english_subject_name = "Mobile robot", learning_method_id = 3, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 81, subject_code = "VIE102", subject_name = "Pháp luật", english_subject_name = "Law", learning_method_id = 1, assessment_method_id = 5, credit = 2, total_time = 30, total_time_class = 8, exam_total = 3, is_active = true },
+                new Subject { subject_id = 82, subject_code = "PRO215", subject_name = "Dự án tốt nghiệp (TĐH)", english_subject_name = "Capstone Project (Automation Engineering)", learning_method_id = 3, assessment_method_id = 4, credit = 5, total_time = 225, total_time_class = 10, exam_total = 6, is_active = true },
+                new Subject { subject_id = 83, subject_code = "PRO126", subject_name = "Thực tập tốt nghiệp (TĐH)", english_subject_name = "Graduation Internship (Automation Engineering)", learning_method_id = 3, assessment_method_id = 1, credit = 5, total_time = 225, total_time_class = 0, exam_total = 0, is_active = true },
+                new Subject { subject_id = 84, subject_code = "PDP101", subject_name = "Phát triển cá nhân 1", english_subject_name = "Personal Development Program 1", learning_method_id = 2, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 85, subject_code = "MAR1021", subject_name = "Marketing căn bản", english_subject_name = "Basic Marketing", learning_method_id = 2, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true },
+                new Subject { subject_id = 86, subject_code = "DOM101", subject_name = "Nhập môn Digital Marketing", english_subject_name = "Introduction to Digital Marketing", learning_method_id = 2, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 6, is_active = true },
+                new Subject { subject_id = 87, subject_code = "DOM1021", subject_name = "Email Marketing", english_subject_name = "Email Marketing", learning_method_id = 1, assessment_method_id = 5, credit = 3, total_time = 90, total_time_class = 12, exam_total = 6, is_active = true },
+                new Subject { subject_id = 88, subject_code = "DOM1031", subject_name = "Marketing nội dung", english_subject_name = "Content Marketing", learning_method_id = 2, assessment_method_id = 3, credit = 3, total_time = 90, total_time_class = 34, exam_total = 6, is_active = true },
+                new Subject { subject_id = 89, subject_code = "WEB107", subject_name = "Thiết kế trang web", english_subject_name = "Web Design", learning_method_id = 2, assessment_method_id = 1, credit = 3, total_time = 90, total_time_class = 34, exam_total = 56, is_active = true }
                 );
 
             modelBuilder.Entity<CurriculumSubject>().HasData(
-                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, combo_id = 1, subject_group = "General Subject", subject_id_option = null },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2, subject_group = "Option Subject", subject_id_option = null },
-                new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = null, subject_group = "Specialization Subject", subject_id_option = null },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = null, subject_group = "Basic Subject", subject_id_option = null },
-                new CurriculumSubject { curriculum_id = 1, subject_id = 2, term_no = 1, combo_id = 3, subject_group = "Option Subject", subject_id_option = null }
+                new CurriculumSubject { curriculum_id = 1, subject_id = 1, term_no = 3, combo_id = 1, subject_group = "General Subject", option = null },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 3, term_no = 3, combo_id = 2, subject_group = "Option Subject", option = null },
+                new CurriculumSubject { curriculum_id = 2, subject_id = 4, term_no = 3, combo_id = 0, subject_group = "Specialization Subject", option = null },
+                new CurriculumSubject { curriculum_id = 1, subject_id = 5, term_no = 2, combo_id = 0, subject_group = "Basic Subject", option = null },
+                new CurriculumSubject { curriculum_id = 2, subject_id = 2, term_no = 1, combo_id = 1, subject_group = "Option Subject", option = null }
                 );
 
-            modelBuilder.Entity<Combo>().HasData(
-                new Combo { combo_id = 1, combo_code = ".NET", combo_name = "Lập trình C#", combo_english_name = "C# Programing", specialization_id = 4, is_active = true },
-                new Combo { combo_id = 2, combo_code = "JS", combo_name = "kĩ sư Nhật Bản", combo_english_name = "Japan Software", specialization_id = 3, is_active = true },
-                new Combo { combo_id = 3, combo_code = "KS", combo_name = "kĩ sư Hàn Quốc", combo_english_name = "Korea Software", specialization_id = 2, is_active = false },
-                new Combo { combo_id = 4, combo_code = "NodeJS", combo_name = "Lập trình NodeJS", combo_english_name = "Web api using NodeJS", specialization_id = 1, is_active = true }
-                );
+
 
             modelBuilder.Entity<ClassSessionType>().HasData(
                 new ClassSessionType { class_session_type_id = 1, class_session_type_name = "Online" },
