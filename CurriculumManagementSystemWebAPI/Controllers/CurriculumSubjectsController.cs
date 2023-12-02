@@ -22,15 +22,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
+        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly IMapper _mapper;
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
 
-        public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
+        public CurriculumSubjectsController(IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -43,7 +42,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (curriculumSubject == null)
             {
-                return BadRequest(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
+                return NotFound(new BaseResponse(true, $"Term No {termNo} Hasn't Subject in this Curriculum"));
             }
             var curriculumSubjectResponse = _mapper.Map<List<CurriculumSubjectResponse>>(curriculumSubject);
             return Ok(new BaseResponse(false, "success!", curriculumSubjectResponse));

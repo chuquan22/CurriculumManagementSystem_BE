@@ -18,6 +18,7 @@ using DataAccess.Models.DTO.request;
 using AutoFixture;
 using DataAccess.Models.DTO;
 using Google.Apis.Gmail.v1.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -381,6 +382,33 @@ namespace CMS_UnitTests.Controllers
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
         }
+        [Test]
+        public async Task ImportFileCurriculum_ReturnsOKResult_WhenImportCurriculumSuccess()
+        {
+            // Arrange
+            var fileMock = new Mock<IFormFile>();
+            var fileName = "FileTestCurriculum.xlsx";
+            string filecurriculumPath = "./FileImport/" + fileName;
+
+            // Đọc nội dung thực tế của file và tạo MemoryStream
+            using (var fileStream = new FileStream(filecurriculumPath, FileMode.Open))
+            {
+                var memoryStream = new MemoryStream();
+                await fileStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                IFormFile file = (IFormFile)memoryStream;
+            }
+
+            // Act
+            var result = await curriculumController.ImportCurriculum(fileMock.Object);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.IsFalse((bool)okResult.Value); // Assuming the success property is a boolean
+        }
+
     }
+
 }
 

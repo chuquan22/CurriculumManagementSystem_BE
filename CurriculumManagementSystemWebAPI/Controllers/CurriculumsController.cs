@@ -511,7 +511,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _curriculumRepository.RemoveCurriculum(curriculum);
+              //  _curriculumRepository.RemoveCurriculum(curriculum);
                 return BadRequest(new BaseResponse(false, "Error: " + ex.Message));
             }
         }
