@@ -28,14 +28,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             subjectRepository = new SubjectRepository();
         }
         [HttpGet]
-        public ActionResult GetAllMajor()
+        public ActionResult<List<MajorResponse>> GetAllMajor()
         {
             List<Major> rs = new List<Major>();
             try
             {
                 rs = majorRepository.GetAllMajor();
                 var result = _mapper.Map<List<MajorResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     major.lisSpe = _mapper.Map<List<SpecializationResponse>>(specializationRepository.GetSpeByBatchId(batchId, major.major_id));
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
+                return Ok(new BaseResponse(false, "Successfully", listMajorRespone));
             }
             catch (Exception ex)
             {

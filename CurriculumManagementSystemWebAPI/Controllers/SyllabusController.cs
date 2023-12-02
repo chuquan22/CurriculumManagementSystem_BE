@@ -73,7 +73,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+        public async Task<ActionResult<IEnumerable<SyllabusResponse>>> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
@@ -81,7 +81,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 int limit2 = syllabusRepository.GetTotalSyllabus(txtSearch, subjectCode);
                 List<Syllabus> list = syllabusRepository.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
+                return Ok(new BaseResponse(false, "Get List Syllabus Sucessfully!", new BaseListResponse(page, limit2, result)));
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateSyllabus(SyllabusRequest request)
+        public async Task<IActionResult> CreateSyllabus(SyllabusRequest request)
         {
 
             try
@@ -105,7 +105,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs.scoring_scale = 10;
                 }
                 var result = syllabusRepository.CreateSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucess", rs));
+                return Ok(new BaseResponse(false, "Create Syllabus Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -122,7 +122,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
-                return Ok(new BaseResponse(true, "False", result));
+                return Ok(new BaseResponse(false, "Get Syllabus Details Successfully!", result));
 
             }
             catch (Exception ex)
