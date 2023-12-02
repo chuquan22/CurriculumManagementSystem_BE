@@ -19,7 +19,7 @@ using Repositories.Subjects;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
@@ -170,17 +170,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
-            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_id ,(int)curriculumSubject.option);
-
-            string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
-            if (curriculumSubject2 != null)
+            if(curriculumSubject.option != null)
             {
-                string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
-                if (deleteResult2 != Result.deleteSuccessfull.ToString())
+                var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_id, (int)curriculumSubject.option);
+                if (curriculumSubject2 != null)
                 {
-                    return BadRequest(new BaseResponse(true, "Remove Fail"));
+                    string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
+                    if (deleteResult2 != Result.deleteSuccessfull.ToString())
+                    {
+                        return BadRequest(new BaseResponse(true, "Remove Fail"));
+                    }
                 }
             }
+            string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
+           
             if (deleteResult != Result.deleteSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, "Remove Fail"));
