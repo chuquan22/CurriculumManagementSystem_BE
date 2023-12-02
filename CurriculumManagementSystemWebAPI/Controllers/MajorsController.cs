@@ -11,7 +11,7 @@ using Repositories.Subjects;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+   // [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class MajorsController : ControllerBase
     {
@@ -64,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     .ToList();
 
 
-                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
+                return Ok(new BaseResponse(false, "Sucessfully!", listMajorRespone));
             }
             catch (Exception ex)
             {
@@ -74,18 +74,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("{batchId}")]
-        public ActionResult GetMajor(int batchId)
+        public ActionResult<List<SpecializationResponse>> GetMajor(int batchId)
         {
             List<Major> rs = new List<Major>();
             try
             {
                 rs = majorRepository.GetMajorByBatch(batchId);
+                if(rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found This Major!"));
+
+                }
                 var listMajorRespone = _mapper.Map<List<MajorSpeResponse>>(rs);
                 foreach (var major in listMajorRespone)
                 {
                     major.lisSpe = _mapper.Map<List<SpecializationResponse>>(specializationRepository.GetSpeByBatchId(batchId, major.major_id));
                 }
-                return Ok(new BaseResponse(false, "Successfully", listMajorRespone));
+                return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
             }
             catch (Exception ex)
             {
@@ -110,7 +115,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs = majorRepository.AddMajor(rs);
                     var result = _mapper.Map<MajorResponse>(rs);
 
-                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", result));
+                    return Ok(new BaseResponse(false, "Add Major Successfully!", result));
                 }
             }
             catch (Exception ex)
@@ -142,21 +147,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete]
         public ActionResult DeleteMajor(int id)
         {
-            Major rs = new Major();
             try
             {
                 var major = majorRepository.FindMajorById(id);
-                if(major != null)
+                if (major == null)
                 {
-                    Ok(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
+                    return NotFound(new BaseResponse(true, "Not Found This Major!", null));
                 }
+
                 majorRepository.DeleteMajor(id);
-                return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
+                return Ok(new BaseResponse(false, "Delete Major Successfully!", null));
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "Cant not delete this major. Major already used in system!", null));
+                return BadRequest(new BaseResponse(true, "Cannot delete this major. Major already used in the system!", null));
             }
         }
+
     }
 }

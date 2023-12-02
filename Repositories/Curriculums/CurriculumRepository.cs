@@ -11,8 +11,23 @@ namespace Repositories.Curriculums
     public class CurriculumRepository : ICurriculumRepository
     {
         public readonly CurriculumDAO curriculumDAO = new CurriculumDAO();
+
+        public bool CheckCurriculumCanDelete(int id)
+        {
+            return curriculumDAO.CheckCurriculumCanDelete(id);
+        }
+
+        public bool CheckCurriculumExists(string code)
+        {
+            return curriculumDAO.CheckCurriculumExists(code);
+        }
+
         public string CreateCurriculum(Curriculum curriculum) => curriculumDAO.CreateCurriculum(curriculum);
-       
+
+        public bool CurriculumExists(int id)
+        {
+            return curriculumDAO.CurriculumExists(id);
+        }
 
         public List<Curriculum> GetAllCurriculum(int degree_level_id, string? txtSearch, int? majorId) => curriculumDAO.GetAllCurriculum(degree_level_id, txtSearch, majorId);
 

@@ -17,13 +17,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class PreRequisitesController : ControllerBase
     {
-        private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
 
-        public PreRequisitesController(CMSDbContext context, IMapper mapper)
+        public PreRequisitesController(IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -46,10 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetPreRequisite/{subjectId}/{preSubjectId}")]
         public async Task<ActionResult<PreRequisite>> GetPreRequisite(int subjectId, int preSubjectId)
         {
-            if (_context.PreRequisite == null)
-            {
-                return NotFound();
-            }
+            
             var preRequisite = _preRequisiteRepository.GetPreRequisite(subjectId, preSubjectId);
 
             if (preRequisite == null)

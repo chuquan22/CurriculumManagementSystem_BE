@@ -23,6 +23,11 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
+        public bool CurriculumSubjectExist(int curriId, int subId)
+        {
+            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id == subId)).GetValueOrDefault();
+        }
+
         public List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId)
         {
             var listCurriculumSubject = _context.CurriculumSubject

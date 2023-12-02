@@ -16,6 +16,7 @@ using DataAccess.Models.DTO.request;
 using AutoFixture;
 using DataAccess.Models.DTO;
 using Google.Apis.Gmail.v1.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -35,10 +36,11 @@ namespace CMS_UnitTests.Controllers
             fixture = new Fixture();
             syllabusRepositoryMock = fixture.Freeze<Mock<ISyllabusRepository>>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+            var configurationMock = new Mock<IConfiguration>();
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
-            syllabusController = new SyllabusController(_mapper, hostingEnvironmentMock.Object);
+            syllabusController = new SyllabusController(configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
         }
 
         [Test]

@@ -52,6 +52,11 @@ namespace Repositories.PreRequisiteTypes
             return _preRequisiteTypeDAO.PaginationPreRequisiteType(page, limit, txtSearch);
         }
 
+        public bool PreRequisiteTypeExist(int id)
+        {
+            return _preRequisiteTypeDAO.PreRequisiteTypeExist(id);
+        }
+
         public string UpdatePreRequisiteType(PreRequisiteType preRequisiteType)
         {
             return _preRequisiteTypeDAO.UpdatePreRequisiteType(preRequisiteType);

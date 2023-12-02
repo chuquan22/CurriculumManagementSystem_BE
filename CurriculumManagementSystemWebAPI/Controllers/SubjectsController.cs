@@ -24,15 +24,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly ICurriculumSubjectRepository _curriSubjectRepository = new CurriculumSubjectRepository();
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
 
-        public SubjectsController(CMSDbContext context, IMapper mapper)
+        public SubjectsController(IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -40,11 +38,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // GET: api/Subjects
         [HttpGet("GetAllSubject")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
-        {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
+        {          
             var subject = _subjectRepository.GetAllSubject(txtSearch);
             if (subject == null)
             {
@@ -57,20 +51,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public async Task<IActionResult> PaginationSubject(int page, int limit, [FromQuery] string? txtSearch)
         {
-            IQueryable<Subject> subjectQuery = _context.Subject;
-
-            if (!string.IsNullOrWhiteSpace(txtSearch))
-            {
-                subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
-            }
-
-            var totalElements = subjectQuery.Count();
-            var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
-                .Include(x => x.PreRequisite)
-                .Include(x => x.AssessmentMethod.AssessmentType)
-                .Include(x => x.LearningMethod)
-                .ToList();
-
+            List<Subject> subject = _subjectRepository.PaginationSubject(page, limit, txtSearch);
 
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
             foreach (var subjectRespones in subjectResponse)
@@ -83,21 +64,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Page = page,
                 Limit = limit,
-                TotalElements = totalElements,
+                TotalElements = _subjectRepository.GetTotalSubject(txtSearch),
                 Data = subjectResponse
             };
-
+            
             return Ok(paginationResponse);
         }
 
         // GET: api/Subjects/5
         [HttpGet("GetSubjectById/{id}")]
-        public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
+        public async Task<ActionResult<SubjectResponse>> GetSubjectById(int id)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
             var subject = _subjectRepository.GetSubjectById(id);
 
             if (subject == null)
@@ -249,32 +226,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private bool CheckIdExistInSyllabus(int id)
         {
-            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
-            return true;
+            return _subjectRepository.CheckIdExistInSyllabus(id);
         }
 
         [NonAction]
         public bool CheckIdExist(int id)
         {
-            if (_context.Subject.FirstOrDefault(x => x.subject_id == id) == null) return false;
-            return true;
+            return _subjectRepository.CheckIdExist(id);
+
         }
 
         [NonAction]
         public bool CheckCodeExist(string code)
         {
-            var subject = _context.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
-            var subject2 = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.Subject.subject_code.Equals(code));
-            if (subject == null && subject2 == null) return false;
-            return true;
+            return _subjectRepository.CheckCodeExist(code);
+
         }
 
         [NonAction]
         public bool CheckSubjectExist(int subject_id)
         {
-            var subject = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.subject_id == subject_id);
-            if (subject == null ) return false;
-            return true;
+            return _subjectRepository.CheckSubjectExist(subject_id);
         }
     }
 }

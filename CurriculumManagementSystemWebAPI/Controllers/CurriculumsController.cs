@@ -43,9 +43,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class CurriculumsController : ControllerBase
     {
-        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        private Microsoft.Extensions.Configuration.IConfiguration config;
+        public static string API_PORT;
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
         public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
         public static string API_PLO = "/api/PLOs";
@@ -62,11 +62,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CurriculumsController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public CurriculumsController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             client = new HttpClient();
-
+            config = configuration;
+            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
@@ -922,23 +923,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         private bool CurriculumExists(int id)
         {
-            return (_context.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
+            return _curriculumRepository.CurriculumExists(id);
         }
 
         private bool CheckCurriculumExists(string code)
         {
-            return (_context.Curriculum?.Any(e => e.curriculum_code.Equals(code))).GetValueOrDefault();
+            return _curriculumRepository.CheckCurriculumExists(code);
         }
 
         private bool CheckCurriculumCanDelete(int id)
         {
-            var haveSubject = _context.CurriculumSubject?.FirstOrDefault(e => e.curriculum_id == id);
-            var haveBatch = _context.CurriculumBatch?.FirstOrDefault(e => e.curriculum_id == id);
-            if (haveSubject == null && haveBatch == null)
-            {
-                return false;
-            }
-            return true;
+            return _curriculumRepository.CheckCurriculumCanDelete(id);
         }
 
 

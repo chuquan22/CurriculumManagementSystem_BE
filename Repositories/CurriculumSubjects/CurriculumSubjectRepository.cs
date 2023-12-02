@@ -16,6 +16,11 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.CreateCurriculumSubject(curriculumSubject);
         }
 
+        public bool CurriculumSubjectExist(int curriId, int subId)
+        {
+            return curriculumDAO.CurriculumSubjectExist(curriId, subId);
+        }
+
         public string DeleteCurriculumSubject(CurriculumSubject curriculumSubject)
         {
             return curriculumDAO.DeleteCurriculumSubject(curriculumSubject);

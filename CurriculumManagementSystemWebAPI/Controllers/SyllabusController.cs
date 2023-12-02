@@ -33,7 +33,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        private Microsoft.Extensions.Configuration.IConfiguration config;
+
+        public static string API_PORT;
         public static string API_SYLLABUS = "/api/Syllabus";    
         public static string API_MATERIALS = "/api/Materials";
         public static string API_GRADING_STRUTURE = "/api/GradingStruture";
@@ -52,11 +54,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ILearningResourceRepository learningResourceRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private static int syllaId = 0;
-        public SyllabusController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public SyllabusController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             syllabusRepository = new SyllabusRepository();
             subjectRepository = new SubjectRepository();
+            config = configuration;
             assessmentTypeRepository = new AssessmentTypeRepository();
             cloRepository = new CLORepository();
             assessmentMethodRepository = new AssessmentMethodRepository();
@@ -67,7 +70,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             degreeLevelRepository = new DegreeLevelRepository();
             learningResourceRepository = new LearningResourceRepository();
             client = new HttpClient();
-
+            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
@@ -892,7 +895,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("SetApproved")]
-        public ActionResult SetApproved(int id)
+        public ActionResult SetApprovedSyllbus(int id)
         {
             try
             {

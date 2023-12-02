@@ -36,10 +36,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PreRequisiteTypeResponse>>> GetPreRequisiteType()
         {
-            if (_context.PreRequisiteType == null)
-            {
-                return NotFound();
-            }
+           
             var preRequisite = _preRequisiteType.GetAllPreRequisiteTypes();
             if (preRequisite == null)
             {
@@ -65,10 +62,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PreRequisiteTypeResponse>> GetPreRequisiteType(int id)
         {
-            if (_context.PreRequisiteType == null)
-            {
-                return NotFound();
-            }
+          
             var preRequisiteType = _preRequisiteType.GetPreRequisiteType(id);
 
             if (preRequisiteType == null)
@@ -156,7 +150,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private bool PreRequisiteTypeExists(int id)
         {
-            return (_context.PreRequisiteType?.Any(e => e.pre_requisite_type_id == id)).GetValueOrDefault();
+            return _preRequisiteType.PreRequisiteTypeExist(id);
         }
     }
 }

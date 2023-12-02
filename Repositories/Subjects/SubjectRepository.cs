@@ -14,6 +14,27 @@ namespace Repositories.Subjects
     {
         public readonly SubjectDAO subjectDAO = new SubjectDAO();
 
+        public bool CheckCodeExist(string code)
+        {
+            return subjectDAO.CheckCodeExist(code);
+        }
+
+        public bool CheckIdExist(int id)
+        {
+            return subjectDAO.CheckIdExist(id);
+
+        }
+
+        public bool CheckIdExistInSyllabus(int id)
+        {
+            return subjectDAO.CheckIdExistInSyllabus(id);
+        }
+
+        public bool CheckSubjectExist(int subject_id)
+        {
+            return subjectDAO.CheckSubjectExist(subject_id);
+        }
+
         public string CreateNewSubject(Subject subject) => subjectDAO.CreateSubject(subject);
        
 
@@ -50,9 +71,19 @@ namespace Repositories.Subjects
         
 
         public Subject GetSubjectBySyllabus(int syllabus_id) => subjectDAO.GetSubjectBySyllabus(syllabus_id);
-        
+
+        public List<Subject> PaginationSubject(int page, int limit, string? txtSearch)
+        {
+            return subjectDAO.PaginationSubject(page, limit, txtSearch);
+        }
 
         public string UpdateSubject(Subject subject) => subjectDAO.UpdateSubject(subject);
-       
+
+        public int GetTotalSubject(string? txtSearch)
+        {
+            return subjectDAO.GetTotalSubject(txtSearch);
+        }
+
+
     }
 }
