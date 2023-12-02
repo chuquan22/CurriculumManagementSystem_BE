@@ -33,7 +33,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        private Microsoft.Extensions.Configuration.IConfiguration config;
+
+        public static string API_PORT;
         public static string API_SYLLABUS = "/api/Syllabus";    
         public static string API_MATERIALS = "/api/Materials";
         public static string API_GRADING_STRUTURE = "/api/GradingStruture";
@@ -52,11 +54,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ILearningResourceRepository learningResourceRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private static int syllaId = 0;
-        public SyllabusController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public SyllabusController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             syllabusRepository = new SyllabusRepository();
             subjectRepository = new SubjectRepository();
+            config = configuration;
             assessmentTypeRepository = new AssessmentTypeRepository();
             cloRepository = new CLORepository();
             assessmentMethodRepository = new AssessmentMethodRepository();
@@ -67,13 +70,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             degreeLevelRepository = new DegreeLevelRepository();
             learningResourceRepository = new LearningResourceRepository();
             client = new HttpClient();
-
+            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+        public async Task<ActionResult<IEnumerable<SyllabusResponse>>> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
@@ -81,7 +84,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 int limit2 = syllabusRepository.GetTotalSyllabus(txtSearch, subjectCode);
                 List<Syllabus> list = syllabusRepository.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
+                return Ok(new BaseResponse(false, "Get List Syllabus Sucessfully!", new BaseListResponse(page, limit2, result)));
             }
             catch (Exception ex)
             {
@@ -90,7 +93,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateSyllabus(SyllabusRequest request)
+        public async Task<IActionResult> CreateSyllabus(SyllabusRequest request)
         {
 
             try
@@ -105,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs.scoring_scale = 10;
                 }
                 var result = syllabusRepository.CreateSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucess", rs));
+                return Ok(new BaseResponse(false, "Create Syllabus Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -122,7 +125,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
-                return Ok(new BaseResponse(true, "False", result));
+                return Ok(new BaseResponse(false, "Get Syllabus Details Successfully!", result));
 
             }
             catch (Exception ex)
@@ -892,7 +895,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("SetApproved")]
-        public ActionResult SetApproved(int id)
+        public ActionResult SetApprovedSyllbus(int id)
         {
             try
             {

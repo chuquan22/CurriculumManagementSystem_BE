@@ -23,16 +23,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
 
-        public CurriculumSubjectsController(CMSDbContext context, IMapper mapper)
+        public CurriculumSubjectsController(IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -110,8 +108,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     curriSubjectResponse.total_all_time = curriSubjectResponse.list.Sum(x => x.total_time);
                 }
             }
-            
-            // Sort by combo and option curriculumSubjectResponse
             foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
                 curriSubjectResponse.list = curriSubjectResponse.list
@@ -195,7 +191,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         private bool CurriculumSubjectExists(int curriId, int subId)
         {
-            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id == subId)).GetValueOrDefault();
+            return _curriculumSubjectRepository.CurriculumSubjectExist(curriId, subId);
         }
 
 

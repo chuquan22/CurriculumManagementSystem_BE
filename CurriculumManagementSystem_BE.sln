@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{6D20D9C7-8AA0-4132-97A0-2D4C31A9A72C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS_UnitTests", "CMS_UnitTests\CMS_UnitTests.csproj", "{C1C31B5C-2C11-4BAD-83CA-CC686A99E218}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6D20D9C7-8AA0-4132-97A0-2D4C31A9A72C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D20D9C7-8AA0-4132-97A0-2D4C31A9A72C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D20D9C7-8AA0-4132-97A0-2D4C31A9A72C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1C31B5C-2C11-4BAD-83CA-CC686A99E218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1C31B5C-2C11-4BAD-83CA-CC686A99E218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1C31B5C-2C11-4BAD-83CA-CC686A99E218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1C31B5C-2C11-4BAD-83CA-CC686A99E218}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

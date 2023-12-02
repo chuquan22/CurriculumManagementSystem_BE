@@ -29,25 +29,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class QuizsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly CMSDbContext cMSDbContext = new CMSDbContext();
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
         private IMajorRepository _majorRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
-
+        private Microsoft.Extensions.Configuration.IConfiguration config;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        public static string API_PORT;
         public static string API_Quiz = "/api/Quizs/CreateQuiz";
         public static string API_Question = "/api/Quizs/CreateQuestion";
 
-        public QuizsController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public QuizsController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             _quizRepository = new QuizRepository();
             _questionRepository = new QuestionRepository();
             _majorRepository = new MajorRepository();
             client = new HttpClient();
-
+            config = configuration;
+            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;

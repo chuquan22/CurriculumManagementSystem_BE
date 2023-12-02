@@ -19,5 +19,6 @@ namespace Repositories.CurriculumSubjects
         string CreateCurriculumSubject(CurriculumSubject curriculumSubject);
         string UpdateCurriculumSubject(CurriculumSubject curriculumSubject);
         string DeleteCurriculumSubject(CurriculumSubject curriculumSubject);
+        bool CurriculumSubjectExist(int curriId, int subId);
     }
 }

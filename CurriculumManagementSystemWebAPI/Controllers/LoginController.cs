@@ -23,7 +23,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private IConfiguration config;
         private IUsersRepository repo;
         private readonly IMapper _mapper;
-        private string accessToken = null;
         public LoginController(IConfiguration configuration, IMapper mapper)
         {
             config = configuration;
