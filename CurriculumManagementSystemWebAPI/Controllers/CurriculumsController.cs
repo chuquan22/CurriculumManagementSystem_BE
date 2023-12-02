@@ -38,7 +38,7 @@ using System.Globalization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class CurriculumsController : ControllerBase
@@ -772,7 +772,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                     }
 
-                    var listOption = row.Select(x => x.option).Distinct().ToList();
+                    var listOption = row.Where(x => x.option != null).Select(x => x.option).Distinct().ToList();
                     foreach (var option in listOption)
                     {
                         int count = row.Where(x => x.option == option).Count();
