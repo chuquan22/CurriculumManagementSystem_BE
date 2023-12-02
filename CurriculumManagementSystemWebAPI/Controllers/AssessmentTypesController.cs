@@ -23,7 +23,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             assessmentTyoeRepository = new AssessmentTypeRepository();
         }
-
+        [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetAllAssessmentType")]
         public ActionResult GetAllAssessmentType()
         {
@@ -44,7 +44,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listAssessmentTypeResponse = _mapper.Map<List<AssessmentTypeResponse>>(listAssessmentType);
             return Ok(new BaseResponse(false, "List Assessment Method", new BaseListResponse(page, limit, total, listAssessmentTypeResponse)));
         }
-
+        [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetAssessmentTypeById/{id}")]
         public ActionResult GetAssessmentType(int id)
         {

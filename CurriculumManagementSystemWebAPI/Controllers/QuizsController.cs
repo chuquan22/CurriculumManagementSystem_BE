@@ -4,11 +4,9 @@ using DataAccess.Models.DTO.Excel;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
 using MiniExcelLibs.OpenXml;
-using Repositories.CLOS;
 using Repositories.Major;
 using Repositories.Questions;
 using Repositories.Quizs;
@@ -16,23 +14,16 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 using SuperXML;
-using System.Numerics;
 using DataAccess.Models.DTO.XML;
-using System.Linq;
 using System.IO.Compression;
-using NuGet.Packaging;
-using Microsoft.AspNetCore.Routing.Template;
-using System.IO;
 using OfficeOpenXml;
-using System.Data;
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Manager, Dispatcher")]
     [Route("api/[controller]")]
     [ApiController]
     public class QuizsController : ControllerBase
@@ -508,10 +499,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 FileInfo excelFile = new FileInfo("QuizExported.xlsx");
                 excelPackage.SaveAs(excelFile);
             }
+            Subject subject = new Subject();
+
+            try
+            {
+                subject = listQuiz[0].Subject;
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
 
             byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
             //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
-            return Ok(new BaseResponse(false, "Successfully!", fileContents));
+            return Ok(new BaseResponse(false, subject.subject_code + " - " + subject.english_subject_name, fileContents));
         }
 
         private int ExtractNumber(string input)

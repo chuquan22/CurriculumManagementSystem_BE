@@ -14,13 +14,12 @@ using static Google.Apis.Requests.BatchRequest;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SemesterPlanController : ControllerBase
     {
         private readonly IMapper _mapper;
         private ISemesterPlanRepository _repo;
-        private CMSDbContext _context = new CMSDbContext();
         public SemesterPlanController(IMapper mapper)
         {
             _mapper = mapper;

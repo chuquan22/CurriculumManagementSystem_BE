@@ -118,10 +118,6 @@ namespace DataAccess.DAO
             {
                 totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 8;
             }
-            else
-            {
-
-            }
             return totalSemester;
         }
         public Curriculum GetCurriculumById(int id)

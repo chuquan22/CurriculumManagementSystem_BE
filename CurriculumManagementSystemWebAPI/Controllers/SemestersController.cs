@@ -25,7 +25,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             semesterRepository = new SemestersRepository();
             batchRepository = new BatchRepository();
         }
-
+        [Authorize(Roles = "Manager, Dispatcher")]
         [HttpGet("GetAllSemester")]
         public ActionResult GetAllSemester()
         {
@@ -33,7 +33,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
             return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
         }
-
+        [Authorize(Roles = "Manager, Dispatcher")]
         [HttpGet("GetAllSemesterByMajorId/{major_id}")]
         public ActionResult GetAllSemesterByMajorId(int major_id)
         {
@@ -54,7 +54,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
             return Ok(new BaseResponse(false, "List Semester", new BaseListResponse(page, limit, total, listSemesterResponse)));
         }
-
+        [Authorize(Roles = "Manager, Dispatcher")]
         [HttpGet("GetSemesterById/{Id}")]
         public ActionResult GetSemester(int Id)
         {
@@ -66,6 +66,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var semesterResponse = _mapper.Map<SemesterResponse>(semester);
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
+        [Authorize(Roles = "Manager, Dispatcher")]
         [HttpGet("GetSemesterByDegreeLevel/{Id}")]
         public ActionResult GetSemesterByDegreeLevel(int Id)
         {
@@ -77,7 +78,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var semesterResponse = _mapper.Map<List<SemesterResponse>>(semester);
             return Ok(new BaseResponse(false, "Semester", semesterResponse));
         }
-
+        [Authorize(Roles = "Manager, Dispatcher")]
         [HttpGet("GetSemesterBySpeId/{speId}")]
         public ActionResult GetSemesterBy(int speId)
         {
