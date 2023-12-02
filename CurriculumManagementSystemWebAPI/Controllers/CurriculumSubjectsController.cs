@@ -170,7 +170,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
-            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, (int)curriculumSubject.option);
+            var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_id ,(int)curriculumSubject.option);
 
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
             if (curriculumSubject2 != null)

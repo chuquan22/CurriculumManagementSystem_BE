@@ -36,9 +36,9 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.GetCurriculumSubjectByTermNo(term_no);
         }
 
-        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, int subjectId)
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, int subject_id, int option)
         {
-            return curriculumDAO.GetCurriculumSubjectByTermNoAndSubjectGroup(term_no, subjectId);
+            return curriculumDAO.GetCurriculumSubjectByTermNoAndSubjectGroup(term_no, subject_id,option);
         }
 
         public List<CurriculumSubject> GetListCurriculumBySubject(int subjectId)
