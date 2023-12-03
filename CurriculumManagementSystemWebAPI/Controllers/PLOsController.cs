@@ -20,13 +20,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class PLOsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
+        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly IMapper _mapper;
         private readonly IPLOsRepository _plosRepository = new PLOsRepository();
 
-        public PLOsController(CMSDbContext context, IMapper mapper)
+        public PLOsController( IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 

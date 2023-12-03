@@ -25,15 +25,12 @@ namespace CMS_UnitTests.Controllers
     public class CurriculumSubjectControllerTest
     {
         private Mock<ICurriculumSubjectRepository> _curriculumSubjectRepository;
-        private Mock<ICurriculumRepository> _curriculumRepository;
-        private Mock<IComboRepository> _comboRepository;
         private IMapper _mapper;
         private CurriculumSubjectsController _controller;
         [SetUp]
         public void Setup()
         {
             _curriculumSubjectRepository = new Mock<ICurriculumSubjectRepository>();
-            _curriculumRepository = new Mock<ICurriculumRepository>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
             _mapper = config.CreateMapper();
             _controller = new CurriculumSubjectsController(_mapper);
