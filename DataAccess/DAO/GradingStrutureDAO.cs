@@ -48,7 +48,12 @@ namespace DataAccess.DAO
 
         public GradingStruture CreateGradingStruture(GradingStruture gra)
         {
-            if(gra.session_no == null)
+            if (gra.references == null || gra.references.Equals(""))
+            {
+                _cmsDbContext.GradingStruture.Add(gra);
+                _cmsDbContext.SaveChanges();
+            }
+            else if ((!gra.references.Equals("") || gra.references != null) && (gra.session_no == null || gra.session_no.Equals("")))
             {
                 _cmsDbContext.GradingStruture.Add(gra);
                 _cmsDbContext.SaveChanges();
@@ -70,7 +75,7 @@ namespace DataAccess.DAO
                     throw new Exception("False at creating grading struture! Wrong weight!");
                 }
             }
-            return null;
+            return gra;
 
         }
         public GradingStruture CreateGradingStrutureAPI(GradingStruture gra)
