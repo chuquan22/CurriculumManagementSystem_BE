@@ -730,9 +730,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             return error + "Must be fill all data in sheet Curriculum Subject";
                         }
-                        if (item.subject_code != null && item.subject_code != "")
+                        if (item.subject_code.Trim() != null && item.subject_code.Trim() != "")
                         {
-                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code);
+                            var subject = _subjectRepository.GetSubjectByCode(item.subject_code.Trim());
                             if (subject == null)
                             {
                                 return error + $"Subject {item.subject_code} Not Found. Please Create Subject";
@@ -742,7 +742,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         string combo_code = item.combo_code;
                         if (combo_code != null && combo_code != "")
                         {
-                            var combo = _comboRepository.FindComboByCode(item.combo_code);
+                            var combo = _comboRepository.FindComboByCode(item.combo_code.Trim());
                             if (combo == null)
                             {
                                 return error + $"Combo {item.combo_code} Not Found. Please Create Combo";
@@ -759,7 +759,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         }
                     }
 
-                    var listOption = row.Where(x => x.option != null).Select(x => x.option).Distinct().ToList();
+                    var listOption = row.Where(x => x.option.Trim() != null && x.option.Trim() != "").Select(x => x.option).Distinct().ToList();
                     foreach (var option in listOption)
                     {
                         int count = row.Where(x => x.option == option).Count();
@@ -807,7 +807,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     }
 
                                 }
-                                if (!found_subject && !subjectCode.Text.Contains(" "))
+                                if (!found_subject && !subjectCode.Text.Trim().Contains(" "))
                                 {
                                     return error + $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
                                 }
