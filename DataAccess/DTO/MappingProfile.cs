@@ -26,7 +26,7 @@ namespace DataAccess.Models.DTO
                .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.english_subject_name))
                .ReverseMap();
 
-            CreateMap<Subject, SubjectRequest>()
+            CreateMap<SubjectRequest, Subject>()
                 .ForMember(dest => dest.subject_code, opt => opt.MapFrom(src => src.subject_code.Trim().ToUpper()))
                 .ForMember(dest => dest.subject_name, opt => opt.MapFrom(src => src.subject_name.Trim()))
                 .ForMember(dest => dest.english_subject_name, opt => opt.MapFrom(src => src.english_subject_name.Trim()))

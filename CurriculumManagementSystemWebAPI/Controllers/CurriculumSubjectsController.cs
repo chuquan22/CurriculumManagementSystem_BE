@@ -19,7 +19,7 @@ using Repositories.Subjects;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
@@ -137,15 +137,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculumSubject")]
         public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
         {
-            if(curriculumSubjectRequest.Count == 2 && curriculumSubjectRequest.First(x => x.subject_group.Equals("Elective subjects")) != null)
+            if (curriculumSubjectRequest.Count == 2 && curriculumSubjectRequest.First(x => x.subject_group.Equals("Elective subjects")) != null)
             {
-                var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumSubjectRequest.First().curriculum_id).Where(x => x.term_no == curriculumSubjectRequest.First().term_no);
-                int maxOption = curriculumSubject.Count() == 0 ? 0 : (int)curriculumSubject.Max(x => x.option);
+                var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumSubjectRequest.First().curriculum_id).Where(x => x.term_no == curriculumSubjectRequest.First().term_no && x.option != null);
+
+                int maxOption = curriculumSubject.OrderByDescending(x => x.option).FirstOrDefault()?.option ?? 0;
+
                 foreach (var item in curriculumSubjectRequest)
                 {
                     item.option = maxOption + 1;
                 }
             }
+
 
             foreach (var subject in curriculumSubjectRequest)
             {

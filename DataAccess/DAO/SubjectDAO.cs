@@ -228,7 +228,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.ToUpper().Equals(code.ToUpper()));
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.ToUpper().Trim().Equals(code.ToUpper().Trim()));
                 return subject;
             }
             catch (Exception ex)
