@@ -38,7 +38,7 @@ using System.Globalization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-   // [Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class CurriculumsController : ControllerBase
@@ -407,7 +407,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         curriculumSubject.combo_id = combo.combo_id;
                                     }
                                     
-                                    curriculumSubject.option = item.option == null ? null : int.Parse(item.option);
+                                    curriculumSubject.option = item.option.Trim() == "" || item.option.Trim() == null ? null : int.Parse(item.option);
 
                                     listCurriSubject.Add(curriculumSubject);
                                 }
