@@ -10,7 +10,7 @@ using Repositories.Materials;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+  //  [Authorize(Roles = "Manager, Dispatcher")]
 
     [ApiController]
     public class MaterialsController : ControllerBase
@@ -24,14 +24,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             repo = new MaterialRepository();
         }
         [HttpGet]
-        public ActionResult GetMaterial(int syllabus_id)
+        public ActionResult<List<MaterialsResponse>> GetMaterial(int syllabus_id)
         {
             List<Material> rs = new List<Material>();
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
                 var result = _mapper.Map<List<MaterialsResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Material rs = _mapper.Map<Material>(material);
 
                 rs = repo.CreateMaterial(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -63,46 +63,64 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
+                Material rs = repo.GetMaterialById(material.material_id);
+                if (rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found The Material!", null));
+                }
 
-                Material rs = _mapper.Map<Material>(material);
+                rs = _mapper.Map<Material>(material);
                 rs = repo.EditMaterial(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
-
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
+
         [HttpDelete]
         public ActionResult DeleteMaterial(int id)
         {
-            Material rs = new Material();
             try
             {
+                Material rs = repo.GetMaterialById(id);
+                if (rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found The Material!", null));
+                }
+
                 rs = repo.DeleteMaterial(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
-        [HttpGet("id")]
+
+        [HttpGet("{id}")]
         public ActionResult GetMaterialById(int id)
         {
-            Material rs = new Material();
             try
             {
-                rs = repo.GetMaterialById(id);
+                Material rs = repo.GetMaterialById(id);
+                if (rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found The Material!", null));
+                }
+
                 var result = _mapper.Map<MaterialsResponse>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-
         }
+
     }
 }

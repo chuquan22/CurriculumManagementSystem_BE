@@ -29,7 +29,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             classSessionTypeRepository = new ClassSessionTypeRepository();
         }
         [HttpGet("{syllabus_id}")]
-        public ActionResult GetSession(int syllabus_id)
+        public ActionResult<List<SessionResponse>> GetSession(int syllabus_id)
         {
             List<Session> rs = new List<Session>();
             try
@@ -41,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var class_session_type = classSessionTypeRepository.GetClassSessionType(rs2.class_session_type_id);
                     rs2.class_session_type_name = class_session_type.class_session_type_name;
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
 
             }
             catch (Exception ex)

@@ -14,26 +14,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class SpecializationController : ControllerBase
     {
-        private IConfiguration config;
         private readonly IMapper _mapper;
         private readonly ISpecializationRepository specializationRepository;
 
-        public SpecializationController(IConfiguration configuration, IMapper mapper)
+        public SpecializationController(IMapper mapper)
         {
-            config = configuration;
             _mapper = mapper;
             specializationRepository = new SpecializationRepository();
         }
         
         [HttpGet]
-        public ActionResult GetListAllSpecialization()
+        public ActionResult<List<SpecializationResponse>> GetListAllSpecialization()
         {
             List<Specialization> rs = new List<Specialization>();
             try
             {
                 rs = specializationRepository.GetSpecialization();
                 var speResponse = _mapper.Map<List<SpecializationResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", speResponse));
+                return Ok(new BaseResponse(false, "Successfully!", speResponse));
             }
             catch (Exception ex)
             {
@@ -43,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
         [HttpGet("GetListPagging")]
-        public ActionResult GetListSpecialization(int page, int limit, string? txtSearch,string? major_id)
+        public ActionResult<List<SpecializationResponse>> GetListSpecialization(int page, int limit, string? txtSearch,string? major_id)
         {
             List<Specialization> rs = new List<Specialization>();
             try
@@ -51,7 +49,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 int limit2 = specializationRepository.GetTotalSpecialization(txtSearch, major_id);
                 rs = specializationRepository.GetListSpecialization(page,limit,txtSearch,major_id);
                 var result = _mapper.Map<List<Specialization>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully!", new BaseListResponse(page,limit2,rs)));
+                return Ok(new BaseResponse(false, "Successfully!", new BaseListResponse(page,limit2,rs)));
             }
             catch (Exception ex)
             {
@@ -65,10 +63,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             Specialization rs = new Specialization();
             try
-            {
-                
+            {              
                 rs = specializationRepository.GetSpeById(id);
-                return Ok(new BaseResponse(false, "Sucessfully!", rs));
+                if(rs == null)
+                {
+                    return NotFound(new BaseResponse(true,"Not Found This Specialization!",null));
+                }
+                return Ok(new BaseResponse(false, "Successfully!!", rs));
             }
             catch (Exception ex)
             {
@@ -87,11 +88,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 if (checkCodeExist != true)
                 {
                     rs = specializationRepository.CreateSpecialization(rs);
-                    return Ok(new BaseResponse(false, "Create specialization successfully!", rs));
+                    return Ok(new BaseResponse(false, "Successfully!", rs));
                 }
                 else
                 {
-                    return BadRequest(new BaseResponse(false, "Specialization code already exist in system!", rs));
+                    return BadRequest(new BaseResponse(true, "Specialization code already exists in the system!", spe.specialization_code));
 
                 }
             }
@@ -109,7 +110,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Specialization rs = _mapper.Map<Specialization>(spe);            
                 rs = specializationRepository.UpdateSpecialization(rs);
-                return Ok(new BaseResponse(false, "Sucessfully!", rs));                        
+                return Ok(new BaseResponse(false, "Successfully!", rs));                        
             }
             catch (Exception ex)
             {
@@ -131,7 +132,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     return BadRequest(new BaseResponse(true, "Specialization used in the system, can’t delete specialization"));
                 }
-                return Ok(new BaseResponse(false, "Sucessfully!", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
 
             }
             catch (Exception)

@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using BusinessObject;
 using DataAccess.Models.DTO.Excel;
-
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
 using Repositories.AssessmentMethods;
@@ -27,7 +25,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {

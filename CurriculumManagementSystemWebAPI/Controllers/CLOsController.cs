@@ -10,7 +10,7 @@ using Repositories.CLOS;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CLOsController : ControllerBase
     {
@@ -23,13 +23,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             cloRepository = new CLORepository();
         }
         [HttpGet("{syllabus_id}")]
-        public ActionResult GetCLOs(int syllabus_id)
+        public ActionResult<List<CLO>> GetCLOs(int syllabus_id)
         {
             List<CLO> rs = new List<CLO>();
             try
             {
                 rs = cloRepository.GetCLOs(syllabus_id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception)
             {
@@ -39,21 +39,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCLOs(CLOsRequest clo)
+        public ActionResult<CLO> CreateCLOs(CLOsRequest clo)
         {
 
             try
             {
                 CLO rs = _mapper.Map<CLO>(clo);
                 rs = cloRepository.CreateCLOs(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     
 
@@ -63,16 +62,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
            
             try
             {
+                var check = cloRepository.GetCLOsById(clo.CLO_id);
+                if (check == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found This CLOs!", null));
+                }
                 CLO rs = _mapper.Map<CLO>(clo);
                 rs = cloRepository.UpdateCLOs(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpDelete("{id}")]
@@ -81,15 +84,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             CLO rs = new CLO();
             try
             {
+                rs = cloRepository.GetCLOsById(id);
+                if(rs == null)
+                {
+                    return NotFound(new BaseResponse(true,"Not Found This CLOs!", null));
+                }
                 rs = cloRepository.DeleteCLOs(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
 
                 return BadRequest(new BaseResponse(true, ex.Message, null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         [HttpGet("GetCLOsById/{id}")]
@@ -99,14 +106,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = cloRepository.GetCLOsById(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                if (rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found This CLOs!", null));
+                }
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception)
             {
 
                 return BadRequest(new BaseResponse(true, "error", null));
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

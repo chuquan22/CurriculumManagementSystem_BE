@@ -1,6 +1,4 @@
-﻿
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

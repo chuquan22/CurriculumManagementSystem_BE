@@ -4,7 +4,6 @@ using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Batchs;
@@ -25,6 +24,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             batchRepository = new BatchRepository();
         }
+
         [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetAllBatch")]
         public ActionResult GetAllBatch()
@@ -32,6 +32,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listBatch = batchRepository.GetAllBatch();
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
+
         [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetBatchNotExsitInSemester")]
         public ActionResult GetBatchNotExsitInSemester()
@@ -40,6 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listBatchResponse = _mapper.Map<List<CurriculumBatchDTOResponse>>(listBatch);
             return Ok(new BaseResponse(false, "List Batch", listBatchResponse));
         }
+
         [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetBatchBySpe/{speId}")]
         public ActionResult GetBatch(int speId)
@@ -47,6 +49,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listBatch = batchRepository.GetBatchBySpe(speId);
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
+
         [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetBatchByDegreeLevel/{degree_level_Id}")]
         public ActionResult GetBatchByDegreeLevel(int degree_level_Id)
@@ -54,6 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var listBatch = batchRepository.GetBatchByDegreeLevel(degree_level_Id);
             return Ok(new BaseResponse(false, "List Batch", listBatch));
         }
+
         [Authorize(Roles = "Dispatcher, Manager")]
         [HttpGet("GetBatchById/{Id}")]
         public ActionResult GetBatchById(int Id)
