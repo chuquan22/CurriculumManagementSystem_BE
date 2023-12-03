@@ -58,6 +58,11 @@ namespace DataAccess.DAO
                 _cmsDbContext.GradingStruture.Add(gra);
                 _cmsDbContext.SaveChanges();
             }
+            else if ((gra.references.Equals("") || gra.references == null) && (gra.session_no != null || !gra.session_no.Equals("")))
+            {
+                _cmsDbContext.GradingStruture.Add(gra);
+                _cmsDbContext.SaveChanges();
+            }
             else
             {
 
