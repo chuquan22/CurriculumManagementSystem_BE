@@ -138,7 +138,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     await file.CopyToAsync(stream);
                     int syllabusId = 0;
-
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
                     List<object> rs = new List<object>();
@@ -147,22 +146,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     GradingStrutureCreateRequest gradingStrutureCreate;
                     List<int> cloId = new List<int>();
 
-                    // Parallel processing for improved performance
-                    Parallel.ForEach(sheetNames, (sheetName, state, index) =>
+                    for (int i = 0; i < sheetNames.Count; i++)
                     {
                         gradingStrutureCreate = new GradingStrutureCreateRequest();
-
-                        if (index == 0)
+                        if (i == 0)
                         {
-                            var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetName, excelType: ExcelType.XLSX);
+                            var row = MiniExcel.Query<SyllabusExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             syllabusExcel = GetSyllabusExel(row);
                             var value = new
                             {
                                 Syllabus = syllabusExcel,
                             };
-
                             try
                             {
+                               // syllabusId = await CreateSyllabusAPI(syllabusExcel);
                                 SyllabusRequest listSyllabus = _mapper.Map<SyllabusRequest>(syllabusExcel);
                                 var rsSyllabus = CreateSyllabus(listSyllabus);
                                 var okRsSyllabus = rsSyllabus.Result as OkObjectResult;
@@ -170,18 +167,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 var rsSyllabusResponse = baseResponseRsSyllabus.data as Syllabus;
                                 syllaId = rsSyllabusResponse.syllabus_id;
                                 syllabusId = syllaId;
+
                             }
                             catch (Exception)
                             {
-                                state.Break(); // Break out of the parallel loop on exception
-                                return;
-                            }
 
+                                return BadRequest("Import false at sheet Syllabus!");
+                            }
                             rs.Add(value);
                         }
-                        else if (index == 1)
+                        else if (i == 1)
                         {
-                            var row = MiniExcel.Query<MaterialExcel>(filePath, sheetName: sheetName, excelType: ExcelType.XLSX);
+                            var row = MiniExcel.Query<MaterialExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             var materialExcel = GetMaterialExcel(row, syllabusExcel);
                             var value = new
                             {
@@ -190,45 +187,48 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                             try
                             {
-                                Parallel.ForEach(materialExcel, (item) =>
+                                foreach (var item in materialExcel)
                                 {
                                     if (item.material_type != null)
                                     {
                                         item.syllabus_id = syllabusId;
                                         MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
+                                       // await CreateMaterialsAPI(addRs);
                                         materialsController.CreateMaterial(addRs);
                                     }
-                                });
+
+                                }
                             }
                             catch (Exception)
                             {
                                 materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
                                 syllabusRepository.DeleteSyllabus(syllabusId);
-                                state.Break(); // Break out of the parallel loop on exception
-                                return;
-                            }
+                                return BadRequest("Import false at sheet Materials.");
 
+                            }                         
                             rs.Add(value);
+
                         }
-                        else if (index == 2)
+                        else if (i == 2)
                         {
-                            var row = MiniExcel.Query<CLOsExcel>(filePath, sheetName: sheetName, excelType: ExcelType.XLSX);
+                            var row = MiniExcel.Query<CLOsExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
                             listClo = GetClosExcel(row);
                             var value = new
                             {
                                 CLOs = listClo,
                             };
-
                             try
                             {
-                                Parallel.ForEach(listClo, (item) =>
+                                foreach (var item in listClo)
                                 {
                                     CLOsRequest addRs = _mapper.Map<CLOsRequest>(item);
                                     if (item.CLO_name != null)
                                     {
+
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
 
+                                       // idClo = await CreateCLOsAPI(addRs);
                                         var rsClo = cLOsController.CreateCLOs(addRs);
                                         var okRsClo = rsClo.Result as OkObjectResult;
                                         var baseResponseRsClo = okRsClo.Value as BaseResponse;
@@ -237,39 +237,169 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                         if (idClo == 0)
                                         {
-                                            state.Break(); // Break out of the parallel loop on exception
-                                            return;
+                                            throw new Exception("Import false at sheet CLOs.");
                                         }
                                         cloId.Add(idClo);
                                     }
-                                });
+                                }
                             }
                             catch (Exception)
                             {
                                 cloRepository.DeleteCLOsBySyllabusId(syllabusId);
                                 materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
                                 syllabusRepository.DeleteSyllabus(syllabusId);
-                                state.Break(); // Break out of the parallel loop on exception
-                                return;
+                                throw new Exception("Import false at sheet CLOs");
                             }
-
+                            
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
                         }
-                        // Add similar parallel processing for other sheets...
-                    });
+                        else if (i == 3)
+                        {
+                            var row = MiniExcel.Query<ScheduleExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                            var scheduleExcel = GetScheduleExcel(row, syllabusExcel);
+                            var value = new
+                            {
+                                GradingStruture = row,
+                            };
+                            foreach (var item in scheduleExcel)
+                            {
+                                SessionCreateRequest dataSession = new SessionCreateRequest();
+                                dataSession.session = _mapper.Map<SessionRequest>(item);
+
+                                // Initialize the session_clo list
+                                dataSession.session_clo = new List<SessionCLOsRequest>();
+
+
+
+                                List<int> lst = new List<int>();
+                                foreach (var it in cloId)
+                                {
+                                  
+                                        string name = "null";
+                                        if (cloRepository.GetCLOsById(it) != null)
+                                        {
+                                            name = cloRepository.GetCLOsById(it).CLO_name;
+                                            if (item.CLO_name.ToLower().Trim().Contains(name.ToLower().Trim()))
+                                            {
+                                                lst.Add(it);
+                                            }
+                                        }
+
+                                        if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
+                                        {
+                                            lst = new List<int>();
+                                            lst.AddRange(cloId);
+                                        }                                                                 
+                                }
+                                foreach (var idClo in lst)
+                                {
+                                    dataSession.session_clo.Add(new SessionCLOsRequest { CLO_id = idClo });
+                                }
+                                dataSession.session.syllabus_id = syllabusId;
+                                try
+                                {
+                                   // await CreateSchudeleAPI(dataSession);
+                                    sessionController.CreateSession(dataSession);
+                                }
+                                catch (Exception ex)
+                                {
+                                    sessionRepository.DeleteSessionBySyllabusId(syllabusId);
+                                    cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                                    materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                    syllabusRepository.DeleteSyllabus(syllabusId);
+
+                                    return BadRequest("Import false at sheet Schedule.");
+                                }
+                            }
+
+                            rs.Add(value);
+                        }
+                        else if (i == 4)
+                        {
+                            var row = MiniExcel.Query<GradingStrutureExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                            List<GradingStruture> gradingStrutureExcel = GetGradingStrutureExcel(row, syllabusExcel);
+                            gradingStrutureCreate.gradingStruture = new GradingStrutureRequest();
+                            var list = _mapper.Map<List<GradingStrutureRequest>>(gradingStrutureExcel);
+                            decimal? weightAll = 0;
+                            try
+                            {
+
+
+                                foreach (var gra in list)
+                                {
+                                    gradingStrutureCreate.gradingStruture = gra;
+                                    gradingStrutureCreate.gradingStruture.syllabus_id = syllabusId;
+                                    gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
+                                    List<int> lst = new List<int>();
+
+                                    foreach (var cl in cloId)
+                                    {
+                                        string name = "null";
+                                        if (cloRepository.GetCLOsById(cl) != null)
+                                        {
+                                            name = cloRepository.GetCLOsById(cl).CLO_name;
+                                            if (gra.clo_name != null)
+                                            {
+
+                                                if (gra.clo_name.Contains(name))
+                                                {
+                                                    lst.Add(cl);
+                                                }
+                                            }
+                                        }
+                                        if(gra.clo_name != null)
+                                        {
+
+                                            if (gra.clo_name.Contains("All CLOs"))
+                                            {
+                                                lst = new List<int>();
+                                                lst.AddRange(cloId);
+                                            }
+                                        }
+
+                                    }
+                                    if (gra.session_no == null)
+                                    {
+                                        weightAll += gra.grading_weight;
+                                        if (weightAll > 100)
+                                        {
+                                            throw new Exception("Weight of grading over 100%");
+                                        }
+                                    }
+                                    gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
+                                   // await CreateGradingStrutureAPI(gradingStrutureCreate);
+                                    gradingStrutureController.CreateGradingStructure(gradingStrutureCreate);
+
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllabusId);
+                                sessionRepository.DeleteSessionBySyllabusId(syllabusId);
+                                cloRepository.DeleteCLOsBySyllabusId(syllabusId);
+                                materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
+                                syllabusRepository.DeleteSyllabus(syllabusId);
+                                throw new Exception("Import false at sheet Grading Struture!.");
+                            }
+
+                        }
+                    }
+
 
                     SetStatusSyllabus(syllabusId);
-                    return Ok(new BaseResponse(false, "Import Successfully!", syllabusId));
+                    return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
+
                 }
             }
             catch (Exception ex)
             {
+
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
-        }
 
+        }
         [HttpDelete("DeleteSyllabus/{syllabusId}")]
         public async Task<IActionResult> DeleteSyllabusById(int syllabusId)
         {
