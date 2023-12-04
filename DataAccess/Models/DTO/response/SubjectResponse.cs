@@ -20,9 +20,9 @@ namespace DataAccess.Models.DTO.response
         public int assessment_method_id { get; set; }
         public string assessment_method_name { get; set; }
         public int credit { get; set; }
-        public int total_time { get; set; }
-        public int total_time_class { get; set; }
-        public int exam_total { get; set; }
+        public float total_time { get; set; }
+        public float total_time_class { get; set; }
+        public float exam_total { get; set; }
         public bool is_active { get; set; }
         public List<PreRequisiteResponse> prerequisites { get; set; }
     }

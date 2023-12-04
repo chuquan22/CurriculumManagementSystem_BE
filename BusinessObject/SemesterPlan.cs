@@ -17,6 +17,8 @@ namespace BusinessObject
         public int semester_id { get; set; }
         [AllowNull]
         public int? term_no { get; set; }
+        [AllowNull]
+        public int? no { get; set; }
 
         public virtual Curriculum? Curriculum { get; set; }
         public virtual Semester? Semester { get; set; }

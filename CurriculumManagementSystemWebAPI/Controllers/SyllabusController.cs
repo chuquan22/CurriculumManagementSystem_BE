@@ -386,6 +386,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         }
                     }
+
+
                     SetStatusSyllabus(syllabusId);
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 

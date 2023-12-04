@@ -21,7 +21,6 @@ namespace DataAccess.Models.DTO.request
         public int assessment_method_id { get; set; }
         [Required]
         public int credit { get; set; }
-
         [Required]
         public bool is_active { get; set; }
         [Required]
