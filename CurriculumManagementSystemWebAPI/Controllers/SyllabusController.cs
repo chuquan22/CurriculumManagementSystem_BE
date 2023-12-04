@@ -32,20 +32,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SyllabusController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly HttpClient client = null;
-        private Microsoft.Extensions.Configuration.IConfiguration config;
-
-        public static string API_PORT;
-        public static string API_SYLLABUS = "/api/Syllabus";    
-        public static string API_MATERIALS = "/api/Materials";
-        public static string API_GRADING_STRUTURE = "/api/GradingStruture";
-        public static string API_CLO = "/api/CLOs";
-        public static string API_SCHEDULE = "/api/Session";
         private ISyllabusRepository syllabusRepository;
         private ISubjectRepository subjectRepository;
-        private IAssessmentTypeRepository assessmentTypeRepository;
         private ICLORepository cloRepository;
-        private IAssessmentMethodRepository assessmentMethodRepository;
         private IMaterialRepository materialsRepository;
         private IGradingStrutureRepository gradingStrutureRepository;
         private ISessionRepository sessionRepository;
@@ -58,25 +47,19 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private CLOsController cLOsController;
         private SessionController sessionController;
         private GradingStrutureController gradingStrutureController;
-        public SyllabusController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public SyllabusController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             syllabusRepository = new SyllabusRepository();
             subjectRepository = new SubjectRepository();
-            config = configuration;
-            assessmentTypeRepository = new AssessmentTypeRepository();
             cloRepository = new CLORepository();
-            assessmentMethodRepository = new AssessmentMethodRepository();
             materialsRepository = new MaterialRepository();
             gradingStrutureRepository = new GradingStrutureRepository();
             sessionRepository = new SessionRepository();
             classSessionTypeRepository = new ClassSessionTypeRepository();
             degreeLevelRepository = new DegreeLevelRepository();
             learningResourceRepository = new LearningResourceRepository();
-            client = new HttpClient();
-            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
             materialsController = new MaterialsController(_mapper);
             cLOsController = new CLOsController(_mapper);
@@ -438,30 +421,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Sucessfully!", null));
         }
 
-        private async Task<int> CreateSyllabusAPI(Syllabus sy)
-        {
-            string apiUrl = API_PORT + API_SYLLABUS;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("syllabus_id").GetInt32();
-
-            return syllabusId;
-        }
-     
+       
         private List<GradingStruture> GetGradingStrutureExcel(IEnumerable<GradingStrutureExcel> row, Syllabus syllabus)
         {
             List<GradingStruture> result = new List<GradingStruture>();

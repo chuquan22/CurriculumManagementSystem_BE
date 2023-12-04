@@ -36,11 +36,10 @@ namespace CMS_UnitTests.Controllers
             fixture = new Fixture();
             syllabusRepositoryMock = fixture.Freeze<Mock<ISyllabusRepository>>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-            var configurationMock = new Mock<IConfiguration>();
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
-            syllabusController = new SyllabusController(configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
+            syllabusController = new SyllabusController(_mapper, hostingEnvironmentMock.Object);
         }
 
         [Test]
