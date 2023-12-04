@@ -27,7 +27,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {
@@ -164,8 +164,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 var rsSyllabus = CreateSyllabus(listSyllabus);
                                 var okRsSyllabus = rsSyllabus.Result as OkObjectResult;
                                 var baseResponseRsSyllabus = okRsSyllabus.Value as BaseResponse;
-                                var rsSyllabusResponse = baseResponseRsSyllabus.data as CLO;
+                                var rsSyllabusResponse = baseResponseRsSyllabus.data as Syllabus;
                                 syllaId = rsSyllabusResponse.syllabus_id;
+                                syllabusId = syllaId;
 
                             }
                             catch (Exception)
