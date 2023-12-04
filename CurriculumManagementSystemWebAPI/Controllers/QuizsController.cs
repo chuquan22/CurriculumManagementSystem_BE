@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [Route("api/[controller]")]
     [ApiController]
     public class QuizsController : ControllerBase

@@ -23,6 +23,7 @@ namespace DataAccess.DAO
         {
             var listQuiz = _context.Quiz
                 .Include(x => x.Questions)
+                .Include(x => x.Subject)
                 .Where(x => x.subject_id == subjectId)
                 .OrderBy(x => x.quiz_name)
                 .ToList();
