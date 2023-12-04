@@ -92,6 +92,14 @@ namespace BusinessObject
                 .Property(s => s.min_GPA_to_pass)
                 .HasColumnType("decimal(18, 2)");
 
+            modelBuilder.Entity<Subject>()
+                .Property(s => s.total_time)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Subject>()
+                .Property(s => s.total_time_class)
+                .HasColumnType("decimal(18,2)");
+
             //
             modelBuilder.Entity<Combo>()
                 .HasOne(x => x.Specialization)
@@ -151,7 +159,10 @@ namespace BusinessObject
 
             modelBuilder.Entity<User>().HasData(
                 new User { user_id = 1, full_name = "Chu Quang Quan", role_id = 3, user_email = "quancqhe153661@fpt.edu.vn", user_name = "QuanCQ", is_active = true },
-                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "thunthe151440@fpt.edu.vn", user_name = "ThuNT", is_active = true }
+                new User { user_id = 2, full_name = "Nguyen Thi Thu", role_id = 2, user_email = "thunthe151440@fpt.edu.vn", user_name = "ThuNT", is_active = true },
+                new User { user_id = 3, full_name = "Nguyen Ngoc Hoan", role_id = 2, user_email = "hoannnhe151308@fpt.edu.vn", user_name = "HoanNN", is_active = true },
+                new User { user_id = 4, full_name = "Nguyen Phong Hao", role_id = 2, user_email = "haonphe153346@fpt.edu.vn", user_name = "HaoNP", is_active = true },
+                new User { user_id = 5, full_name = "Dinh Manh Lam", role_id = 2, user_email = "lamdmhe151048@fpt.edu.vn", user_name = "LamDM", is_active = true }
                 );
 
 
