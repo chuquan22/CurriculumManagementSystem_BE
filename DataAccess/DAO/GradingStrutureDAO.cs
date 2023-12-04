@@ -12,21 +12,17 @@ namespace DataAccess.DAO
     public class GradingStrutureDAO
     {
         private readonly CMSDbContext _cmsDbContext;
-        public GradingStrutureDAO(CMSDbContext cmsDbContext)
-        {
-            _cmsDbContext = cmsDbContext;
-        }
+      
 
-        public async Task<List<GradingStruture>> GetGradingStruture(int id)
+        public List<GradingStruture> GetGradingStruture(int id)
         {
-            var rs = await _cmsDbContext.GradingStruture
+            var rs = _cmsDbContext.GradingStruture
                 .Include(x => x.AssessmentMethod)
                 .Include(x => x.AssessmentMethod.AssessmentType)
                 .Include(x => x.Syllabus)
                 .Include(x => x.GradingCLOs).ThenInclude(gc => gc.CLO)
                 .Where(c => c.syllabus_id == id)
-                .ToListAsync();
-
+                .ToList();
             return rs;
         }
 
@@ -223,12 +219,18 @@ namespace DataAccess.DAO
             _cmsDbContext.SaveChanges();
             return oldGra;
         }
-        
+
         public string UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
-            var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();         
+            var oldGra = _cmsDbContext.GradingStruture.SingleOrDefault(u => u.grading_id == gra.grading_id);
+
+            if (oldGra == null)
+            {
+                throw new Exception("Error: Grading Structure not found!");
+            }
+
             oldGra.syllabus_id = gra.syllabus_id;
-            oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion; 
+            oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion;
             oldGra.grading_duration = gra.grading_duration;
             oldGra.type_of_questions = gra.type_of_questions;
             oldGra.session_no = gra.session_no;
@@ -239,62 +241,62 @@ namespace DataAccess.DAO
             oldGra.assessment_component = gra.assessment_component;
             oldGra.assessment_type = gra.assessment_type;
             oldGra.grading_note = gra.grading_note;
+
             var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == gra.grading_id).ToList();
-            foreach (var cLo in listCLo)
-            {
-                _cmsDbContext.GradingCLO.Remove(cLo);
-            }
+            _cmsDbContext.GradingCLO.RemoveRange(listCLo);
+
             foreach (var cLo2 in list)
             {
-                GradingCLO gr = new GradingCLO();
-                gr.grading_id = oldGra.grading_id;
-                gr.CLO_id = cLo2;
+                GradingCLO gr = new GradingCLO
+                {
+                    grading_id = oldGra.grading_id,
+                    CLO_id = cLo2
+                };
                 _cmsDbContext.GradingCLO.Add(gr);
             }
-            var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
+
+            var father = _cmsDbContext.GradingStruture
+                .Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id)
+                .FirstOrDefault();
 
             if (gra.grading_weight != oldGra.grading_weight)
             {
                 bool check = CheckGradingWeight(gra);
+
                 if (check)
                 {
-                    if (oldGra.grading_weight > gra.grading_weight)
-                    {
-                        father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
-                    }
-                    else if (oldGra.grading_weight < gra.grading_weight)
-
-                    {
-                        father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
-                    }
+                    UpdateFatherWeight(father, oldGra.grading_weight, gra.grading_weight);
                     oldGra.grading_weight = gra.grading_weight;
-                    _cmsDbContext.GradingStruture.Update(oldGra);
-                    _cmsDbContext.GradingStruture.Update(father);
-                    _cmsDbContext.SaveChanges();
                 }
                 else
                 {
                     throw new Exception("Error: Update Structure Update False! Please Check Weight <100% !");
                 }
             }
-            if(gra.grading_part != oldGra.grading_part)
+
+            if (gra.grading_part != oldGra.grading_part)
             {
-                if (oldGra.grading_part > gra.grading_part)
-                {
-                    father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
-                }
-                else if (oldGra.grading_part < gra.grading_part)
-                {
-                    father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
-
-                }
+                UpdateFatherPart(father, oldGra.grading_part, gra.grading_part);
                 oldGra.grading_part = gra.grading_part;
-                _cmsDbContext.GradingStruture.Update(oldGra);
-                _cmsDbContext.GradingStruture.Update(father);
-                _cmsDbContext.SaveChanges();
             }
-            return Result.updateSuccessfull.ToString();
 
+            _cmsDbContext.GradingStruture.Update(oldGra);
+            _cmsDbContext.SaveChanges();
+
+            return Result.updateSuccessfull.ToString();
         }
+
+        private void UpdateFatherWeight(GradingStruture father, decimal oldWeight, decimal newWeight)
+        {
+            father.grading_weight = father.grading_weight - oldWeight + newWeight;
+            _cmsDbContext.GradingStruture.Update(father);
+        }
+
+        private void UpdateFatherPart(GradingStruture father, int oldPart, int newPart)
+        {
+            father.grading_part = (father.grading_part - oldPart + newPart);
+            _cmsDbContext.GradingStruture.Update(father);
+        }
+
     }
 }
