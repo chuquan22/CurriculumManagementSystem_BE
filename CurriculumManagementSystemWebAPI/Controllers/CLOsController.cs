@@ -39,7 +39,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCLOs(CLOsRequest clo)
+        public ActionResult<CLO> CreateCLOs(CLOsRequest clo)
         {
 
             try

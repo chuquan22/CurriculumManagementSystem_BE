@@ -54,6 +54,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ILearningResourceRepository learningResourceRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private static int syllaId = 0;
+        private MaterialsController materialsController;
+        private CLOsController cLOsController;
+        private SessionController sessionController;
+        private GradingStrutureController gradingStrutureController;
         public SyllabusController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
@@ -74,6 +78,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
+            materialsController = new MaterialsController(_mapper);
+            cLOsController = new CLOsController(_mapper);
+            sessionController = new SessionController(_mapper);
+            gradingStrutureController = new GradingStrutureController(_mapper);
+
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SyllabusResponse>>> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
@@ -167,8 +176,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             };
                             try
                             {
-                                syllabusId = await CreateSyllabusAPI(syllabusExcel);
-                                syllaId = syllabusId;
+                               // syllabusId = await CreateSyllabusAPI(syllabusExcel);
+                                SyllabusRequest listSyllabus = _mapper.Map<SyllabusRequest>(syllabusExcel);
+                                var rsSyllabus = CreateSyllabus(listSyllabus);
+                                var okRsSyllabus = rsSyllabus.Result as OkObjectResult;
+                                var baseResponseRsSyllabus = okRsSyllabus.Value as BaseResponse;
+                                var rsSyllabusResponse = baseResponseRsSyllabus.data as CLO;
+                                syllaId = rsSyllabusResponse.syllabus_id;
 
                             }
                             catch (Exception)
@@ -195,7 +209,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         item.syllabus_id = syllabusId;
                                         MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
-                                        await CreateMaterialsAPI(addRs);
+                                       // await CreateMaterialsAPI(addRs);
+                                        materialsController.CreateMaterial(addRs);
                                     }
 
                                 }
@@ -229,7 +244,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
 
-                                        idClo = await CreateCLOsAPI(addRs);
+                                       // idClo = await CreateCLOsAPI(addRs);
+                                        var rsClo = cLOsController.CreateCLOs(addRs);
+                                        var okRsClo = rsClo.Result as OkObjectResult;
+                                        var baseResponseRsClo = okRsClo.Value as BaseResponse;
+                                        var closRsResponse = baseResponseRsClo.data as CLO;
+                                        idClo = closRsResponse.CLO_id;
+
                                         if (idClo == 0)
                                         {
                                             throw new Exception("Import false at sheet CLOs.");
@@ -295,8 +316,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 dataSession.session.syllabus_id = syllabusId;
                                 try
                                 {
-                                    await CreateSchudeleAPI(dataSession);
-
+                                   // await CreateSchudeleAPI(dataSession);
+                                    sessionController.CreateSession(dataSession);
                                 }
                                 catch (Exception ex)
                                 {
@@ -364,8 +385,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
                                     }
                                     gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
-                                    await CreateGradingStrutureAPI(gradingStrutureCreate);
-
+                                   // await CreateGradingStrutureAPI(gradingStrutureCreate);
+                                    gradingStrutureController.CreateGradingStructure(gradingStrutureCreate);
 
                                 }
                             }
@@ -440,92 +461,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return syllabusId;
         }
-        private async Task<MaterialRequest> CreateMaterialsAPI(MaterialRequest me)
-        {
-            string apiUrl = API_PORT + API_MATERIALS;
-            var jsonData = JsonSerializer.Serialize(me);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            MaterialRequest rs = JsonSerializer.Deserialize<MaterialRequest>(strData, options);
-            return rs;
-        }
-        private async Task<GradingStrutureCreateRequest> CreateGradingStrutureAPI(GradingStrutureCreateRequest me)
-        {
-            string apiUrl = API_PORT + API_GRADING_STRUTURE;
-            var jsonData = JsonSerializer.Serialize(me);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            GradingStrutureCreateRequest rs = JsonSerializer.Deserialize<GradingStrutureCreateRequest>(strData, options);
-            return rs;
-        }
-        private async Task<int> CreateCLOsAPI(CLOsRequest sy)
-        {
-            string apiUrl = API_PORT + API_CLO;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("clO_id").GetInt32();
-
-            return syllabusId;
-        }
-        private async Task<int> CreateSchudeleAPI(SessionCreateRequest sy)
-        {
-            string apiUrl = API_PORT + API_SCHEDULE;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("schedule_id").GetInt32();
-
-            return syllabusId;
-        }
+     
         private List<GradingStruture> GetGradingStrutureExcel(IEnumerable<GradingStrutureExcel> row, Syllabus syllabus)
         {
             List<GradingStruture> result = new List<GradingStruture>();
