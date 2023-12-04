@@ -94,10 +94,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
-           
-
             var semester = _mapper.Map<Semester>(semesterRequest);
-            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year))
+
+            if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year, semester.start_batch_id))
             {
                 return BadRequest(new BaseResponse(true, $"Semester {semester.semester_name + "-" + semester.school_year} is Duplicate!"));
             }
@@ -120,7 +119,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
 
-            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year))
+            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year, semester.start_batch_id))
             {
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }

@@ -12,9 +12,9 @@ namespace Repositories.Semesters
     {
         public SemesterDAO db = new SemesterDAO();
 
-        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int batchId)
         {
-            return db.CheckSemesterDuplicate(id, name, schoolYear);
+            return db.CheckSemesterDuplicate(id, name, schoolYear, batchId);
         }
 
         public bool CheckSemesterExsit(int id)

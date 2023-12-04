@@ -14,7 +14,7 @@ namespace Repositories.Semesters
         List<Semester> GetSemesterBySpe(int speId);
         int GetTotalSemester(string? txtSearch);
         Semester GetSemester(int id);
-        bool CheckSemesterDuplicate(int id, string name, int schoolYear);
+        bool CheckSemesterDuplicate(int id, string name, int schoolYear, int batchId);
         bool CheckSemesterExsit(int id);
         string CreateSemester(Semester semester);
         string UpdateSemester(Semester semester);
