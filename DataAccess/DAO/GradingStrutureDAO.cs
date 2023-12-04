@@ -251,12 +251,13 @@ namespace DataAccess.DAO
                 gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
+
             if (gra.grading_weight != oldGra.grading_weight)
             {
                 bool check = CheckGradingWeight(gra);
                 if (check)
                 {
-                    var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
                     if (oldGra.grading_weight > gra.grading_weight)
                     {
                         father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
@@ -266,21 +267,7 @@ namespace DataAccess.DAO
                     {
                         father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
                     }
-
-
-                    if (oldGra.grading_part > gra.grading_part)
-                    {
-                        father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
-                    }
-                    else if (oldGra.grading_part < gra.grading_part)
-                    {
-                        father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
-
-                    }
-
-
                     oldGra.grading_weight = gra.grading_weight;
-                    oldGra.grading_part = gra.grading_part;
                     _cmsDbContext.GradingStruture.Update(oldGra);
                     _cmsDbContext.GradingStruture.Update(father);
                     _cmsDbContext.SaveChanges();
@@ -290,7 +277,23 @@ namespace DataAccess.DAO
                     throw new Exception("Error: Update Structure Update False! Please Check Weight <100% !");
                 }
             }
-                return Result.updateSuccessfull.ToString();
+            if(gra.grading_part != oldGra.grading_part)
+            {
+                if (oldGra.grading_part > gra.grading_part)
+                {
+                    father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
+                }
+                else if (oldGra.grading_part < gra.grading_part)
+                {
+                    father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
+
+                }
+                oldGra.grading_part = gra.grading_part;
+                _cmsDbContext.GradingStruture.Update(oldGra);
+                _cmsDbContext.GradingStruture.Update(father);
+                _cmsDbContext.SaveChanges();
+            }
+            return Result.updateSuccessfull.ToString();
 
         }
     }
