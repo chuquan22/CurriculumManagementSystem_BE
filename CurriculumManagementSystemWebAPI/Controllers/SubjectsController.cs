@@ -16,6 +16,7 @@ using Repositories.PreRequisites;
 using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
 using Microsoft.AspNetCore.Authorization;
+using DataAccess.Models.DTO.Excel;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -38,7 +39,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // GET: api/Subjects
         [HttpGet("GetAllSubject")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
-        {          
+        {
             var subject = _subjectRepository.GetAllSubject(txtSearch);
             if (subject == null)
             {
@@ -67,7 +68,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 TotalElements = _subjectRepository.GetTotalSubject(txtSearch),
                 Data = subjectResponse
             };
-            
+
             return Ok(paginationResponse);
         }
 
@@ -194,7 +195,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
-            if(CheckIdExistInSyllabus(id))
+            if (CheckIdExistInSyllabus(id))
             {
                 return BadRequest(new BaseResponse(true, "Subject used by Syllabus. Can't Delete!"));
             }
@@ -222,6 +223,33 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
             return Ok(new BaseResponse(false, $"Delete Subject {subjectRespone.subject_code} successfull!", subjectRespone));
+        }
+
+        //Import Subject by Excel
+        [HttpPost("ImportSubject")]
+        public async Task<IActionResult> ImportSubject([FromBody] IFormFile fileSubject)
+        {
+            string error = "";
+            try
+            {
+                var filePath = Path.GetTempFileName();
+                var curriculum_id = 0;
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await fileSubject.CopyToAsync(stream);
+                    //Get SheetName
+                    var sheetNames = MiniExcel.GetSheetNames(filePath);
+                    var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                }
+
+                return Ok(new BaseResponse(false, "Import Subject Successfull!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
+
+
         }
 
         private bool CheckIdExistInSyllabus(int id)
