@@ -238,7 +238,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var filePath = Path.GetTempFileName();
-                var curriculum_id = 0;
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileSubject.CopyToAsync(stream);
@@ -247,9 +246,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var row = MiniExcel.Query<SubjectImportExcel>(filePath, sheetName: sheetNames[0], excelType: ExcelType.XLSX);
                     foreach (var subject in row)
                     {
+                        subject.credit = string.IsNullOrEmpty(subject.credit) ? "0" : subject.credit;
                         error = $"Error in Subject {subject.subject_code}: ";
                         var learningMethod = _learningMethodRepository.GetLearningMethodByName(subject.learning_method);
+                        if(learningMethod == null)
+                        {
+                            return BadRequest(new BaseResponse(true, error + "Learning Method Not Found"));
+                        }
                         var assessmentMethod = _assessmentMethodRepository.GetAsssentMethodByName(subject.assessment_method);
+                        if (learningMethod == null)
+                        {
+                            return BadRequest(new BaseResponse(true, error + "Assessment Method Not Found"));
+                        }
                         var s = new Subject
                         {
                             subject_code = subject.subject_code,
@@ -277,7 +285,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Import Subject Successfull!"));
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
                 return BadRequest(new BaseResponse(true, error + ex.Message));
             }

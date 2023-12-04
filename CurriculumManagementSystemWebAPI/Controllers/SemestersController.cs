@@ -97,7 +97,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
            
 
             var semester = _mapper.Map<Semester>(semesterRequest);
-           // Note Fix : checked theo degree level nữa 
             if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year))
             {
                 return BadRequest(new BaseResponse(true, $"Semester {semester.semester_name + "-" + semester.school_year} is Duplicate!"));
