@@ -94,8 +94,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateSemester")]
         public ActionResult CreateSemester([FromBody]SemesterRequest semesterRequest)
         {
-           
-
             var semester = _mapper.Map<Semester>(semesterRequest);
 
             if(semesterRepository.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year))
