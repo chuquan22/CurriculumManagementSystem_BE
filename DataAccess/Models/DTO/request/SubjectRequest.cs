@@ -25,11 +25,11 @@ namespace DataAccess.Models.DTO.request
         [Required]
         public bool is_active { get; set; }
         [Required]
-        public int total_time { get; set; }
+        public float total_time { get; set; }
         [Required]
-        public int total_time_class { get; set; }
+        public float total_time_class { get; set; }
         [Required]
-        public int exam_total { get; set; }
+        public float exam_total { get; set; }
     }
 
     

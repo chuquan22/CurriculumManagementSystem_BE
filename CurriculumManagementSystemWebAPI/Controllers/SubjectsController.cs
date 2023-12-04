@@ -17,11 +17,14 @@ using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
 using Microsoft.AspNetCore.Authorization;
 using DataAccess.Models.DTO.Excel;
+using Repositories.LearningResources;
+using Repositories.LearningMethods;
+using Repositories.AssessmentMethods;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SubjectsController : ControllerBase
     {
@@ -29,6 +32,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly ICurriculumSubjectRepository _curriSubjectRepository = new CurriculumSubjectRepository();
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
+        private readonly ILearnningMethodRepository _learningMethodRepository = new LearningMethodRepository();
+        private readonly IAssessmentMethodRepository _assessmentMethodRepository = new AssessmentMethodRepository();
 
         public SubjectsController(IMapper mapper)
         {
@@ -227,7 +232,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         //Import Subject by Excel
         [HttpPost("ImportSubject")]
-        public async Task<IActionResult> ImportSubject([FromBody] IFormFile fileSubject)
+        public async Task<IActionResult> ImportSubject(IFormFile fileSubject)
         {
             string error = "";
             try
@@ -239,14 +244,42 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     await fileSubject.CopyToAsync(stream);
                     //Get SheetName
                     var sheetNames = MiniExcel.GetSheetNames(filePath);
-                    var row = MiniExcel.Query<CurriculumExcel>(filePath, sheetName: sheetNames[i], excelType: ExcelType.XLSX);
+                    var row = MiniExcel.Query<SubjectImportExcel>(filePath, sheetName: sheetNames[0], excelType: ExcelType.XLSX);
+                    foreach (var subject in row)
+                    {
+                        error = $"Error in Subject {subject.subject_code}: ";
+                        var learningMethod = _learningMethodRepository.GetLearningMethodByName(subject.learning_method);
+                        var assessmentMethod = _assessmentMethodRepository.GetAsssentMethodByName(subject.assessment_method);
+                        var s = new Subject
+                        {
+                            subject_code = subject.subject_code,
+                            credit = int.Parse(subject.credit),
+                            exam_total = float.Parse(subject.exam_time),
+                            total_time = float.Parse(subject.total_time),
+                            total_time_class = float.Parse(subject.class_time),
+                            is_active = true,
+                            subject_name = subject.subject_name,
+                            english_subject_name = subject.english_subject_name,
+                            learning_method_id = learningMethod.learning_method_id,
+                            assessment_method_id = assessmentMethod.assessment_method_id
+                        };
+                        if(!CheckCodeExist(subject.subject_code))
+                        {
+                            string createResult = _subjectRepository.CreateNewSubject(s);
+
+                            if (!createResult.Equals("OK"))
+                            {
+                                return BadRequest(new BaseResponse(true, createResult));
+                            }
+                        }
+                    }
                 }
 
                 return Ok(new BaseResponse(false, "Import Subject Successfull!"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+                return BadRequest(new BaseResponse(true, error + ex.Message));
             }
 
 
