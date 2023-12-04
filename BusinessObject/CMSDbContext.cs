@@ -23,7 +23,7 @@ namespace BusinessObject
                                                .Build();
             string? con = connectionString.GetConnectionString("CMSDb");
             optionsBuilder.UseSqlServer(con);
-           // optionsBuilder.UseMySql(con, ServerVersion.AutoDetect(con));
+            //optionsBuilder.UseMySql(con, ServerVersion.AutoDetect(con));
         }
 
         public virtual DbSet<AssessmentMethod> AssessmentMethod { get; set; }

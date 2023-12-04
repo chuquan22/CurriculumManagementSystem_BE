@@ -54,6 +54,12 @@ namespace DataAccess.DAO
             return learningMethod;
         }
 
+        public LearningMethod GetLearningMethodByName(string name)
+        {
+            var learningMethod = _cmsDbContext.LearningMethod.FirstOrDefault(x => x.learning_method_name.ToLower().Equals(name.Trim().ToLower()));
+            return learningMethod;
+        }
+
         public bool CheckLearningMethodDuplicate(int id,string learning_method_name)
         {
             return (_cmsDbContext.LearningMethod?.Any(x => x.learning_method_name.Equals(learning_method_name) && x.learning_method_id != id)).GetValueOrDefault();
