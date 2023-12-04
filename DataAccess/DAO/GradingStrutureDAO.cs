@@ -11,8 +11,7 @@ namespace DataAccess.DAO
 {
     public class GradingStrutureDAO
     {
-        private readonly CMSDbContext _cmsDbContext;
-      
+        private readonly CMSDbContext _cmsDbContext = new CMSDbContext();
 
         public List<GradingStruture> GetGradingStruture(int id)
         {
@@ -28,23 +27,23 @@ namespace DataAccess.DAO
 
         public string DeleteGradingStrutureBySyllabusId(int syllabusId)
         {
-            
-                var oldMate = _cmsDbContext.GradingStruture.Where(a => a.syllabus_id == syllabusId).ToList();
-                foreach (var item in oldMate)
+
+            var oldMate = _cmsDbContext.GradingStruture.Where(a => a.syllabus_id == syllabusId).ToList();
+            foreach (var item in oldMate)
+            {
+                var listSessionClo = _cmsDbContext.GradingCLO.Where(x => x.grading_id == item.grading_id).ToList();
+                foreach (var session_clo in listSessionClo)
                 {
-                    var listSessionClo = _cmsDbContext.GradingCLO.Where(x => x.grading_id == item.grading_id).ToList();
-                    foreach (var session_clo in listSessionClo)
-                    {
-                        _cmsDbContext.GradingCLO.Remove(session_clo);
-                    }
+                    _cmsDbContext.GradingCLO.Remove(session_clo);
                 }
-                foreach (var item in oldMate)
-                {
-                    _cmsDbContext.GradingStruture.Remove(item);
-                }
-                _cmsDbContext.SaveChanges();
-                return Result.deleteSuccessfull.ToString();
-            
+            }
+            foreach (var item in oldMate)
+            {
+                _cmsDbContext.GradingStruture.Remove(item);
+            }
+            _cmsDbContext.SaveChanges();
+            return Result.deleteSuccessfull.ToString();
+
         }
 
         public GradingStruture CreateGradingStruture(GradingStruture gra)
@@ -86,17 +85,17 @@ namespace DataAccess.DAO
         }
         public GradingStruture CreateGradingStrutureAPI(GradingStruture gra)
         {
-            
-                bool check = CheckGradingWeight2(gra);
 
-                if (check == true)
-                {
-                    _cmsDbContext.GradingStruture.Add(gra);
-                    var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
+            bool check = CheckGradingWeight2(gra);
+
+            if (check == true)
+            {
+                _cmsDbContext.GradingStruture.Add(gra);
+                var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
                 father.grading_part = father.grading_part + gra.grading_part;
-                    father.grading_weight = father.grading_weight + gra.grading_weight;
-                    _cmsDbContext.GradingStruture.Update(father);
-                    _cmsDbContext.SaveChanges();
+                father.grading_weight = father.grading_weight + gra.grading_weight;
+                _cmsDbContext.GradingStruture.Update(father);
+                _cmsDbContext.SaveChanges();
                 return gra;
 
             }
@@ -107,9 +106,7 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight2(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x =>
-            ((!gra.references.Equals("") || gra.references != null) && (gra.session_no == null || gra.session_no.Equals("")) || (gra.references.Equals("") || gra.references == null) && (gra.session_no != null || !gra.session_no.Equals("")))
-            && x.syllabus_id == gra.syllabus_id).ToList();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
 
             if (father == null)
             {
@@ -121,7 +118,7 @@ namespace DataAccess.DAO
                 weight = weight + item.grading_weight;
 
             }
-            weight = weight  + gra.grading_weight;
+            weight = weight + gra.grading_weight;
             if (weight > 100)
             {
                 return false;
@@ -131,9 +128,7 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => 
-            ((!gra.references.Equals("") || gra.references != null) && (gra.session_no == null || gra.session_no.Equals("")) || (gra.references.Equals("") || gra.references == null) && (gra.session_no != null || !gra.session_no.Equals("")) )
-            && x.syllabus_id == gra.syllabus_id).ToList();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
             if (father == null)
@@ -144,7 +139,7 @@ namespace DataAccess.DAO
             foreach (var item in father)
             {
                 weight = weight + item.grading_weight;
-              
+
             }
             if (oldGra.grading_weight > gra.grading_weight)
             {
@@ -155,18 +150,18 @@ namespace DataAccess.DAO
             {
                 weight = weight + oldGra.grading_weight - gra.grading_weight;
             }
-            if(weight > 100)
+            if (weight > 100)
             {
                 return false;
             }
             return true;
-           
+
         }
-      
+
         public bool CheckGrading(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references &&  x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
-            if(father == null)
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).FirstOrDefault();
+            if (father == null)
             {
                 throw new Exception("No Grading Strutude References When Importing this References!.");
             }
@@ -177,7 +172,7 @@ namespace DataAccess.DAO
             {
                 weightSon += reference.grading_weight;
             }
-            if((weightSon + gra.grading_weight) > weightAll)
+            if ((weightSon + gra.grading_weight) > weightAll)
             {
                 return false;
             }
@@ -203,14 +198,14 @@ namespace DataAccess.DAO
 
         public GradingStruture DeleteGradingStruture(int id)
         {
-           
+
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == id).FirstOrDefault();
             var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == id).ToList();
             foreach (var cLo in listCLo)
             {
                 _cmsDbContext.GradingCLO.Remove(cLo);
             }
-           
+
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
             father.grading_part = father.grading_part - oldGra.grading_part;
             father.grading_weight = father.grading_weight - oldGra.grading_weight;
@@ -222,12 +217,7 @@ namespace DataAccess.DAO
 
         public string UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
-            var oldGra = _cmsDbContext.GradingStruture.SingleOrDefault(u => u.grading_id == gra.grading_id);
-
-            if (oldGra == null)
-            {
-                throw new Exception("Error: Grading Structure not found!");
-            }
+            var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
             oldGra.syllabus_id = gra.syllabus_id;
             oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion;
@@ -241,62 +231,51 @@ namespace DataAccess.DAO
             oldGra.assessment_component = gra.assessment_component;
             oldGra.assessment_type = gra.assessment_type;
             oldGra.grading_note = gra.grading_note;
-
             var listCLo = _cmsDbContext.GradingCLO.Where(u => u.grading_id == gra.grading_id).ToList();
-            _cmsDbContext.GradingCLO.RemoveRange(listCLo);
-
+            foreach (var cLo in listCLo)
+            {
+                _cmsDbContext.GradingCLO.Remove(cLo);
+            }
             foreach (var cLo2 in list)
             {
-                GradingCLO gr = new GradingCLO
-                {
-                    grading_id = oldGra.grading_id,
-                    CLO_id = cLo2
-                };
+                GradingCLO gr = new GradingCLO();
+                gr.grading_id = oldGra.grading_id;
+                gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
-
-            var father = _cmsDbContext.GradingStruture
-                .Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id)
-                .FirstOrDefault();
-
-            if (gra.grading_weight != oldGra.grading_weight)
+            bool check = CheckGradingWeight(gra);
+            if (check)
             {
-                bool check = CheckGradingWeight(gra);
-
-                if (check)
+                var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
+                if (oldGra.grading_weight > gra.grading_weight)
                 {
-                    UpdateFatherWeight(father, oldGra.grading_weight, gra.grading_weight);
-                    oldGra.grading_weight = gra.grading_weight;
+                    father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
                 }
-                else
-                {
-                    throw new Exception("Error: Update Structure Update False! Please Check Weight <100% !");
-                }
-            }
+                else if (oldGra.grading_weight < gra.grading_weight)
 
-            if (gra.grading_part != oldGra.grading_part)
-            {
-                UpdateFatherPart(father, oldGra.grading_part, gra.grading_part);
+                {
+                    father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
+                }
+                if (oldGra.grading_part > gra.grading_part)
+                {
+                    father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
+                }
+                else if (oldGra.grading_part < gra.grading_part)
+                {
+                    father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
+
+                }
+                oldGra.grading_weight = gra.grading_weight;
                 oldGra.grading_part = gra.grading_part;
+                _cmsDbContext.GradingStruture.Update(oldGra);
+                _cmsDbContext.GradingStruture.Update(father);
+                _cmsDbContext.SaveChanges();
+                return Result.updateSuccessfull.ToString();
             }
-
-            _cmsDbContext.GradingStruture.Update(oldGra);
-            _cmsDbContext.SaveChanges();
-
-            return Result.updateSuccessfull.ToString();
+            else
+            {
+                throw new Exception("Error: Update Structure Update False! Please Check Weight <100% !");
+            }
         }
-
-        private void UpdateFatherWeight(GradingStruture father, decimal oldWeight, decimal newWeight)
-        {
-            father.grading_weight = father.grading_weight - oldWeight + newWeight;
-            _cmsDbContext.GradingStruture.Update(father);
-        }
-
-        private void UpdateFatherPart(GradingStruture father, int oldPart, int newPart)
-        {
-            father.grading_part = (father.grading_part - oldPart + newPart);
-            _cmsDbContext.GradingStruture.Update(father);
-        }
-
     }
 }
