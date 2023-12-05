@@ -31,7 +31,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = learningResourceRepository.GetLearningResource();
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -49,7 +49,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return NotFound(new BaseResponse(true, "Not Found Learning Resource!"));
             }
-            return Ok(new BaseResponse(false, "Success", learningResource));
+            return Ok(new BaseResponse(false, "Successfully!", learningResource));
         }
 
         [HttpGet("Pagination/{page}/{limit}")]
@@ -61,7 +61,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 Ok(new BaseResponse(false, "Not Found Learning Resource!"));
             }
             var total = learningResourceRepository.GetTotalLearningResource(txtSearch);
-            return Ok(new BaseResponse(false, "List Learning Resource", new BaseListResponse(page, limit, total, listLearningResource)));
+            return Ok(new BaseResponse(false, "Successfully!", new BaseListResponse(page, limit, total, listLearningResource)));
         }
         [Authorize(Roles = "Manager")]
         [HttpPost("CreateLearningResource")]

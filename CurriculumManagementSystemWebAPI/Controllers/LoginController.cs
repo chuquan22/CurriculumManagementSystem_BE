@@ -130,7 +130,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 repo.DeleteRefreshTokenUser(user.user_id);
                 return Unauthorized(new BaseResponse(true, "Refresh Token Has Expired!", null));
-
             }
             var token = GenerateToken(user);
             var newRefreshToken = GenerateRefreshToken();
