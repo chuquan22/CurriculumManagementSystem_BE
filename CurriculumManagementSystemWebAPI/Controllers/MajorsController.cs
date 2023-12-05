@@ -11,7 +11,7 @@ using Repositories.Subjects;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-   // [Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class MajorsController : ControllerBase
     {
