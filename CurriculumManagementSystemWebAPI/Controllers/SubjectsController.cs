@@ -251,12 +251,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         var learningMethod = _learningMethodRepository.GetLearningMethodByName(subject.learning_method);
                         if(learningMethod == null)
                         {
-                            return BadRequest(new BaseResponse(true, error + "Learning Method Not Found"));
+                            return BadRequest(new BaseResponse(true, error + $"Learning Method '{subject.learning_method}' Not Found"));
                         }
                         var assessmentMethod = _assessmentMethodRepository.GetAsssentMethodByName(subject.assessment_method);
-                        if (learningMethod == null)
+                        if (assessmentMethod == null)
                         {
-                            return BadRequest(new BaseResponse(true, error + "Assessment Method Not Found"));
+                            return BadRequest(new BaseResponse(true, error + $"Assessment Method '{subject.assessment_method}' Not Found"));
                         }
                         var s = new Subject
                         {
@@ -271,6 +271,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             learning_method_id = learningMethod.learning_method_id,
                             assessment_method_id = assessmentMethod.assessment_method_id
                         };
+                        if(s.total_time < s.total_time_class + s.exam_total)
+                        {
+                            return BadRequest(new BaseResponse(true, error + "Total Time must greater or equal than sum of Class Time and Exam Time"));
+                        }
                         if(!CheckCodeExist(subject.subject_code))
                         {
                             string createResult = _subjectRepository.CreateNewSubject(s);
@@ -285,7 +289,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 return Ok(new BaseResponse(false, "Import Subject Successfull!"));
             }
-            catch (FormatException ex)
+            catch (Exception ex)
             {
                 return BadRequest(new BaseResponse(true, error + ex.Message));
             }
