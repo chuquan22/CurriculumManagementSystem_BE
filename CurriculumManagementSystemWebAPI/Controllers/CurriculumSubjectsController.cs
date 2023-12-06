@@ -19,7 +19,7 @@ using Repositories.Subjects;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumSubjectsController : ControllerBase
     {
@@ -178,7 +178,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
             if(curriculumSubject.option != null)
             {
-                var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.term_no, curriculumSubject.subject_id, (int)curriculumSubject.option);
+                var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.curriculum_id ,curriculumSubject.term_no, curriculumSubject.subject_id, (int)curriculumSubject.option);
                 if (curriculumSubject2 != null)
                 {
                     string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
