@@ -215,7 +215,7 @@ namespace CMS_UnitTests.Controllers
         public void DeletePLOs_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int id = 1;
+            int id = 3;
             var pLOs = new PLOs();
 
             _plosRepository.Setup(repo => repo.GetPLOsById(It.IsAny<int>())).Returns(pLOs);
@@ -238,7 +238,7 @@ namespace CMS_UnitTests.Controllers
         public void DeletePLOs_WithInvalidId_ReturnsNotFound()
         {
             // Arrange
-            int id = 1;
+            int id = 100;
 
             _plosRepository.Setup(repo => repo.GetPLOsById(It.IsAny<int>())).Returns((PLOs)null);
 

@@ -39,7 +39,12 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.Include(x => x.AssessmentMethod.AssessmentType).Include(x => x.LearningMethod).Where(x => x.is_active == true).SingleOrDefault(x => x.subject_id == id);
+                var subject = CMSDbContext.Subject
+                    .Include(x => x.AssessmentMethod.AssessmentType)
+                    .Include(x => x.LearningMethod)
+                    .Where(x => x.is_active == true && x.subject_id == id)
+                    .FirstOrDefault();
+
                 return subject;
             }
             catch (Exception ex)

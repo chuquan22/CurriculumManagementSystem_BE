@@ -71,6 +71,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumId);
             var curriculum = _curriculumRepository.GetCurriculumById(curriculumId);
+            if(curriculum == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Curriculum Subject"));
+            }
 
             var curriculumSubjectResponse = new List<CurriculumSubjectDTO>();
 

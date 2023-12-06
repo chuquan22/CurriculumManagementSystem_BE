@@ -24,15 +24,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly CMSDbContext _context;
+        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly ICurriculumSubjectRepository _curriSubjectRepository = new CurriculumSubjectRepository();
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
 
-        public SubjectsController(CMSDbContext context, IMapper mapper)
+        public SubjectsController( IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -94,10 +93,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetSubjectById/{id}")]
         public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
             var subject = _subjectRepository.GetSubjectById(id);
 
             if (subject == null)

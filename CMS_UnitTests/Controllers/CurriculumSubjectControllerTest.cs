@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace CMS_UnitTests.Controllers
 {
+    [TestFixture]
     public class CurriculumSubjectControllerTest
     {
         private Mock<ICurriculumSubjectRepository> _curriculumSubjectRepository;

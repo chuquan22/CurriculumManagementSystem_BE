@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace CMS_UnitTests.Controllers
 {
+    [TestFixture]
     public class CurriculumControllerTest
     {
         private Mock<ICurriculumRepository> curriculumRepositoryMock;
@@ -226,7 +227,7 @@ namespace CMS_UnitTests.Controllers
                 curriculum_description = "Sample Curriculum Description",
                 total_semester = 7,
                 specialization_id = 1,
-                batch_id = 11,
+                batch_id = 5,
                 Formality = "Sample Formality",
                 decision_No = "Sample Decision No",
                 approved_date = DateTime.Now
