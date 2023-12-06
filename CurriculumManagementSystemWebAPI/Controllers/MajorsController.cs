@@ -44,6 +44,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
+        [HttpGet("GetMajorByDegreeLevel/{degree_id}")]
+        public ActionResult<List<MajorResponse>> GetAllMajorByDegreeLevel(int degree_id)
+        {
+            List<Major> rs = new List<Major>();
+            try
+            {
+                rs = majorRepository.GetMajorByDegreeLevel(degree_id);
+                var result = _mapper.Map<List<MajorResponse>>(rs);
+                return Ok(new BaseResponse(false, "Successfully!", result));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
+        }
+
         [HttpGet("GetAllMajorSubjectByDegreeLevel/{degree_id}")]
         public ActionResult GetAllMajorSubject(int degree_id)
         {
