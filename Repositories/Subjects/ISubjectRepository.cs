@@ -25,7 +25,7 @@ namespace Repositories.Subjects
         string CreateNewSubject(Subject subject);
         string UpdateSubject(Subject subject);
         string DeleteSubject(Subject subject);
-
+        bool CheckSubjectCodeUpdateDuplicate(int id, string code);
         bool CheckIdExistInSyllabus(int id);
         bool CheckIdExist(int id);
         bool CheckCodeExist(string code);

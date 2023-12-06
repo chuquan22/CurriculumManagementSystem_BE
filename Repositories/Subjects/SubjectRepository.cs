@@ -84,6 +84,9 @@ namespace Repositories.Subjects
             return subjectDAO.GetTotalSubject(txtSearch);
         }
 
-
+        public bool CheckSubjectCodeUpdateDuplicate(int id, string code)
+        {
+            return subjectDAO.CheckSubjectCodeUpdateDuplicate(id, code);
+        }
     }
 }

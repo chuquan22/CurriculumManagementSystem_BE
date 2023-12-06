@@ -54,6 +54,13 @@ namespace DataAccess.DAO
             return true;
         }
 
+        public bool CheckSubjectCodeUpdateDuplicate(int id, string code)
+        {
+            var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code) && x.subject_id != id);
+            if (subject == null) return false;
+            return true;
+        }
+
         public bool CheckCodeExist(string code)
         {
             var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code));

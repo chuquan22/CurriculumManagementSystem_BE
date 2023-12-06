@@ -151,6 +151,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var subject = _subjectRepository.GetSubjectById(id);
             _mapper.Map(subjectPreRequisitesRequest.SubjectRequest, subject);
+            
+            if(_subjectRepository.CheckSubjectCodeUpdateDuplicate(subject.subject_id, subject.subject_code))
+            {
+                return BadRequest(new BaseResponse(true, $"Subject Code {subject.subject_code} is Duplicate!"));
+            }
 
             string updateResult = _subjectRepository.UpdateSubject(subject);
             if (!updateResult.Equals("OK"))
