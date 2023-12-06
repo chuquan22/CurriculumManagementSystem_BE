@@ -327,7 +327,7 @@ namespace DataAccess.DAO
         }
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
         {
-            var Semester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.semester_id == semester_id).FirstOrDefault();
+            var Semester = _cmsDbContext.Semester.Include(x => x.Batch).ThenInclude(x => x.DegreeLevel).Where(x => x.semester_id == semester_id).FirstOrDefault();
             int order = Semester.Batch.batch_order;
             if (Semester.Batch.degree_level_id == 1)
             {
@@ -340,7 +340,10 @@ namespace DataAccess.DAO
                 {
                     spe = new List<SemesterPlanDetailsTermResponse>(),
                 };
-                responseList.semesterName = Semester.semester_name + " - " + Semester.school_year;
+                responseList.semesterName = Semester.semester_name + " " + Semester.school_year;
+                responseList.degreeLevel = Semester.Batch.DegreeLevel.degree_level_english_name;
+                responseList.startDate = Semester.semester_start_date;
+                responseList.endDate = Semester.semester_end_date;
                 var SemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Curriculum).Include(x => x.Semester).Where(x => x.semester_id == Semester.semester_id).ToList();
                 List<SemesterPlanCount> listCount = new List<SemesterPlanCount>();
 
@@ -441,7 +444,10 @@ namespace DataAccess.DAO
                 {
                     spe = new List<SemesterPlanDetailsTermResponse>(),
                 };
-                responseList.semesterName = Semester.semester_name + " - " + Semester.school_year;
+                responseList.semesterName = Semester.semester_name + " " + Semester.school_year;
+                responseList.degreeLevel = Semester.Batch.DegreeLevel.degree_level_english_name;
+                responseList.startDate = Semester.semester_start_date;
+                responseList.endDate = Semester.semester_end_date;
                 var SemesterPlan = _cmsDbContext.SemesterPlan.Include(x => x.Curriculum).Include(x => x.Semester).Where(x => x.semester_id == Semester.semester_id).ToList();
                 List<SemesterPlanCount> listCount = new List<SemesterPlanCount>();
                 List<SemesterPlanDetailsTermResponse> SemesterPlanDetails = new List<SemesterPlanDetailsTermResponse>();
@@ -600,6 +606,5 @@ namespace DataAccess.DAO
         }
     }
 }
-
 
 
