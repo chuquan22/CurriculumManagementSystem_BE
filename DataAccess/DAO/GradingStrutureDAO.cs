@@ -106,7 +106,7 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight2(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
 
             if (father == null)
             {
@@ -128,7 +128,7 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
             if (father == null)
@@ -141,6 +141,10 @@ namespace DataAccess.DAO
                 weight = weight + item.grading_weight;
 
             }
+            if (weight > 100 || weight < 0)
+            {
+                return false;
+            }
             if (oldGra.grading_weight > gra.grading_weight)
             {
                 weight = weight - oldGra.grading_weight + gra.grading_weight;
@@ -150,8 +154,8 @@ namespace DataAccess.DAO
             {
                 weight = weight + oldGra.grading_weight - gra.grading_weight;
             }
-            if (weight > 100)
-            {
+            if (weight > 100 || weight < 0)
+            { 
                 return false;
             }
             return true;
@@ -243,19 +247,9 @@ namespace DataAccess.DAO
                 gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
-            bool check = CheckGradingWeight(gra);
-            if (check)
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
+            if(gra.grading_part != oldGra.grading_part)
             {
-                var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
-                if (oldGra.grading_weight > gra.grading_weight)
-                {
-                    father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
-                }
-                else if (oldGra.grading_weight < gra.grading_weight)
-
-                {
-                    father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
-                }
                 if (oldGra.grading_part > gra.grading_part)
                 {
                     father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
@@ -265,17 +259,31 @@ namespace DataAccess.DAO
                     father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
 
                 }
+            }
+            bool check = CheckGradingWeight(gra);
+            if (check)
+            {
+                if (oldGra.grading_weight > gra.grading_weight)
+                {
+                    father.grading_weight = father.grading_weight - oldGra.grading_weight + gra.grading_weight;
+                }
+                else if (oldGra.grading_weight < gra.grading_weight)
+
+                {
+                    father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
+                }
+             
                 oldGra.grading_weight = gra.grading_weight;
                 oldGra.grading_part = gra.grading_part;
                 _cmsDbContext.GradingStruture.Update(oldGra);
                 _cmsDbContext.GradingStruture.Update(father);
                 _cmsDbContext.SaveChanges();
-                return Result.updateSuccessfull.ToString();
             }
             else
             {
-                throw new Exception("Error: Update Structure Update False! Please Check Weight <100% !");
+                throw new Exception("Update Structure Update False! Please Check Weight <100% and >0 !");
             }
+            return Result.updateSuccessfull.ToString();
         }
     }
 }
