@@ -385,6 +385,11 @@ namespace DataAccess.DAO
                             .ThenInclude(x => x.CurriculumSubjects)
                             .ThenInclude(x => x.Subject)
                             .ThenInclude(x => x.LearningMethod)
+                            .Include(x => x.Curriculum)
+                            .ThenInclude(x => x.CurriculumSubjects)
+                            .ThenInclude(x => x.Subject)
+                            .ThenInclude(x => x.PreRequisite)
+                            .ThenInclude(x => x.PreSubject)
                             .Where(x => x.semester_id == semester_id)
                             .Where(x => x.curriculum_id == item.curriculumId)
                             .ToList();
@@ -412,12 +417,13 @@ namespace DataAccess.DAO
                                     subject_code = cs.Subject.subject_code,
                                     subject_name = cs.Subject.english_subject_name,
                                     credit = cs.Subject.credit,
-                                    //total = cs.Subject.total_time,
-                                    //@class = cs.Subject.total_time_class,
-                                    //@exam = cs.Subject.exam_total,
+                                    total = cs.Subject.total_time,
+                                    @class = cs.Subject.total_time_class,
+                                    @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
                                     optional = cs.option.ToString(),
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
+                                    pre = getPre(cs.Subject.subject_id)
                                 })
                                 .ToList(),
                         };
@@ -516,12 +522,13 @@ namespace DataAccess.DAO
                                     subject_code = cs.Subject.subject_code,
                                     subject_name = cs.Subject.english_subject_name,
                                     credit = cs.Subject.credit,
-                                    //total = cs.Subject.total_time,
-                                    //@class = cs.Subject.total_time_class,
-                                    //@exam = cs.Subject.exam_total,
+                                    total = cs.Subject.total_time,
+                                    @class = cs.Subject.total_time_class,
+                                    @exam = cs.Subject.exam_total,
                                     method = cs.Subject.LearningMethod.learning_method_name,
                                     optional = cs.option.ToString(),
                                     combo = _cmsDbContext.Combo.Where(x => x.combo_id == cs.combo_id).Select(x => x.combo_english_name).FirstOrDefault(),
+                                    pre = getPre(cs.Subject.subject_id),
                                 })
                                 .ToList(),
                         };
@@ -535,8 +542,28 @@ namespace DataAccess.DAO
             return null;
         }
 
-        
+        public List<PreRequisiteResponse> getPre(int id)
+        {
+            var listPre = _cmsDbContext.PreRequisite.Include(x => x.PreSubject).Include(x => x.PreRequisiteType).Where(x => x.subject_id == id).ToList();
+            List<PreRequisiteResponse> result = new List<PreRequisiteResponse>();
+            if (listPre != null)
+            {
+                foreach (var item in listPre)
+                {
+                    PreRequisiteResponse pre = new PreRequisiteResponse();
+                    pre.subject_id = item.subject_id;
+                    pre.pre_subject_id = item.pre_subject_id;
+                    pre.subject_code = item.PreSubject.subject_code;
+                    pre.subject_name = item.PreSubject.english_subject_name;
+                    pre.pre_requisite_type_id = item.pre_requisite_type_id;
+                    pre.pre_requisite_type_name = item.PreRequisiteType.pre_requisite_type_name;
+                    result.Add(pre);
+                }
 
+                return result;
+            }
+            return null;
+        }
         public List<Semester> getValidSemester(Semester semester)
         {
             int count = 6;
@@ -609,5 +636,6 @@ namespace DataAccess.DAO
         }
     }
 }
+
 
 
