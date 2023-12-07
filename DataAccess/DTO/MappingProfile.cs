@@ -34,8 +34,6 @@ namespace DataAccess.Models.DTO
             CreateMap<Syllabus, SyllabusResponse>().ReverseMap();
             //Combo
             CreateMap<Combo, ComboResponse>()
-                .ForMember(dest => dest.specialization_name, opt => opt.MapFrom(src => src.Specialization.specialization_name.Trim()))
-                .ForMember(dest => dest.specialization_english_name, opt => opt.MapFrom(src => src.Specialization.specialization_english_name.Trim()))
                 .ReverseMap();
             CreateMap<CLO, CLOsExportExcel>().ReverseMap();
             //CLO

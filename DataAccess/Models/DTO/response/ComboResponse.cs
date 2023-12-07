@@ -13,8 +13,6 @@ namespace DataAccess.Models.DTO.response
         public string combo_name { get; set; }
         public string combo_english_name { get; set; }
         public int specialization_id { get; set; }
-        public string specialization_name { get; set; }
-        public string specialization_english_name { get; set; }
         public bool is_active { get; set; }
     }
 }
