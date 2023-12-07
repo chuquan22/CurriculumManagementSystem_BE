@@ -534,6 +534,9 @@ namespace DataAccess.DAO
             }
             return null;
         }
+
+        
+
         public List<Semester> getValidSemester(Semester semester)
         {
             int count = 6;

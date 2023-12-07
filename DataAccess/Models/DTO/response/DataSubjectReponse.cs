@@ -17,6 +17,5 @@ namespace DataAccess.Models.DTO.response
         public string method { get; set; }
         public string optional { get; set; }
         public string combo { get; set; }
-
     }
 }
