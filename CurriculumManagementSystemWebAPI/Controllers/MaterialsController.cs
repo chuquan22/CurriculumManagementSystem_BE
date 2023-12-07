@@ -30,6 +30,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = repo.GetMaterial(syllabus_id);
+
                 var result = _mapper.Map<List<MaterialsResponse>>(rs);
                 return Ok(new BaseResponse(false, "Successfully!", result));
             }

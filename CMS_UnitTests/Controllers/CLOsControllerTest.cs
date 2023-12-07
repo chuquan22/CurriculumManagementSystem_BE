@@ -37,7 +37,7 @@ namespace CMS_UnitTests.Controllers
 
         [Test]
         public async Task GetCLOs_ReturnsOkResponse()
-        {
+        {   
             // Arrange
             var syllabus_id = 1;
 

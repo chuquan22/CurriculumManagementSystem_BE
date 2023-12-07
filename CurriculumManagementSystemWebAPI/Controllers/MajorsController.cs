@@ -64,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     .ToList();
 
 
-                return Ok(new BaseResponse(false, "Sucessfully!", listMajorRespone));
+                return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
             }
             catch (Exception ex)
             {

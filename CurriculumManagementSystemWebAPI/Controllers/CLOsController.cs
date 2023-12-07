@@ -29,12 +29,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = cloRepository.GetCLOs(syllabus_id);
+              
                 return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
 
@@ -51,7 +51,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
     
@@ -74,7 +74,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
 
@@ -95,7 +95,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, ex.Message, null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
 
@@ -112,10 +112,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
                 return Ok(new BaseResponse(false, "Successfully!", rs));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest(new BaseResponse(true, "error", null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }
     }

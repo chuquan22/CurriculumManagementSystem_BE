@@ -75,13 +75,22 @@ namespace DataAccess.DAO
 
             if (rs == null)
             {
-                _cmsDbContext.CLO.Add(clo);
-                _cmsDbContext.SaveChanges();
-                return clo;
+                try
+                {
+                    _cmsDbContext.CLO.Add(clo);
+                    _cmsDbContext.SaveChanges();
+                    return clo;
+                }
+                catch (Exception)
+                {
+
+                    throw new Exception("Not Found Syllabus!");
+                }
+
             }
             else
             {
-                throw new Exception("CLO name already exists in the system.");
+                throw new Exception("CLO name already exists in the system!");
             }
         }
 

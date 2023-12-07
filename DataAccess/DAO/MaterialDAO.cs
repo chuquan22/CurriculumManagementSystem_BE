@@ -57,9 +57,18 @@ namespace DataAccess.DAO
 
         public Material CreateMaterial(Material material)
         {
-            _context.Material.Add(material);
-            _context.SaveChanges();
-            return material;
+            try
+            {
+                _context.Material.Add(material);
+                _context.SaveChanges();
+                return material;
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("Create Materials Fail!");
+            }
+           
         }
 
         public Material EditMaterial(Material material)
