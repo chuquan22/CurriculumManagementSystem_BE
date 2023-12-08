@@ -256,7 +256,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var curriculumExcel = "";
             for (int i = 1; i <= comboList.Count; i++)
             {
-                comboExcel += $"Combo{i}: " + comboList.Skip(i - 1).Select(x => x.combo_name).FirstOrDefault();
+                comboExcel += $"{comboList.Skip(i - 1).Select(x => x.combo_code).FirstOrDefault()}: " + comboList.Skip(i - 1).Select(x => x.combo_name).FirstOrDefault();
                 if (i < comboList.Count)
                 {
                     comboExcel += "; ";
@@ -329,7 +329,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             memoryStream.Seek(0, SeekOrigin.Begin);
             byte[] fileContents = memoryStream.ToArray();
             return Ok(new BaseResponse(false, $"Curriculum-{curriculum.curriculum_code}-{curriculum.english_curriculum_name}", fileContents));
-             //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum-Export.xlsx");
+            //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Curriculum-Export.xlsx");
         }
 
 
