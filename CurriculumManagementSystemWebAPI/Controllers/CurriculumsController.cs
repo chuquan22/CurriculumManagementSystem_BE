@@ -813,7 +813,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
 
                                     }
-                                    if (!found_subject && !string.IsNullOrWhiteSpace(subjectCode.Text) && !subjectCode.Text.Contains("Subject"))
+                                    if (!found_subject && !string.IsNullOrWhiteSpace(subjectCode.Text) && !subjectCode.Text.ToLower().Contains("subject"))
                                     {
                                         return error + $"Subject Code {subjectCode.Text} not mapp in sheet Curriculum Subject";
                                     }

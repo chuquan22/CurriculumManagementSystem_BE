@@ -68,7 +68,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = comboRepository.GetListComboByCurriId(curri_Id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var rsCombo = _mapper.Map<List<ComboResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", rsCombo));
             }
             catch (Exception ex)
             {
