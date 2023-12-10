@@ -169,9 +169,12 @@ namespace DataAccess.DAO
             {
                 weight = weight + oldGra.grading_weight - gra.grading_weight;
             }
-            if (weight > 100 || weight < 0)
-            { 
-                return false;
+            if (weightAll > 100 || weightAll < 0)
+            {
+                if (weight > 100 || weight < 0)
+                {
+                    return false;
+                }
             }
             return true;
 
