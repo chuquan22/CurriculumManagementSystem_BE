@@ -10,7 +10,7 @@ using Repositories.GradingStruture;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+ //   [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class GradingStrutureController : ControllerBase
     {

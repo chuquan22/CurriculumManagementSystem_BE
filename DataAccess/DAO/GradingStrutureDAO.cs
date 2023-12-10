@@ -130,12 +130,13 @@ namespace DataAccess.DAO
         {
             var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
             var fatherAll = _cmsDbContext.GradingStruture
-    .Where(x =>
-        (x.references == null || x.references.Equals("") && x.session_no == null && x.syllabus_id == gra.syllabus_id) ||
-        ((!x.references.Equals("") || x.references != null) && (x.session_no == null || x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id) ||
-        ((x.references.Equals("") || x.references == null) && (x.session_no != null || !x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id)
+                     .Where(s => s.syllabus_id == gra.syllabus_id)
+                     .Where(x =>
+                             (x.references == null || x.references.Equals("") && x.session_no == null && x.syllabus_id == gra.syllabus_id) ||
+                              ((!x.references.Equals("") || x.references != null) && (x.session_no == null || x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id) ||
+                               ((x.references.Equals("") || x.references == null) && (x.session_no != null || !x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id)
     )
-    .ToList();
+    .Distinct().ToList();
 
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
