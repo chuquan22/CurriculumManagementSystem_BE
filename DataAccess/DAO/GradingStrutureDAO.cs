@@ -150,6 +150,11 @@ namespace DataAccess.DAO
                 weightAll = weightAll + item.grading_weight;
 
             }
+            foreach (var item in father)
+            {
+                weight = weight + item.grading_weight;
+
+            }
             if (weightAll > 100 || weightAll < 0)
             {
                 return false;
