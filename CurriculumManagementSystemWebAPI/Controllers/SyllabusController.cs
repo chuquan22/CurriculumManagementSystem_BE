@@ -114,6 +114,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
+                if(rs1 == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+
+                }
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
