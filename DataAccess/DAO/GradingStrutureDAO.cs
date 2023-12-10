@@ -129,6 +129,14 @@ namespace DataAccess.DAO
         public bool CheckGradingWeight(GradingStruture gra)
         {
             var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
+            var fatherAll = _cmsDbContext.GradingStruture
+    .Where(x =>
+        (x.references == null || x.references.Equals("") && x.session_no == null && x.syllabus_id == gra.syllabus_id) ||
+        ((!x.references.Equals("") || x.references != null) && (x.session_no == null || x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id) ||
+        ((x.references.Equals("") || x.references == null) && (x.session_no != null || !x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id)
+    )
+    .ToList();
+
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
             if (father == null)
@@ -136,12 +144,13 @@ namespace DataAccess.DAO
                 throw new Exception("No Grading Strutude References When Importing this References!.");
             }
             decimal weight = 0;
-            foreach (var item in father)
+            decimal weightAll = 0;
+            foreach (var item in fatherAll)
             {
-                weight = weight + item.grading_weight;
+                weightAll = weightAll + item.grading_weight;
 
             }
-            if (weight > 100 || weight < 0)
+            if (weightAll > 100 || weightAll < 0)
             {
                 return false;
             }
