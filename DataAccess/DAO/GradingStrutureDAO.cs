@@ -128,7 +128,8 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
+            var father = _cmsDbContext.GradingStruture.Where(x => x.references == gra.references && x.session_no == null && x.syllabus_id == gra.syllabus_id).ToList();
+
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
 
             if (father == null)
@@ -278,12 +279,14 @@ namespace DataAccess.DAO
                 _cmsDbContext.GradingStruture.Update(oldGra);
                 _cmsDbContext.GradingStruture.Update(father);
                 _cmsDbContext.SaveChanges();
+                return Result.updateSuccessfull.ToString();
             }
             else
             {
                 throw new Exception("Update Structure Update False! Please Check Weight <100% and >0 !");
             }
             return Result.updateSuccessfull.ToString();
+
         }
     }
 }
