@@ -218,7 +218,6 @@ namespace DataAccess.DAO
         public string UpdateGradingStruture(GradingStruture gra, List<int> list)
         {
             var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
-
             oldGra.syllabus_id = gra.syllabus_id;
             oldGra.minimum_value_to_meet_completion = gra.minimum_value_to_meet_completion;
             oldGra.grading_duration = gra.grading_duration;
@@ -255,17 +254,9 @@ namespace DataAccess.DAO
                 throw new Exception("Component already exists! Update failed.");
             }
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
-            if(gra.grading_part != oldGra.grading_part)
+            if (father != null && gra.grading_part != oldGra.grading_part)
             {
-                if (oldGra.grading_part > gra.grading_part)
-                {
-                    father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
-                }
-                else if (oldGra.grading_part < gra.grading_part)
-                {
-                    father.grading_part = father.grading_part - gra.grading_part + oldGra.grading_part;
-
-                }
+                father.grading_part = father.grading_part - oldGra.grading_part + gra.grading_part;
             }
             bool check = CheckGradingWeight(gra);
             if (check)
@@ -278,18 +269,17 @@ namespace DataAccess.DAO
 
                 {
                     father.grading_weight = father.grading_weight + gra.grading_weight - oldGra.grading_weight;
-                }
-             
-                oldGra.grading_weight = gra.grading_weight;
-                oldGra.grading_part = gra.grading_part;
-                _cmsDbContext.GradingStruture.Update(oldGra);
-                _cmsDbContext.GradingStruture.Update(father);
-                _cmsDbContext.SaveChanges();
+                }            
             }
             else
             {
                 throw new Exception("Update Structure Update False! Please Check Weight <100% and > 0% !");
             }
+            oldGra.grading_weight = gra.grading_weight;
+            oldGra.grading_part = gra.grading_part;
+            _cmsDbContext.GradingStruture.Update(oldGra);
+            _cmsDbContext.GradingStruture.Update(father);
+            _cmsDbContext.SaveChanges();
             return Result.updateSuccessfull.ToString();
         }
     }
