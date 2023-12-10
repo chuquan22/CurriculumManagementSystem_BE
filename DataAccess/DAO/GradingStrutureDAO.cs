@@ -128,57 +128,35 @@ namespace DataAccess.DAO
         }
         public bool CheckGradingWeight(GradingStruture gra)
         {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
             var fatherAll = _cmsDbContext.GradingStruture
-                     .Where(s => s.syllabus_id == gra.syllabus_id)
-                     .Where(x =>
-                             (x.references == null || x.references.Equals("") && x.session_no == null && x.syllabus_id == gra.syllabus_id) ||
-                              ((!x.references.Equals("") || x.references != null) && (x.session_no == null || x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id) ||
-                               ((x.references.Equals("") || x.references == null) && (x.session_no != null || !x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id)
+                .Where(s => s.syllabus_id == gra.syllabus_id)
+                .Where(x =>
+        (x.references == null || x.references.Equals("") && x.session_no == null && x.syllabus_id == gra.syllabus_id) ||
+        ((!x.references.Equals("") || x.references != null) && (x.session_no == null || x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id) ||
+        ((x.references.Equals("") || x.references == null) && (x.session_no != null || !x.session_no.Equals("")) && gra.syllabus_id == x.syllabus_id)
     )
-    .Distinct().ToList();
+                .ToList();
 
-            var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
+            var oldGra = _cmsDbContext.GradingStruture
+                .Where(u => u.grading_id == gra.grading_id)
+                .FirstOrDefault();
 
-            if (father == null)
+            if (fatherAll == null || fatherAll.Count == 0)
             {
-                throw new Exception("No Grading Strutude References When Importing this References!.");
+                throw new Exception("No Grading Structure References When Importing this References!");
             }
-            decimal weight = 0;
-            decimal weightAll = 0;
-            foreach (var item in fatherAll)
-            {
-                weightAll = weightAll + item.grading_weight;
 
-            }
-            foreach (var item in father)
-            {
-                weight = weight + item.grading_weight;
+            decimal weightAll = fatherAll.Sum(item => item.grading_weight);
+            decimal totalWeight = weightAll - oldGra.grading_weight + gra.grading_weight;
 
-            }
-            if (weightAll > 100 || weightAll < 0)
+            if (totalWeight > 100 || totalWeight < 0)
             {
                 return false;
             }
-            if (oldGra.grading_weight > gra.grading_weight)
-            {
-                weight = weight - oldGra.grading_weight + gra.grading_weight;
-            }
-            else if (oldGra.grading_weight < gra.grading_weight)
 
-            {
-                weight = weight + oldGra.grading_weight - gra.grading_weight;
-            }
-            if (weightAll > 100 || weightAll < 0)
-            {
-                if (weight > 100 || weight < 0)
-                {
-                    return false;
-                }
-            }
             return true;
-
         }
+
 
         public bool CheckGrading(GradingStruture gra)
         {
@@ -265,6 +243,16 @@ namespace DataAccess.DAO
                 gr.CLO_id = cLo2;
                 _cmsDbContext.GradingCLO.Add(gr);
             }
+            var isComponentExist = _cmsDbContext.GradingStruture
+                  .Any(x => x.references == oldGra.references &&
+                  x.session_no == null &&
+                  x.syllabus_id == oldGra.syllabus_id &&
+                  x.assessment_component == gra.assessment_component &&
+                  x.grading_id != oldGra.grading_id);
+            if (isComponentExist)
+            {
+                throw new Exception("Component already exists! Update failed.");
+            }
             var father = _cmsDbContext.GradingStruture.Where(x => x.references == oldGra.references && x.session_no == null && x.syllabus_id == oldGra.syllabus_id).FirstOrDefault();
             if(gra.grading_part != oldGra.grading_part)
             {
@@ -299,7 +287,7 @@ namespace DataAccess.DAO
             }
             else
             {
-                throw new Exception("Update Structure Update False! Please Check Weight <100% and >0 !");
+                throw new Exception("Update Structure Update False! Please Check Weight <100% and > 0% !");
             }
             return Result.updateSuccessfull.ToString();
         }
