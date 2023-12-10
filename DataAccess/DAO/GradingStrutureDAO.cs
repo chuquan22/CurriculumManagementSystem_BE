@@ -244,10 +244,11 @@ namespace DataAccess.DAO
                 _cmsDbContext.GradingCLO.Add(gr);
             }
             var isComponentExist = _cmsDbContext.GradingStruture
-                  .Any(x => x.references == oldGra.references &&
-                  x.session_no == null &&
-                  x.syllabus_id == oldGra.syllabus_id &&
-                  x.assessment_component == gra.assessment_component &&
+                  .Any(x => 
+                  x.syllabus_id == oldGra.syllabus_id 
+                  &&
+                  x.assessment_component.Equals(gra.assessment_component) 
+                  &&
                   x.grading_id != oldGra.grading_id);
             if (isComponentExist)
             {
