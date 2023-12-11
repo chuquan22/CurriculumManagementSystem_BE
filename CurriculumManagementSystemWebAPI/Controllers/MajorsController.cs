@@ -76,7 +76,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var distinctSubjects = list
                         .GroupBy(subject => subject.subject_id)  
                         .Select(group => group.First())
-                        .OrderBy(subject => subject.subject_name)
+                        .OrderBy(subject => subject.subject_code)
+                        .ThenBy(subject => subject.subject_name)
                         .ToList();
 
                     major.listSubjects = distinctSubjects;
