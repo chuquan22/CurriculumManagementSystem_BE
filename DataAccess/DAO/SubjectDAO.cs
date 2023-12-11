@@ -146,19 +146,20 @@ namespace DataAccess.DAO
             }
 
             var listSubjects = listcurri
-                .SelectMany(item => CMSDbContext.Curriculum
-                    .Include(x => x.CurriculumSubjects)
-                    .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
-                    .Join(
-                        CMSDbContext.CurriculumSubject.Include(x => x.Subject),
-                        curriculum => curriculum.curriculum_id,
-                        curriculumSubject => curriculumSubject.curriculum_id,
-                        (curriculum, curriculumSubject) => curriculumSubject.Subject
-                    )
-                )
-                .ToList();
-
-            listSubjects = listSubjects.Distinct().ToList();
+                 .SelectMany(item => CMSDbContext.Curriculum
+                     .Include(x => x.CurriculumSubjects)
+                     .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
+                     .ToList()
+                     .SelectMany(curriculum =>
+                         CMSDbContext.CurriculumSubject
+                             .Include(x => x.Subject)
+                             .Where(curriculumSubject => curriculumSubject.curriculum_id == curriculum.curriculum_id)
+                             .GroupBy(curriculumSubject => curriculumSubject.subject_id)
+                             .Select(groupedSubjects => groupedSubjects.First().Subject)
+                     )
+                 )
+                 .Distinct()
+                 .ToList();
 
             return listSubjects;
         }

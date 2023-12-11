@@ -90,7 +90,7 @@ namespace DataAccess.DAO
 
             if (check == true)
             {
-                var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == id).FirstOrDefault();
+                var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
                 var isComponentExist = _cmsDbContext.GradingStruture
                 .Any(x =>
                 x.syllabus_id == oldGra.syllabus_id
