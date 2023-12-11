@@ -27,7 +27,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {
@@ -164,7 +164,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             };
                             try
                             {
-                               // syllabusId = await CreateSyllabusAPI(syllabusExcel);
                                 SyllabusRequest listSyllabus = _mapper.Map<SyllabusRequest>(syllabusExcel);
                                 var rsSyllabus = CreateSyllabus(listSyllabus);
                                 var okRsSyllabus = rsSyllabus.Result as OkObjectResult;
@@ -176,8 +175,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             catch (Exception)
                             {
-
-                                return BadRequest("Import false at sheet Syllabus!");
+                               return BadRequest("Import false at sheet Syllabus!");
                             }
                             rs.Add(value);
                         }
@@ -198,7 +196,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         item.syllabus_id = syllabusId;
                                         MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
-                                       // await CreateMaterialsAPI(addRs);
                                         materialsController.CreateMaterial(addRs);
                                     }
 
@@ -232,8 +229,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
-
-                                       // idClo = await CreateCLOsAPI(addRs);
                                         var rsClo = cLOsController.CreateCLOs(addRs);
                                         var okRsClo = rsClo.Result as OkObjectResult;
                                         var baseResponseRsClo = okRsClo.Value as BaseResponse;
@@ -280,8 +275,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                 List<int> lst = new List<int>();
                                 foreach (var it in cloId)
-                                {
-                                  
+                                {                                
                                         string name = "null";
                                         if (cloRepository.GetCLOsById(it) != null)
                                         {
@@ -291,7 +285,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                                 lst.Add(it);
                                             }
                                         }
-
                                         if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
                                         {
                                             lst = new List<int>();
@@ -305,7 +298,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 dataSession.session.syllabus_id = syllabusId;
                                 try
                                 {
-                                   // await CreateSchudeleAPI(dataSession);
                                     sessionController.CreateSession(dataSession);
                                 }
                                 catch (Exception ex)
@@ -314,7 +306,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     cloRepository.DeleteCLOsBySyllabusId(syllabusId);
                                     materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
                                     syllabusRepository.DeleteSyllabus(syllabusId);
-
                                     return BadRequest("Import false at sheet Schedule.");
                                 }
                             }
@@ -374,7 +365,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
                                     }
                                     gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
-                                   // await CreateGradingStrutureAPI(gradingStrutureCreate);
                                     gradingStrutureController.CreateGradingStructure(gradingStrutureCreate);
 
                                 }
@@ -411,11 +401,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var syllabus = syllabusRepository.GetSyllabusById(syllabusId);
             if(syllabus == null)
             {
-                return BadRequest(new BaseResponse(true, "Syllabus not exist in system!", null));
+                return NotFound(new BaseResponse(true, "Syllabus not exist in system!", null));
             }
             try
             {
-
                 gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllabusId);
                 sessionRepository.DeleteSessionBySyllabusId(syllabusId);
                 cloRepository.DeleteCLOsBySyllabusId(syllabusId);
@@ -686,14 +675,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
                 string result = syllabusRepository.UpdatePatchSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         // Post: Export Curriculum by Excel File
