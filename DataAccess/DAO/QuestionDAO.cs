@@ -30,7 +30,28 @@ namespace DataAccess.DAO
             return (_context.Question?.Any(x => x.question_id != id && x.question_name.ToLower().Equals(questionName.ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
         }
 
+        public bool CheckAnswerDuplicate(string answerA, string answerB, string answerC, string answerD)
+        {
+            // Put the answers into a collection
+            var answers = new List<string> { answerA, answerB };
+            if(!string.IsNullOrEmpty(answerC))
+            {
+                answers.Add(answerC);
+            }
+            if (!string.IsNullOrEmpty(answerD))
+            {
+                answers.Add(answerD);
+            }
+            // Check for duplicates within the provided answers
+            if (answers.Distinct().Count() != answers.Count)
+            {
+                // If the count of distinct answers is less than the total count, there are duplicates
+                return true;
+            }
 
+            // If no duplicates are found, return false
+            return false;
+        }
 
         public string CreateQuestion(Question question)
         {

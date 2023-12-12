@@ -152,6 +152,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
             }
+
+            if(_questionRepository.CheckAnswerDuplicate(questionDTO.answers_A, questionDTO.answers_B, questionDTO.answers_C, questionDTO.answers_D))
+            {
+                return BadRequest(new BaseResponse(true, $"Answer is Duplicate!"));
+            }
+
             var question = _mapper.Map<Question>(questionDTO);
             string createResult = _questionRepository.CreateQuestion(question);
             if (createResult != Result.createSuccessfull.ToString())

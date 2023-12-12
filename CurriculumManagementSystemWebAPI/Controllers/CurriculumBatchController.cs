@@ -117,6 +117,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
 
+        [HttpGet("GetListCurriculumBatchByDegreeLevel/{degree_level_id}")]
+        public async Task<IActionResult> GetListCurriculumBatchByDegreeLevel(int degree_level_id)
+        {
+            var listBatch = _batchRepository.GetListBatchByDegreeLevel(degree_level_id);
+            var listCurriBatch = _curriculumBatchRepository.GetAllCurriculumBatch();
+            List<CurriculumBatchDTOResponse> listCurriculumBatch = new List<CurriculumBatchDTOResponse>();
+
+            foreach (var batch in listBatch)
+            {
+                var curriBacthDTO = _mapper.Map<CurriculumBatchDTOResponse>(batch);
+
+                var curriResponse = _mapper.Map<List<CurriculumResponse>>(listCurriBatch.Where(x => x.batch_id == batch.batch_id).Select(x => x.Curriculum).ToList());
+                curriBacthDTO.curriculum = curriResponse;
+
+                listCurriculumBatch.Add(curriBacthDTO);
+            }
+
+            return Ok(new BaseResponse(false, "Curriculum Batch", listCurriculumBatch));
+        }
+
 
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)

@@ -41,6 +41,8 @@ namespace DataAccess.DAO
             return (_context.Quiz?.Any(x => x.subject_id == subjectId && x.quiz_name.ToLower().Equals(quizName.ToLower()))).GetValueOrDefault();
         }
 
+       
+
         public bool CheckQuizExsit(int quizId)
         {
             return (_context.Question?.Any(x => x.quiz_id == quizId)).GetValueOrDefault();

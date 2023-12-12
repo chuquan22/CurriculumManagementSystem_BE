@@ -951,8 +951,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private List<Subject> GetSubjects(List<CurriculumSubject> listCurriSubject)
         {
             var listSubject = new List<Subject>();
-            bool checkCombo = false;
-            var subjectCombo = new Subject();
             foreach(var curriSubject in listCurriSubject)
             {
                 if(curriSubject.option == null && (curriSubject.combo_id == 0 || curriSubject.combo_id == null))
@@ -965,32 +963,61 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var subject = listSubject.FirstOrDefault(x => x.subject_id == curriOption.subject_id);
                     if (subject == null)
                     {
-                        curriSubject.Subject.subject_name = curriSubject.Subject.subject_name + "\n  " + curriSubject.Subject.english_subject_name.ToLower() + "\n";
+                        curriSubject.Subject.subject_name = curriSubject.Subject.subject_name + "\n" + curriSubject.Subject.english_subject_name.ToLower() + "\n";
                         listSubject.Add(curriSubject.Subject);
                     }
                     else
                     {
-                        subject.subject_code += "\n(Option1)\n" + curriSubject.Subject.subject_code + "\n(Option2)";
-                        subject.subject_name += curriSubject.Subject.subject_name + "\n  " + curriSubject.Subject.english_subject_name.ToLower() + "\n";
+                        subject.subject_code += "\n(LC1)\n" + curriSubject.Subject.subject_code + "\n(LC2)";
+                        subject.subject_name += curriSubject.Subject.subject_name + "\n" + curriSubject.Subject.english_subject_name.ToLower() + "\n";
                     }
                 }
-                else if (curriSubject.option == null && curriSubject.combo_id != 0 && curriSubject.combo_id != null)
+               
+            }
+            var listComboId = listCurriSubject.Where(x => x.combo_id != 0 && x.combo_id != null).OrderBy(x => x.combo_id).DistinctBy(x => x.combo_id).ToList();
+            
+            var s = new Subject();
+            int index = 0;
+            var curriSubjectCombo = listCurriSubject
+                .Where(x => x.combo_id != 0 && x.combo_id != null)
+                .OrderBy(x => x.combo_id)
+                .ToList();
+
+            var curriSubjectComboOrder = new List<CurriculumSubject>();
+            var itemsToRemove = new List<CurriculumSubject>();
+
+            do
+            {
+                foreach (var id in listComboId)
                 {
-                    var subject = listCurriSubject.FirstOrDefault(x => x.subject_id == curriSubject.subject_id).Subject;
-                    var combo = _comboRepository.FindComboById((int)curriSubject.combo_id);
-                    if (checkCombo == false)
+                    foreach (var item in curriSubjectCombo)
                     {
-                        subjectCombo = subject;
-                        curriSubject.Subject.subject_name = curriSubject.Subject.subject_name + "\n  " + curriSubject.Subject.english_subject_name.ToLower() + "\n";
-                        curriSubject.Subject.subject_code = curriSubject.Subject.subject_code + $"\n({combo.combo_code})\n";
-                        listSubject.Add(curriSubject.Subject);
-                        checkCombo = true;
+                        if (item.combo_id == id.combo_id && curriSubjectComboOrder.FirstOrDefault(x => x.subject_id == item.subject_id) == null)
+                        {
+                            curriSubjectComboOrder.Add(item);
+                            break;
+                        }
                     }
-                    else
-                    {
-                        listSubject.First(x => x.subject_id == subjectCombo.subject_id).subject_code  += curriSubject.Subject.subject_code + $"\n({combo.combo_code})\n";
-                        listSubject.First(x => x.subject_id == subjectCombo.subject_id).subject_name += curriSubject.Subject.subject_name + "\n  " + curriSubject.Subject.english_subject_name.ToLower() + "\n";
-                    }
+                }
+               
+            } while (curriSubjectComboOrder.Count < curriSubjectCombo.Count);
+
+
+            foreach (var subjectCombo in curriSubjectComboOrder)
+            {
+                var combo = _comboRepository.FindComboById((int)subjectCombo.combo_id);
+                if(index == listComboId.Count || index == 0)
+                {
+                    index = 1;
+                    s = subjectCombo.Subject;
+                    s.subject_code += $"\n({combo.combo_code})\n";
+                    s.subject_name += "\n" + s.english_subject_name.ToLower() + "\n";
+                    listSubject.Add(s);
+                }else
+                {
+                    s.subject_code += subjectCombo.Subject.subject_code + $"\n({combo.combo_code})\n";
+                    s.subject_name += subjectCombo.Subject.subject_name + "\n" + subjectCombo.Subject.english_subject_name.ToLower() + "\n";
+                    index++;
                 }
             }
             return listSubject;

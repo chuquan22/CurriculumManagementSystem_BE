@@ -15,6 +15,7 @@ namespace Repositories.Batchs
         int GetTotalCurriculumBatch(string? txtSearch);
         List<Batch> GetBatchBySpe(int speId);
         List<Batch> GetBatchByDegreeLevel(int degreeLevelId);
+        List<Batch> GetListBatchByDegreeLevel(int degree_id);
         List<Batch> GetBatchNotExsitInSemester();
         Batch GetBatchById(int id);
         bool CheckBatchDuplicate(string batch_name, int batchOrder, int degree_Id);
