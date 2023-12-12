@@ -14,11 +14,12 @@ namespace DataAccess.DAO
             return listSemesters;
         }
 
-        public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
+        public List<Semester> PaginationSemester(int degree_id, int page, int limit, string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
                 .Include(x => x.Batch)
-                .Include(x => x.Batch.DegreeLevel);
+                .Include(x => x.Batch.DegreeLevel)
+                .Where(x => x.Batch.degree_level_id == degree_id);
 
             if (!string.IsNullOrEmpty(txtSearch))
             {

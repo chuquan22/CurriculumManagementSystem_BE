@@ -62,9 +62,9 @@ namespace Repositories.Semesters
             return db.GetTotalSemester(txtSearch);
         }
 
-        public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
+        public List<Semester> PaginationSemester(int degree_id, int page, int limit, string? txtSearch)
         {
-            return db.PaginationSemester(page, limit, txtSearch);
+            return db.PaginationSemester(degree_id, page, limit, txtSearch);
         }
 
         public string UpdateSemester(Semester semester)

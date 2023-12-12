@@ -42,10 +42,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List Semester", listSemesterResponse));
         }
         [Authorize(Roles = "Manager")]
-        [HttpGet("Pagination/{page}/{limit}")]
-        public ActionResult PaginationSemester(int page, int limit, [FromQuery] string? txtSearch)
+        [HttpGet("Pagination/{degree_id}/{page}/{limit}")]
+        public ActionResult PaginationSemester(int degree_id, int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listSemester = semesterRepository.PaginationSemester(page, limit, txtSearch);
+            var listSemester = semesterRepository.PaginationSemester(degree_id, page, limit, txtSearch);
             if (listSemester.Count == 0)
             {
                 Ok(new BaseResponse(false, "Not Found Semester!"));
