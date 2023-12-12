@@ -51,11 +51,16 @@ namespace DataAccess.DAO
             return listSemester;
         }
 
-        public int GetTotalSemester(string? txtSearch)
+        public int GetTotalSemester(int? degree_id, string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
                 .Include(x => x.Batch)
                 .Include(x => x.Batch.DegreeLevel);
+
+            if (degree_id.HasValue)
+            {
+                query = query.Where(x => x.Batch.degree_level_id == degree_id);
+            }
 
             if (!string.IsNullOrEmpty(txtSearch))
             {

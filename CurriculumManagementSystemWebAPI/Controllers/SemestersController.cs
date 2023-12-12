@@ -50,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Ok(new BaseResponse(false, "Not Found Semester!"));
             }
-            var total = semesterRepository.GetTotalSemester(txtSearch);
+            var total = semesterRepository.GetTotalSemester(degree_id, txtSearch);
             var listSemesterResponse = _mapper.Map<List<SemesterResponse>>(listSemester);
             return Ok(new BaseResponse(false, "List Semester", new BaseListResponse(page, limit, total, listSemesterResponse)));
         }

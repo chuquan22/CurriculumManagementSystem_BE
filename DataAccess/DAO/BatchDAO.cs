@@ -49,10 +49,15 @@ namespace DataAccess.DAO
             return listLearningMethod;
         }
 
-        public int GetTotalCurriculumBatch(string? txtSearch)
+        public int GetTotalCurriculumBatch(int? degree_id, string? txtSearch)
         {
             IQueryable<Batch> query = _context.Batch
                  .Include(x => x.CurriculumBatchs);
+
+            if (degree_id.HasValue)
+            {
+                query = query.Where(x => x.degree_level_id == degree_id);
+            }
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
