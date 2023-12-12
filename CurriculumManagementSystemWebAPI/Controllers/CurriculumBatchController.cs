@@ -15,7 +15,7 @@ using System.Security.Policy;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class CurriculumBatchController : ControllerBase
     {
@@ -52,8 +52,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Curriculum Batch", listCurriculumBatch));
         }
 
-        [HttpGet("Pagination/{degree_id}/{page}/{limit}")]
-        public ActionResult PaginationLearningMethod(int degree_id, int page, int limit, [FromQuery] string? txtSearch)
+        [HttpGet("Pagination/{page}/{limit}")]
+        public ActionResult PaginationLearningMethod(int? degree_id, int page, int limit, [FromQuery] string? txtSearch)
         {
             var listBatch = _batchRepository.PaginationCurriculumBatch(degree_id, page, limit, txtSearch);
 

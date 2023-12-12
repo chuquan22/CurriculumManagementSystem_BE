@@ -10,7 +10,7 @@ namespace Repositories.Semesters
     public interface ISemestersRepository
     {
         public List<Semester> GetSemesters();
-        List<Semester> PaginationSemester(int degree_id, int page, int limit, string? txtSearch);
+        List<Semester> PaginationSemester(int? degree_id, int page, int limit, string? txtSearch);
         List<Semester> GetSemesterBySpe(int speId);
         int GetTotalSemester(string? txtSearch);
         Semester GetSemester(int id);

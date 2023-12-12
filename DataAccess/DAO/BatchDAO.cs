@@ -23,12 +23,17 @@ namespace DataAccess.DAO
             return listBatch;
         }
 
-        public List<Batch> PaginationCurriculumBatch(int degree_id, int page, int limit, string? txtSearch)
+        public List<Batch> PaginationCurriculumBatch(int? degree_id, int page, int limit, string? txtSearch)
         {
             IQueryable<Batch> query = _context.Batch
                 .Include(x => x.DegreeLevel)
-                .Include(x => x.CurriculumBatchs)
-                .Where(x => x.degree_level_id == degree_id);
+                .Include(x => x.CurriculumBatchs);
+
+
+            if (degree_id.HasValue)
+            {
+                query = query.Where(x => x.degree_level_id == degree_id);
+            }
 
             if (!string.IsNullOrEmpty(txtSearch))
             {

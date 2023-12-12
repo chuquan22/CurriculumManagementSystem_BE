@@ -79,7 +79,7 @@ namespace Repositories.Batchs
             return _batchDAO.GetTotalCurriculumBatch(txtSearch);
         }
 
-        public List<Batch> PaginationCurriculumBatch(int degree_id, int page, int limit, string? txtSearch)
+        public List<Batch> PaginationCurriculumBatch(int? degree_id, int page, int limit, string? txtSearch)
         {
             return _batchDAO.PaginationCurriculumBatch(degree_id,page, limit, txtSearch);
         }
