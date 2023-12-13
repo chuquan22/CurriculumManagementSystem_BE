@@ -10,7 +10,7 @@ using Repositories.Specialization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SpecializationController : ControllerBase
     {
@@ -43,15 +43,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
         [HttpGet("GetListPagging")]
-        public ActionResult GetListSpecialization(int page, int limit, string? txtSearch,string? major_id)
+        public ActionResult GetListSpecialization(int page, int limit, string? txtSearch,string? major_id, int degree_id)
         {
             List<Specialization> rs = new List<Specialization>();
             try
             {
-                int limit2 = specializationRepository.GetTotalSpecialization(txtSearch, major_id);
-                rs = specializationRepository.GetListSpecialization(page,limit,txtSearch,major_id);
-                var result = _mapper.Map<List<Specialization>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully!", new BaseListResponse(page,limit2,rs)));
+                int limit2 = specializationRepository.GetTotalSpecialization(degree_id, txtSearch, major_id);
+                rs = specializationRepository.GetListSpecialization(degree_id, page,limit,txtSearch,major_id);
+                var result = _mapper.Map<List<SpecializationResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully!", new BaseListResponse(page,limit,limit2, result)));
             }
             catch (Exception ex)
             {

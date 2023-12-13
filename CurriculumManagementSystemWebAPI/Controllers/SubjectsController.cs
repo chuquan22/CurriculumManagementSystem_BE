@@ -296,10 +296,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, error + ex.Message));
+                return BadRequest(new BaseResponse(true, error + ex.Message + " or check table name match in Sample File!"));
             }
-
-
         }
 
         private bool CheckIdExistInSyllabus(int id)

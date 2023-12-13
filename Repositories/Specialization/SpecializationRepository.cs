@@ -29,9 +29,9 @@ namespace Repositories.Specialization
            // return db.GetSpeById(speId);
         }
 
-        public List<BusinessObject.Specialization> GetListSpecialization(int page, int limit, string? txtSearch, string? major_id)
+        public List<BusinessObject.Specialization> GetListSpecialization(int degree_id, int page, int limit, string? txtSearch, string? major_id)
         {
-            return db.GetSpecByPagging(page, limit, txtSearch, major_id);
+            return db.GetSpecByPagging(degree_id, page, limit, txtSearch, major_id);
 
         }
 
@@ -46,9 +46,9 @@ namespace Repositories.Specialization
             return db.GetSpecializationIdByCode(spe_code);
         } 
 
-        public int GetTotalSpecialization(string? txtSearch, string? major_id)
+        public int GetTotalSpecialization(int degree_id, string? txtSearch, string? major_id)
         {
-            return db.GetTotalSpecialization(txtSearch, major_id);
+            return db.GetTotalSpecialization(degree_id, txtSearch, major_id);
 
         }
 
