@@ -98,7 +98,7 @@ namespace DataAccess.DAO
                     }
                 }
             }
-            return listSemester;
+            return listSemester.DistinctBy(x => x.Batch.batch_name).ToList();
         }
 
         public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int batchId)

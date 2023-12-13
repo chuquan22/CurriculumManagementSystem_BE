@@ -59,7 +59,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly IPLOMappingRepository _ploMappingRepository = new PLOMappingRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
-        private readonly ICurriculumBatchRepository _curriculumBatchRepository = new CurriculumBatchRepository();
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
         private readonly IWebHostEnvironment _hostingEnvironment;
 

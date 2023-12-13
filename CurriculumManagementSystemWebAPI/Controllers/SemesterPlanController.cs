@@ -18,11 +18,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class SemesterPlanController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private ISemesterPlanRepository _repo;
-        public SemesterPlanController(IMapper mapper)
+        public SemesterPlanController()
         {
-            _mapper = mapper;
             _repo = new SemesterPlanRepository();
 
         }

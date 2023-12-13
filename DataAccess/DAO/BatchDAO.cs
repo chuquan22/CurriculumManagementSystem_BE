@@ -101,6 +101,20 @@ namespace DataAccess.DAO
         public List<Batch> GetBatchNotExsitInSemester()
         {
             var listBatchInSemester = _context.Semester.Include(x => x.Batch).Select(x => x.Batch).ToList();
+            var listBatchRemove = new List<Batch>();
+            foreach (var item in listBatchInSemester)
+            {
+                var count = _context.Semester.Include(x => x.Batch).ThenInclude(x => x.DegreeLevel).Where(x => x.start_batch_id == item.batch_id && x.Batch.DegreeLevel.degree_level_code.Equals("TC")).Count();
+                if(count < 3 && count > 0)
+                {
+                    listBatchRemove.Add(item);
+                }
+
+            }
+            foreach (var item in listBatchRemove)
+            {
+                listBatchInSemester.Remove(item);
+            }
             var listBatch = GetAllBatch();
             var listBatchNotInSemester = listBatch.Except(listBatchInSemester).ToList();
             return listBatchNotInSemester;
