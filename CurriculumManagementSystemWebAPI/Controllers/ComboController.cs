@@ -125,6 +125,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var combo = comboRepository.FindComboById(cb.combo_id);
+                
                 _mapper.Map(cb, combo);
                 combo = comboRepository.UpdateCombo(combo);
                 return Ok(new BaseResponse(false, "Sucessfully", combo));

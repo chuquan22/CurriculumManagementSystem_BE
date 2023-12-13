@@ -81,7 +81,6 @@ namespace DataAccess.Major
                 throw new Exception("Duplicate major code!");
             }
 
-
             var editMajor = db.Major.FirstOrDefault(x => x.major_id == major.major_id);
 
             if (editMajor != null)
