@@ -35,15 +35,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     var response = _repo.GetSemesterPlan(semester_id);
                     rs = _repo.GetSemesterPlanOverView(semester_id);
-
+                    return Ok(new BaseResponse(false, "Create new semester plan successfully!", rs));
                 }
-                return Ok(new BaseResponse(false, "Create new semester plan successfully!", rs));
-
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Semester plan is exist!", rs));
+                }
             }
             catch (Exception ex)
             {
 
-                return Ok(new BaseResponse(false, "Error: " + ex.Message, null));
+                return BadRequest(new BaseResponse(false, "Error: " + ex.Message, null));
 
             }
         }
