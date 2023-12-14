@@ -789,7 +789,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 throw;
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("SetApproved")]
         public ActionResult SetApprovedSyllbus(int id)
@@ -809,7 +808,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                 throw;
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }
