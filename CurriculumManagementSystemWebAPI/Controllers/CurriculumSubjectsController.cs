@@ -102,17 +102,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     {
                         curriSubjectResponse.list.Add(curriculumSubjectMapper);
                     }
-                    curriSubjectResponse.total_all_time = curriSubjectResponse.list.Sum(x => x.total_time);
                 }
             }
             foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
                 // credit total all subject no option and no combo
                 curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.option == null && x.combo_id == 0).Sum(x => x.credit);
+                curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.option == null && x.combo_id == 0).Sum(x => x.total_time);
                 // credit total only one subject each option
                 curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.option != null && x.combo_id == 0).DistinctBy(x => x.option).Sum(x => x.credit);
+                curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.option != null && x.combo_id == 0).DistinctBy(x => x.option).Sum(x => x.total_time);
                 // credit total get only one subject combo
-                curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.option == null && x.combo_id != 0).Select(x => x.credit).FirstOrDefault();
+                var combo_id = curriSubjectResponse.list.Where(x => x.option == null && x.combo_id != 0).Select(x => x.combo_id).FirstOrDefault();
+                curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.combo_id == combo_id).Sum(x => x.credit);
+                curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.combo_id == combo_id).Sum(x => x.total_time);
                 curriSubjectResponse.list = curriSubjectResponse.list
                     .OrderBy(x => x.combo_id == 0 ? 0 : 1)
                     .ThenBy(x => x.option == null ? 0 : 1)

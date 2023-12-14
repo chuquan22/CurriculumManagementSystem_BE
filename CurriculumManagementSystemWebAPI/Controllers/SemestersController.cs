@@ -108,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", semesterRequest));
         }
-        [Authorize(Roles = "Manager")]
+        //[Authorize(Roles = "Manager")]
         [HttpPut("UpdateSemester/{id}")]
         public ActionResult UpdateSemester(int id,[FromBody] SemesterRequest semesterRequest)
         {
@@ -119,7 +119,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not Found Semester!"));
             }
 
-            if (semesterRepository.CheckSemesterDuplicate(id, semester.semester_name, semester.school_year, semester.start_batch_id))
+            if (semesterRepository.CheckSemesterDuplicate(id, semesterRequest.semester_name, semesterRequest.school_year, semesterRequest.start_batch_id))
             {
                 return BadRequest(new BaseResponse(true, "Semester Duplicate!"));
             }
