@@ -328,6 +328,10 @@ namespace DataAccess.DAO
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
         {
             var Semester = _cmsDbContext.Semester.Include(x => x.Batch).ThenInclude(x => x.DegreeLevel).Where(x => x.semester_id == semester_id).FirstOrDefault();
+            if(Semester == null)
+            {
+                throw new Exception("Invalid Semester!");
+            }
             int order = Semester.Batch.batch_order;
             if (Semester.Batch.degree_level_id == 1)
             {
