@@ -12,7 +12,7 @@ using Repositories.SessionCLOs;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+  //  [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SessionController : ControllerBase
     {
@@ -75,7 +75,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         var rs2 = sessionCLOsRepository.CreateSessionCLO(item);
 
                     }
-
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }

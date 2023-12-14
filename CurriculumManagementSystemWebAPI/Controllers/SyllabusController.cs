@@ -776,9 +776,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-               
+               var existSyllabus = syllabusRepository.GetSyllabusById(id);
+                if(existSyllabus == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+                }
                 var result = syllabusRepository.SetStatusSyllabus(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception)
             {
@@ -792,9 +796,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-               
+                var existSyllabus = syllabusRepository.GetSyllabusById(id);
+                if (existSyllabus == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+                }
                 var result = syllabusRepository.SetApproved(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception)
             {
