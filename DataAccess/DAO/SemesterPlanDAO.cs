@@ -95,11 +95,11 @@ namespace DataAccess.DAO
             }
             else if (degreeLevel == 3)
             {
-                int count = 6;
+                int count = 2;
                 var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
                 if (StartBatch.batch_order < 4)
                 {
-                    count = 8;
+                    count = 3;
                 }
                 int validBatchOrder = StartBatch.batch_order - count;
                 if (validBatchOrder <= 0)
@@ -636,6 +636,7 @@ namespace DataAccess.DAO
         }
     }
 }
+
 
 
 
