@@ -108,7 +108,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "Create Success!", semesterRequest));
         }
-        //[Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Manager")]
         [HttpPut("UpdateSemester/{id}")]
         public ActionResult UpdateSemester(int id,[FromBody] SemesterRequest semesterRequest)
         {

@@ -15,6 +15,7 @@ using DataAccess.Models.Enums;
 using Repositories.Combos;
 using Microsoft.AspNetCore.Authorization;
 using Repositories.Subjects;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -87,23 +88,21 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 };
                 curriculumSubjectResponse.Add(newCurriculumSubjectDTO);
             }
-            foreach (var curriSubject in curriculumSubject)
+
+            foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
-                var curriculumSubjectMapper = _mapper.Map<CurriculumSubjectResponse>(curriSubject);
-
-                if (curriSubject.combo_id != 0 && curriSubject.combo_id != null)
+                var listCurriSubject = SortListSubject((curriculumSubject.Where(x => x.term_no.ToString() == curriSubjectResponse.semester_no).ToList()));
+                var curriculumSubjectMapper = _mapper.Map<List<CurriculumSubjectResponse>>(listCurriSubject);
+                foreach (var item in curriculumSubjectMapper)
                 {
-                    curriculumSubjectMapper.combo_name = _comboRepository.FindComboById((int)curriSubject.combo_id).combo_code;
-                }
-
-                foreach (var curriSubjectResponse in curriculumSubjectResponse)
-                {
-                    if (curriSubject.term_no.ToString() == curriSubjectResponse.semester_no)
+                    if (item.combo_id != 0 && item.combo_id != null)
                     {
-                        curriSubjectResponse.list.Add(curriculumSubjectMapper);
+                        item.combo_name = _comboRepository.FindComboById((int)item.combo_id).combo_code;
                     }
                 }
+                curriSubjectResponse.list = curriculumSubjectMapper;
             }
+
             foreach (var curriSubjectResponse in curriculumSubjectResponse)
             {
                 // credit total all subject no option and no combo
@@ -114,16 +113,69 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.option != null && x.combo_id == 0).DistinctBy(x => x.option).Sum(x => x.total_time);
                 // credit total get only one subject combo
                 var combo_id = curriSubjectResponse.list.Where(x => x.option == null && x.combo_id != 0).Select(x => x.combo_id).FirstOrDefault();
-                curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.combo_id == combo_id).Sum(x => x.credit);
+                curriSubjectResponse.total_all_credit += GetSumCreditCurriSubjectCombo(curriSubjectResponse.list);
                 curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.combo_id == combo_id).Sum(x => x.total_time);
-                curriSubjectResponse.list = curriSubjectResponse.list
-                    .OrderBy(x => x.combo_id == 0 ? 0 : 1)
-                    .ThenBy(x => x.option == null ? 0 : 1)
-                    .ThenBy(x => x.option)
-                    .ToList();
+
             }
 
             return Ok(new BaseResponse(false, "Success!", curriculumSubjectResponse));
+        }
+
+        [NonAction]
+        private List<CurriculumSubject> SortListSubject(List<CurriculumSubject> listCurriSubject)
+        {
+            var listComboId = listCurriSubject.Where(x => x.combo_id != 0 && x.combo_id != null).OrderBy(x => x.combo_id).DistinctBy(x => x.combo_id).ToList();
+
+            var curriSubjectCombo = listCurriSubject
+                .Where(x => x.combo_id != 0 && x.combo_id != null)
+                .OrderBy(x => x.combo_id)
+                .ToList();
+
+            var curriSubjectComboOrder = new List<CurriculumSubject>();
+            curriSubjectComboOrder = listCurriSubject.Where(x => x.combo_id == 0 || x.combo_id == null).ToList();
+            var count = curriSubjectCombo.Count + listCurriSubject.Where(x => x.combo_id == 0 || x.combo_id == null).Count();
+            curriSubjectComboOrder = curriSubjectComboOrder
+                   .OrderBy(x => x.option == null ? 0 : 1)
+                   .ThenBy(x => x.option)
+                   .ToList();
+            do
+            {
+                foreach (var id in listComboId)
+                {
+                    foreach (var item in curriSubjectCombo)
+                    {
+                        if (item.combo_id == id.combo_id && curriSubjectComboOrder.FirstOrDefault(x => x.subject_id == item.subject_id) == null)
+                        {
+                            curriSubjectComboOrder.Add(item);
+                            break;
+                        }
+                    }
+                }
+
+            } while (curriSubjectComboOrder.Count < count);
+
+            return curriSubjectComboOrder;
+        }
+
+        [NonAction]
+        private int GetSumCreditCurriSubjectCombo(List<CurriculumSubjectResponse> list)
+        {
+            int index = 0;
+            int credit = 0;
+            var listCurriSUbject = list.Where(x => x.combo_id != 0 && x.combo_id != null).ToList();
+            foreach (var subjectCombo in listCurriSUbject)
+            {
+                if (index == listCurriSUbject.DistinctBy(x => x.combo_id).Count() || index == 0)
+                {
+                    index = 1;
+                    credit += subjectCombo.credit;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            return credit;
         }
 
         // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
@@ -179,9 +231,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return NotFound(new BaseResponse(true, "Not found this Curriculum Subject"));
             }
             var curriculumSubject = _curriculumSubjectRepository.GetCurriculumSubjectById(curriId, subId);
-            if(curriculumSubject.option != null)
+            if (curriculumSubject.option != null)
             {
-                var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.curriculum_id ,curriculumSubject.term_no, curriculumSubject.subject_id, (int)curriculumSubject.option);
+                var curriculumSubject2 = _curriculumSubjectRepository.GetCurriculumSubjectByTermNoAndSubjectGroup(curriculumSubject.curriculum_id, curriculumSubject.term_no, curriculumSubject.subject_id, (int)curriculumSubject.option);
                 if (curriculumSubject2 != null)
                 {
                     string deleteResult2 = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject2);
@@ -192,7 +244,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
             string deleteResult = _curriculumSubjectRepository.DeleteCurriculumSubject(curriculumSubject);
-           
+
             if (deleteResult != Result.deleteSuccessfull.ToString())
             {
                 return BadRequest(new BaseResponse(true, "Remove Fail"));
