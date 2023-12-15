@@ -157,7 +157,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     return BadRequest(new BaseResponse(true, "Logout failed. User not logged in system."));
                 }
-               //repo.DeleteRefreshToken(currentUser.user_id);
+                repo.DeleteRefreshTokenUser(currentUser.user_id);
                 return Ok(new BaseResponse(false, "Logout system successfully!", null));
             }
             catch (Exception ex)
