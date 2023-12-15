@@ -107,6 +107,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult DeleteQuiz(int id)
         {
             var quiz = _quizRepository.GetQuizById(id);
+            if(quiz == null)
+            {
+                return BadRequest(new BaseResponse(true, "Not Found Quiz!"));
+
+            }
             string deleteResult = _quizRepository.DeleteQUiz(quiz);
             if (deleteResult != Result.deleteSuccessfull.ToString())
             {
