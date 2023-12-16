@@ -112,9 +112,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 curriSubjectResponse.total_all_credit += curriSubjectResponse.list.Where(x => x.option != null && x.combo_id == 0).DistinctBy(x => x.option).Sum(x => x.credit);
                 curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.option != null && x.combo_id == 0).DistinctBy(x => x.option).Sum(x => x.total_time);
                 // credit total get only one subject combo
-                var combo_id = curriSubjectResponse.list.Where(x => x.option == null && x.combo_id != 0).Select(x => x.combo_id).FirstOrDefault();
                 curriSubjectResponse.total_all_credit += GetSumCreditCurriSubjectCombo(curriSubjectResponse.list);
-                curriSubjectResponse.total_all_time += curriSubjectResponse.list.Where(x => x.combo_id == combo_id).Sum(x => x.total_time);
+                curriSubjectResponse.total_all_time += GetSumTimeCurriSubjectCombo(curriSubjectResponse.list);
 
             }
 
@@ -176,6 +175,27 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
             return credit;
+        }
+
+        [NonAction]
+        private int GetSumTimeCurriSubjectCombo(List<CurriculumSubjectResponse> list)
+        {
+            int index = 0;
+            int time = 0;
+            var listCurriSUbject = list.Where(x => x.combo_id != 0 && x.combo_id != null).ToList();
+            foreach (var subjectCombo in listCurriSUbject)
+            {
+                if (index == listCurriSUbject.DistinctBy(x => x.combo_id).Count() || index == 0)
+                {
+                    index = 1;
+                    time += subjectCombo.total_time;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            return time;
         }
 
         // GET: api/CurriculumSubjects/GetSubjectNotExsitCurriculum/5
