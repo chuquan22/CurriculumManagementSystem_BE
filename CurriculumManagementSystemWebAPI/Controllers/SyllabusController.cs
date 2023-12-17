@@ -593,7 +593,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("No of credits"))
                     {
-                        syllabus.Subject.credit = int.Parse(r.Details);
+                        try
+                        {
+                            syllabus.Subject.credit = int.Parse(r.Details);
+
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check MinGPAtopass or Scoring scale must enter is interger.");
+                        }
                     }
                     else if (r.Title.Equals("Degree Level"))
                     {
@@ -633,21 +642,55 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         syllabus.syllabus_note = r.Details;
                     }
                     else if (r.Title.Equals("Min GPA to pass"))
-                    {//
-                        syllabus.min_GPA_to_pass = int.Parse(r.Details);
+                    {
+                        try
+                        {
+                            syllabus.min_GPA_to_pass = int.Parse(r.Details);
+                            if(syllabus.min_GPA_to_pass < 0)
+                            {
+                                throw new Exception("Please check MinGPAtopass >= 0.");
+
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check MinGPAtopass must enter is interger.");
+                        }
                     }
                     else if (r.Title.Equals("Scoring scale"))
                     {
                         if (!string.IsNullOrEmpty(r.Details))
                         {
-                            syllabus.scoring_scale = int.Parse(r.Details);
+                            try
+                            {
+                                syllabus.scoring_scale = int.Parse(r.Details);
+                                if (syllabus.scoring_scale < 0)
+                                {
+                                    throw new Exception("Please check MinGPAtopass >= 0.");
+
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                                throw new Exception("Please check Scoring scale must enter is interger.");
+                            }
 
                         }
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
                         string[] date = r.Details.Split(' ');
-                        syllabus.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        try
+                        {
+                            syllabus.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check date format dd/MM/yyyy before import.");
+                        }
                     }
 
 
