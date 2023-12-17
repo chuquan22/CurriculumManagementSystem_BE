@@ -90,15 +90,12 @@ namespace DataAccess.DAO
 
             if (check == true)
             {
-                var oldGra = _cmsDbContext.GradingStruture.Where(u => u.grading_id == gra.grading_id).FirstOrDefault();
                 var isComponentExist = _cmsDbContext.GradingStruture
-                .Any(x =>
-                x.syllabus_id == oldGra.syllabus_id
-                &&
-                x.assessment_component.Equals(gra.assessment_component)
-                &&
-                x.grading_id != oldGra.grading_id);
-                if (isComponentExist)
+                 .FirstOrDefault(x =>
+                 x.syllabus_id == gra.syllabus_id &&
+                    x.assessment_component.Equals(gra.assessment_component) &&
+                 x.grading_id != gra.grading_id);
+                if (isComponentExist != null)
                 {
                     throw new Exception("Component already exists! Update failed.");
                 }
