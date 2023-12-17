@@ -34,11 +34,11 @@ namespace DataAccess.DAO
         {
             // Put the answers into a collection
             var answers = new List<string> { answerA.Trim().ToLower(), answerB.Trim().ToLower() };
-            if(!string.IsNullOrEmpty(answerC.Trim()))
+            if(!string.IsNullOrEmpty(answerC))
             {
                 answers.Add(answerC.Trim().ToLower());
             }
-            if (!string.IsNullOrEmpty(answerD.Trim()))
+            if (!string.IsNullOrEmpty(answerD))
             {
                 answers.Add(answerD.Trim().ToLower());
             }
