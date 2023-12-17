@@ -86,7 +86,7 @@ namespace DataAccess.DAO
         public GradingStruture CreateGradingStrutureAPI(GradingStruture gra)
         {
 
-            bool check = CheckGradingWeight2(gra);
+            bool check = CheckGradingWeight(gra);
 
             if (check == true)
             {
