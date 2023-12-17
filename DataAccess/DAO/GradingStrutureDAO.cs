@@ -120,7 +120,7 @@ namespace DataAccess.DAO
         {
             var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
 
-            if (father == null)
+            if (father == null || father.Count == 0)
             {
                 throw new Exception("No Grading Strutude References When Importing this References!.");
             }
