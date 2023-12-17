@@ -25,9 +25,9 @@ namespace DataAccess.DAO
             return question;
         }
 
-        public bool CheckQuestionDuplicate(int id, string questionName, int quizId)
+        public bool CheckQuestionDuplicate(string questionName, int quizId)
         {
-            return (_context.Question?.Any(x => x.question_id != id && x.question_name.Trim().ToLower().Equals(questionName.Trim().ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
+            return (_context.Question?.Any(x => x.question_name.Trim().ToLower().Equals(questionName.Trim().ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
         }
 
         public bool CheckAnswerDuplicate(string answerA, string answerB, string answerC, string answerD)
@@ -57,7 +57,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                if (CheckQuestionDuplicate(0, question.question_name, question.quiz_id))
+                if (CheckQuestionDuplicate( question.question_name, question.quiz_id))
                 {
                     throw new Exception("Question " + question.question_name + " is Duplicate!");
                 }
