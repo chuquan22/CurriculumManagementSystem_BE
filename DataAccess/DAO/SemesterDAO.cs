@@ -32,6 +32,8 @@ namespace DataAccess.DAO
             }
 
             var listSemester = query
+                .OrderBy(x => x.Batch.degree_level_id)
+                .ThenByDescending(x => x.Batch.batch_name)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
