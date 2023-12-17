@@ -180,10 +180,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, $"Not Found Question"));
             }
+
             if (_questionRepository.CheckQuestionDuplicate(id, questionDTO.question_name, questionDTO.quiz_id))
             {
                 return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
             }
+
+            if (_questionRepository.CheckAnswerDuplicate(questionDTO.answers_A, questionDTO.answers_B, questionDTO.answers_C, questionDTO.answers_D))
+            {
+                return BadRequest(new BaseResponse(true, $"Answer is Duplicate!"));
+            }
+
             _mapper.Map(questionDTO, question);
             string updateResult = _questionRepository.UpdateQuestion(question);
             if (updateResult != Result.updateSuccessfull.ToString())
