@@ -10,7 +10,7 @@ using Repositories.Specialization;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SpecializationController : ControllerBase
     {
