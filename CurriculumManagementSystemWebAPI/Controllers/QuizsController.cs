@@ -153,23 +153,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateQuestion")]
         public IActionResult CreateQuestion([FromBody] QuestionDTORequest questionDTO)
         {
-            if (_questionRepository.CheckQuestionDuplicate(0, questionDTO.question_name, questionDTO.quiz_id))
+            try
             {
-                return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
+                var question = _mapper.Map<Question>(questionDTO);
+                string createResult = _questionRepository.CreateQuestion(question);
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createResult));
+                }
+                return Ok(new BaseResponse(false, "Create Question Success", question));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
 
-            if(_questionRepository.CheckAnswerDuplicate(questionDTO.answers_A, questionDTO.answers_B, questionDTO.answers_C, questionDTO.answers_D))
-            {
-                return BadRequest(new BaseResponse(true, $"Answer is Duplicate!"));
-            }
-
-            var question = _mapper.Map<Question>(questionDTO);
-            string createResult = _questionRepository.CreateQuestion(question);
-            if (createResult != Result.createSuccessfull.ToString())
-            {
-                return BadRequest(new BaseResponse(true, createResult));
-            }
-            return Ok(new BaseResponse(false, "Create Question Success", question));
         }
 
         [HttpPut("UpdateQuestion/{id}")]
@@ -273,7 +272,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             catch(Exception ex)
                             {
-                                return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
+                                return BadRequest(new BaseResponse(true, ex.InnerException.Message + " at sheet: " + sheetName));
                             }
                             
                         }

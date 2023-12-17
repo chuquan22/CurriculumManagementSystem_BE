@@ -57,6 +57,15 @@ namespace DataAccess.DAO
         {
             try
             {
+                if (CheckQuestionDuplicate(0, question.question_name, question.quiz_id))
+                {
+                    throw new Exception("Question " + question.question_name + " is Duplicate!");
+                }
+
+                if (CheckAnswerDuplicate(question.answers_A, question.answers_B, question.answers_C, question.answers_D))
+                {
+                    throw new Exception("Answer is Duplicate!");
+                }
                 _context.Question.Add(question);
                 _context.SaveChanges();
                 return Result.createSuccessfull.ToString();
