@@ -86,7 +86,7 @@ namespace DataAccess.DAO
         public GradingStruture CreateGradingStrutureAPI(GradingStruture gra)
         {
 
-            bool check = CheckGradingWeight3(gra);
+            bool check = CheckGradingWeightCreate(gra);
 
             if (check == true)
             {
@@ -113,29 +113,8 @@ namespace DataAccess.DAO
             return null;
 
         }
-        public bool CheckGradingWeight2(GradingStruture gra)
-        {
-            var father = _cmsDbContext.GradingStruture.Where(x => x.session_no == null && x.references.Equals(gra.references) && x.syllabus_id == gra.syllabus_id).ToList();
-
-            if (father == null || father.Count == 0)
-            {
-                throw new Exception("No Grading Strutude References When Importing this References!.");
-            }
-            decimal weight = 0;
-            foreach (var item in father)
-            {
-                weight = weight + item.grading_weight;
-
-            }
-            weight = weight + gra.grading_weight;
-            if (weight > 100)
-            {
-                return false;
-            }
-            return true;
-
-        }
-        public bool CheckGradingWeight3(GradingStruture gra)
+      
+        public bool CheckGradingWeightCreate(GradingStruture gra)
         {
             var fatherAll = _cmsDbContext.GradingStruture
                 .Where(s => s.syllabus_id == gra.syllabus_id)
