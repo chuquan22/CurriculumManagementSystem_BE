@@ -29,9 +29,9 @@ namespace DataAccess.DAO
         {
             return (_context.Question?.Any(x => x.question_id != id && x.question_name.Trim().ToLower().Equals(questionName.Trim().ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
         }
-        public bool CheckQuestionDuplicate(string questionName, int quizId)
+        public Question CheckQuestionDuplicate(string questionName, int quizId)
         {
-            return (_context.Question?.Any(x =>x.question_name.Trim().ToLower().Equals(questionName.Trim().ToLower()) && x.quiz_id == quizId)).GetValueOrDefault();
+            return _context.Question.Where(x => x.question_name.Trim().ToLower().Equals(questionName.Trim().ToLower()) && x.quiz_id == quizId).FirstOrDefault();
         }
         public bool CheckAnswerDuplicate(string answerA, string answerB, string answerC, string answerD)
         {
@@ -60,21 +60,28 @@ namespace DataAccess.DAO
         {
             try
             {
-                if (CheckQuestionDuplicate(question.question_name, question.quiz_id))
+                // Check for duplicate question
+                if (CheckQuestionDuplicate(question.question_name, question.quiz_id) != null)
                 {
                     throw new Exception("Question " + question.question_name + " is Duplicate!");
                 }
 
+                // Check for duplicate answers
                 if (CheckAnswerDuplicate(question.answers_A, question.answers_B, question.answers_C, question.answers_D))
                 {
                     throw new Exception("Answer is Duplicate!");
                 }
+
+                // If no duplicates are found, add the question to the database
                 _context.Question.Add(question);
                 _context.SaveChanges();
+
+                // Return success message
                 return Result.createSuccessfull.ToString();
             }
             catch (Exception ex)
             {
+                // Return the error message from the caught exception
                 return ex.InnerException.Message;
             }
         }
