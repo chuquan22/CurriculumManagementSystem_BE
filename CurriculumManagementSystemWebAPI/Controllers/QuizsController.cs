@@ -171,6 +171,28 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             return Ok(new BaseResponse(false, "Create Question Success", question));
         }
+        [HttpPost("CreateQuestionImport")]
+        public IActionResult CreateQuestionImport([FromBody] QuestionDTORequest questionDTO)
+        {
+            try
+            {
+                var question = _mapper.Map<Question>(questionDTO);
+                string createResult = _questionRepository.CreateQuestion(question);
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createResult));
+                }
+                return Ok(new BaseResponse(false, "Create Question Success", question));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+          
+
+         
+        }
 
         [HttpPut("UpdateQuestion/{id}")]
         public IActionResult UpdateQuestion(int id, [FromBody] QuestionDTORequest questionDTO)
@@ -269,11 +291,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var questionDTO = _mapper.Map<QuestionDTORequest>(question);
                             try
                             {
-                                CreateQuestionsAPI(questionDTO);
+                                CreateQuestionImport(questionDTO);
                             }
                             catch(Exception ex)
                             {
-                                return BadRequest(new BaseResponse(true, "Error:" + ex.Message + "at sheet: " + sheetName));
+                                return BadRequest(new BaseResponse(true, "Error: " + ex.Message + " at sheet: " + sheetName));
                             }
                             
                         }
