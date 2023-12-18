@@ -21,7 +21,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class PreRequisiteTypesController : ControllerBase
     {
-        private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly IPreRequisiteTypeRepository _preRequisiteType = new PreRequisiteRepository();
 

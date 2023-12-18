@@ -10,9 +10,11 @@ using Repositories.PreRequisites;
 using DataAccess.Models.DTO.response;
 using AutoMapper;
 using DataAccess.Models.DTO.request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+   // [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class PreRequisitesController : ControllerBase
