@@ -26,7 +26,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         public PreRequisiteTypesController(CMSDbContext context, IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
