@@ -12,7 +12,7 @@ using Repositories.CLOS;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [Route("api/[controller]")]
     [ApiController]
     public class BatchsController : ControllerBase
