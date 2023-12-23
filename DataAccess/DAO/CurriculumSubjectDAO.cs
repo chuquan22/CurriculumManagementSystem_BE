@@ -69,18 +69,24 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
-        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int credit, int term_no, int? option, int? combo)
+        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int curriculumId, int credit, int term_no, int? option, int? combo)
         {
-            if (option.HasValue && _context.CurriculumSubject.Where(x => x.option.HasValue) != null)
+            if (option.HasValue)
             {
-                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+                return !_context.CurriculumSubject
+                    .Include(x => x.Subject)
+                    .Any(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit);
             }
-            else if (combo.HasValue && _context.CurriculumSubject.Where(x => x.combo_id.HasValue) != null)
+            else if (combo.HasValue)
             {
-                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.combo_id.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+                return !_context.CurriculumSubject
+                    .Include(x => x.Subject)
+                    .Any(x => x.curriculum_id == curriculumId && x.combo_id.HasValue && x.term_no == term_no && x.Subject.credit == credit);
             }
+
             return false;
         }
+
 
         public CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId)
         {
