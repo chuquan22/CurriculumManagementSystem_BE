@@ -69,11 +69,24 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
+        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int credit, int term_no, int? option, int? combo)
+        {
+            if (option.HasValue && _context.CurriculumSubject.Where(x => x.option.HasValue) != null)
+            {
+                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+            }
+            else if (combo.HasValue && _context.CurriculumSubject.Where(x => x.combo_id.HasValue) != null)
+            {
+                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.combo_id.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+            }
+            return false;
+        }
+
         public CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId)
         {
             var curriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Curriculum)
-                .Include(x =>x.Subject)
+                .Include(x => x.Subject)
                 .FirstOrDefault(x => x.curriculum_id == curriculumId && x.subject_id == subjectId);
             return curriculumSubject;
         }
@@ -114,8 +127,9 @@ namespace DataAccess.DAO
                 {
                     return "Create Curriculum Fail";
                 }
-                
-            }catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 return ex.InnerException.Message;
             }

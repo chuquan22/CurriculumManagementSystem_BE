@@ -29,7 +29,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ICurriculumRepository _curriculumRepository = new CurriculumRepository();
         private readonly IComboRepository _comboRepository = new ComboRepository();
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
-
         public CurriculumSubjectsController(IMapper mapper)
         {
             _mapper = mapper;
@@ -215,6 +214,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpPost("CreateCurriculumSubject")]
         public async Task<ActionResult<CurriculumSubject>> PostCurriculumSubject([FromBody] List<CurriculumSubjectRequest> curriculumSubjectRequest)
         {
+
             if (curriculumSubjectRequest.Count == 2 && curriculumSubjectRequest.First(x => x.subject_group.Equals("Elective subjects")) != null)
             {
                 var curriculumSubject = _curriculumSubjectRepository.GetListCurriculumSubject(curriculumSubjectRequest.First().curriculum_id).Where(x => x.term_no == curriculumSubjectRequest.First().term_no && x.option != null);
@@ -231,6 +231,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             foreach (var subject in curriculumSubjectRequest)
             {
                 var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
+                var s = _subjectRepository.GetSubjectById(subject.subject_id);
+                if (_curriculumSubjectRepository.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(s.credit, curriculumSubject.term_no, curriculumSubject.option, curriculumSubject.combo_id))
+                {
+                    return BadRequest(new BaseResponse(true, "Credit of Subject Combo or Subject Option must be equal"));
+                }
 
                 string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
 

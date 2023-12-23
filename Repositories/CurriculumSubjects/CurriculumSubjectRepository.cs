@@ -11,6 +11,12 @@ namespace Repositories.CurriculumSubjects
     public class CurriculumSubjectRepository : ICurriculumSubjectRepository
     {
         private readonly CurriculumSubjectDAO curriculumDAO = new CurriculumSubjectDAO();
+
+        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int credit, int term_no, int? option, int? combo)
+        {
+            return curriculumDAO.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(credit, term_no, option, combo);
+        }
+
         public string CreateCurriculumSubject(CurriculumSubject curriculumSubject)
         {
             return curriculumDAO.CreateCurriculumSubject(curriculumSubject);
