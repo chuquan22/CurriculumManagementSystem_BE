@@ -63,13 +63,13 @@ namespace DataAccess.DAO
                 // Check for duplicate question
                 if (CheckQuestionDuplicate(question.question_name, question.quiz_id) != null)
                 {
-                    throw new Exception("Question " + question.question_name + " is Duplicate!");
+                    return "Question " + question.question_name + " is Duplicate!";
                 }
 
                 // Check for duplicate answers
                 if (CheckAnswerDuplicate(question.answers_A, question.answers_B, question.answers_C, question.answers_D))
                 {
-                    throw new Exception("Answer is Duplicate!");
+                    return "Answer is Duplicate!";
                 }
 
                 // If no duplicates are found, add the question to the database
