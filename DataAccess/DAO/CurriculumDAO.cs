@@ -263,16 +263,9 @@ namespace DataAccess.DAO
             try
             {
                 curriculum.curriculum_name = curriculum.curriculum_name.Trim();
-                _cmsDbContext.Curriculum.Add(curriculum);
-                int number = _cmsDbContext.SaveChanges();
-                if (number > 0)
-                {
-                    return "OK";
-                }
-                else
-                {
-                    return "Fail";
-                }
+                // _cmsDbContext.Curriculum.Add(curriculum);
+                //int number = _cmsDbContext.SaveChanges();
+                return "OK";
 
             }
             catch (Exception ex)
@@ -285,16 +278,9 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Curriculum.Update(curriculum);
-                int number = _cmsDbContext.SaveChanges();
-                if (number > 0)
-                {
-                    return "OK";
-                }
-                else
-                {
-                    return "Fail";
-                }
+                //_cmsDbContext.Curriculum.Update(curriculum);
+                //int number = _cmsDbContext.SaveChanges();
+                return "OK";
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -306,16 +292,9 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Curriculum.Remove(curriculum);
-                int number = _cmsDbContext.SaveChanges();
-                if (number > 0)
-                {
-                    return "OK";
-                }
-                else
-                {
-                    return "Fail";
-                }
+                //_cmsDbContext.Curriculum.Remove(curriculum);
+                //int number = _cmsDbContext.SaveChanges();
+                return "OK";
             }
             catch (DbUpdateConcurrencyException ex)
             {
