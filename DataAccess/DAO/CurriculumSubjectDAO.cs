@@ -77,7 +77,7 @@ namespace DataAccess.DAO
                     .Include(x => x.Subject)
                     .Any(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit);
             }
-            else if (combo.HasValue)
+            else if (combo.HasValue && combo != 0)
             {
                 return !_context.CurriculumSubject
                     .Include(x => x.Subject)
