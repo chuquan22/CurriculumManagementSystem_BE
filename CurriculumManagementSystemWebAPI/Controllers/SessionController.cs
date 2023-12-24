@@ -41,7 +41,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     var class_session_type = classSessionTypeRepository.GetClassSessionType(rs2.class_session_type_id);
                     rs2.class_session_type_name = class_session_type.class_session_type_name;
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
 
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
 
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -124,7 +124,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
 
 
-                return Ok(new BaseResponse(false, "Sucessfully", null));
+                return Ok(new BaseResponse(false, "Successfully!", null));
             }
             catch (Exception ex)
             {
@@ -141,7 +141,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string rs = sessionRepository.DeleteSession(id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -159,7 +159,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = sessionRepository.GetSessionById(id);
                 var result = _mapper.Map<SessionResponse>(rs);
 
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception ex)
             {

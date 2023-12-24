@@ -35,7 +35,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = majorRepository.GetAllMajor();
                 var result = _mapper.Map<List<MajorResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     .ToList();
 
 
-                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
+                return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
             }
             catch (Exception ex)
             {
@@ -80,12 +80,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = majorRepository.GetMajorByBatch(batchId);
+          
                 var listMajorRespone = _mapper.Map<List<MajorSpeResponse>>(rs);
                 foreach (var major in listMajorRespone)
                 {
                     major.lisSpe = _mapper.Map<List<SpecializationResponse>>(specializationRepository.GetSpeByBatchId(batchId, major.major_id));
                 }
-                return Ok(new BaseResponse(false, "Sucessfully", listMajorRespone));
+                return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
             }
             catch (Exception ex)
             {
@@ -110,7 +111,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs = majorRepository.AddMajor(rs);
                     var result = _mapper.Map<MajorResponse>(rs);
 
-                    return Ok(new BaseResponse(false, "Add +"+rs.major_name+"+ successful!", result));
+                    return Ok(new BaseResponse(false, "Add Major " + rs.major_name + " Successfully!", result));
                 }
             }
             catch (Exception ex)
@@ -146,9 +147,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var major = majorRepository.FindMajorById(id);
-                if(major != null)
+                if(major == null)              
                 {
-                    Ok(new BaseResponse(false, "Cant not delete this major. Major id not found in system!", null));
+                    return NotFound(new BaseResponse(true, "Not Found This Major!", null));
+
                 }
                 majorRepository.DeleteMajor(id);
                 return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
