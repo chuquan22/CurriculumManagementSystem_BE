@@ -71,13 +71,13 @@ namespace DataAccess.DAO
 
         public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int curriculumId, int credit, int term_no, int? option, int? combo)
         {
-            if (option.HasValue)
+            if (option.HasValue && _context.CurriculumSubject.Where(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no) != null)
             {
                 return !_context.CurriculumSubject
                     .Include(x => x.Subject)
                     .Any(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit);
             }
-            else if (combo.HasValue && combo != 0)
+            else if (combo.HasValue && combo != 0 && _context.CurriculumSubject.Where(x => x.curriculum_id == curriculumId && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == term_no) != null)
             {
                 return !_context.CurriculumSubject
                     .Include(x => x.Subject)
