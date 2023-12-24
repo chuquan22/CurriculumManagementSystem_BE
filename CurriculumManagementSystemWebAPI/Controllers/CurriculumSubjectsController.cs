@@ -232,7 +232,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
                 var s = _subjectRepository.GetSubjectById(subject.subject_id);
-                if (_curriculumSubjectRepository.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(subject.curriculum_id,s.credit, curriculumSubject.term_no, curriculumSubject.option, curriculumSubject.combo_id))
+                if (_curriculumSubjectRepository.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(subject.curriculum_id, s.credit, curriculumSubject.term_no, curriculumSubject.option, curriculumSubject.combo_id))
                 {
                     return BadRequest(new BaseResponse(true, "Credit of Subject Combo or Subject Option must be equal"));
                 }
