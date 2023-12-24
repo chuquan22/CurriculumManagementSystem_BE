@@ -280,7 +280,7 @@ namespace DataAccess.DAO
             try
             {
                 curriculum.curriculum_name = curriculum.curriculum_name.Trim();
-                // _cmsDbContext.Curriculum.Add(curriculum);
+                //_cmsDbContext.Curriculum.Add(curriculum);
                 //int number = _cmsDbContext.SaveChanges();
                 return "OK";
 

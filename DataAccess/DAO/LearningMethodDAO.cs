@@ -74,8 +74,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.LearningMethod.Add(learningMethod);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.LearningMethod.Add(learningMethod);
+                //_cmsDbContext.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -87,8 +87,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.LearningMethod.Update(learningMethod);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.LearningMethod.Update(learningMethod);
+                //_cmsDbContext.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -101,8 +101,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.LearningMethod.Remove(learningMethod);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.LearningMethod.Remove(learningMethod);
+                //_cmsDbContext.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

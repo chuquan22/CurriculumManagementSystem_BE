@@ -43,8 +43,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumBatch.Add(curriculumBatch);
-                _context.SaveChanges();
+                //_context.CurriculumBatch.Add(curriculumBatch);
+                //_context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -56,8 +56,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumBatch.Update(curriculumBatch);
-                _context.SaveChanges();
+                //_context.CurriculumBatch.Update(curriculumBatch);
+                //_context.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -70,8 +70,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumBatch.Remove(curriculumBatch);
-                _context.SaveChanges();
+                //_context.CurriculumBatch.Remove(curriculumBatch);
+                //_context.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

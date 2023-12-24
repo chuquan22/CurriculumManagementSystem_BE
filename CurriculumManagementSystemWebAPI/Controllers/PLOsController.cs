@@ -83,7 +83,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         // POST: api/PLOs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PLOs>> PostPLOs([FromBody] PLOsDTORequest pLOsDTORequest)
+        public async Task<IActionResult> PostPLOs([FromBody] PLOsDTORequest pLOsDTORequest)
         {
             if (PLOsExists(pLOsDTORequest.PLO_name, pLOsDTORequest.curriculum_id))
             {

@@ -124,8 +124,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Add(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Add(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -137,8 +137,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Update(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Update(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -151,8 +151,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Remove(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Remove(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

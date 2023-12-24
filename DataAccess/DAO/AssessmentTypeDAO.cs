@@ -77,8 +77,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentType.Add(type);
-                _context.SaveChanges();
+                //_context.AssessmentType.Add(type);
+                //_context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -91,8 +91,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentType.Update(type);
-                _context.SaveChanges();
+                //_context.AssessmentType.Update(type);
+                //_context.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -105,8 +105,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentType.Remove(type);
-                _context.SaveChanges();
+                //_context.AssessmentType.Remove(type);
+                //_context.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

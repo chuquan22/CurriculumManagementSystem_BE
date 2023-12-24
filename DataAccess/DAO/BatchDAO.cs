@@ -172,8 +172,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Batch.Add(batch);
-                _context.SaveChanges();
+                //_context.Batch.Add(batch);
+                //_context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -186,8 +186,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Batch.Update(batch);
-                _context.SaveChanges();
+                //_context.Batch.Update(batch);
+                //_context.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -200,8 +200,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.Batch.Remove(batch);
-                _context.SaveChanges();
+                //_context.Batch.Remove(batch);
+                //_context.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

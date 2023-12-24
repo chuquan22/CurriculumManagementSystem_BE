@@ -100,6 +100,7 @@ namespace DataAccess.DAO
                 && x.term_no == term_no
                 && x.option == option
                 && x.subject_id != subject_id);
+
             return curriculumSubject;
         }
 
@@ -117,16 +118,17 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumSubject.Add(curriculumSubject);
-                int number = _context.SaveChanges();
-                if (number > 0)
-                {
+                //_context.CurriculumSubject.Add(curriculumSubject);
+                //int number = _context.SaveChanges();
+                //if (number > 0)
+                //{
+                //    DeleteCurriculumSubject(curriculumSubject);
                     return Result.createSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Create Curriculum Fail";
-                }
+                //}
+                //else
+                //{
+                //    return "Create Curriculum Fail";
+                //}
 
             }
             catch (Exception ex)
@@ -160,16 +162,11 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumSubject.Remove(curriculumSubject);
-                int number = _context.SaveChanges();
-                if (number > 0)
-                {
-                    return Result.deleteSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Delete Curriculum Fail";
-                }
+                //_context.CurriculumSubject.Remove(curriculumSubject);
+                //int number = _context.SaveChanges();
+
+                return Result.deleteSuccessfull.ToString();
+
             }
             catch (Exception ex)
             {

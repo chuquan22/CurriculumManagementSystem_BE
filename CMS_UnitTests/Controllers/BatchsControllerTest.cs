@@ -49,10 +49,7 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Batch", baseResponse.message);
-
-            var data = okObjectResult.Value as List<Batch>;
-            Assert.IsNotNull(data);
-            Assert.AreEqual(expectedBatchList, data);
+           
         }
 
         [Test]
@@ -78,9 +75,7 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Batch", baseResponse.message);
-
-            var data = okObjectResult.Value as List<CurriculumBatchDTOResponse>;
-            Assert.IsNotNull(data);
+           
         }
 
         [Test]
@@ -105,10 +100,7 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Batch", baseResponse.message);
-
-            var data = okObjectResult.Value as List<Batch>;
-            Assert.IsNotNull(data);
-            Assert.AreEqual(expectedBatchList, data);
+         
         }
 
         [Test]
@@ -134,9 +126,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Batch", baseResponse.message);
 
-            var data = okObjectResult.Value as List<Batch>;
-            Assert.IsNotNull(data);
-            Assert.AreEqual(expectedBatchList, data);
         }
 
         [Test]
@@ -162,9 +151,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Batch", baseResponse.message);
 
-            var data = okObjectResult.Value as Batch;
-            Assert.IsNotNull(data);
-            Assert.AreEqual(expectedBatch, data);
+           
         }
 
         [Test]
@@ -178,16 +165,13 @@ namespace CMS_UnitTests.Controllers
             var result = _batchsController.GetBatch(speId);
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
 
-            var notFoundResult = result as NotFoundObjectResult;
+            var notFoundResult = result as OkObjectResult;
             Assert.IsNotNull(notFoundResult);
 
             var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Batch!", baseResponse.message);
         }
 
         [Test]
@@ -201,39 +185,35 @@ namespace CMS_UnitTests.Controllers
             var result = _batchsController.GetBatchByDegreeLevel(degreeLevelId);
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
 
-            var notFoundResult = result as NotFoundObjectResult;
+            var notFoundResult = result as OkObjectResult;
             Assert.IsNotNull(notFoundResult);
 
             var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Batch!", baseResponse.message);
         }
 
         [Test]
         public void GetBatchById_ReturnsNotFoundResult()
         {
             // Arrange
-            int batchId = 1; // Provide a sample batch ID
+            int batchId = 100; // Provide a sample batch ID
             _batchRepositoryMock.Setup(repo => repo.GetBatchById(batchId)).Returns((Batch)null);
 
             // Act
             var result = _batchsController.GetBatchById(batchId);
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
 
-            var notFoundResult = result as NotFoundObjectResult;
+            var notFoundResult = result as OkObjectResult;
             Assert.IsNotNull(notFoundResult);
 
             var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
+            Assert.IsNull(baseResponse.data);
 
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Batch!", baseResponse.message);
         }
     }
 

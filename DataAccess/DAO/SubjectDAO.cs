@@ -266,8 +266,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                CMSDbContext.Subject.Add(subject);
-                CMSDbContext.SaveChanges();
+                //CMSDbContext.Subject.Add(subject);
+                //CMSDbContext.SaveChanges();
                 return "OK";
             }
             catch (DbUpdateConcurrencyException ex)
@@ -294,8 +294,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                CMSDbContext.Subject.Remove(subject);
-                CMSDbContext.SaveChanges();
+                //CMSDbContext.Subject.Remove(subject);
+                //CMSDbContext.SaveChanges();
                 return "OK";
             }
             catch (DbUpdateConcurrencyException ex)

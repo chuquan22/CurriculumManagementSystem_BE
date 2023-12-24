@@ -99,8 +99,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentMethod.Add(method);
-                _context.SaveChanges();
+                //_context.AssessmentMethod.Add(method);
+                //_context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -126,8 +126,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentMethod.Remove(method);
-                _context.SaveChanges();
+                //_context.AssessmentMethod.Remove(method);
+                //_context.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

@@ -73,7 +73,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetMajor_ReturnsOkResult()
         {
             // Arrange
-            int batchId = 1;
+            int batchId = 5;
             var listMajor = new List<Major>();
             var listMajorResponse = new List<MajorSpeResponse>();
 

@@ -136,7 +136,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             if (semesterRepository.CheckSemesterExsit(id))
             {
-                return NotFound(new BaseResponse(true, "Semester Used. Can't Delete!"));
+                return BadRequest(new BaseResponse(true, "Semester Used. Can't Delete!"));
             }
 
             string deleteResult = semesterRepository.DeleteSemester(semester);

@@ -167,6 +167,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
             var batch = _batchRepository.GetBatchById(id);
+            if(batch == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Batch"));
+            }
             if (_batchRepository.CheckBatchUpdateDuplicate(id, curriculumBatchRequest.batch_order, batch.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, $"Batch Order {curriculumBatchRequest.batch_order} is Duplicate!"));
@@ -211,6 +215,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult DeleteCurriculumBatch(int id)
         {
             var batch = _batchRepository.GetBatchById(id);
+            if(batch == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Batch"));
+            }
+
             if (_batchRepository.CheckBatchExsit(id))
             {
                 return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Used. Can't Delete!"));

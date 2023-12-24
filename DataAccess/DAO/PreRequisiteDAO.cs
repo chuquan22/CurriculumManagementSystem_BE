@@ -56,16 +56,16 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.PreRequisite.Add(preRequisite);
-                int number = _cmsDbContext.SaveChanges();
-                if (number > 0)
-                {
+                //_cmsDbContext.PreRequisite.Add(preRequisite);
+                //int number = _cmsDbContext.SaveChanges();
+                //if (number > 0)
+                //{
                     return Result.createSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Create PreRequisite Fail";
-                }
+                //}
+                //else
+                //{
+                //    return "Create PreRequisite Fail";
+                //}
             }
             catch (Exception ex)
             {

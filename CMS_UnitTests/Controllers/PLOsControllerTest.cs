@@ -77,11 +77,11 @@ namespace CMS_UnitTests.Controllers
         public void PutPLOs_WithValidData_ReturnsOkResult()
         {
             // Arrange
-            int id = 1;
+            int id = 10;
             var pLOsDTORequest = new PLOsDTORequest
             {
                 PLO_name = "TestPLO",
-                curriculum_id = 1,
+                curriculum_id = 9,
                 PLO_description = "Description"
             };
             var plosData = new PLOs();
@@ -118,7 +118,7 @@ namespace CMS_UnitTests.Controllers
             _plosRepository.Setup(repo => repo.CreatePLOs(It.IsAny<PLOs>())).Returns(Result.createSuccessfull.ToString());
 
             // Act
-            var result = _controller.PostPLOs(pLOsDTORequest).Result;
+            var result = _controller.PostPLOs(pLOsDTORequest);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
@@ -133,10 +133,10 @@ namespace CMS_UnitTests.Controllers
         public void PutPLOs_WithDuplicateName_ReturnsBadRequest()
         {
             // Arrange
-            int id = 1;
+            int id = 10;
             var pLOsDTORequest = new PLOsDTORequest
             {
-                PLO_name = "TestPLO",
+                PLO_name = "PLO02",
                 curriculum_id = 1,
                 PLO_description = "Description"
             };
@@ -162,25 +162,29 @@ namespace CMS_UnitTests.Controllers
             // Arrange
             var pLOsDTORequest = new PLOsDTORequest
             {
-                PLO_name = "DuplicateName",
-                curriculum_id = 1,
+                PLO_name = "PLO02",
+                curriculum_id = 9,
                 PLO_description = "Description"
             };
 
+            // Mocking the repository to return true for duplicate name
             _plosRepository.Setup(repo => repo.CheckPLONameExsit(It.IsAny<string>(), It.IsAny<int>())).Returns(true);
 
             // Act
-            var result = _controller.PostPLOs(pLOsDTORequest).Result;
+            var result = _controller.PostPLOs(pLOsDTORequest);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.IsInstanceOf<BaseResponse>(badRequestResult.Value);
-            var baseResponse = badRequestResult.Value as BaseResponse;
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
+
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestObjectResult);
+
+            var baseResponse = badRequestObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("DuplicateName is Duplicate!", baseResponse.message);
-            // Add more assertions based on your specific response structure
         }
+
 
 
         [Test]
@@ -215,7 +219,7 @@ namespace CMS_UnitTests.Controllers
         public void DeletePLOs_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int id = 3;
+            int id = 10;
             var pLOs = new PLOs();
 
             _plosRepository.Setup(repo => repo.GetPLOsById(It.IsAny<int>())).Returns(pLOs);

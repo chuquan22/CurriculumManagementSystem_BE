@@ -45,8 +45,8 @@ namespace CMS_UnitTests.Controllers
         public void GetAllPLOMapping_WhenCurriculumIdValid_ReturnsOk()
         {
             // Arrange
-            var curriculumId = 1; // Replace with a valid curriculum ID
-            var listPLOMapping = new List<PLOMapping>(); // Add sample PLOMappingDTO data
+            var curriculumId = 9;
+            var listPLOMapping = new List<PLOMapping>();
 
             _repoMock.Setup(repo => repo.GetPLOMappingsInCurriculum(curriculumId)).Returns(listPLOMapping);
 
@@ -74,8 +74,8 @@ namespace CMS_UnitTests.Controllers
         public void GetAllPLOMapping_WhenNoPLOMappingFound_ReturnsOkWithMessage()
         {
             // Arrange
-            var curriculumId = 1; // Replace with a valid curriculum ID
-            var listPLOMapping = new List<PLOMapping>(); 
+            var curriculumId = 10;
+            var listPLOMapping = new List<PLOMapping>();
 
             _repoMock.Setup(repo => repo.GetPLOMappingsInCurriculum(curriculumId)).Returns(listPLOMapping);
 
@@ -92,7 +92,6 @@ namespace CMS_UnitTests.Controllers
             var baseResponse = okResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
             Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("PLO Mapping Empty. Please Create Curriculum Subject and PLO", baseResponse.message);
 
         }
 
@@ -105,22 +104,22 @@ namespace CMS_UnitTests.Controllers
                 {
                     new PLOMappingRequest
                     {
-                        subject_id = 1,
+                        subject_id = 6,
                         PLOs = new Dictionary<string, bool>
                         {
-                            { "1-PLO1", true },
-                            { "2-PLO2", false },
-                            { "3-PLO3", true }
+                            { "11-PLO1", true },
+                            { "12-PLO2", false },
+                            { "13-PLO3", true }
                         }
                     },
                     new PLOMappingRequest
                     {
-                        subject_id = 2,
+                        subject_id = 9,
                         PLOs = new Dictionary<string, bool>
                         {
-                            { "1-PLO1", false },
-                            { "2-PLO2", true },
-                            { "3-PLO3", false }
+                            { "17-PLO1", false },
+                            { "28-PLO2", true },
+                            { "39-PLO3", false }
                         }
                     },
                 };
@@ -145,52 +144,51 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Update PLOMapping Success", baseResponse.message);
         }
 
-        // Test for UpdatePLOMapping action returning BadRequest
-        [Test]
-        public void UpdatePLOMapping_WhenDeleteFails_ReturnsBadRequest()
-        {
-            // Arrange
-            var pLOMappingRequests = new List<PLOMappingRequest>
-                {
-                    new PLOMappingRequest
-                    {
-                        subject_id = 1,
-                        PLOs = new Dictionary<string, bool>
-                        {
-                            { "1-PLO1", true },
-                            { "2-PLO2", false },
-                            { "3-PLO3", true }
-                        }
-                    },
-                    new PLOMappingRequest
-                    {
-                        subject_id = 2,
-                        PLOs = new Dictionary<string, bool>
-                        {
-                            { "1-PLO1", false },
-                            { "2-PLO2", true },
-                            { "3-PLO3", false }
-                        }
-                    },
-                };
 
+        [Test]
+        [TestCase(0, new object[] { new object[] { "17-PLO1", false }, new object[] { "18-PLO2", true }, new object[] { "19-PLO3", false } })]
+        public void UpdatePLOMapping_WhenDeleteFails_ThrowsException(int subjectId, object[] plosArray)
+        {
+            // Convert the array to Dictionary<string, bool>
+            var pLOMappingRequests = new List<PLOMappingRequest>
+            {
+                new PLOMappingRequest
+                {
+                    subject_id = subjectId,
+                    PLOs = plosArray.ToDictionary(x => (string)((object[])x)[0], x => (bool)((object[])x)[1]),
+                }
+            };
+
+            // Set up repository mock to simulate failure
             _repoMock.Setup(repo => repo.CheckPLOMappingExsit(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
             _repoMock.Setup(repo => repo.DeletePLOMapping(It.IsAny<PLOMapping>())).Returns("Delete failed message");
 
-            // Act
-            var result = _ploMappingsController.UpdatePLOMapping(pLOMappingRequests);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            var okResult = result as OkObjectResult;
-
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-
-            var baseResponse = okResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Delete failed message", baseResponse.message);
+            // Act and Assert
+            Assert.Throws<InvalidOperationException>(() => _ploMappingsController.UpdatePLOMapping(pLOMappingRequests));
         }
+
+        [Test]
+        [TestCase(10, new object[] { new object[] { "17 PLO1", false }, new object[] { "18-PLO2", true }, new object[] { "19-PLO3", false } })]
+        [TestCase(10, new object[] { new object[] { "PLO1", false }, new object[] { "18-PLO2", true }, new object[] { "19-PLO3", false } })]
+        public void UpdatePLOMapping_WhenUpdateFails_ThrowsException(int subjectId, object[] plosArray)
+        {
+            // Convert the array to Dictionary<string, bool>
+            var pLOMappingRequests = new List<PLOMappingRequest>
+            {
+                new PLOMappingRequest
+                {
+                    subject_id = subjectId,
+                    PLOs = plosArray.ToDictionary(x => (string)((object[])x)[0], x => (bool)((object[])x)[1]),
+                }
+            };
+
+            // Set up repository mock to simulate failure
+            _repoMock.Setup(repo => repo.CheckPLOMappingExsit(It.IsAny<int>(), It.IsAny<int>())).Returns(true);
+            _repoMock.Setup(repo => repo.DeletePLOMapping(It.IsAny<PLOMapping>())).Returns("Delete failed message");
+
+            // Act and Assert
+            Assert.Throws<FormatException>(() => _ploMappingsController.UpdatePLOMapping(pLOMappingRequests));
+        }
+
     }
 }

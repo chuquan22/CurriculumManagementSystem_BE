@@ -34,6 +34,7 @@ using System.Text;
 using Repositories.CurriculumBatchs;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -44,7 +45,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class CurriculumsController : ControllerBase
     {
         private readonly HttpClient client = null;
-        private Microsoft.Extensions.Configuration.IConfiguration config;
+        private IConfiguration config;
         public static string API_PORT;
         public static string API_CURRICULUM = "/api/Curriculums/CreateCurriculum";
         public static string API_CURRICULUMSUBJECT = "/api/CurriculumSubjects/CreateCurriculumSubject";
@@ -62,7 +63,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private readonly ICurriculumSubjectRepository _curriculumSubjectRepository = new CurriculumSubjectRepository();
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public CurriculumsController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public CurriculumsController(IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             client = new HttpClient();

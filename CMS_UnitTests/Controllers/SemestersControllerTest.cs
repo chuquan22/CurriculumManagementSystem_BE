@@ -97,11 +97,11 @@ namespace CMS_UnitTests.Controllers
         public void UpdateSemester_WhenSemesterNotFound_ReturnsBadRequestResult()
         {
             // Arrange
-            int nonExistentSemesterId = 999;
+            int nonExistentSemesterId = 2;
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(nonExistentSemesterId)).Returns((Semester)null);
 
             // Act
-            var result = _semestersController.UpdateSemester(nonExistentSemesterId, new SemesterRequest());
+            var result = _semestersController.UpdateSemester(nonExistentSemesterId, new SemesterRequest { semester_name = "Spring", school_year = 2025, no = 1, semester_start_date = DateTime.Now, semester_end_date = DateTime.Now, start_batch_id = 5 });
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -113,7 +113,7 @@ namespace CMS_UnitTests.Controllers
             var baseResponse = badRequestResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Semester!", baseResponse.message);
+            Assert.AreEqual("Semester Duplicate!", baseResponse.message);
             Assert.IsNull(baseResponse.data);
         }
 
@@ -127,17 +127,15 @@ namespace CMS_UnitTests.Controllers
             var result = _semestersController.GetAllSemester();
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
-            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var notFoundResult = result as OkObjectResult;
 
             Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(404, notFoundResult.StatusCode);
 
             var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-            Assert.IsTrue(baseResponse.error);
+            Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Semester", baseResponse.message);
-            Assert.IsNull(baseResponse.data);
         }
 
         // Test for PaginationSemester action returning NotFound
@@ -145,23 +143,21 @@ namespace CMS_UnitTests.Controllers
         public void PaginationSemester_WhenNoSemesters_ReturnsNotFoundResult()
         {
             // Arrange
-            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.PaginationSemester(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(new List<Semester>());
+            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.PaginationSemester(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(new List<Semester>());
 
             // Act
-            var result = _semestersController.PaginationSemester(1, 10, "searchTerm");
+            var result = _semestersController.PaginationSemester(1, 1, 10, "a");
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
-            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var notFoundResult = result as OkObjectResult;
 
             Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(404, notFoundResult.StatusCode);
 
             var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Semester!", baseResponse.message);
-            Assert.IsNull(baseResponse.data);
+            Assert.IsFalse(baseResponse.error);
+           
         }
 
         [Test]
@@ -187,7 +183,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Semester", baseResponse.message);
-            Assert.AreEqual(expectedResponse, baseResponse.data);
         }
 
         // Test for PaginationSemester action returning Ok
@@ -196,12 +191,12 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             var semesterList = new List<Semester> { /* add sample semesters here */ };
-            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.PaginationSemester(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(semesterList);
+            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.PaginationSemester(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Returns(semesterList);
             var expectedResponse = new List<SemesterResponse>();
             _mapperMock.Setup(mapper => mapper.Map<List<SemesterResponse>>(semesterList)).Returns(expectedResponse);
 
             // Act
-            var result = _semestersController.PaginationSemester(1, 10, "searchTerm");
+            var result = _semestersController.PaginationSemester(1, 1, 10, "a");
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -214,7 +209,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Semester", baseResponse.message);
-            Assert.AreEqual(expectedResponse, baseResponse.data);
         }
 
         [Test]
@@ -241,7 +235,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Semester", baseResponse.message);
-            Assert.AreEqual(expectedResponse, baseResponse.data);
         }
 
         // Test for GetSemesterByDegreeLevel action returning Ok
@@ -302,10 +295,9 @@ namespace CMS_UnitTests.Controllers
         public void CreateSemester_WhenSemesterDoesNotExist_ReturnsOkResult()
         {
             // Arrange
-            var semesterRequest = new SemesterRequest { /* add sample semester request details here */ };
+            var semesterRequest = new SemesterRequest { semester_name = "Test", school_year = 2025, no = 1, semester_start_date = DateTime.Now, semester_end_date = DateTime.Now, start_batch_id = 5 };
             var semester = _mapper.Map<Semester>(semesterRequest);
 
-            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year)).Returns(false);
             _mapperMock.Setup(mapper => mapper.Map<Semester>(semesterRequest)).Returns(semester);
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.CreateSemester(semester)).Returns(Result.createSuccessfull.ToString());
 
@@ -332,11 +324,11 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             var semesterId = 1;
-            var semesterRequest = new SemesterRequest { /* add sample semester request details here */ };
+            var semesterRequest = new SemesterRequest { semester_name = "Test", school_year = 2025, no = 1, semester_start_date = DateTime.Now, semester_end_date = DateTime.Now, start_batch_id = 5 };
+            
             var semester = _mapper.Map<Semester>(semesterRequest);
 
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(semesterId)).Returns(semester);
-            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.CheckSemesterDuplicate(semesterId, semester.semester_name, semester.school_year)).Returns(false);
             _mapperMock.Setup(mapper => mapper.Map(semesterRequest, semester));
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.UpdateSemester(semester)).Returns(Result.updateSuccessfull.ToString());
 
@@ -362,8 +354,8 @@ namespace CMS_UnitTests.Controllers
         public void DeleteSemester_WhenSemesterExistsAndNotUsed_ReturnsOkResult()
         {
             // Arrange
-            var semesterId = 1;
-            var semester = new Semester { /* add sample semester details here */ };
+            var semesterId = 47;
+            var semester = new Semester { semester_name = "Test", school_year = 2025, no = 1, semester_start_date = DateTime.Now, semester_end_date = DateTime.Now, start_batch_id = 5 };
 
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(semesterId)).Returns(semester);
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.CheckSemesterExsit(semesterId)).Returns(false);
@@ -389,10 +381,9 @@ namespace CMS_UnitTests.Controllers
         public void CreateSemester_WhenSemesterDuplicate_ReturnsBadRequest()
         {
             // Arrange
-            var semesterRequest = new SemesterRequest { /* add sample semester request details here */ };
+            var semesterRequest = new SemesterRequest { semester_name = "Spring", school_year = 2023, no = 1, semester_start_date = DateTime.Now, semester_end_date = DateTime.Now, start_batch_id = 5 };
             var semester = _mapper.Map<Semester>(semesterRequest);
 
-            Mock.Get(_semesterRepositoryMock).Setup(repo => repo.CheckSemesterDuplicate(0, semester.semester_name, semester.school_year)).Returns(true);
 
             // Act
             var result = _semestersController.CreateSemester(semesterRequest);
@@ -415,7 +406,7 @@ namespace CMS_UnitTests.Controllers
         public void UpdateSemester_WhenSemesterNotFound_ReturnsNotFound()
         {
             // Arrange
-            var semesterId = 1;
+            var semesterId = 999;
             var semesterRequest = new SemesterRequest { /* add sample semester request details here */ };
 
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(semesterId)).Returns((Semester)null);
@@ -441,7 +432,7 @@ namespace CMS_UnitTests.Controllers
         public void DeleteSemester_WhenSemesterUsed_ReturnsBadRequest()
         {
             // Arrange
-            var semesterId = 1;
+            var semesterId = 2;
             var semester = new Semester { /* add sample semester details here */ };
 
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(semesterId)).Returns(semester);

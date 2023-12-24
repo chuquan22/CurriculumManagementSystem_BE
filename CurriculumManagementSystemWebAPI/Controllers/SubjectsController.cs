@@ -46,7 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
         {
             var subject = _subjectRepository.GetAllSubject(txtSearch);
-            if (subject == null)
+            if (subject.Count == 0)
             {
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
             }

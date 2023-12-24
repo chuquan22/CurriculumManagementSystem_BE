@@ -5,7 +5,7 @@ using Moq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CurriculumManagementSystemWebAPI.Controllers;  
+using CurriculumManagementSystemWebAPI.Controllers;
 using Repositories.Curriculums;
 using Repositories.Batchs;
 using AutoMapper;
@@ -19,7 +19,7 @@ using AutoFixture;
 using DataAccess.Models.DTO;
 using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Http;
-using Castle.Core.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -28,12 +28,12 @@ namespace CMS_UnitTests.Controllers
     {
         private Mock<ICurriculumRepository> curriculumRepositoryMock;
         private Mock<IBatchRepository> batchRepositoryMock;
-        private Mock<IMapper> mapperMock ;
-        private IMapper _mapper ;
+        private Mock<IMapper> mapperMock;
+        private IMapper _mapper;
         private Mock<IWebHostEnvironment> hostingEnvironmentMock;
         private CurriculumsController curriculumController;
         private IFixture fixture;
-      
+
         [SetUp]
         public void Setup()
         {
@@ -45,7 +45,8 @@ namespace CMS_UnitTests.Controllers
             var configurationMock = new Mock<IConfiguration>();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
-            curriculumController = new CurriculumsController((Microsoft.Extensions.Configuration.IConfiguration)configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
+            curriculumController = new CurriculumsController(configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
+
         }
 
         [Test]
@@ -101,12 +102,12 @@ namespace CMS_UnitTests.Controllers
 
             curriculumRepositoryMock.Setup(repo => repo.PanigationCurriculum(page, limit, degreeLevelId, txtSearch, majorId))
                 .Returns(listCurri);
-           mapperMock.Setup(mapper => mapper.Map<List<CurriculumResponse>>(listCurri)).Returns(listCurriResponse);
+            mapperMock.Setup(mapper => mapper.Map<List<CurriculumResponse>>(listCurri)).Returns(listCurriResponse);
             // Act
             var result = await curriculumController.PaginationCurriculum(page, limit, degreeLevelId, txtSearch, majorId);
 
             // Assert
-           
+
 
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
@@ -156,12 +157,12 @@ namespace CMS_UnitTests.Controllers
         public async Task GetCurriculum_ReturnsOkResult()
         {
             // Arrange
-            var curriculumId = 20;
-            var expectedCurriculumResponse = new CurriculumResponse(); 
-            var curriculum = new Curriculum(); 
+            var curriculumId = 4;
+            var expectedCurriculumResponse = new CurriculumResponse();
+            var curriculum = new Curriculum();
 
             curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(curriculumId)).Returns(curriculum);
-           mapperMock.Setup(mapper => mapper.Map<CurriculumResponse>(curriculum)).Returns(expectedCurriculumResponse);
+            mapperMock.Setup(mapper => mapper.Map<CurriculumResponse>(curriculum)).Returns(expectedCurriculumResponse);
 
             // Act
             var result = await curriculumController.GetCurriculum(curriculumId);
@@ -218,101 +219,30 @@ namespace CMS_UnitTests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
         }
 
-        [TestCase]
-        public async Task PostCurriculum_TestCase1_ReturnsOkResult()
+        [TestCase("Curriculum Test", "Curriculum English Test", "Curriculum Description Test", 7, 3, 5, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        [TestCase("Curriculum Test", "Curriculum English Test", "Curriculum Description Test", 9, 2, 4, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        public async Task PostCurriculum_ReturnsOkResult(string curriculumName, string englishCurriculumName, string curriculumDescription, int totalSemester, int speId, int batchId,
+            string formal, string decisionNo, DateTime date)
         {
             // Arrange
             var curriculumRequest = new CurriculumRequest
             {
-                curriculum_name = "Curriculum Test",
-                english_curriculum_name = "Curriculum English Test",
-                curriculum_description = "Curriculum Description Test",
-                total_semester = 5,
-                specialization_id = 1,
-                batch_id = -1,
-                Formality = "Sample Formality",
-                decision_No = "Sample Decision No",
-                approved_date = DateTime.Now
+                curriculum_name = curriculumName,
+                english_curriculum_name = englishCurriculumName,
+                curriculum_description = curriculumDescription,
+                total_semester = totalSemester,
+                specialization_id = speId,
+                batch_id = batchId,
+                Formality = formal,
+                decision_No = decisionNo,
+                approved_date = date
             };
             var curriculum = new Curriculum();
+            string curriculumCode = string.Empty;
+            int total = 0;
 
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumCode(It.IsAny<int>(), It.IsAny<int>())).Returns("abcd");  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.GetTotalSemester(It.IsAny<int>(), It.IsAny<int>())).Returns(0);  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.CreateCurriculum(It.IsAny<Curriculum>())).Returns("OK");  // Mock the repository method
-
-            // Act
-            var result = await curriculumController.PostCurriculum(curriculumRequest);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
-
-            var okObjectResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-        }
-
-        [TestCase]
-        public async Task PostCurriculum_TestCase2_ReturnsOkResult()
-        {
-            // Arrange
-            var curriculumRequest = new CurriculumRequest
-            {
-                curriculum_name = null,
-                english_curriculum_name = "Sample English Curriculum",
-                curriculum_description = "Sample Curriculum Description",
-                total_semester = 7,
-                specialization_id = 1,
-                batch_id = 5,
-                Formality = null,
-                decision_No = "Sample Decision No",
-                approved_date = DateTime.Now
-            };
-            var curriculum = new Curriculum();
-
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumCode(It.IsAny<int>(), It.IsAny<int>())).Returns("abcd");  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.GetTotalSemester(It.IsAny<int>(), It.IsAny<int>())).Returns(0);  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.CreateCurriculum(It.IsAny<Curriculum>())).Returns("OK");  // Mock the repository method
-
-            // Act
-            var result = await curriculumController.PostCurriculum(curriculumRequest);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
-
-            var okObjectResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-        }
-
-        [TestCase]
-        public async Task PostCurriculum_TestCase3_ReturnsOkResult()
-        {
-            // Arrange
-            var curriculumRequest = new CurriculumRequest
-            {
-                curriculum_name = "Curriculum Test",
-                english_curriculum_name = "English Curriculum Test",
-                curriculum_description = "Sample Curriculum Description",
-                total_semester = 7,
-                specialization_id = 2,
-                batch_id = 5,
-                Formality = "Formality Test",
-                decision_No = "Sample Decision No",
-                approved_date = DateTime.Now
-            };
-            var curriculum = new Curriculum();
-
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumCode(It.IsAny<int>(), It.IsAny<int>())).Returns("abcd");  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.GetTotalSemester(It.IsAny<int>(), It.IsAny<int>())).Returns(0);  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.CreateCurriculum(It.IsAny<Curriculum>())).Returns("OK");  // Mock the repository method
+            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumCode(batchId, speId)).Returns(curriculumCode);  // Mock the repository method
+            curriculumRepositoryMock.Setup(repo => repo.GetTotalSemester(speId, batchId)).Returns(total);  // Mock the repository method
 
             // Act
             var result = await curriculumController.PostCurriculum(curriculumRequest);
@@ -330,27 +260,27 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual(baseResponse.message, "Create Curriculum Success!");
         }
 
-        [TestCase]
-        public async Task PostCurriculum_TestCase4_ReturnsOKResult()
+        [TestCase("Curriculum Test", "Curriculum English Test", "Curriculum Description Test", 9, 8, 2, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        [TestCase("Curriculum Test", "Curriculum English Test", "Curriculum Description Test", 7, 8, 3, null, "Sample Decision No", "12/12/2001")]
+        [TestCase(null, "Curriculum English Test", "Curriculum Description Test", 9, 2, 6, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        [TestCase("Curriculum Test", null, "Curriculum Description Test", 5, 1, 5, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        [TestCase("Curriculum Test", "Curriculum English Test", null, 3, 2, 6, "Sample Formality", "Sample Decision No", "12/12/2001")]
+        public async Task PostCurriculum_ReturnsFailResult(string curriculumName, string englishCurriculumName, string curriculumDescription, int? totalSemester, int? speId, int? batchId,
+            string formal, string decisionNo, DateTime? date)
         {
             // Arrange
             var curriculumRequest = new CurriculumRequest
             {
-                curriculum_name = null,
-                english_curriculum_name = "Sample English Curriculum",
-                curriculum_description = "Sample Curriculum Description",
-                total_semester = 7,
-                specialization_id = 1,
-                batch_id = 5,
-                Formality = null,
-                decision_No = "Sample Decision No",
-                approved_date = DateTime.Now
+                curriculum_name = curriculumName,
+                english_curriculum_name = englishCurriculumName,
+                curriculum_description = curriculumDescription,
+                total_semester = (int)totalSemester,
+                specialization_id = (int)speId,
+                batch_id = (int)batchId,
+                Formality = formal,
+                decision_No = decisionNo,
+                approved_date = date
             };
-            var curriculum = new Curriculum();
-
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumCode(It.IsAny<int>(), It.IsAny<int>())).Returns("abcd");  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.GetTotalSemester(It.IsAny<int>(), It.IsAny<int>())).Returns(0);  // Mock the repository method
-            curriculumRepositoryMock.Setup(repo => repo.CreateCurriculum(It.IsAny<Curriculum>())).Returns("OK");  // Mock the repository method
 
             // Act
             var result = await curriculumController.PostCurriculum(curriculumRequest);
@@ -358,13 +288,14 @@ namespace CMS_UnitTests.Controllers
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var okObjectResult = result.Result as BadRequestObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestObjectResult);
 
-            var baseResponse = okObjectResult.Value as BaseResponse;
+            var baseResponse = badRequestObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
+
         }
 
         [Test]
@@ -383,7 +314,7 @@ namespace CMS_UnitTests.Controllers
                 decision_No = "Sample Decision No",
                 approved_date = DateTime.Now
             };
-           
+
             // Act
             var result = await curriculumController.PostCurriculum(curriculumRequest);
 
@@ -401,23 +332,56 @@ namespace CMS_UnitTests.Controllers
 
         }
 
-
-        [TestCase("Sample Update English Curriculum 1", "Sample Update Curriculum 1")]
-        [TestCase("Sample Update English Curriculum 2", "Sample Update Curriculum 2")]
-        [TestCase("Sample Update English Curriculum 3", "Sample Update Curriculum 3")]
-        
-
-        public async Task PutCurriculum_UpdateEnglishAndCurriculumName_ReturnsOkResult(string englishCurriculumName, string curriculumName)
+        [Test]
+        public async Task DeleteCurriculum_ReturnsOkResult()
         {
             // Arrange
-            var curriculumId = 1;
+            int curriculumId = 19;
+
+            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());
+            curriculumRepositoryMock.Setup(repo => repo.RemoveCurriculum(It.IsAny<Curriculum>())).Returns("OK");
+
+            // Act
+            var result = await curriculumController.DeleteCurriculum(curriculumId);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+        }
+
+        [Test]
+        public async Task DeleteCurriculum_ReturnsNotFoundResult_WhenNotFoundCurriculum()
+        {
+            // Arrange
+            int curriculumId = 200;
+
+            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());
+            curriculumRepositoryMock.Setup(repo => repo.RemoveCurriculum(It.IsAny<Curriculum>())).Returns("OK");
+
+            // Act
+            var result = await curriculumController.DeleteCurriculum(curriculumId);
+
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+        }
+        
+
+        [TestCase("curriculum name test", "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase("curriculum name test1", "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase("curriculum name test2", "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase("curriculum name test3", "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase("curriculum name test4", "curriculum english name Test", "test", "test", "12/12/2001")]
+        public async Task PutCurriculum_ReturnsOkResult(string curriculumName, string englishCurriculumName, string description, string decisionNo, DateTime date)
+        {
+            // Arrange
+            var curriculumId = 4;
             var curriculumRequest = new CurriculumUpdateRequest
             {
                 curriculum_name = curriculumName,
                 english_curriculum_name = englishCurriculumName,
                 curriculum_description = "Sample Curriculum Description",
                 decision_No = "Sample Update Decision No",
-                approved_date = DateTime.Now
+                approved_date = DateTime.Now,
+                
             };
 
             curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());
@@ -438,8 +402,14 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Update Curriculum Success!", baseResponse.message);
         }
-        [Test]
-        public async Task PutCurriculum_ReturnsNotFoundResult_WhenNotFoundCurriculumUpdate()
+
+        [TestCase(400,"curriculum name test", "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase(3,"curriculum name test", null, "test", "test", "12/12/2001")]
+        [TestCase(4,null, "curriculum english name Test", "test", "test", "12/12/2001")]
+        [TestCase(4,"curriculum name test", "curriculum english name Test", null, "test", "12/12/2001")]
+        [TestCase(4,"curriculum name test", "curriculum english name Test", "Test", null, "12/12/2001")]
+        [TestCase(4,"curriculum name test", "curriculum english name Test", "test", "test", "10/15/2002")]
+        public async Task PutCurriculum_ReturnsFailResult(int id, string curriculumName, string englishCurriculumName, string description, string decisionNo, DateTime date)
         {
             // Arrange
             var curriculumId = 400;
@@ -467,64 +437,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsTrue(baseResponse.error);
             Assert.AreEqual("Can't Update because not found curriculum", baseResponse.message);
         }
-
-        [Test]
-        public async Task DeleteCurriculum_ReturnsOkResult()
-        {
-            // Arrange
-            int curriculumId = 43;
-
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());  
-            curriculumRepositoryMock.Setup(repo => repo.RemoveCurriculum(It.IsAny<Curriculum>())).Returns("OK");  
-
-            // Act
-            var result = await curriculumController.DeleteCurriculum(curriculumId);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-        }
-
-        [Test]
-        public async Task DeleteCurriculum_ReturnsNotFoundResult_WhenNotFoundCurriculum()
-        {
-            // Arrange
-            int curriculumId = 200;
-
-            curriculumRepositoryMock.Setup(repo => repo.GetCurriculumById(It.IsAny<int>())).Returns(new Curriculum());
-            curriculumRepositoryMock.Setup(repo => repo.RemoveCurriculum(It.IsAny<Curriculum>())).Returns("OK");
-
-            // Act
-            var result = await curriculumController.DeleteCurriculum(curriculumId);
-
-            // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
-        }
-        [Test]
-        public async Task ImportFileCurriculum_ReturnsOKResult_WhenImportCurriculumSuccess()
-        {
-            // Arrange
-            var fileMock = new Mock<IFormFile>();
-            var fileName = "FileTestCurriculum.xlsx";
-            string filecurriculumPath = "./FileImport/" + fileName;
-
-            // Đọc nội dung thực tế của file và tạo MemoryStream
-            using (var fileStream = new FileStream(filecurriculumPath, FileMode.Open))
-            {
-                var memoryStream = new MemoryStream();
-                await fileStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                IFormFile file = (IFormFile)memoryStream;
-            }
-
-            // Act
-            var result = await curriculumController.ImportCurriculum(fileMock.Object);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            var okResult = result as OkObjectResult;
-            Assert.IsFalse((bool)okResult.Value); 
-        }
-
     }
 
 }
