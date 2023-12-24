@@ -176,7 +176,7 @@ namespace CMS_UnitTests.Controllers
         public void CreateAssessmentMethod_WithDuplicateAssessmentMethod_ReturnsBadRequestResultWithMessage()
         {
             // Arrange
-            var assessmentMethodRequest = new AssessmentMethodRequest(); // Provide a valid request object
+            var assessmentMethodRequest = new AssessmentMethodRequest { assessment_method_component = "test component", assessment_type_id = 1}; 
             _assessmentMethodRepositoryMock.Setup(repo => repo.CheckAssmentMethodDuplicate(0, It.IsAny<string>(), It.IsAny<int>())).Returns(true);
 
             // Act
@@ -200,8 +200,8 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int validAssessmentMethodId = 1;
-            var assessmentMethodRequest = new AssessmentMethodRequest(); // Provide a valid request object
-            var existingAssessmentMethod = new AssessmentMethod(); // Provide an existing assessment method with the given ID
+            var assessmentMethodRequest = new AssessmentMethodRequest { assessment_method_component = "update component", assessment_type_id = 1}; 
+            var existingAssessmentMethod = new AssessmentMethod(); 
             _assessmentMethodRepositoryMock.Setup(repo => repo.GetAsssentMethodById(validAssessmentMethodId)).Returns(existingAssessmentMethod);
             _assessmentMethodRepositoryMock.Setup(repo => repo.CheckAssmentMethodDuplicate(validAssessmentMethodId, It.IsAny<string>(), It.IsAny<int>())).Returns(false);
             _assessmentMethodRepositoryMock.Setup(repo => repo.UpdateAssessmentMethod(It.IsAny<AssessmentMethod>())).Returns(Result.updateSuccessfull.ToString());
@@ -254,7 +254,7 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int validAssessmentMethodId = 1;
-            var assessmentMethodRequest = new AssessmentMethodRequest(); // Provide a valid request object
+            var assessmentMethodRequest = new AssessmentMethodRequest { assessment_method_component = "update component", assessment_type_id = 1 };
             var existingAssessmentMethod = new AssessmentMethod(); // Provide an existing assessment method with the given ID
             _assessmentMethodRepositoryMock.Setup(repo => repo.GetAsssentMethodById(validAssessmentMethodId)).Returns(existingAssessmentMethod);
             _assessmentMethodRepositoryMock.Setup(repo => repo.CheckAssmentMethodDuplicate(validAssessmentMethodId, It.IsAny<string>(), It.IsAny<int>())).Returns(true);
@@ -280,7 +280,7 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int validAssessmentMethodId = 1;
-            var existingAssessmentMethod = new AssessmentMethod(); // Provide an existing assessment method with the given ID
+            var existingAssessmentMethod = new AssessmentMethod(); 
             _assessmentMethodRepositoryMock.Setup(repo => repo.GetAsssentMethodById(validAssessmentMethodId)).Returns(existingAssessmentMethod);
             _assessmentMethodRepositoryMock.Setup(repo => repo.CheckAssmentMethodExsit(validAssessmentMethodId)).Returns(false);
             _assessmentMethodRepositoryMock.Setup(repo => repo.DeleteAssessmentMethod(It.IsAny<AssessmentMethod>())).Returns(Result.deleteSuccessfull.ToString());
