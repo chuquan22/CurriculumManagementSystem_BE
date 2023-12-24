@@ -42,6 +42,11 @@ namespace Repositories.LearningMethods
             return _learningMethodDAO.GetLearningMethodById(id);
         }
 
+        public LearningMethod GetLearningMethodByName(string name)
+        {
+            return _learningMethodDAO.GetLearningMethodByName(name);
+        }
+
         public int GetTotalLearningMethod(string? txtSearch)
         {
             return _learningMethodDAO.GetTotalLearningMethod(txtSearch);

@@ -19,6 +19,7 @@ using AutoFixture;
 using DataAccess.Models.DTO;
 using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Http;
+using Castle.Core.Configuration;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -41,9 +42,10 @@ namespace CMS_UnitTests.Controllers
             batchRepositoryMock = new Mock<IBatchRepository>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
             _mapper = config.CreateMapper();
+            var configurationMock = new Mock<IConfiguration>();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
-            curriculumController = new CurriculumsController(_mapper ,hostingEnvironmentMock.Object);
+            curriculumController = new CurriculumsController((Microsoft.Extensions.Configuration.IConfiguration)configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
         }
 
         [Test]

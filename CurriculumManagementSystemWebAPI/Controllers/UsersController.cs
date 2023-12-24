@@ -24,7 +24,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             _mapper = mapper;
             _usersRepository = new UsersRepository();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("Pagination/{page}/{limit}")]
         public ActionResult PaginationUser(int page, int limit, [FromQuery] string? txtSearch)
         {
@@ -39,7 +39,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "List User", new BaseListResponse(page, limit, total, listUserResponse)));
 
         }
-
+        [Authorize(Roles = "Admin, Manager, Dispatcher")]
         [HttpGet("GetUserById/{id}")]
         public ActionResult GetUser(int id)
         {

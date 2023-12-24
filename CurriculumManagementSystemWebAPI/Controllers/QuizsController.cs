@@ -4,11 +4,9 @@ using DataAccess.Models.DTO.Excel;
 using DataAccess.Models.DTO.request;
 using DataAccess.Models.DTO.response;
 using DataAccess.Models.Enums;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiniExcelLibs;
 using MiniExcelLibs.OpenXml;
-using Repositories.CLOS;
 using Repositories.Major;
 using Repositories.Questions;
 using Repositories.Quizs;
@@ -16,47 +14,40 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 using SuperXML;
-using System.Numerics;
 using DataAccess.Models.DTO.XML;
-using System.Linq;
 using System.IO.Compression;
-using NuGet.Packaging;
-using Microsoft.AspNetCore.Routing.Template;
-using System.IO;
 using OfficeOpenXml;
-using System.Data;
-using OfficeOpenXml;
-using OfficeOpenXml.Table;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Manager, Dispatcher")]
     [Route("api/[controller]")]
     [ApiController]
     public class QuizsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly CMSDbContext cMSDbContext = new CMSDbContext();
         private IQuizRepository _quizRepository;
         private IQuestionRepository _questionRepository;
         private IMajorRepository _majorRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
-
+        private Microsoft.Extensions.Configuration.IConfiguration config;
         private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
+        public static string API_PORT;
         public static string API_Quiz = "/api/Quizs/CreateQuiz";
         public static string API_Question = "/api/Quizs/CreateQuestion";
 
-        public QuizsController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
+        public QuizsController(Microsoft.Extensions.Configuration.IConfiguration configuration,IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             _quizRepository = new QuizRepository();
             _questionRepository = new QuestionRepository();
             _majorRepository = new MajorRepository();
             client = new HttpClient();
-
+            config = configuration;
+            API_PORT = config["Info:Domain"];
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
@@ -116,6 +107,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult DeleteQuiz(int id)
         {
             var quiz = _quizRepository.GetQuizById(id);
+            if(quiz == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Quiz!"));
+
+            }
             string deleteResult = _quizRepository.DeleteQUiz(quiz);
             if (deleteResult != Result.deleteSuccessfull.ToString())
             {
@@ -155,21 +151,45 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost("CreateQuestion")]
-        public IActionResult CreateQuestion([FromBody] QuestionDTORequest questionDTO)
+        public async Task<IActionResult> CreateQuestion([FromBody] QuestionDTORequest questionDTO)
         {
-            if (_questionRepository.CheckQuestionDuplicate(0, questionDTO.question_name, questionDTO.quiz_id))
-            {
-                return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
+            try
+            {             
+                var question = _mapper.Map<Question>(questionDTO);
+                string createResult = _questionRepository.CreateQuestion(question);
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    return BadRequest(new BaseResponse(true, createResult));
+                }
+                return Ok(new BaseResponse(false, "Create Question Success", question));
             }
-            var question = _mapper.Map<Question>(questionDTO);
-            string createResult = _questionRepository.CreateQuestion(question);
-            if (createResult != Result.createSuccessfull.ToString())
+            catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, createResult));
-            }
-            return Ok(new BaseResponse(false, "Create Question Success", question));
-        }
 
+                return Ok(new BaseResponse(false, "Error: " + ex.Message, null));
+            }
+
+        }
+        [HttpPost("CreateQuestion2")]
+        public async Task<IActionResult> CreateQuestion2([FromBody] QuestionDTORequest questionDTO)
+        {
+            try
+            {
+                var question = _mapper.Map<Question>(questionDTO);
+                string createResult = _questionRepository.CreateQuestion(question);
+                if (createResult != Result.createSuccessfull.ToString())
+                {
+                    throw new Exception("Create Question '" + question.question_name + "' False!");
+                }
+                return Ok(new BaseResponse(false, "Create Question Success", question));
+            }
+            catch (Exception ex)
+            {
+
+               throw new Exception(ex.Message);
+            }
+
+        }
         [HttpPut("UpdateQuestion/{id}")]
         public IActionResult UpdateQuestion(int id, [FromBody] QuestionDTORequest questionDTO)
         {
@@ -178,10 +198,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 return BadRequest(new BaseResponse(true, $"Not Found Question"));
             }
+
             if (_questionRepository.CheckQuestionDuplicate(id, questionDTO.question_name, questionDTO.quiz_id))
             {
-                return BadRequest(new BaseResponse(true, $"Question {questionDTO.question_name} is Duplicate!"));
+                return BadRequest(new BaseResponse(true, $"Question is Duplicate!"));
             }
+
+            if (_questionRepository.CheckAnswerDuplicate(questionDTO.answers_A, questionDTO.answers_B, questionDTO.answers_C, questionDTO.answers_D))
+            {
+                return BadRequest(new BaseResponse(true, $"Answer is Duplicate!"));
+            }
+
             _mapper.Map(questionDTO, question);
             string updateResult = _questionRepository.UpdateQuestion(question);
             if (updateResult != Result.updateSuccessfull.ToString())
@@ -260,11 +287,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             var questionDTO = _mapper.Map<QuestionDTORequest>(question);
                             try
                             {
-                                CreateQuestionsAPI(questionDTO);
+                                await CreateQuestionsAPI(questionDTO);
                             }
                             catch(Exception ex)
                             {
-                                return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
+                                return BadRequest(new BaseResponse(true, "Error:" + ex.Message + "at sheet: " + sheetName));
                             }
                             
                         }
@@ -274,7 +301,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "Error:" + ex.InnerException.Message));
+                return BadRequest(new BaseResponse(true, "Error:" + ex.Message));
             }
         }
 
@@ -508,10 +535,22 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 FileInfo excelFile = new FileInfo("QuizExported.xlsx");
                 excelPackage.SaveAs(excelFile);
             }
+            Subject subject = new Subject();
+
+            try
+            {
+                subject = listQuiz[0].Subject;
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
 
             byte[] fileContents = System.IO.File.ReadAllBytes("QuizExported.xlsx");
             //return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "QuizExported.xlsx");
-            return Ok(new BaseResponse(false, "Successfully!", fileContents));
+            return Ok(new BaseResponse(false, subject.subject_code + " - " + subject.english_subject_name, fileContents));
         }
 
         private int ExtractNumber(string input)
@@ -622,7 +661,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 // get item in list question excel
                 foreach (var item in questionExcel)
                 {
-                    question.question_name = item.QUESTION;
+                    question.question_name = item.QUESTION.Trim();
 
                     question.quiz_id = quizId;
 

@@ -53,9 +53,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("Pagination/{page}/{limit}")]
-        public ActionResult PaginationLearningMethod(int page, int limit, [FromQuery] string? txtSearch)
+        public ActionResult PaginationLearningMethod(int? degree_id, int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listBatch = _batchRepository.PaginationCurriculumBatch(page, limit, txtSearch);
+            var listBatch = _batchRepository.PaginationCurriculumBatch(degree_id, page, limit, txtSearch);
 
             if (listBatch.Count == 0)
             {
@@ -74,7 +74,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 listCurriculumBatch.Add(curriBacthDTO);
             }
 
-            var total = _batchRepository.GetTotalCurriculumBatch(txtSearch);
+            var total = _batchRepository.GetTotalCurriculumBatch(degree_id, txtSearch);
             return Ok(new BaseResponse(false, "List Curriculum Batch", new BaseListResponse(page, limit, total, listCurriculumBatch)));
         }
 
@@ -115,8 +115,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "list Curriculum", CurriculumRespone));
         }
-
-
 
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)

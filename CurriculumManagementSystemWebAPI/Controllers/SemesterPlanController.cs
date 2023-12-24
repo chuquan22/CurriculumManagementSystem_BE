@@ -14,16 +14,13 @@ using static Google.Apis.Requests.BatchRequest;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Manager, Dispatcher")]
+    [Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SemesterPlanController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private ISemesterPlanRepository _repo;
-        private CMSDbContext _context = new CMSDbContext();
-        public SemesterPlanController(IMapper mapper)
+        public SemesterPlanController()
         {
-            _mapper = mapper;
             _repo = new SemesterPlanRepository();
 
         }
@@ -38,15 +35,17 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 {
                     var response = _repo.GetSemesterPlan(semester_id);
                     rs = _repo.GetSemesterPlanOverView(semester_id);
-
+                    return Ok(new BaseResponse(false, "Create new semester plan successfully!", rs));
                 }
-                return Ok(new BaseResponse(false, "Create new semester plan successfully!", rs));
-
+                else
+                {
+                    return BadRequest(new BaseResponse(false, "Semester plan is exist!", rs));
+                }
             }
             catch (Exception ex)
             {
 
-                return Ok(new BaseResponse(false, "Error: " + ex.Message, null));
+                return BadRequest(new BaseResponse(false, "Error: " + ex.Message, null));
 
             }
         }

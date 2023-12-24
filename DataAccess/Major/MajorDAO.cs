@@ -41,10 +41,27 @@ namespace DataAccess.Major
         public List<BusinessObject.Major> GetMajorByBatch(int batchId)
         {
             List<BusinessObject.Major> list = new List<BusinessObject.Major>();
-            var degreeId = db.Batch.FirstOrDefault(x => x.batch_id ==  batchId).degree_level_id;
-            list = GetMajorByDegreeLevel(degreeId);
+
+            if (db.Batch != null)
+            {
+                var degree = db.Batch.FirstOrDefault(x => x.batch_id == batchId);
+
+                if (degree == null)
+                {
+                    return null;
+                }
+
+                var degreeId = degree.degree_level_id;
+                list = GetMajorByDegreeLevel(degreeId);
+            }
+            else
+            {
+                return null;
+            }
+
             return list;
         }
+
 
         public BusinessObject.Major AddMajor(BusinessObject.Major major)
         {
@@ -63,7 +80,6 @@ namespace DataAccess.Major
             {
                 throw new Exception("Duplicate major code!");
             }
-
 
             var editMajor = db.Major.FirstOrDefault(x => x.major_id == major.major_id);
 

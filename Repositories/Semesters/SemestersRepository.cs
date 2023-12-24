@@ -12,9 +12,9 @@ namespace Repositories.Semesters
     {
         public SemesterDAO db = new SemesterDAO();
 
-        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int batchId)
         {
-            return db.CheckSemesterDuplicate(id, name, schoolYear);
+            return db.CheckSemesterDuplicate(id, name, schoolYear, batchId);
         }
 
         public bool CheckSemesterExsit(int id)
@@ -57,14 +57,14 @@ namespace Repositories.Semesters
             return db.GetSemesters();
         }
 
-        public int GetTotalSemester(string? txtSearch)
+        public int GetTotalSemester(int? degree_level, string? txtSearch)
         {
-            return db.GetTotalSemester(txtSearch);
+            return db.GetTotalSemester(degree_level, txtSearch);
         }
 
-        public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
+        public List<Semester> PaginationSemester(int? degree_id, int page, int limit, string? txtSearch)
         {
-            return db.PaginationSemester(page, limit, txtSearch);
+            return db.PaginationSemester(degree_id, page, limit, txtSearch);
         }
 
         public string UpdateSemester(Semester semester)

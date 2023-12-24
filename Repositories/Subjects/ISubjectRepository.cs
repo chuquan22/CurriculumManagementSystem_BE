@@ -25,5 +25,12 @@ namespace Repositories.Subjects
         string CreateNewSubject(Subject subject);
         string UpdateSubject(Subject subject);
         string DeleteSubject(Subject subject);
+        bool CheckSubjectCodeUpdateDuplicate(int id, string code);
+        bool CheckIdExistInSyllabus(int id);
+        bool CheckIdExist(int id);
+        bool CheckCodeExist(string code);
+        bool CheckSubjectExist(int subject_id);
+        List<Subject> PaginationSubject(int page, int limit, string? txtSearch);
+        public int GetTotalSubject(string? txtSearch);
     }
 }

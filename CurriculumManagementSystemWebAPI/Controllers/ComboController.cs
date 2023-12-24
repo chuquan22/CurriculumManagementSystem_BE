@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Combos;
+using Repositories.Specialization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -17,20 +18,24 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     {
         private readonly IMapper _mapper;
         private IComboRepository comboRepository;
+        private ISpecializationRepository speRepository;
 
         public ComboController(IMapper mapper)
         {
             _mapper = mapper;
             comboRepository = new ComboRepository();
+            speRepository = new SpecializationRepository();
         }
         [HttpGet("{specialization_id}")]
         public ActionResult GetListCombo(int specialization_id)
         {
-            List<ComboResponse> rs = new List<ComboResponse>();
+            ComboSpeResponse rs = new ComboSpeResponse();
             try
             {
+                rs.specialization_name = speRepository.GetSpeById(specialization_id).specialization_name;
+                rs.specializataion_english_name = speRepository.GetSpeById(specialization_id).specialization_english_name;
                 var result = comboRepository.GetListCombo(specialization_id);
-                rs = _mapper.Map<List<ComboResponse>>(result);
+                rs.combo_response = _mapper.Map<List<ComboResponse>>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception ex)
@@ -63,7 +68,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = comboRepository.GetListComboByCurriId(curri_Id);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                var rsCombo = _mapper.Map<List<ComboResponse>>(rs);
+                return Ok(new BaseResponse(false, "Sucessfully", rsCombo));
             }
             catch (Exception ex)
             {
@@ -119,6 +125,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var combo = comboRepository.FindComboById(cb.combo_id);
+                
                 _mapper.Map(cb, combo);
                 combo = comboRepository.UpdateCombo(combo);
                 return Ok(new BaseResponse(false, "Sucessfully", combo));

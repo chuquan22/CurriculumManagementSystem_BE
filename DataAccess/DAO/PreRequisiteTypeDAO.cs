@@ -48,6 +48,10 @@ namespace DataAccess.DAO
                 .ToList();
             return listPreRequisiteType.Count;
         }
+        public bool PreRequisiteTypeExist(int id)
+        {
+            return (_cmsDbContext.PreRequisiteType?.Any(e => e.pre_requisite_type_id == id)).GetValueOrDefault(); 
+        }
 
         public bool CheckPreRequisiteTypeDuplicate(int id,string name)
         {

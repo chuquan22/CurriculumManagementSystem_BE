@@ -11,6 +11,12 @@ namespace Repositories.Questions
     public class QuestionRepository : IQuestionRepository
     {
         private readonly QuestionDAO _questionDAO = new QuestionDAO();
+
+        public bool CheckAnswerDuplicate(string answerA, string answerB, string answerC, string answerD)
+        {
+            return _questionDAO.CheckAnswerDuplicate(answerA, answerB, answerC, answerD);
+        }
+
         public bool CheckQuestionDuplicate(int id, string questionName, int quizId)
         {
             return _questionDAO.CheckQuestionDuplicate(id, questionName, quizId);

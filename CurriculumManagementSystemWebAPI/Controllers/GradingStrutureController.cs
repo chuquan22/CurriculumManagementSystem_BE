@@ -33,7 +33,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 List<GradingStruture> rs = gradingStrutureRepository.GetGradingStruture(syllabus_id);
                 var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", response));
+                return Ok(new BaseResponse(false, "Sucessfully!", response));
             }
             catch (Exception ex)
             {
@@ -50,7 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = gradingStrutureRepository.GetGradingStrutureById(id);
                 var response = _mapper.Map<GradingStrutureResponse>(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", response));
+                return Ok(new BaseResponse(false, "Sucessfully!", response));
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             if (gra.gradingStruture == null || gra.gradingCLORequest == null)
             {
-                return BadRequest(new BaseResponse(true,"Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.",null));
+                return BadRequest(new BaseResponse(true, "Invalid request. 'gradingStruture' or 'gradingCLORequest' is null.", null));
             }
 
             try
@@ -86,14 +86,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         GradingCLO rs2 = new GradingCLO
                         {
                             CLO_id = g,
-                            grading_id = rs.grading_id 
+                            grading_id = rs.grading_id
                         };
 
                         var rs3 = gradingCLOsRepository.CreateGradingCLO(rs2);
                     }
                 }
 
-                return Ok(new BaseResponse(false, "Successfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -121,9 +121,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs.number_of_questions = "";
                 }
                 rs = gradingStrutureRepository.CreateGradingStrutureAPI(rs);
-                if(rs == null)
+                if (rs == null)
                 {
-                    return BadRequest(new BaseResponse(true, "Error: False when create grading struture | Please check weight!" , null));
+                    return BadRequest(new BaseResponse(true, "Error: False when create grading struture | Please check weight!", null));
 
                 }
                 if (rs != null)
@@ -140,7 +140,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                 }
 
-                return Ok(new BaseResponse(false, "Successfully", rs));
+                return Ok(new BaseResponse(false, "Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -154,7 +154,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string ressult = gradingStrutureRepository.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
-                return Ok(new BaseResponse(false, "Sucessfully", ressult));
+                return Ok(new BaseResponse(false, "Sucessfully!", ressult));
             }
             catch (Exception ex)
             {
@@ -169,10 +169,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = gradingStrutureRepository.DeleteGradingStruture(id);
-                return Ok(new BaseResponse(false, "Sucessfully", true));
+                return Ok(new BaseResponse(false, "Sucessfully!", true));
             }
             catch (Exception ex)
-            {             
+            {
                 return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
         }

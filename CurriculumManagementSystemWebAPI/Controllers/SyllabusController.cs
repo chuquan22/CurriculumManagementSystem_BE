@@ -32,18 +32,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     public class SyllabusController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly HttpClient client = null;
-        public static string API_PORT = "https://cmsfpoly-be.azurewebsites.net";
-        public static string API_SYLLABUS = "/api/Syllabus";    
-        public static string API_MATERIALS = "/api/Materials";
-        public static string API_GRADING_STRUTURE = "/api/GradingStruture";
-        public static string API_CLO = "/api/CLOs";
-        public static string API_SCHEDULE = "/api/Session";
         private ISyllabusRepository syllabusRepository;
         private ISubjectRepository subjectRepository;
-        private IAssessmentTypeRepository assessmentTypeRepository;
         private ICLORepository cloRepository;
-        private IAssessmentMethodRepository assessmentMethodRepository;
         private IMaterialRepository materialsRepository;
         private IGradingStrutureRepository gradingStrutureRepository;
         private ISessionRepository sessionRepository;
@@ -52,28 +43,32 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         private ILearningResourceRepository learningResourceRepository;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private static int syllaId = 0;
+        private MaterialsController materialsController;
+        private CLOsController cLOsController;
+        private SessionController sessionController;
+        private GradingStrutureController gradingStrutureController;
         public SyllabusController(IMapper mapper, IWebHostEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             syllabusRepository = new SyllabusRepository();
             subjectRepository = new SubjectRepository();
-            assessmentTypeRepository = new AssessmentTypeRepository();
             cloRepository = new CLORepository();
-            assessmentMethodRepository = new AssessmentMethodRepository();
             materialsRepository = new MaterialRepository();
             gradingStrutureRepository = new GradingStrutureRepository();
             sessionRepository = new SessionRepository();
             classSessionTypeRepository = new ClassSessionTypeRepository();
             degreeLevelRepository = new DegreeLevelRepository();
             learningResourceRepository = new LearningResourceRepository();
-            client = new HttpClient();
-
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            client.DefaultRequestHeaders.Accept.Add(contentType);
             _hostingEnvironment = hostingEnvironment;
+            materialsController = new MaterialsController(_mapper);
+            cLOsController = new CLOsController(_mapper);
+            sessionController = new SessionController(_mapper);
+            gradingStrutureController = new GradingStrutureController(_mapper);
+
         }
         [HttpGet]
-        public ActionResult GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+        public async Task<ActionResult<IEnumerable<SyllabusResponse>>> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
@@ -81,7 +76,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 int limit2 = syllabusRepository.GetTotalSyllabus(txtSearch, subjectCode);
                 List<Syllabus> list = syllabusRepository.GetListSyllabus(page, limit, txtSearch, subjectCode);
                 var result = _mapper.Map<List<SyllabusResponse>>(list);
-                return Ok(new BaseResponse(false, "Sucess", new BaseListResponse(page, limit2, result)));
+                return Ok(new BaseResponse(false, "Get List Syllabus Sucessfully!", new BaseListResponse(page, limit2, result)));
             }
             catch (Exception ex)
             {
@@ -90,7 +85,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateSyllabus(SyllabusRequest request)
+        public async Task<IActionResult> CreateSyllabus(SyllabusRequest request)
         {
 
             try
@@ -105,7 +100,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs.scoring_scale = 10;
                 }
                 var result = syllabusRepository.CreateSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucess", rs));
+                return Ok(new BaseResponse(false, "Create Syllabus Successfully!", rs));
             }
             catch (Exception ex)
             {
@@ -119,10 +114,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
+                if(rs1 == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+
+                }
                 var result = _mapper.Map<SyllabusDetailsResponse>(rs1);
                 List<PreRequisite> pre = syllabusRepository.GetPre(rs1.subject_id);
                 result.pre_required = _mapper.Map<List<PreRequisiteResponse2>>(pre);
-                return Ok(new BaseResponse(true, "False", result));
+                return Ok(new BaseResponse(false, "Get Syllabus Details Successfully!", result));
 
             }
             catch (Exception ex)
@@ -164,14 +164,18 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             };
                             try
                             {
-                                syllabusId = await CreateSyllabusAPI(syllabusExcel);
-                                syllaId = syllabusId;
+                                SyllabusRequest listSyllabus = _mapper.Map<SyllabusRequest>(syllabusExcel);
+                                var rsSyllabus = CreateSyllabus(listSyllabus);
+                                var okRsSyllabus = rsSyllabus.Result as OkObjectResult;
+                                var baseResponseRsSyllabus = okRsSyllabus.Value as BaseResponse;
+                                var rsSyllabusResponse = baseResponseRsSyllabus.data as Syllabus;
+                                syllaId = rsSyllabusResponse.syllabus_id;
+                                syllabusId = syllaId;
 
                             }
                             catch (Exception)
                             {
-
-                                return BadRequest("Import false at sheet Syllabus!");
+                               return BadRequest("Import false at sheet Syllabus!");
                             }
                             rs.Add(value);
                         }
@@ -192,7 +196,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     {
                                         item.syllabus_id = syllabusId;
                                         MaterialRequest addRs = _mapper.Map<MaterialRequest>(item);
-                                        await CreateMaterialsAPI(addRs);
+                                        materialsController.CreateMaterial(addRs);
                                     }
 
                                 }
@@ -225,8 +229,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
+                                        var rsClo = cLOsController.CreateCLOs(addRs);
+                                        var okRsClo = rsClo.Result as OkObjectResult;
+                                        var baseResponseRsClo = okRsClo.Value as BaseResponse;
+                                        var closRsResponse = baseResponseRsClo.data as CLO;
+                                        idClo = closRsResponse.CLO_id;
 
-                                        idClo = await CreateCLOsAPI(addRs);
                                         if (idClo == 0)
                                         {
                                             throw new Exception("Import false at sheet CLOs.");
@@ -267,8 +275,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                 List<int> lst = new List<int>();
                                 foreach (var it in cloId)
-                                {
-                                  
+                                {                                
                                         string name = "null";
                                         if (cloRepository.GetCLOsById(it) != null)
                                         {
@@ -278,7 +285,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                                 lst.Add(it);
                                             }
                                         }
-
                                         if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
                                         {
                                             lst = new List<int>();
@@ -292,8 +298,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 dataSession.session.syllabus_id = syllabusId;
                                 try
                                 {
-                                    await CreateSchudeleAPI(dataSession);
-
+                                    sessionController.CreateSession(dataSession);
                                 }
                                 catch (Exception ex)
                                 {
@@ -301,7 +306,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     cloRepository.DeleteCLOsBySyllabusId(syllabusId);
                                     materialsRepository.DeleteMaterialBySyllabusId(syllabusId);
                                     syllabusRepository.DeleteSyllabus(syllabusId);
-
                                     return BadRequest("Import false at sheet Schedule.");
                                 }
                             }
@@ -361,8 +365,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         }
                                     }
                                     gradingStrutureCreate.gradingCLORequest.CLO_id = lst;
-                                    await CreateGradingStrutureAPI(gradingStrutureCreate);
-
+                                    gradingStrutureController.CreateGradingStructure(gradingStrutureCreate);
 
                                 }
                             }
@@ -378,6 +381,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                         }
                     }
+
+
                     SetStatusSyllabus(syllabusId);
                     return Ok(new BaseResponse(false, "Import Sucessfully!", syllabusId));
 
@@ -396,11 +401,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var syllabus = syllabusRepository.GetSyllabusById(syllabusId);
             if(syllabus == null)
             {
-                return BadRequest(new BaseResponse(true, "Syllabus not exist in system!", null));
+                return NotFound(new BaseResponse(true, "Syllabus not exist in system!", null));
             }
             try
             {
-
                 gradingStrutureRepository.DeleteGradingStrutureBySyllabusId(syllabusId);
                 sessionRepository.DeleteSessionBySyllabusId(syllabusId);
                 cloRepository.DeleteCLOsBySyllabusId(syllabusId);
@@ -414,115 +418,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "Delete Sucessfully!", null));
         }
 
-        private async Task<int> CreateSyllabusAPI(Syllabus sy)
-        {
-            string apiUrl = API_PORT + API_SYLLABUS;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("syllabus_id").GetInt32();
-
-            return syllabusId;
-        }
-        private async Task<MaterialRequest> CreateMaterialsAPI(MaterialRequest me)
-        {
-            string apiUrl = API_PORT + API_MATERIALS;
-            var jsonData = JsonSerializer.Serialize(me);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            MaterialRequest rs = JsonSerializer.Deserialize<MaterialRequest>(strData, options);
-            return rs;
-        }
-        private async Task<GradingStrutureCreateRequest> CreateGradingStrutureAPI(GradingStrutureCreateRequest me)
-        {
-            string apiUrl = API_PORT + API_GRADING_STRUTURE;
-            var jsonData = JsonSerializer.Serialize(me);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            GradingStrutureCreateRequest rs = JsonSerializer.Deserialize<GradingStrutureCreateRequest>(strData, options);
-            return rs;
-        }
-        private async Task<int> CreateCLOsAPI(CLOsRequest sy)
-        {
-            string apiUrl = API_PORT + API_CLO;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("clO_id").GetInt32();
-
-            return syllabusId;
-        }
-        private async Task<int> CreateSchudeleAPI(SessionCreateRequest sy)
-        {
-            string apiUrl = API_PORT + API_SCHEDULE;
-            var jsonData = JsonSerializer.Serialize(sy);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            string[] token = HttpContext.Request.Headers["Authorization"].ToString().Split(' ');
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token[1]);
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-
-            response.EnsureSuccessStatusCode();
-            string strData = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-
-            var responseObject = JsonSerializer.Deserialize<JsonDocument>(strData, options).RootElement;
-
-            int syllabusId = responseObject.GetProperty("data").GetProperty("schedule_id").GetInt32();
-
-            return syllabusId;
-        }
+       
         private List<GradingStruture> GetGradingStrutureExcel(IEnumerable<GradingStrutureExcel> row, Syllabus syllabus)
         {
             List<GradingStruture> result = new List<GradingStruture>();
@@ -697,7 +593,16 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     }
                     else if (r.Title.Equals("No of credits"))
                     {
-                        syllabus.Subject.credit = int.Parse(r.Details);
+                        try
+                        {
+                            syllabus.Subject.credit = int.Parse(r.Details);
+
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check MinGPAtopass or Scoring scale must enter is interger.");
+                        }
                     }
                     else if (r.Title.Equals("Degree Level"))
                     {
@@ -737,21 +642,55 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         syllabus.syllabus_note = r.Details;
                     }
                     else if (r.Title.Equals("Min GPA to pass"))
-                    {//
-                        syllabus.min_GPA_to_pass = int.Parse(r.Details);
+                    {
+                        try
+                        {
+                            syllabus.min_GPA_to_pass = int.Parse(r.Details);
+                            if(syllabus.min_GPA_to_pass < 0)
+                            {
+                                throw new Exception("Please check MinGPAtopass >= 0.");
+
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check MinGPAtopass must enter is interger.");
+                        }
                     }
                     else if (r.Title.Equals("Scoring scale"))
                     {
                         if (!string.IsNullOrEmpty(r.Details))
                         {
-                            syllabus.scoring_scale = int.Parse(r.Details);
+                            try
+                            {
+                                syllabus.scoring_scale = int.Parse(r.Details);
+                                if (syllabus.scoring_scale < 0)
+                                {
+                                    throw new Exception("Please check MinGPAtopass >= 0.");
+
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                                throw new Exception("Please check Scoring scale must enter is interger.");
+                            }
 
                         }
                     }
                     else if (r.Title.Equals("Approved date"))
                     {
                         string[] date = r.Details.Split(' ');
-                        syllabus.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        try
+                        {
+                            syllabus.approved_date = DateTime.ParseExact(date[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        }
+                        catch (Exception)
+                        {
+
+                            throw new Exception("Please check date format dd/MM/yyyy before import.");
+                        }
                     }
 
 
@@ -779,14 +718,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
                 string result = syllabusRepository.UpdatePatchSyllabus(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
+
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
 
         // Post: Export Curriculum by Excel File
@@ -880,32 +819,38 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-               
+               var existSyllabus = syllabusRepository.GetSyllabusById(id);
+                if(existSyllabus == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+                }
                 var result = syllabusRepository.SetStatusSyllabus(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception)
             {
 
                 throw;
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
         [HttpPost("SetApproved")]
-        public ActionResult SetApproved(int id)
+        public ActionResult SetApprovedSyllbus(int id)
         {
             try
             {
-               
+                var existSyllabus = syllabusRepository.GetSyllabusById(id);
+                if (existSyllabus == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
+                }
                 var result = syllabusRepository.SetApproved(id);
-                return Ok(new BaseResponse(false, "Sucessfully", result));
+                return Ok(new BaseResponse(false, "Successfully!", result));
             }
             catch (Exception)
             {
 
                 throw;
             }
-            return Ok(new BaseResponse(true, "False", null));
         }
     }
 }

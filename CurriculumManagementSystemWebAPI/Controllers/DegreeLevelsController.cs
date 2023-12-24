@@ -27,7 +27,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             var listDegreeLevel = _degreeLevelRepository.GetAllDegreeLevel();
 
-            return Ok(new BaseResponse(false, "list Degree Level", listDegreeLevel));
+            return Ok(new BaseResponse(false, "List Degree Level", listDegreeLevel));
 
         }
     }

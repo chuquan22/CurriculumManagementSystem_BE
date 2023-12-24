@@ -75,7 +75,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         var rs2 = sessionCLOsRepository.CreateSessionCLO(item);
 
                     }
-
                 }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }

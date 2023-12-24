@@ -72,14 +72,16 @@ namespace Repositories.Batchs
             return _batchDAO.GetBatchNotExsitInSemester();
         }
 
-        public int GetTotalCurriculumBatch(string? txtSearch)
+      
+
+        public int GetTotalCurriculumBatch(int? degree_level, string? txtSearch)
         {
-            return _batchDAO.GetTotalCurriculumBatch(txtSearch);
+            return _batchDAO.GetTotalCurriculumBatch(degree_level,txtSearch);
         }
 
-        public List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch)
+        public List<Batch> PaginationCurriculumBatch(int? degree_id, int page, int limit, string? txtSearch)
         {
-            return _batchDAO.PaginationCurriculumBatch(page, limit, txtSearch);
+            return _batchDAO.PaginationCurriculumBatch(degree_id,page, limit, txtSearch);
         }
 
         public string UpdateBatch(Batch batch)

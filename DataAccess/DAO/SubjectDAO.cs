@@ -35,6 +35,40 @@ namespace DataAccess.DAO
             return subjectList;
         }
 
+        public bool CheckSubjectExist(int subject_id)
+        {
+            var subject = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.subject_id == subject_id);
+            if (subject == null) return false;
+            return true;
+        }
+
+        public bool CheckIdExistInSyllabus(int id)
+        {
+            if (CMSDbContext.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
+            return true;
+        }
+
+        public bool CheckIdExist(int id)
+        {
+            if (CMSDbContext.Subject.FirstOrDefault(x => x.subject_id == id) == null) return false;
+            return true;
+        }
+
+        public bool CheckSubjectCodeUpdateDuplicate(int id, string code)
+        {
+            var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code) && x.subject_id != id);
+            if (subject == null) return false;
+            return true;
+        }
+
+        public bool CheckCodeExist(string code)
+        {
+            var subject = CMSDbContext.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
+            var subject2 = CMSDbContext.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.Subject.subject_code.Equals(code));
+            if (subject == null && subject2 == null) return false;
+            return true;
+        }
+
         public Subject GetSubjectById(int id)
         {
             try
@@ -70,6 +104,35 @@ namespace DataAccess.DAO
 
         }
 
+        public List<Subject> PaginationSubject(int page, int limit, string? txtSearch)
+        {
+            IQueryable<Subject> subjectQuery = CMSDbContext.Subject;
+
+            if (!string.IsNullOrWhiteSpace(txtSearch))
+            {
+                subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
+            }
+
+            var totalElements = subjectQuery.Count();
+            var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
+                .Include(x => x.PreRequisite)
+                .Include(x => x.AssessmentMethod.AssessmentType)
+                .Include(x => x.LearningMethod)
+                .ToList();
+            return subject;
+        }
+
+        public int GetTotalSubject(string? txtSearch)
+        {
+            IQueryable<Subject> subjectQuery = CMSDbContext.Subject;
+
+            if (!string.IsNullOrWhiteSpace(txtSearch))
+            {
+                subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
+            }
+            return subjectQuery.Count();
+        }
+
         public List<Subject> GetSubjectBySpecialization(int speId, string batch_name)
         {
             var listcurri = CMSDbContext.Curriculum
@@ -88,19 +151,20 @@ namespace DataAccess.DAO
             }
 
             var listSubjects = listcurri
-                .SelectMany(item => CMSDbContext.Curriculum
-                    .Include(x => x.CurriculumSubjects)
-                    .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
-                    .Join(
-                        CMSDbContext.CurriculumSubject.Include(x => x.Subject),
-                        curriculum => curriculum.curriculum_id,
-                        curriculumSubject => curriculumSubject.curriculum_id,
-                        (curriculum, curriculumSubject) => curriculumSubject.Subject
-                    )
-                )
-                .ToList();
-
-            listSubjects = listSubjects.Distinct().ToList();
+                 .SelectMany(item => CMSDbContext.Curriculum
+                     .Include(x => x.CurriculumSubjects)
+                     .Where(x => x.curriculum_id == item.curriculum_id && x.is_active == true)
+                     .ToList()
+                     .SelectMany(curriculum =>
+                         CMSDbContext.CurriculumSubject
+                             .Include(x => x.Subject)
+                             .Where(curriculumSubject => curriculumSubject.curriculum_id == curriculum.curriculum_id)
+                             .GroupBy(curriculumSubject => curriculumSubject.subject_id)
+                             .Select(groupedSubjects => groupedSubjects.First().Subject)
+                     )
+                 )
+                 .Distinct()
+                 .ToList();
 
             return listSubjects;
         }
@@ -177,7 +241,7 @@ namespace DataAccess.DAO
         {
             try
             {
-                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.ToUpper().Equals(code.ToUpper()));
+                var subject = CMSDbContext.Subject.Where(x => x.is_active == true).FirstOrDefault(x => x.subject_code.ToUpper().Trim().Equals(code.ToUpper().Trim()));
                 return subject;
             }
             catch (Exception ex)

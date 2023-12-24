@@ -18,5 +18,6 @@ namespace Repositories.PreRequisiteTypes
         string CreatePreRequisiteType(PreRequisiteType preRequisiteType);
         string UpdatePreRequisiteType(PreRequisiteType preRequisiteType);
         string DeletePreRequisiteType(PreRequisiteType preRequisiteType);
+        bool PreRequisiteTypeExist(int id);
     }
 }
