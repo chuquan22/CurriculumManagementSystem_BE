@@ -11,6 +11,7 @@ using DataAccess.Models.Enums;
 using BusinessObject;
 using Repositories.Users;
 using AutoFixture;
+using DataAccess.Models.DTO;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -18,6 +19,7 @@ namespace CMS_UnitTests.Controllers
 
     public class UsersControllerTests
     {
+        private IMapper _mapper;
         private Mock<IMapper> mapperMock;
         private Mock<IUsersRepository> usersRepositoryMock;
         private UsersController usersController;
@@ -28,9 +30,10 @@ namespace CMS_UnitTests.Controllers
         {
             fixture = new Fixture();
 
-            mapperMock = new Mock<IMapper>();
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+            _mapper = config.CreateMapper();
             usersRepositoryMock = new Mock<IUsersRepository>();
-            usersController = new UsersController(mapperMock.Object);
+            usersController = new UsersController(_mapper);
         }
 
         [Test]
@@ -95,7 +98,7 @@ namespace CMS_UnitTests.Controllers
         public void GetUser_InvalidId_ReturnsNotFoundResult()
         {
             // Arrange
-            int userId = 1;
+            int userId = 99999;
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(null as User);
 
             // Act
