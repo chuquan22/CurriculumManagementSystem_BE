@@ -665,13 +665,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                     question.quiz_id = quizId;
 
-                    // if correct answer not null
-                    if (item.CORRECT != null && item.CORRECT != "")
-                    {
-                        question.correct_answer = item.CORRECT;
-                        question.question_type = item.CORRECT.Length > 1 ? "Mutiple Choice" : "Single Choice";
-                    }
-
                     if (item.ABC.Equals("A"))
                     {
                         question.answers_A = item.ANSWER;
@@ -688,6 +681,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     else if (item.ABC.Equals("D"))
                     {
                         question.answers_D = item.ANSWER;
+                    }
+
+                    // if correct answer not null
+                    if (item.CORRECT != null && item.CORRECT != "")
+                    {
+                        question.correct_answer = item.CORRECT;
+                        question.question_type = item.CORRECT.Length > 1 ? "Mutiple Choice" : "Single Choice";
                         listQuestions.Add(question);
                         question = new Question();
                     }
