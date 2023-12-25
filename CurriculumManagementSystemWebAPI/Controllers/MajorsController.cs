@@ -88,7 +88,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     .ToList();
 
 
-                return Ok(new BaseResponse(false, "Sucessfully!", listMajorRespone));
+
+                return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
             }
             catch (Exception ex)
             {
@@ -104,11 +105,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = majorRepository.GetMajorByBatch(batchId);
-                if(rs == null)
-                {
-                    return NotFound(new BaseResponse(true, "Not Found This Major!"));
+          
 
-                }
                 var listMajorRespone = _mapper.Map<List<MajorSpeResponse>>(rs);
                 foreach (var major in listMajorRespone)
                 {
@@ -139,7 +137,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs = majorRepository.AddMajor(rs);
                     var result = _mapper.Map<MajorResponse>(rs);
 
-                    return Ok(new BaseResponse(false, "Add Major Successfully!", result));
+
+                    return Ok(new BaseResponse(false, "Add Major " + rs.major_name + " Successfully!", result));
+
                 }
             }
             catch (Exception ex)
@@ -174,9 +174,12 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var major = majorRepository.FindMajorById(id);
-                if (major == null)
+
+                if(major == null)              
                 {
                     return NotFound(new BaseResponse(true, "Not Found This Major!", null));
+
+
                 }
 
                 majorRepository.DeleteMajor(id);

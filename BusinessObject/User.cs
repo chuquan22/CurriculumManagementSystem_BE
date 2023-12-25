@@ -17,7 +17,7 @@ namespace BusinessObject
         public string user_name { get; set; }
         [Required]
         public string user_email { get; set;}
-        [Required, MaxLength(255)]
+        [AllowNull]
         public string full_name { get; set; }
         [ForeignKey("Role")]
         public int role_id { get; set; }
