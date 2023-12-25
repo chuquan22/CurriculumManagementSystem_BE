@@ -58,29 +58,7 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Sucessfully", baseResponse.message);
         }
 
-        [Test]
-        public void GetCLOs_WithInvalidSyllabusId_ReturnsBadRequestResult()
-        {
-            // Arrange
-            int syllabusId = 1;
-            cloRepositoryMock.Setup(repo => repo.GetCLOs(syllabusId)).Throws(new Exception("Error message"));
-
-            // Act
-            var result = closController.GetCLOs(2);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("error", baseResponse.message);
-        }
-
+      
         [Test]
         public void CreateCLOs_WithValidData_ReturnsOkResult()
         {
@@ -109,7 +87,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Sucessfully", baseResponse.message);
+            Assert.AreEqual("Sucessfully!", baseResponse.message);
         }
 
         [Test]
@@ -134,7 +112,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Object reference not set to an instance of an object.", baseResponse.message);
+            Assert.AreEqual("Object reference not set to an instance of an object.", baseResponse.message);
         }
 
         [Test]

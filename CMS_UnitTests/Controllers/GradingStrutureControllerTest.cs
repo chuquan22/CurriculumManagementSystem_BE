@@ -96,7 +96,7 @@ namespace CMS_UnitTests.Controllers
                     grading_note = "1",
                     session_no = 5,
                     references = "Assignment",
-                    syllabus_id = 2
+                    syllabus_id = 1
                 }
             };
             gradingStrutureRepositoryMock.Setup(repo => repo.CreateGradingStruture(It.IsAny<GradingStruture>()))

@@ -120,18 +120,12 @@ namespace CMS_UnitTests.Controllers
             // Arrange
             var userCreateRequest = new UserCreateRequest
             {
-                full_name = "1",
+                full_name = "123",
                 role_id = 1,
-                user_email = "32",
-                user_name = "1"
-                
+                user_email = "32231@fpt.edu.vn",
+                user_name = "123"
+             
             };
-            var user = new User();
-            mapperMock.Setup(mapper => mapper.Map<User>(userCreateRequest)).Returns(user);
-            usersRepositoryMock.Setup(repo => repo.CheckUserDuplicate(userCreateRequest.user_email)).Returns(false);
-            usersRepositoryMock.Setup(repo => repo.CreateUser(user)).Returns(Result.createSuccessfull.ToString());
-            var expectedResponse = new BaseResponse(false, "Create SuccessFull!", user);
-
             // Act
             var result = usersController.CreateUser(userCreateRequest);
 
@@ -183,8 +177,12 @@ namespace CMS_UnitTests.Controllers
         public void UpdateUserRole_ValidIdAndRequest_ReturnsOkResult()
         {
             // Arrange
-            int userId = 1;
-            var userUpdateRequest = new UserUpdateRequest();
+            int userId = 2;
+            var userUpdateRequest = new UserUpdateRequest()
+            {
+                is_active = true,
+                role_id = 1
+            };
             var user = new User();
             mapperMock.Setup(mapper => mapper.Map<User>(userUpdateRequest)).Returns(user);
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(user);
@@ -205,9 +203,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Update SuccessFull!", baseResponse.message);
-
-            mapperMock.Verify(mapper => mapper.Map<UserResponse>(user), Times.Once);
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]

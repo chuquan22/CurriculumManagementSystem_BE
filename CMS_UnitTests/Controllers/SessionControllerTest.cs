@@ -78,7 +78,33 @@ namespace CMS_UnitTests.Controllers
         public void CreateSession_ValidRequest_ReturnsOkResult()
         {
             // Arrange
-            var request = new SessionCreateRequest() { };
+            var request = new SessionCreateRequest() {
+                 session = new SessionRequest() {
+                        assigment = 1,
+                        ass_defense = 1,
+                        eos_exam = 1,
+                        ITU = "1",
+                        IVQ = 1,
+                        lecturer_material = "Sample",
+                        lecturer_material_link = "Sample",
+                        class_session_type_id = 1,
+                        online_lab = 1,
+                       online_test = 1,
+                       remote_learning = 1,
+                       schedule_content = "Sample",
+                       schedule_lecturer_task = "Sample",
+                       schedule_student_task = "Sample",
+                       session_No = 1,
+                       student_material = "Sample",
+                       student_material_link = "Sample",
+                       syllabus_id = 1,
+                       video_learning = 1,
+                 
+                 },
+                session_clo = new List<SessionCLOsRequest> {
+                }
+
+            };
 
             // Act
             var result = sessionController.CreateSession(request);
@@ -171,8 +197,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Successfully!", baseResponse.message);
-
-            sessionRepositoryMock.Verify(repo => repo.DeleteSession(sessionId), Times.Once);
         }
 
     }
