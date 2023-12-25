@@ -674,7 +674,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     return error + $"Specialization {spe.specialization_code} not exsit in Major {major.major_code}";
                                 }
 
-                                if (double.Parse(spe.Semester.Batch.batch_name) >= double.Parse(batch_name))
+                                if (double.Parse(spe.Semester.Batch.batch_name) > double.Parse(batch_name))
                                 {
                                     return error + $"Curriculum must start batch greater than {spe.Semester.Batch.batch_name}";
                                 }
