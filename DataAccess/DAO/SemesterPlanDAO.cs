@@ -25,7 +25,12 @@ namespace DataAccess.DAO
             if (degreeLevel == 1)
             {
                 var StartBatch = _cmsDbContext.Batch.Where(x => x.batch_id == Semester.start_batch_id).FirstOrDefault();
-                int validBatchOrder = StartBatch.batch_order - 7;
+                int count = 7;
+                if (StartBatch.batch_order >= 10)
+                {
+                    count = 6;
+                }
+                int validBatchOrder = StartBatch.batch_order - count;
                 if (validBatchOrder <= 0)
                 {
                     validBatchOrder = 0;
@@ -39,13 +44,8 @@ namespace DataAccess.DAO
                 foreach (var item in ListCurri)
                 {
                     var Curriculum = _cmsDbContext.Curriculum.Include(x => x.Specialization).Where(x => x.curriculum_id == item.curriculum_id).FirstOrDefault();
-                    int validOrder = StartBatch.batch_order - 7;
-                    if (validOrder <= 0)
-                    {
-                        validOrder = 0;
-                    }
                     var listValidSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == degreeLevel)
-                        .Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= StartBatch.batch_order)
+                        .Where(x => x.Batch.batch_order > validBatchOrder && x.Batch.batch_order <= StartBatch.batch_order)
                         .OrderByDescending(x => x.Batch.batch_order)
                         .ToList();
                     int specializationId = Curriculum.specialization_id;
@@ -184,7 +184,6 @@ namespace DataAccess.DAO
             {
                 return null;
             }
-            return null;
         }
 
         private List<CurriculumBatch> getListValidCurri(List<Semester> semesters)
@@ -278,7 +277,12 @@ namespace DataAccess.DAO
                 string degreeLevel = semester.Batch.DegreeLevel.degree_level_english_name;
                 var startBatch = _cmsDbContext.Batch.FirstOrDefault(x => x.batch_id == semester.start_batch_id);
                 int order = startBatch.batch_order;
-                int validOrder = order - 7;
+                int count = 7;
+                if (order >= 10)
+                {
+                    count = 6;
+                }
+                int validOrder = order - count;
                 List<Semester> semesterValid = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == semester.Batch.degree_level_id).Where(x => x.Batch.batch_order > validOrder && x.Batch.batch_order <= order).OrderByDescending(x => x.Batch.batch_order).ToList();
                 int termNO = 1;
                 foreach (var batch in semesterValid)
@@ -328,14 +332,19 @@ namespace DataAccess.DAO
         public SemesterPlanDetailsResponse GetSemesterPlanDetails(int semester_id)
         {
             var Semester = _cmsDbContext.Semester.Include(x => x.Batch).ThenInclude(x => x.DegreeLevel).Where(x => x.semester_id == semester_id).FirstOrDefault();
-            if(Semester == null)
+            if (Semester == null)
             {
                 throw new Exception("Invalid Semester!");
             }
             int order = Semester.Batch.batch_order;
             if (Semester.Batch.degree_level_id == 1)
             {
-                int validOrder = order - 7;
+                int count = 7;
+                if (order >= 10)
+                {
+                    count = 6;
+                }
+                int validOrder = order - count;
                 if (validOrder <= 0)
                 {
                     validOrder = 0;
@@ -640,6 +649,7 @@ namespace DataAccess.DAO
         }
     }
 }
+
 
 
 
