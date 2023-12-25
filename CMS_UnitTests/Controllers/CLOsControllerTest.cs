@@ -100,9 +100,9 @@ namespace CMS_UnitTests.Controllers
             var result = closController.CreateCLOs(closRequest);
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
-            var okObjectResult = result as OkObjectResult;
+            var okObjectResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -125,9 +125,9 @@ namespace CMS_UnitTests.Controllers
             var result = closController.CreateCLOs(closRequest);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;
@@ -148,9 +148,9 @@ namespace CMS_UnitTests.Controllers
             var result = closController.CreateCLOs(closRequest);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;

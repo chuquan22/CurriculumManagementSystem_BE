@@ -57,9 +57,9 @@ namespace CMS_UnitTests.Controllers
 
             // Assert
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
-            var okObjectResult = result as OkObjectResult;
+            var okObjectResult = result.Result as OkObjectResult;
 
             Assert.IsNotNull(okObjectResult);
 
@@ -89,9 +89,9 @@ namespace CMS_UnitTests.Controllers
 
             // Assert
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
-            var okObjectResult = result as OkObjectResult;
+            var okObjectResult = result.Result as OkObjectResult;
 
             Assert.IsNotNull(okObjectResult);
 
@@ -109,25 +109,22 @@ namespace CMS_UnitTests.Controllers
         public async Task GetMajor_ReturnsBadRequestResult()
         {
             // Arrange
-            var batchId = 999;
+            int batchId = 999;
 
 
             // Act
             var result = majorController.GetMajor(batchId);
 
             // Assert
-<
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var ObjectResult = result as BadRequestObjectResult;
+            var objectResult = result.Result as BadRequestObjectResult;
 
-            Assert.IsNotNull(ObjectResult);
+            Assert.IsNotNull(objectResult);
 
-            var baseResponse = ObjectResult.Value as BaseResponse;
+            var baseResponse = objectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-
             Assert.IsTrue(baseResponse.error);
-
             Assert.IsTrue(baseResponse.message.Contains("Error: "));
 
 

@@ -41,13 +41,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
         [HttpGet("GetListPagging")]
-        public ActionResult<List<SpecializationResponse>> GetListSpecialization(int page, int limit, string? txtSearch, string? major_id)
+        public ActionResult<List<SpecializationResponse>> GetListSpecialization(int page, int limit, string? txtSearch, string? major_id, int degree_id)
         {
             List<Specialization> rs = new List<Specialization>();
             try
             {
-                int limit2 = specializationRepository.GetTotalSpecialization(txtSearch, major_id);
-                rs = specializationRepository.GetListSpecialization(page, limit, txtSearch, major_id);
+                int limit2 = specializationRepository.GetTotalSpecialization(degree_id,txtSearch, major_id);
+                rs = specializationRepository.GetListSpecialization(degree_id,page, limit, txtSearch, major_id);
                 var result = _mapper.Map<List<Specialization>>(rs);
                 return Ok(new BaseResponse(false, "Successfully!", new BaseListResponse(page, limit2, rs)));
 

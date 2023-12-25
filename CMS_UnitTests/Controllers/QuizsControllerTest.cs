@@ -16,6 +16,7 @@ using Repositories.Questions;
 using Repositories.Quizs;
 using DataAccess.Models.DTO;
 using BusinessObject;
+using AutoMapper.Configuration;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -32,11 +33,13 @@ namespace CMS_UnitTests.Controllers
         public void Setup()
         {
             mapperMock = new Mock<IMapper>();
+            var configurationMock = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
             quizRepositoryMock = new Mock<IQuizRepository>();
             questionRepositoryMock = new Mock<IQuestionRepository>();
             _mapper = new Mapper(new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>()));
-            quizsController = new QuizsController(_mapper, hostingEnvironmentMock.Object);
+            quizsController = new QuizsController(configurationMock.Object, _mapper, hostingEnvironmentMock.Object);
         }
 
         [Test]

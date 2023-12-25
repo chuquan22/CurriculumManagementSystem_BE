@@ -235,7 +235,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         int idClo = 0;
                                         var rsClo = cLOsController.CreateCLOs(addRs);
 
-                                        var okRsClo = rsClo as OkObjectResult;
+                                        var okRsClo = rsClo.Result as OkObjectResult;
 
                                         var baseResponseRsClo = okRsClo.Value as BaseResponse;
                                         var closRsResponse = baseResponseRsClo.data as CLO;

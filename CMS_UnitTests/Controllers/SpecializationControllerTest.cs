@@ -77,19 +77,20 @@ namespace CMS_UnitTests.Controllers
             // Arrange
             int page = 1;
             int limit = 1;
-            string txtSeach = "a";
+            int degreelevelId = 1;
+            string txtSeach = null;
             string major_id = "1";
 
             var listSpecialization = new List<Specialization>();
             var listSpecializationResponse = new List<SpecializationResponse>();
 
-            specializationRepositoryMock.Setup(repo => repo.GetListSpecialization(page, limit, txtSeach, major_id))
+            specializationRepositoryMock.Setup(repo => repo.GetListSpecialization(degreelevelId,page, limit, txtSeach, major_id))
                 .Returns(listSpecialization);
 
             mapperMock.Setup(mapper => mapper.Map<List<SpecializationResponse>>(listSpecialization)).Returns(listSpecializationResponse);
 
             // Act
-            var result = specializationController.GetListSpecialization(page, limit, txtSeach, major_id);
+            var result = specializationController.GetListSpecialization(page, limit, txtSeach, major_id, degreelevelId);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);

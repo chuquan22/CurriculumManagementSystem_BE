@@ -27,7 +27,7 @@ namespace CMS_UnitTests.Controllers
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
-            semesterPlanController = new SemesterPlanController(_mapper);
+            semesterPlanController = new SemesterPlanController();
         }
 
         [Test]
