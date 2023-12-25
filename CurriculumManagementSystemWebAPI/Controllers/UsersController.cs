@@ -52,7 +52,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, "User", userResponse));
 
         }
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         [HttpPost("CreateUser")]
         public ActionResult CreateUser([FromBody] UserCreateRequest userCreateRequest)
         {

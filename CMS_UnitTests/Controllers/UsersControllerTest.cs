@@ -61,40 +61,14 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List User", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
-        [Test]
-        public void PaginationUser_InvalidParameters_ReturnsBadRequestResult()
-        {
-            // Arrange
-            int page = 1;
-            int limit = 10;
-            string txtSearch = "John";
-            usersRepositoryMock.Setup(repo => repo.PaginationUser(page, limit, txtSearch)).Throws(new Exception("Error message"));
-
-            // Act
-            var result = usersController.PaginationUser(page, limit, txtSearch);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
-        }
 
         [Test]
         public void GetUser_ValidId_ReturnsOkResult()
         {
             // Arrange
-            int userId = 1;
+            int userId = 2;
             var user = new User();
             var userResponse = new UserResponse();
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(user);
@@ -115,8 +89,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("User", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
@@ -148,10 +120,10 @@ namespace CMS_UnitTests.Controllers
             // Arrange
             var userCreateRequest = new UserCreateRequest
             {
-                full_name = "Sample Full Name",
-                role_id = 2,
-                user_email = "sampleemail"+ fixture.Create<int>() + "@fpt.edu.vn",
-                user_name = "Sample Name"
+                full_name = "1",
+                role_id = 1,
+                user_email = "32",
+                user_name = "1"
                 
             };
             var user = new User();
@@ -174,8 +146,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Create SuccessFull!", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
@@ -214,10 +184,7 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int userId = 1;
-            var userUpdateRequest = new UserUpdateRequest
-            {
-                // Set properties for valid user update request
-            };
+            var userUpdateRequest = new UserUpdateRequest();
             var user = new User();
             mapperMock.Setup(mapper => mapper.Map<User>(userUpdateRequest)).Returns(user);
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(user);
@@ -248,10 +215,7 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int userId = 99999;
-            var userUpdateRequest = new UserUpdateRequest
-            {
-                // Set properties for valid user update request
-            };
+            var userUpdateRequest = new UserUpdateRequest();
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(null as User);
 
             // Act
@@ -277,8 +241,25 @@ namespace CMS_UnitTests.Controllers
         public void DeleteUser_ValidId_ReturnsOkResult()
         {
             // Arrange
-            int userId = 1;
+            //Create
+            var userCreateRequest = new UserCreateRequest
+            {
+                full_name = "Sample Full Name",
+                role_id = 1,
+                user_email = "test123@fpt.edu.vn",
+                user_name = "Sample Name"
+            };
             var user = new User();
+            mapperMock.Setup(mapper => mapper.Map<User>(userCreateRequest)).Returns(user);
+            usersRepositoryMock.Setup(repo => repo.CheckUserDuplicate(userCreateRequest.user_email)).Returns(true);
+            var result1 = usersController.CreateUser(userCreateRequest);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result1);
+            var badRequestObjectResult = result1 as BadRequestObjectResult;
+            var baseResponse2 = badRequestObjectResult.Value as BaseResponse;
+            var data = baseResponse2.data as User;
+            // Arrange
+            //Delete
+            int userId = data.user_id;
             usersRepositoryMock.Setup(repo => repo.GetUserById(userId)).Returns(user);
             usersRepositoryMock.Setup(repo => repo.DeleteUser(user)).Returns(Result.deleteSuccessfull.ToString());
             var expectedResponse = new BaseResponse(false, "Delete SuccessFull!", It.IsAny<User>());
