@@ -132,12 +132,13 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<ActionResult<CurriculumResponse>> GetCurriculum(int id)
         {
             var curriculum = _curriculumRepository.GetCurriculumById(id);
-
+            
             if (curriculum == null)
             {
                 return NotFound(new BaseResponse(true, "Not Found This Curriculum!"));
             }
             var curriculumResponse = _mapper.Map<CurriculumResponse>(curriculum);
+            curriculumResponse.batch_name = _batchRepository.GetBatchById(curriculumResponse.start_batch_id).batch_name;
             //curriculumResponse.Semester = _context.Semester.Where(x => x.start_batch_id == curriculum.batch_id).Select(x => x.semester_name + " - " + x.school_year.ToString()).FirstOrDefault();
             return Ok(new BaseResponse(false, "Curriculum", curriculumResponse));
         }
