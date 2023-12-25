@@ -75,13 +75,8 @@ namespace DataAccess.DAO
             foreach (var curriSubject in listCurriSubject)
             {
                 var subject = _context.Subject.Where(x => x.subject_id == curriSubject.subject_id).FirstOrDefault();
-                var curriOption = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no).FirstOrDefault();
                 var curriCombo = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no).FirstOrDefault();
-                if (curriSubject.option.HasValue && curriOption != null)
-                {
-                   return CheckOptionCreditOrTotalTime(curriSubject, subject);
-                }
-                else if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
+                if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
                 {
                     return CheckComboCreditOrTotalTime(curriSubject, subject);
                 }
@@ -93,23 +88,6 @@ namespace DataAccess.DAO
                 {
                     return true;
                 }
-            }
-            return false;
-        }
-
-        private bool CheckOptionCreditOrTotalTime(CurriculumSubject curriSubject, Subject subject)
-        {
-            var checkCredit = _context.CurriculumSubject
-                       .Include(x => x.Subject)
-                       .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no && x.Subject.credit == subject.credit);
-
-            var checkTotalTime = _context.CurriculumSubject
-                .Include(x => x.Subject)
-                .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no && x.Subject.total_time == subject.total_time);
-
-            if (checkCredit == false || checkTotalTime == false)
-            {
-                return true;
             }
             return false;
         }
