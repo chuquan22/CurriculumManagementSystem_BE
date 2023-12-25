@@ -59,7 +59,7 @@ namespace DataAccess.DAO
         {
             var isTextbookExist = _context.Material
                     .Any(x => x.material_id != material.material_id && x.syllabus_id == material.syllabus_id && x.material_purpose.ToLower().Equals("Textbook".ToLower()));
-            if (isTextbookExist && !material.material_purpose.ToLower().Equals("Textbook"))
+            if (isTextbookExist && material.material_purpose.ToLower().Equals("Textbook"))
             {
                 throw new Exception("Material purpose 'TextBook' already exists! Create failed.");
             }
@@ -75,8 +75,11 @@ namespace DataAccess.DAO
             if (oldMate != null)
             {
                 var isTextbookExist = _context.Material
-                    .Any(x => x.material_id != material.material_id && x.syllabus_id == material.syllabus_id && x.material_purpose.ToLower().Equals("Textbook".ToLower()));
-                if (isTextbookExist && !material.material_purpose.ToLower().Equals("Textbook"))
+                    .Any(x => 
+                    x.material_id != material.material_id 
+                    && x.syllabus_id == material.syllabus_id 
+                    && x.material_purpose.ToLower().Equals("Textbook".ToLower()));
+                if (isTextbookExist && material.material_purpose.ToLower().Equals("Textbook"))
                 {
                     throw new Exception("Material purpose 'TextBook' already exists! Create failed.");
                 }
