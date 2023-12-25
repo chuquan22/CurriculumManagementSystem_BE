@@ -12,7 +12,7 @@ namespace DataAccess.DAO
     public class CurriculumSubjectDAO
     {
         public readonly CMSDbContext _context = new CMSDbContext();
-
+        private SubjectDAO SubjectDAO = new SubjectDAO();
         public List<CurriculumSubject> GetCurriculumBySubject(int subjectId)
         {
             var listCurriculumSubject = _context.CurriculumSubject
@@ -72,25 +72,63 @@ namespace DataAccess.DAO
         public bool CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(List<CurriculumSubject> listCurriSubject)
         {
             var subjectTemp = new Subject();
-            foreach (var curriSubject in listCurriSubject)
+            if (listCurriSubject.Count <= 2)
             {
-                var subject = _context.Subject.Where(x => x.subject_id == curriSubject.subject_id).FirstOrDefault();
-                var curriCombo = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no).FirstOrDefault();
-                if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
+                foreach (var curriSubject in listCurriSubject)
                 {
-                    return CheckComboCreditOrTotalTime(curriSubject, subject);
+                    var subject = _context.Subject.Where(x => x.subject_id == curriSubject.subject_id).FirstOrDefault();
+                    var curriCombo = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no).FirstOrDefault();
+                    if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
+                    {
+                        return CheckComboCreditOrTotalTime(curriSubject, subject);
+                    }
+                    if (subjectTemp.subject_id == 0)
+                    {
+                        subjectTemp = subject;
+                    }
+                    else if (subjectTemp.credit != subject.credit || subjectTemp.total_time != subject.total_time)
+                    {
+                        return true;
+                    }
                 }
-                if (subjectTemp.subject_id == 0)
+            }
+            else
+            {
+                var checkCredit = true;
+                var checkTotalTime = true;
+                foreach (var curriSubject in listCurriSubject)
                 {
-                    subjectTemp = subject;
+                    var subject = _context.Subject.FirstOrDefault(x => x.subject_id == curriSubject.subject_id);
+                    var curriCombo = listCurriSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no).FirstOrDefault();
+                    var curriOption = listCurriSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && curriSubject.option.HasValue && x.term_no == curriSubject.term_no).FirstOrDefault();
+                    if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
+                    {
+                        checkCredit = listCurriSubject
+                          .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no && SubjectDAO.GetSubjectById(x.subject_id).credit == subject.credit);
+
+                        checkTotalTime = listCurriSubject
+                            .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no && SubjectDAO.GetSubjectById(x.subject_id).total_time == subject.total_time);
+                    }
+                    if (curriSubject.option.HasValue && curriSubject.option != 0 && curriOption != null)
+                    {
+                        checkCredit = listCurriSubject
+                          .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.option == curriSubject.option && x.term_no == curriSubject.term_no && SubjectDAO.GetSubjectById(x.subject_id).credit == subject.credit);
+
+                        checkTotalTime = listCurriSubject
+                            .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.option == curriSubject.option && x.term_no == curriSubject.term_no && SubjectDAO.GetSubjectById(x.subject_id).total_time == subject.total_time);
+                    }
+                    if (checkCredit == false || checkTotalTime == false)
+                    {
+                        return true;
+                    }
+
                 }
-                else if (subjectTemp.credit != subject.credit || subjectTemp.total_time != subject.total_time)
-                {
-                    return true;
-                }
+
             }
             return false;
         }
+
+
 
         private bool CheckComboCreditOrTotalTime(CurriculumSubject curriSubject, Subject subject)
         {
