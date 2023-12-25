@@ -12,9 +12,9 @@ namespace Repositories.CurriculumSubjects
     {
         private readonly CurriculumSubjectDAO curriculumDAO = new CurriculumSubjectDAO();
 
-        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int curriId, int credit, int term_no, int? option, int? combo)
+        public bool CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(List<CurriculumSubject> listCurriSubject)
         {
-            return curriculumDAO.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(curriId, credit, term_no, option, combo);
+            return curriculumDAO.CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(listCurriSubject);
         }
 
         public string CreateCurriculumSubject(CurriculumSubject curriculumSubject)

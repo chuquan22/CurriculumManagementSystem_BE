@@ -15,7 +15,7 @@ namespace Repositories.CurriculumSubjects
         List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId);
         List<CurriculumSubject> GetCurriculumSubjectByTermNo(int term_no);
         List<CurriculumSubject> GetListCurriculumSubject(int curriculumId);
-        bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int curriId, int credit, int term_no, int? option, int? combo);
+        bool CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(List<CurriculumSubject> listCurriSubject);
         List<Subject> GetListSubject(int curriculumId);
         string CreateCurriculumSubject(CurriculumSubject curriculumSubject);
         string UpdateCurriculumSubject(CurriculumSubject curriculumSubject);

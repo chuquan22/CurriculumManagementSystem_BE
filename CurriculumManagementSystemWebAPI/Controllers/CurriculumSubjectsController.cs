@@ -227,16 +227,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 }
             }
 
+            var listCurriSubject = _mapper.Map<List<CurriculumSubject>>(curriculumSubjectRequest);
+            if (_curriculumSubjectRepository.CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(listCurriSubject))
+            {
+                return BadRequest(new BaseResponse(true, "Credit or Total Time of Subject Combo or Subject Option must be equal"));
+            }
 
             foreach (var subject in curriculumSubjectRequest)
             {
                 var curriculumSubject = _mapper.Map<CurriculumSubject>(subject);
-                var s = _subjectRepository.GetSubjectById(subject.subject_id);
-                if (_curriculumSubjectRepository.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(subject.curriculum_id, s.credit, curriculumSubject.term_no, curriculumSubject.option, curriculumSubject.combo_id))
-                {
-                    return BadRequest(new BaseResponse(true, "Credit of Subject Combo or Subject Option must be equal"));
-                }
-
                 string createResult = _curriculumSubjectRepository.CreateCurriculumSubject(curriculumSubject);
 
                 if (createResult != Result.createSuccessfull.ToString())

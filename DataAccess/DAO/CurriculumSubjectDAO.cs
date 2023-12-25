@@ -69,21 +69,65 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
-        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int curriculumId, int credit, int term_no, int? option, int? combo)
+        public bool CheckSubjectComboOrOptionMustBeEqualCreditAndToTalTime(List<CurriculumSubject> listCurriSubject)
         {
-            if (option.HasValue && _context.CurriculumSubject.Where(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no) != null)
+            var subjectTemp = new Subject();
+            foreach (var curriSubject in listCurriSubject)
             {
-                return !_context.CurriculumSubject
-                    .Include(x => x.Subject)
-                    .Any(x => x.curriculum_id == curriculumId && x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit);
+                var subject = _context.Subject.Where(x => x.subject_id == curriSubject.subject_id).FirstOrDefault();
+                var curriOption = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no).FirstOrDefault();
+                var curriCombo = _context.CurriculumSubject.Where(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no).FirstOrDefault();
+                if (curriSubject.option.HasValue && curriOption != null)
+                {
+                   return CheckOptionCreditOrTotalTime(curriSubject, subject);
+                }
+                else if (curriSubject.combo_id.HasValue && curriSubject.combo_id != 0 && curriCombo != null)
+                {
+                    return CheckComboCreditOrTotalTime(curriSubject, subject);
+                }
+                if (subjectTemp.subject_id == 0)
+                {
+                    subjectTemp = subject;
+                }
+                else if (subjectTemp.credit != subject.credit || subjectTemp.total_time != subject.total_time)
+                {
+                    return true;
+                }
             }
-            else if (combo.HasValue && combo != 0 && _context.CurriculumSubject.Where(x => x.curriculum_id == curriculumId && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == term_no) != null)
-            {
-                return !_context.CurriculumSubject
-                    .Include(x => x.Subject)
-                    .Any(x => x.curriculum_id == curriculumId && x.combo_id.HasValue && x.term_no == term_no && x.Subject.credit == credit);
-            }
+            return false;
+        }
 
+        private bool CheckOptionCreditOrTotalTime(CurriculumSubject curriSubject, Subject subject)
+        {
+            var checkCredit = _context.CurriculumSubject
+                       .Include(x => x.Subject)
+                       .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no && x.Subject.credit == subject.credit);
+
+            var checkTotalTime = _context.CurriculumSubject
+                .Include(x => x.Subject)
+                .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no && x.Subject.total_time == subject.total_time);
+
+            if (checkCredit || checkTotalTime)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool CheckComboCreditOrTotalTime(CurriculumSubject curriSubject, Subject subject)
+        {
+            var checkCredit = _context.CurriculumSubject
+                       .Include(x => x.Subject)
+                       .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no && x.Subject.credit == subject.credit);
+
+            var checkTotalTime = _context.CurriculumSubject
+                .Include(x => x.Subject)
+                .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.combo_id.HasValue && x.combo_id != 0 && x.term_no == curriSubject.term_no && x.Subject.total_time == subject.total_time);
+
+            if (checkCredit || checkTotalTime)
+            {
+                return true;
+            }
             return false;
         }
 
