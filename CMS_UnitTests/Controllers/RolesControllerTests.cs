@@ -8,7 +8,7 @@ using DataAccess.Models.DTO.response;
 using Repositories.Roles;
 using BusinessObject;
 
-namespace CurriculumManagementSystemWebAPI.UnitTests.Controllers
+namespace CMS_UnitTests.Controllers
 {
     [TestFixture]
     public class RolesControllerTests

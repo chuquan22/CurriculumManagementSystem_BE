@@ -157,6 +157,7 @@ namespace CMS_UnitTests.Controllers
 
         [Test]
         [TestCase(5,1, 3, "test", 20, true, 1, "Code", "test", 70, 20, 5, 10)]
+        [TestCase(5,1, 3, "test", 20, true, 1, "Demo", "test", 70, 20, 5, 10)]
         public async Task EditSubjectWithPrerequisites_WithValidData_ReturnsOkResult(int subjectId, int assessmentMethodId, int credit, string englishSubjectName, int examTotal, bool isActive, int learningMethodId, string subjectCode, string subjectName, int totalTime, int totalTimeClass, int preRequisiteTypeId, int preSubjectId)
         {
             // Arrange
