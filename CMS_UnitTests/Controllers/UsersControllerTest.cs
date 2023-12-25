@@ -252,6 +252,7 @@ namespace CMS_UnitTests.Controllers
             var badRequestObjectResult = result1 as BadRequestObjectResult;
             var baseResponse2 = badRequestObjectResult.Value as BaseResponse;
             var data = baseResponse2.data as User;
+
             // Arrange
             //Delete
             int userId = data.user_id;
