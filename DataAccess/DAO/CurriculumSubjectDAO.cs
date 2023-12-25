@@ -107,7 +107,7 @@ namespace DataAccess.DAO
                 .Include(x => x.Subject)
                 .Any(x => x.curriculum_id == curriSubject.curriculum_id && x.option.HasValue && x.term_no == curriSubject.term_no && x.Subject.total_time == subject.total_time);
 
-            if (checkCredit || checkTotalTime)
+            if (checkCredit == false || checkTotalTime == false)
             {
                 return true;
             }
