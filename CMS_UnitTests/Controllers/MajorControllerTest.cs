@@ -234,7 +234,7 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse2.error);
 
-            Assert.AreEqual("Delete major sucessfully!", baseResponse2.message);
+            Assert.AreEqual("Delete Major Successfully!", baseResponse2.message);
 
         }
 

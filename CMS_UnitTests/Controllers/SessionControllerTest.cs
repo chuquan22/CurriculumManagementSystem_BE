@@ -97,7 +97,7 @@ namespace CMS_UnitTests.Controllers
                        session_No = 1,
                        student_material = "Sample",
                        student_material_link = "Sample",
-                       syllabus_id = 1,
+                       syllabus_id = 2,
                        video_learning = 1,
                  
                  },
@@ -155,8 +155,6 @@ namespace CMS_UnitTests.Controllers
             {
                 new SessionPatchRequest { /* initialize properties */ }
             };
-            sessionRepositoryMock.Setup(repo => repo.UpdatePatchSession(It.IsAny<Session>())).Returns("Successfully");
-            mapperMock.Setup(mapper => mapper.Map<Session>(It.IsAny<SessionPatchRequest>())).Returns(new Session());
 
             // Act
             var result = sessionController.UpdatePatchSesion(request);
@@ -180,8 +178,41 @@ namespace CMS_UnitTests.Controllers
         public void DeleteSession_ValidId_ReturnsOkResult()
         {
             // Arrange
-            int sessionId = 1;
-            sessionRepositoryMock.Setup(repo => repo.DeleteSession(sessionId)).Returns("Successfully");
+            var request = new SessionCreateRequest()
+            {
+                session = new SessionRequest()
+                {
+                    assigment = 1,
+                    ass_defense = 1,
+                    eos_exam = 1,
+                    ITU = "1",
+                    IVQ = 1,
+                    lecturer_material = "Sample",
+                    lecturer_material_link = "Sample",
+                    class_session_type_id = 1,
+                    online_lab = 1,
+                    online_test = 1,
+                    remote_learning = 1,
+                    schedule_content = "Sample",
+                    schedule_lecturer_task = "Sample",
+                    schedule_student_task = "Sample",
+                    session_No = 1,
+                    student_material = "Sample",
+                    student_material_link = "Sample",
+                    syllabus_id = 2,
+                    video_learning = 1,
+
+                },
+                session_clo = new List<SessionCLOsRequest>
+                {
+                }
+
+            };
+            var result1 = sessionController.CreateSession(request);
+            var okObjectResult1 = result1 as OkObjectResult;
+            var baseResponse1 = okObjectResult1.Value as BaseResponse;
+            var data = baseResponse1.data as Session;
+            int sessionId = data.schedule_id;
 
             // Act
             var result = sessionController.DeleteSession(sessionId);

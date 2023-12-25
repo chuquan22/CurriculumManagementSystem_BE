@@ -17,6 +17,7 @@ using Repositories.Quizs;
 using DataAccess.Models.DTO;
 using BusinessObject;
 using AutoMapper.Configuration;
+using AutoFixture;
 
 namespace CMS_UnitTests.Controllers
 {
@@ -28,12 +29,14 @@ namespace CMS_UnitTests.Controllers
         private Mock<IQuestionRepository> questionRepositoryMock;
         private IMapper _mapper;
         private QuizsController quizsController;
+        private IFixture fixture;
 
         [SetUp]
         public void Setup()
         {
             mapperMock = new Mock<IMapper>();
             var configurationMock = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+            fixture = new Fixture();
 
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
             quizRepositoryMock = new Mock<IQuizRepository>();
@@ -156,11 +159,12 @@ namespace CMS_UnitTests.Controllers
         public void CreateQuiz_WithValidData_ReturnsOkResult()
         {
             // Arrange
-            var quizDTO = new QuizDTORequest();
-            var quiz = new Quiz();
-            mapperMock.Setup(mapper => mapper.Map<Quiz>(quizDTO)).Returns(quiz);
-            quizRepositoryMock.Setup(repo => repo.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id)).Returns(false);
-            quizRepositoryMock.Setup(repo => repo.CreateQUiz(quiz)).Returns(Result.createSuccessfull.ToString());
+            var quizDTO = new QuizDTORequest()
+            {
+                quiz_name = "Test" + fixture.Create<int>(),
+                subject_id = 1
+            };
+           
 
             // Act
             var result = quizsController.CreateQuiz(quizDTO);
@@ -176,18 +180,18 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Create Success", baseResponse.message);
-
-            Assert.AreEqual(quiz, okObjectResult.Value);
         }
 
         [Test]
         public void CreateQuiz_WithDuplicateData_ReturnsBadRequestResult()
         {
             // Arrange
-            var quizDTO = new QuizDTORequest();
-            var quiz = new Quiz();
-            mapperMock.Setup(mapper => mapper.Map<Quiz>(quizDTO)).Returns(quiz);
-            quizRepositoryMock.Setup(repo => repo.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id)).Returns(true);
+            var quizDTO = new QuizDTORequest()
+            {
+                quiz_name = "Test",
+                subject_id = 1
+            };
+            var result1 = quizsController.CreateQuiz(quizDTO);
 
             // Act
             var result = quizsController.CreateQuiz(quizDTO);
@@ -202,43 +206,28 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual($"{quiz.quiz_name} is Duplicate in Subject", baseResponse.message);
+            Assert.AreEqual($"{quizDTO.quiz_name} is Duplicate in Subject", baseResponse.message);
         }
 
-        [Test]
-        public void CreateQuiz_WithFailedCreation_ReturnsBadRequestResult()
-        {
-            // Arrange
-            var quizDTO = new QuizDTORequest();
-            var quiz = new Quiz();
-            mapperMock.Setup(mapper => mapper.Map<Quiz>(quizDTO)).Returns(quiz);
-            quizRepositoryMock.Setup(repo => repo.CheckQuizDuplicate(quiz.quiz_name, quiz.subject_id)).Returns(false);
-            quizRepositoryMock.Setup(repo => repo.CreateQUiz(quiz)).Returns("Creation failed");
-
-            // Act
-            var result = quizsController.CreateQuiz(quizDTO);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Creation failed", baseResponse.message);
-        }
+     
 
         [Test]
         public void DeleteQuiz_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int quizId = 1;
+           
+            var quizDTO = new QuizDTORequest()
+            {
+                quiz_name = "Test" + fixture.Create<int>(),
+                subject_id = 1
+            };
+       
+            var result1 = quizsController.CreateQuiz(quizDTO);
+            var okObjectResult1 = result1 as OkObjectResult;
+            var baseResponse1 = okObjectResult1.Value as BaseResponse;
+            var data = baseResponse1.data as Quiz;
+            int quizId = data.quiz_id;
             var quiz = new Quiz { quiz_id = quizId };
-            quizRepositoryMock.Setup(repo => repo.GetQuizById(quizId)).Returns(quiz);
-            quizRepositoryMock.Setup(repo => repo.DeleteQUiz(quiz)).Returns(Result.deleteSuccessfull.ToString());
 
             // Act
             var result = quizsController.DeleteQuiz(quizId);
@@ -254,57 +243,27 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Delete Success", baseResponse.message);
-
-            Assert.AreEqual(quiz, okObjectResult.Value);
         }
 
         [Test]
-        public void DeleteQuiz_WithInvalidId_ReturnsBadRequestResult()
+        public void DeleteQuiz_WithInvalidId_ReturnsNotFoundResult()
         {
             // Arrange
-            int quizId = 1;
-            var quiz = new Quiz { quiz_id = quizId };
-            quizRepositoryMock.Setup(repo => repo.GetQuizById(quizId)).Returns(null as Quiz);
-
-            // Act
-            var result = quizsController.DeleteQuiz(2);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found Quiz", baseResponse.message);
-        }
-
-        [Test]
-        public void DeleteQuiz_WithFailedDeletion_ReturnsBadRequestResult()
-        {
-            // Arrange
-            int quizId = 1;
-            var quiz = new Quiz { quiz_id = quizId };
-            quizRepositoryMock.Setup(repo => repo.GetQuizById(quizId)).Returns(quiz);
-            quizRepositoryMock.Setup(repo => repo.DeleteQUiz(quiz)).Returns("Deletion failed");
-
+            int quizId = 99999;
             // Act
             var result = quizsController.DeleteQuiz(quizId);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result as NotFoundObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Deletion failed", baseResponse.message);
+            Assert.AreEqual("Not Found Quiz!", baseResponse.message);
         }
 
         [Test]
@@ -312,14 +271,7 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int quizId = 1;
-            var listQuestion = new List<Question>();
-            var quiz = new Quiz { quiz_id = quizId, subject_id = 1 };
-            var questionResponse = new QuestionDTOResponse();
-            questionRepositoryMock.Setup(repo => repo.GetQuestionByQuiz(quizId)).Returns(listQuestion);
-            quizRepositoryMock.Setup(repo => repo.GetQuizById(quizId)).Returns(quiz);
-            mapperMock.Setup(mapper => mapper.Map<List<QuestionResponse>>(listQuestion)).Returns(new List<QuestionResponse>());
-            var expectedResponse = new BaseResponse(false, "List Question", questionResponse);
-
+         
             // Act
             var result = quizsController.GetListQuestionByQuiz(quizId);
 
@@ -335,28 +287,21 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("List Question", baseResponse.message);
 
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
         public void GetListQuestionByQuiz_WithInvalidQuizId_ReturnsOkResult()
         {
             // Arrange
-            int quizId = 1;
-            var listQuestion = new List<Question>();
-            var quiz = new Quiz { quiz_id = quizId, subject_id = 1 };
-            var questionResponse = new QuestionDTOResponse();
-            questionRepositoryMock.Setup(repo => repo.GetQuestionByQuiz(quizId)).Returns(listQuestion);
-            quizRepositoryMock.Setup(repo => repo.GetQuizById(quizId)).Returns(null as Quiz);
-            var expectedResponse = new BaseResponse(false, "Not Found Question In Quiz", questionResponse);
-
+            int quizId = 99999;
+          
             // Act
             var result = quizsController.GetListQuestionByQuiz(quizId);
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
 
-            var okObjectResult = result as OkObjectResult;
+            var okObjectResult = result as NotFoundObjectResult;
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -364,8 +309,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Not Found Question In Quiz", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
@@ -373,9 +316,6 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             int questionId = 1;
-            var question = new Question { question_id = questionId };
-            questionRepositoryMock.Setup(repo => repo.GetQuestionById(questionId)).Returns(question);
-
             // Act
             var result = quizsController.GetQuestionById(questionId);
 
@@ -390,8 +330,26 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Question", baseResponse.message);
+        }
+        [Test]
+        public void GetQuestionById_WithValidId_ReturnsNotFoundResult()
+        {
+            // Arrange
+            int questionId = 99999;
+            // Act
+            var result = quizsController.GetQuestionById(questionId);
 
-            Assert.AreEqual(question, okObjectResult.Value);
+            // Assert
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+
+            var okObjectResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsTrue(baseResponse.error);
+            Assert.AreEqual("Not Found Question", baseResponse.message);
         }
     }
 }

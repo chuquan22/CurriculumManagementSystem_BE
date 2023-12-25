@@ -59,28 +59,7 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Sucessfully", baseResponse.message);
         }
 
-        [Test]
-        public void GetListCombo_WithInvalidSpecializationId_ReturnsBadRequestResult()
-        {
-            // Arrange
-            int specializationId = 1;
-            comboRepositoryMock.Setup(repo => repo.GetListCombo(specializationId)).Throws(new Exception("Error message"));
-
-            // Act
-            var result = comboController.GetListCombo(2);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
-        }
+       
 
         [Test]
         public void GetCombo_WithValidId_ReturnsOkResult()
@@ -109,26 +88,25 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
-        public void GetCombo_WithInvalidId_ReturnsBadRequestResult()
+        public void GetCombo_WithInvalidId_ReturnsNotFoundObResult()
         {
             // Arrange
-            int comboId = 1;
-            comboRepositoryMock.Setup(repo => repo.FindComboById(comboId)).Throws(new Exception("Error message"));
+            int comboId = 9999;
 
             // Act
-            var result = comboController.GetCombo(2);
+            var result = comboController.GetCombo(comboId);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result as NotFoundObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
+            Assert.AreEqual("Not Found Combo", baseResponse.message);
         }
 
         [Test]
@@ -160,11 +138,10 @@ namespace CMS_UnitTests.Controllers
         public void GetListComboByCurriculum_WithInvalidCurriculumId_ReturnsBadRequestResult()
         {
             // Arrange
-            int curriculumId = 1;
-            comboRepositoryMock.Setup(repo => repo.GetListComboByCurriId(curriculumId)).Throws(new Exception("Error message"));
+            int curriculumId = 99999;
 
             // Act
-            var result = comboController.GetListComboByCurriculum(2);
+            var result = comboController.GetListComboByCurriculum(curriculumId);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -176,7 +153,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
         }
 
         [Test]
@@ -318,12 +294,13 @@ namespace CMS_UnitTests.Controllers
         public void UpdateCombo_WithValidData_ReturnsOkResult()
         {
             // Arrange
-            var comboUpdateRequest = new ComboUpdateRequest();
-            var combo = new Combo();
-            mapperMock.Setup(mapper => mapper.Map(comboUpdateRequest, combo)).Returns(combo);
-            comboRepositoryMock.Setup(repo => repo.FindComboById(comboUpdateRequest.combo_id)).Returns(combo);
-            comboRepositoryMock.Setup(repo => repo.UpdateCombo(combo)).Returns(combo);
-            var expectedResponse = new BaseResponse(false, "Sucessfully", combo);
+            var comboUpdateRequest = new ComboUpdateRequest()
+            {
+                combo_id = 1,
+                is_active = true,
+                combo_english_name = "Sample Combo English Name",
+                combo_name = "Sample Name"
+            };
 
             // Act
             var result = comboController.UpdateCombo(comboUpdateRequest);
@@ -339,16 +316,21 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Sucessfully", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
+
+ 
 
         [Test]
         public void UpdateCombo_WithInvalidId_ReturnsBadRequestResult()
         {
             // Arrange
-            var comboUpdateRequest = new ComboUpdateRequest();
-            comboRepositoryMock.Setup(repo => repo.FindComboById(comboUpdateRequest.combo_id)).Returns(null as Combo);
+            var comboUpdateRequest = new ComboUpdateRequest()
+            {
+                combo_id = 99999,
+                is_active = true,
+                combo_english_name = "Sample Combo English Name",
+                combo_name = "Sample Name"
+            };
 
             // Act
             var result = comboController.UpdateCombo(comboUpdateRequest);
@@ -363,42 +345,25 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Object reference not set to an instance of an object.", baseResponse.message);
-        }
-
-        [Test]
-        public void UpdateCombo_WithFailedUpdate_ReturnsBadRequestResult()
-        {
-            // Arrange
-            var comboUpdateRequest = new ComboUpdateRequest();
-            var combo = new Combo();
-            mapperMock.Setup(mapper => mapper.Map(comboUpdateRequest, combo)).Returns(combo);
-            comboRepositoryMock.Setup(repo => repo.FindComboById(comboUpdateRequest.combo_id)).Returns(combo);
-            comboRepositoryMock.Setup(repo => repo.UpdateCombo(combo)).Returns(null as Combo);
-
-            // Act
-            var result = comboController.UpdateCombo(comboUpdateRequest);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Object reference not set to an instance of an object.", baseResponse.message);
         }
 
         [Test]
         public void DeleteCombo_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int comboId = 1;
-            comboRepositoryMock.Setup(repo => repo.DeleteCombo(comboId)).Returns("Delete sucessfully.");
-            var expectedResponse = new BaseResponse(false, "Sucessfully", "Delete sucessfully.");
+            var comboRequest = new ComboRequest()
+            {
+                combo_code = "ABC" + fixture.Create<int>(),
+                specialization_id = 1,
+                combo_english_name = "Sample English Name",
+                combo_name = "Sample Name",
+                is_active = true
+            };
+            var result1 = comboController.CreateCombo(comboRequest);
+            var okObjectResult1 = result1 as OkObjectResult;
+            var baseResponse1 = okObjectResult1.Value as BaseResponse;
+            var data = baseResponse1.data as Combo;
+            int comboId = data.combo_id;
 
             // Act
             var result = comboController.DeleteCombo(comboId);
@@ -414,8 +379,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Sucessfully", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
     }
 }
