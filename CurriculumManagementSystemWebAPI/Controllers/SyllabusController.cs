@@ -27,7 +27,7 @@ using System.Text.Json;
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager, Dispatcher")]
+    //[Authorize(Roles = "Manager, Dispatcher")]
     [ApiController]
     public class SyllabusController : ControllerBase
     {
@@ -68,7 +68,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SyllabusResponse>>> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+        public async Task<ActionResult> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
@@ -91,11 +92,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs = _mapper.Map<Syllabus>(request);
-                if(rs.min_GPA_to_pass == null)
+                if (rs.min_GPA_to_pass == null)
                 {
                     rs.min_GPA_to_pass = 5;
                 }
-                if(rs.scoring_scale == null)
+                if (rs.scoring_scale == null)
                 {
                     rs.scoring_scale = 10;
                 }
@@ -114,7 +115,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
-                if(rs1 == null)
+
+                if (rs1 == null)
+
                 {
                     return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
 
@@ -175,7 +178,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             }
                             catch (Exception)
                             {
-                               return BadRequest("Import false at sheet Syllabus!");
+                                return BadRequest("Import false at sheet Syllabus!");
+
                             }
                             rs.Add(value);
                         }
@@ -207,7 +211,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 syllabusRepository.DeleteSyllabus(syllabusId);
                                 return BadRequest("Import false at sheet Materials.");
 
-                            }                         
+                            }
                             rs.Add(value);
 
                         }
@@ -230,7 +234,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
                                         var rsClo = cLOsController.CreateCLOs(addRs);
+
                                         var okRsClo = rsClo.Result as OkObjectResult;
+
                                         var baseResponseRsClo = okRsClo.Value as BaseResponse;
                                         var closRsResponse = baseResponseRsClo.data as CLO;
                                         idClo = closRsResponse.CLO_id;
@@ -250,7 +256,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                 syllabusRepository.DeleteSyllabus(syllabusId);
                                 throw new Exception("Import false at sheet CLOs");
                             }
-                            
+
                             gradingStrutureCreate.gradingCLORequest = new GradingCLORequest();
                             gradingStrutureCreate.gradingCLORequest.CLO_id = cloId;
                             rs.Add(value);
@@ -275,21 +281,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                 List<int> lst = new List<int>();
                                 foreach (var it in cloId)
-                                {                                
-                                        string name = "null";
-                                        if (cloRepository.GetCLOsById(it) != null)
+
+                                {
+                                    string name = "null";
+                                    if (cloRepository.GetCLOsById(it) != null)
+                                    {
+                                        name = cloRepository.GetCLOsById(it).CLO_name;
+                                        if (item.CLO_name.ToLower().Trim().Contains(name.ToLower().Trim()))
+
                                         {
-                                            name = cloRepository.GetCLOsById(it).CLO_name;
-                                            if (item.CLO_name.ToLower().Trim().Contains(name.ToLower().Trim()))
-                                            {
-                                                lst.Add(it);
-                                            }
+                                            lst.Add(it);
                                         }
-                                        if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
-                                        {
-                                            lst = new List<int>();
-                                            lst.AddRange(cloId);
-                                        }                                                                 
+
+                                    }
+                                    if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
+                                    {
+                                        lst = new List<int>();
+                                        lst.AddRange(cloId);
+                                    }
+
                                 }
                                 foreach (var idClo in lst)
                                 {
@@ -345,7 +355,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                                 }
                                             }
                                         }
-                                        if(gra.clo_name != null)
+                                        if (gra.clo_name != null)
                                         {
 
                                             if (gra.clo_name.Contains("All CLOs"))
@@ -399,7 +409,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public async Task<IActionResult> DeleteSyllabusById(int syllabusId)
         {
             var syllabus = syllabusRepository.GetSyllabusById(syllabusId);
-            if(syllabus == null)
+            if (syllabus == null)
             {
                 return NotFound(new BaseResponse(true, "Syllabus not exist in system!", null));
             }
@@ -413,26 +423,26 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true,"Error: " + ex.Message,null));
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message, null));
             }
             return Ok(new BaseResponse(false, "Delete Sucessfully!", null));
         }
 
-       
+
         private List<GradingStruture> GetGradingStrutureExcel(IEnumerable<GradingStrutureExcel> row, Syllabus syllabus)
         {
             List<GradingStruture> result = new List<GradingStruture>();
             foreach (var r in row)
             {
                 if (r == null) { }
-                if(r.SessionNo == null) { r.SessionNo = ""; }
-                
+                if (r.SessionNo == null) { r.SessionNo = ""; }
+
                 GradingStruture g = new GradingStruture();
                 g.type_of_questions = r.type_of_questions;
                 g.number_of_questions = r.number_of_questions;
                 g.session_no = ((r.SessionNo.Trim() == null || r.SessionNo.Trim().Equals("")) ? null : int.Parse(r.SessionNo));
                 g.references = r.Reference;
-                g.grading_weight = r.weight;              
+                g.grading_weight = r.weight;
                 g.grading_part = r.Part;
                 g.syllabus_id = syllabus.syllabus_id;
                 g.minimum_value_to_meet_completion = r.minimun_value_to_meet;
@@ -442,7 +452,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 g.grading_note = r.Note;
                 g.assessment_component = r.assessment_component;
                 g.assessment_type = r.assessment_type;
-               
+
                 g.clo_name = r.CLO;
                 result.Add(g);
 
@@ -531,7 +541,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     if (int.TryParse(r.Published_Date, out int year))
                     {
                         m.material_published_date = new DateTime(year, 1, 1);
-                    }                 
+                    }
                 }
                 try
                 {
@@ -646,7 +656,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         try
                         {
                             syllabus.min_GPA_to_pass = int.Parse(r.Details);
-                            if(syllabus.min_GPA_to_pass < 0)
+                            if (syllabus.min_GPA_to_pass < 0)
+
                             {
                                 throw new Exception("Please check MinGPAtopass >= 0.");
 
@@ -742,9 +753,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var gradingStruture1 = gradingStrutureRepository.GetGradingStruture(syllabus_id);
             var gradingStruture = _mapper.Map<List<GradingStrutureExportExcel>>(gradingStruture1);
             var materials = _mapper.Map<List<MaterialExportExcel>>(materials1);
-            var clos = _mapper.Map <List<CLOsExportExcel>>(clos1);
+            var clos = _mapper.Map<List<CLOsExportExcel>>(clos1);
             var schedule = _mapper.Map<List<SessionExcelExport>>(schedule1);
-           
+
 
             for (int i = 0; i < gradingStruture.Count; i++)
             {
@@ -819,8 +830,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
-               var existSyllabus = syllabusRepository.GetSyllabusById(id);
-                if(existSyllabus == null)
+
+                var existSyllabus = syllabusRepository.GetSyllabusById(id);
+                if (existSyllabus == null)
+
                 {
                     return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
                 }

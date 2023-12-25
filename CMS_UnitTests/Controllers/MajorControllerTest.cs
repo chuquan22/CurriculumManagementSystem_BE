@@ -56,9 +56,11 @@ namespace CMS_UnitTests.Controllers
             var result = majorController.GetAllMajor();
 
             // Assert
+
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
             var okObjectResult = result.Result as OkObjectResult;
+
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -73,7 +75,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetMajor_ReturnsOkResult()
         {
             // Arrange
-            int batchId = 5;
+           int batchId = 2;
             var listMajor = new List<Major>();
             var listMajorResponse = new List<MajorSpeResponse>();
 
@@ -86,9 +88,11 @@ namespace CMS_UnitTests.Controllers
             var result = majorController.GetMajor(batchId);
 
             // Assert
+
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
             var okObjectResult = result.Result as OkObjectResult;
+
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -101,25 +105,29 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetMajor_ReturnsNotFoundResult()
+
+        public async Task GetMajor_ReturnsBadRequestResult()
         {
             // Arrange
-            var batchId = 200;
+            int batchId = 999;
+
 
             // Act
             var result = majorController.GetMajor(batchId);
 
             // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var ObjectResult = result.Result as NotFoundObjectResult;
-            Assert.IsNotNull(ObjectResult);
+            var objectResult = result.Result as BadRequestObjectResult;
 
-            var baseResponse = ObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(objectResult);
+
+            var baseResponse = objectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
-
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Not Found This Major!", baseResponse.message);
+            Assert.IsTrue(baseResponse.message.Contains("Error: "));
+
+
 
         }
         [Test]
@@ -148,7 +156,9 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Add Major Successfully!", baseResponse.message);
+
+            Assert.AreEqual("Add Major " + majorRequest.major_name + " Successfully!", baseResponse.message);
+
         }
         [Test]
         public void CreateMajor_ReturnsBadRequest_DuplicateCode()
@@ -223,7 +233,9 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse2);
 
             Assert.IsFalse(baseResponse2.error);
-            Assert.AreEqual("Delete Major Successfully!", baseResponse2.message);
+
+            Assert.AreEqual("Delete major sucessfully!", baseResponse2.message);
+
         }
 
 

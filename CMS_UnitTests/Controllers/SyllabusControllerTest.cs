@@ -36,6 +36,8 @@ namespace CMS_UnitTests.Controllers
             fixture = new Fixture();
             syllabusRepositoryMock = fixture.Freeze<Mock<ISyllabusRepository>>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+
+            var configurationMock = new Mock<IConfiguration>();
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
             hostingEnvironmentMock = new Mock<IWebHostEnvironment>();
@@ -46,10 +48,10 @@ namespace CMS_UnitTests.Controllers
         public async Task GetListSyllabus_ReturnsOkResult()
         {
             // Arrange
-            var page = 1;
-            var limit = 10;
-            var txtSearch = "a";
-            var subjectCode = "";
+            int page = 1;
+            int limit = 10;
+            string txtSearch = null;
+            string subjectCode = null;
 
             var listSyllabus = new List<Syllabus>();
             var listSyllabusResponse = new List<SyllabusResponse>();
@@ -60,8 +62,7 @@ namespace CMS_UnitTests.Controllers
 
             mapperMock.Setup(mapper => mapper.Map<List<SyllabusResponse>>(listSyllabus)).Returns(listSyllabusResponse);
             // Act
-            var result = await syllabusController.GetListSyllabus(page, limit, txtSearch, subjectCode);
-
+            var result = syllabusController.GetListSyllabus(page, limit, txtSearch, subjectCode);
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
@@ -100,12 +101,12 @@ namespace CMS_UnitTests.Controllers
                 syllabus_approved = true
             };
             // Act
-            var result = await syllabusController.CreateSyllabus(syllabusRequest);
+            var result = syllabusController.CreateSyllabus(syllabusRequest);
 
              // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
-            var okObjectResult = result as OkObjectResult;
+            var okObjectResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -121,12 +122,14 @@ namespace CMS_UnitTests.Controllers
             var syllabusRequest = new SyllabusRequest();
 
             // Act
-            var result = await syllabusController.CreateSyllabus(syllabusRequest);
+
+            var result =  syllabusController.CreateSyllabus(syllabusRequest);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result.Result as BadRequestObjectResult;
+
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;

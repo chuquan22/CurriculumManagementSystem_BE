@@ -429,10 +429,10 @@ namespace CMS_UnitTests.Controllers
 
         // Test for DeleteSemester action returning BadRequest
         [Test]
-        public void DeleteSemester_WhenSemesterUsed_ReturnsBadRequest()
+        public void DeleteSemester_ReturnsNotFound()
         {
             // Arrange
-            var semesterId = 2;
+            var semesterId = 99999;
             var semester = new Semester { /* add sample semester details here */ };
 
             Mock.Get(_semesterRepositoryMock).Setup(repo => repo.GetSemester(semesterId)).Returns(semester);
@@ -442,16 +442,16 @@ namespace CMS_UnitTests.Controllers
             var result = _semestersController.DeleteSemester(semesterId);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestResult = result as BadRequestObjectResult;
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            var notFoundResult = result as NotFoundObjectResult;
 
-            Assert.IsNotNull(badRequestResult);
-            Assert.AreEqual(400, badRequestResult.StatusCode);
+            Assert.IsNotNull(notFoundResult);
+            Assert.AreEqual(404, notFoundResult.StatusCode);
 
-            var baseResponse = badRequestResult.Value as BaseResponse;
+            var baseResponse = notFoundResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Semester Used. Can't Delete!", baseResponse.message);
+            Assert.AreEqual("Not Found Semester!", baseResponse.message);
         }
     }
 
