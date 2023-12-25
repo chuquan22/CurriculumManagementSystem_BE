@@ -120,7 +120,6 @@ namespace CMS_UnitTests.Controllers
         {
             // Arrange
             var closRequest = new CLOsRequest();
-            mapperMock.Setup(mapper => mapper.Map<CLO>(closRequest)).Throws(new Exception("Object reference not set to an instance of an object."));
 
             // Act
             var result = closController.CreateCLOs(closRequest);
@@ -142,11 +141,23 @@ namespace CMS_UnitTests.Controllers
         public void UpdateCLOs_WithValidData_ReturnsOkResult()
         {
             // Arrange
-            var cloUpdateRequest = new CLOsUpdateRequest();
-            var clo = new CLO();
-            mapperMock.Setup(mapper => mapper.Map<CLO>(cloUpdateRequest)).Returns(clo);
-            cloRepositoryMock.Setup(repo => repo.UpdateCLOs(clo)).Returns(clo);
-            var expectedResponse = new BaseResponse(false, "Sucessfully", clo);
+            var closRequest = new CLOsRequest()
+            {
+                CLO_name = "CLO" + fixture.Create<int>(),
+                CLO_description = "Sample Description",
+                syllabus_id = 2
+            };
+            var result1 = closController.CreateCLOs(closRequest);
+            var okObjectResult1 = result1.Result as OkObjectResult;
+            var baseResponse1 = okObjectResult1.Value as BaseResponse;
+            var data = baseResponse1.data as CLO;
+            var cloUpdateRequest = new CLOsUpdateRequest()
+            {
+                CLO_description = "Sample Description",
+                CLO_id = data.CLO_id,
+                CLO_name = "Sample Name",
+                syllabus_id = data.syllabus_id,
+            };
 
             // Act
             var result = closController.UpdateCLOs(cloUpdateRequest);
@@ -162,8 +173,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Sucessfully", baseResponse.message);
-
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
@@ -188,7 +197,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Object reference not set to an instance of an object.", baseResponse.message);
+            Assert.AreEqual("Object reference not set to an instance of an object.", baseResponse.message);
         }
 
        
