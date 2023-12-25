@@ -138,6 +138,38 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
+        public void PaginationAssessmentMethod_NotFounData_ReturnsOkResultWithPagedAssessmentMethods()
+        {
+            // Arrange
+            int page = 1;
+            int limit = 10;
+            string txtSearch = "abcdef";
+            var expectedAssessmentMethods = new List<AssessmentMethod>();
+            _assessmentMethodRepositoryMock.Setup(repo => repo.PaginationAssessmentMethod(page, limit, txtSearch)).Returns(expectedAssessmentMethods);
+            _assessmentMethodRepositoryMock.Setup(repo => repo.GetTotalAssessmentMethod(txtSearch)).Returns(expectedAssessmentMethods.Count);
+
+            // Act
+            var result = _assessmentMethodsController.PaginationAssessmentMethod(page, limit, txtSearch);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var okObjectResult = result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsFalse(baseResponse.error);
+            Assert.AreEqual("List Assessment Method", baseResponse.message);
+
+            var data = baseResponse.data as BaseListResponse;
+            Assert.IsNotNull(data);
+            Assert.AreEqual(page, data.page);
+            Assert.AreEqual(limit, data.limit);
+        }
+
+        [Test]
         public void CreateAssessmentMethod_WithValidData_ReturnsOkResult()
         {
             // Arrange

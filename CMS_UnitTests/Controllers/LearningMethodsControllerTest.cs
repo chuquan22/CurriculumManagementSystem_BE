@@ -85,6 +85,32 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
+        public void GetLearningMethod_WithInValidId_ReturnsOkResultWithLearningMethod()
+        {
+            // Arrange
+            int validLearningMethodId = 0;
+            var expectedLearningMethod = new LearningMethod();
+            _learningMethodRepositoryMock.Setup(repo => repo.GetLearningMethodById(validLearningMethodId)).Returns(expectedLearningMethod);
+
+            // Act
+            var result = _learningMethodsController.GetLearningMethod(validLearningMethodId);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var okObjectResult = result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsFalse(baseResponse.error);
+            Assert.AreEqual("Success!", baseResponse.message);
+
+
+        }
+
+        [Test]
         public void PaginationLearningMethod_ReturnsOkResultWithPagedLearningMethods()
         {
             // Arrange
@@ -115,6 +141,37 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual(page, data.page);
             Assert.AreEqual(limit, data.limit);
             Assert.NotNull(data.data);
+        }
+
+        [Test]
+        public void PaginationLearningMethod_NotFoundList_ReturnsOkResultWithPagedLearningMethods()
+        {
+            // Arrange
+            int page = 1;
+            int limit = 10;
+            string txtSearch = "a";
+            var expectedLearningMethods = new List<LearningMethod>(); // Provide a list of learning methods
+            _learningMethodRepositoryMock.Setup(repo => repo.PaginationLearningMethod(page, limit, txtSearch)).Returns(expectedLearningMethods);
+            _learningMethodRepositoryMock.Setup(repo => repo.GetTotalLearningMethod(txtSearch)).Returns(expectedLearningMethods.Count);
+
+            // Act
+            var result = _learningMethodsController.PaginationLearningMethod(page, limit, txtSearch);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var okObjectResult = result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsFalse(baseResponse.error);
+
+            var data = baseResponse.data as BaseListResponse;
+            Assert.IsNotNull(data);
+            Assert.AreEqual(page, data.page);
+            Assert.AreEqual(limit, data.limit);
         }
 
         [Test]

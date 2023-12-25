@@ -92,6 +92,38 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
+        public void PaginationAssessmentType_NotFound_ReturnsOkResultWithPagedAssessmentTypes()
+        {
+            // Arrange
+            int page = 1;
+            int limit = 10;
+            string txtSearch = "adgede";
+            var expectedAssessmentTypes = new List<AssessmentType>(); // Provide a list of assessment types
+            _assessmentTypeRepositoryMock.Setup(repo => repo.PaginationAssessmentType(page, limit, txtSearch)).Returns(expectedAssessmentTypes);
+            _assessmentTypeRepositoryMock.Setup(repo => repo.GetTotalAssessmentType(txtSearch)).Returns(expectedAssessmentTypes.Count);
+
+            // Act
+            var result = _assessmentTypesController.PaginationAssessmentType(page, limit, txtSearch);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var okObjectResult = result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsFalse(baseResponse.error);
+            Assert.AreEqual("List Assessment Method", baseResponse.message);
+
+            var data = baseResponse.data as BaseListResponse;
+            Assert.IsNotNull(data);
+            Assert.AreEqual(page, data.page);
+            Assert.AreEqual(limit, data.limit);
+        }
+
+        [Test]
         public void GetAssessmentType_WithValidId_ReturnsOkResultWithAssessmentType()
         {
             // Arrange

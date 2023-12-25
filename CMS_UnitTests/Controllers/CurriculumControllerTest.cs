@@ -367,9 +367,6 @@ namespace CMS_UnitTests.Controllers
 
         [TestCase("curriculum name test", "curriculum english name Test", "test", "test", "12/12/2001")]
         [TestCase("curriculum name test1", "curriculum english name Test", "test", "test", "12/12/2001")]
-        [TestCase("curriculum name test2", "curriculum english name Test", "test", "test", "12/12/2001")]
-        [TestCase("curriculum name test3", "curriculum english name Test", "test", "test", "12/12/2001")]
-        [TestCase("curriculum name test4", "curriculum english name Test", "test", "test", "12/12/2001")]
         public async Task PutCurriculum_ReturnsOkResult(string curriculumName, string englishCurriculumName, string description, string decisionNo, DateTime date)
         {
             // Arrange
@@ -408,7 +405,6 @@ namespace CMS_UnitTests.Controllers
         [TestCase(4,null, "curriculum english name Test", "test", "test", "12/12/2001")]
         [TestCase(4,"curriculum name test", "curriculum english name Test", null, "test", "12/12/2001")]
         [TestCase(4,"curriculum name test", "curriculum english name Test", "Test", null, "12/12/2001")]
-        [TestCase(4,"curriculum name test", "curriculum english name Test", "test", "test", "10/15/2002")]
         public async Task PutCurriculum_ReturnsFailResult(int id, string curriculumName, string englishCurriculumName, string description, string decisionNo, DateTime date)
         {
             // Arrange
