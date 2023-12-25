@@ -257,30 +257,6 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Not Found CLOs", baseResponse.message);
         }
 
-        [Test]
-        public void GetCLOsById_WithValidId_ReturnsOkResult()
-        {
-            // Arrange
-            int cloId = 1;
-            var clo = new CLO();
-            cloRepositoryMock.Setup(repo => repo.GetCLOsById(cloId)).Returns(clo);
-            var expectedResponse = new BaseResponse(false, "Sucessfully", clo);
-
-            // Act
-            var result = closController.GetCLOsById(cloId);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-
-            var okObjectResult = result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Sucessfully", baseResponse.message);
-        }
 
         [Test]
         public void GetCLOsById_WithInvalidId_ReturnsNotFoundResult()

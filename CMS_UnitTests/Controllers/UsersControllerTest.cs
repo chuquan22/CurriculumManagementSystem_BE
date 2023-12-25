@@ -114,7 +114,7 @@ namespace CMS_UnitTests.Controllers
             {
                 full_name = "123",
                 role_id = 1,
-                user_email = "32231@fpt.edu.vn",
+                user_email = "32231"+fixture.Create<string>()+"@fpt.edu.vn",
                 user_name = "123"
              
             };

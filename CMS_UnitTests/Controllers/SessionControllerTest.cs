@@ -97,7 +97,7 @@ namespace CMS_UnitTests.Controllers
                        session_No = 1,
                        student_material = "Sample",
                        student_material_link = "Sample",
-                       syllabus_id = 2,
+                       syllabus_id = 1,
                        video_learning = 1,
                  
                  },
