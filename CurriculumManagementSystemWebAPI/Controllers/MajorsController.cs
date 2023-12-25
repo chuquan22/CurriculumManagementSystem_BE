@@ -28,7 +28,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             subjectRepository = new SubjectRepository();
         }
         [HttpGet]
-        public ActionResult GetAllMajor()
+        public ActionResult<List<MajorResponse>> GetAllMajor()
         {
             List<Major> rs = new List<Major>();
             try
@@ -44,6 +44,23 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             }
         }
 
+        [HttpGet("GetMajorByDegreeLevel/{degree_id}")]
+        public ActionResult<List<MajorResponse>> GetAllMajorByDegreeLevel(int degree_id)
+        {
+            List<Major> rs = new List<Major>();
+            try
+            {
+                rs = majorRepository.GetMajorByDegreeLevel(degree_id);
+                var result = _mapper.Map<List<MajorResponse>>(rs);
+                return Ok(new BaseResponse(false, "Successfully!", result));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new BaseResponse(true, "Error: " + ex.Message));
+            }
+        }
+
         [HttpGet("GetAllMajorSubjectByDegreeLevel/{degree_id}")]
         public ActionResult GetAllMajorSubject(int degree_id)
         {
@@ -56,12 +73,20 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 foreach (var major in listMajorRespone)
                 {
                     var list = _mapper.Map<List<SubjectDTO>>(subjectRepository.GetSubjectByMajorId(major.major_id));
-                    major.listSubjects = list.OrderBy(x => x.subject_name).ToList();
+                    var distinctSubjects = list
+                        .GroupBy(subject => subject.subject_id)  
+                        .Select(group => group.First())
+                        .OrderBy(subject => subject.subject_code)
+                        .ThenBy(subject => subject.subject_name)
+                        .ToList();
+
+                    major.listSubjects = distinctSubjects;
                 }
 
                 listMajorRespone = listMajorRespone
                     .OrderBy(x => x.major_english_name)
                     .ToList();
+
 
 
                 return Ok(new BaseResponse(false, "Successfully!", listMajorRespone));
@@ -74,13 +99,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("{batchId}")]
-        public ActionResult GetMajor(int batchId)
+        public ActionResult<List<SpecializationResponse>> GetMajor(int batchId)
         {
             List<Major> rs = new List<Major>();
             try
             {
                 rs = majorRepository.GetMajorByBatch(batchId);
           
+
                 var listMajorRespone = _mapper.Map<List<MajorSpeResponse>>(rs);
                 foreach (var major in listMajorRespone)
                 {
@@ -111,7 +137,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                     rs = majorRepository.AddMajor(rs);
                     var result = _mapper.Map<MajorResponse>(rs);
 
+
                     return Ok(new BaseResponse(false, "Add Major " + rs.major_name + " Successfully!", result));
+
                 }
             }
             catch (Exception ex)
@@ -143,22 +171,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpDelete]
         public ActionResult DeleteMajor(int id)
         {
-            Major rs = new Major();
             try
             {
                 var major = majorRepository.FindMajorById(id);
+
                 if(major == null)              
                 {
                     return NotFound(new BaseResponse(true, "Not Found This Major!", null));
 
+
                 }
+
                 majorRepository.DeleteMajor(id);
-                return Ok(new BaseResponse(false, "Delete major sucessfully!", major));
+                return Ok(new BaseResponse(false, "Delete Major Successfully!", null));
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse(true, "Cant not delete this major. Major already used in system!", null));
+                return BadRequest(new BaseResponse(true, "Cannot delete this major. Major already used in the system!", null));
             }
         }
+
     }
 }

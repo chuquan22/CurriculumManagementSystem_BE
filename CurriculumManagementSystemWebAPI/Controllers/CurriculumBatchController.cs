@@ -53,9 +53,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpGet("Pagination/{page}/{limit}")]
-        public ActionResult PaginationLearningMethod(int page, int limit, [FromQuery] string? txtSearch)
+        public ActionResult PaginationLearningMethod(int? degree_id, int page, int limit, [FromQuery] string? txtSearch)
         {
-            var listBatch = _batchRepository.PaginationCurriculumBatch(page, limit, txtSearch);
+            var listBatch = _batchRepository.PaginationCurriculumBatch(degree_id, page, limit, txtSearch);
 
             if (listBatch.Count == 0)
             {
@@ -74,7 +74,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 listCurriculumBatch.Add(curriBacthDTO);
             }
 
-            var total = _batchRepository.GetTotalCurriculumBatch(txtSearch);
+            var total = _batchRepository.GetTotalCurriculumBatch(degree_id, txtSearch);
             return Ok(new BaseResponse(false, "List Curriculum Batch", new BaseListResponse(page, limit, total, listCurriculumBatch)));
         }
 
@@ -115,8 +115,6 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             return Ok(new BaseResponse(false, "list Curriculum", CurriculumRespone));
         }
-
-
 
         [HttpGet("GetCurriculumBatchByBatchId/{batchId}")]
         public IActionResult GetCurriculumBatch(int batchId)
@@ -169,6 +167,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult UpdateCurriculumBatch(int id, [FromBody] CurriculumBatchRequest curriculumBatchRequest)
         {
             var batch = _batchRepository.GetBatchById(id);
+            if(batch == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Batch"));
+            }
             if (_batchRepository.CheckBatchUpdateDuplicate(id, curriculumBatchRequest.batch_order, batch.degree_level_id))
             {
                 return BadRequest(new BaseResponse(true, $"Batch Order {curriculumBatchRequest.batch_order} is Duplicate!"));
@@ -213,6 +215,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult DeleteCurriculumBatch(int id)
         {
             var batch = _batchRepository.GetBatchById(id);
+            if(batch == null)
+            {
+                return NotFound(new BaseResponse(true, "Not Found Batch"));
+            }
+
             if (_batchRepository.CheckBatchExsit(id))
             {
                 return BadRequest(new BaseResponse(true, $"Batch {batch.batch_name} is Used. Can't Delete!"));

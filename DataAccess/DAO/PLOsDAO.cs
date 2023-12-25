@@ -47,16 +47,16 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.PLOs.Add(plo);
-                int index = _context.SaveChanges();
-                if(index > 0)
-                {
+                //_context.PLOs.Add(plo);
+                //int index = _context.SaveChanges();
+                //if(index > 0)
+                //{
                     return Result.createSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Create PLOs Fail!";
-                }
+                //}
+                //else
+                //{
+                //    return "Create PLOs Fail!";
+                //}
 
             }catch (DbUpdateConcurrencyException ex)
             {
@@ -90,16 +90,16 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.PLOs.Remove(plo);
-                int index = _context.SaveChanges();
-                if (index > 0)
-                {
+                //_context.PLOs.Remove(plo);
+                //int index = _context.SaveChanges();
+                //if (index > 0)
+                //{
                     return Result.deleteSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Delete PLOs Fail!";
-                }
+                //}
+                //else
+                //{
+                //    return "Delete PLOs Fail!";
+                //}
 
             }
             catch (Exception ex)

@@ -11,8 +11,8 @@ namespace Repositories.Batchs
     {
         List<Batch> GetAllBatch();
         int GetBatchIDByName(string batchName);
-        List<Batch> PaginationCurriculumBatch(int page, int limit, string? txtSearch);
-        int GetTotalCurriculumBatch(string? txtSearch);
+        List<Batch> PaginationCurriculumBatch(int? degree_id, int page, int limit, string? txtSearch);
+        int GetTotalCurriculumBatch(int? degree_id, string? txtSearch);
         List<Batch> GetBatchBySpe(int speId);
         List<Batch> GetBatchByDegreeLevel(int degreeLevelId);
         List<Batch> GetBatchNotExsitInSemester();

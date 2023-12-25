@@ -50,6 +50,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 rs = specializationRepository.GetListSpecialization(page, limit, txtSearch, major_id);
                 var result = _mapper.Map<List<Specialization>>(rs);
                 return Ok(new BaseResponse(false, "Successfully!", new BaseListResponse(page, limit2, rs)));
+
             }
             catch (Exception ex)
             {

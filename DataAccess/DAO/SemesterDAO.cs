@@ -1,6 +1,7 @@
 ﻿using BusinessObject;
 using DataAccess.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DataAccess.DAO
 {
@@ -14,11 +15,16 @@ namespace DataAccess.DAO
             return listSemesters;
         }
 
-        public List<Semester> PaginationSemester(int page, int limit, string? txtSearch)
+        public List<Semester> PaginationSemester(int? degree_id, int page, int limit, string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
                 .Include(x => x.Batch)
                 .Include(x => x.Batch.DegreeLevel);
+
+            if (degree_id.HasValue)
+            {
+                query = query.Where(x => x.Batch.degree_level_id == degree_id);
+            }
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -26,6 +32,8 @@ namespace DataAccess.DAO
             }
 
             var listSemester = query
+                .OrderBy(x => x.Batch.degree_level_id)
+                .ThenByDescending(x => x.Batch.batch_name)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToList();
@@ -41,15 +49,20 @@ namespace DataAccess.DAO
 
         public List<Semester> GetSemesterByDegreeLevel(int id)
         {
-            var listSemester = _cmsDbContext.Semester.Include(x => x.Batch).Where(x => x.Batch.degree_level_id == id).ToList();
+            var listSemester = _cmsDbContext.Semester.Include(x => x.Batch).ThenInclude(x => x.DegreeLevel).Where(x => x.Batch.degree_level_id == id).ToList();
             return listSemester;
         }
 
-        public int GetTotalSemester(string? txtSearch)
+        public int GetTotalSemester(int? degree_id, string? txtSearch)
         {
             IQueryable<Semester> query = _cmsDbContext.Semester
                 .Include(x => x.Batch)
                 .Include(x => x.Batch.DegreeLevel);
+
+            if (degree_id.HasValue)
+            {
+                query = query.Where(x => x.Batch.degree_level_id == degree_id);
+            }
 
             if (!string.IsNullOrEmpty(txtSearch))
             {
@@ -87,12 +100,13 @@ namespace DataAccess.DAO
                     }
                 }
             }
-            return listSemester;
+            return listSemester.DistinctBy(x => x.Batch.batch_name).ToList();
         }
 
-        public bool CheckSemesterDuplicate(int id, string name, int schoolYear)
+        public bool CheckSemesterDuplicate(int id, string name, int schoolYear, int batchId)
         {
-            return (_cmsDbContext.Semester?.Any(x => x.semester_name.ToLower().Equals(name.ToLower().Trim()) && x.school_year == schoolYear && x.semester_id != id)).GetValueOrDefault();
+            var degreeLevel = _cmsDbContext.Batch.Include(x => x.DegreeLevel).FirstOrDefault(x => x.batch_id == batchId).degree_level_id;
+            return (_cmsDbContext.Semester?.Include(x => x.Batch).Any(x => x.semester_name.ToLower().Equals(name.ToLower().Trim()) && x.school_year == schoolYear && x.semester_id != id && x.Batch.degree_level_id == degreeLevel)).GetValueOrDefault();
         }
 
         public bool CheckSemesterExsit(int id)
@@ -110,8 +124,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Add(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Add(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -123,8 +137,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Update(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Update(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.updateSuccessfull.ToString();
             }
             catch (Exception ex)
@@ -137,8 +151,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _cmsDbContext.Semester.Remove(semester);
-                _cmsDbContext.SaveChanges();
+                //_cmsDbContext.Semester.Remove(semester);
+                //_cmsDbContext.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

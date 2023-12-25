@@ -33,7 +33,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 List<GradingStruture> rs = gradingStrutureRepository.GetGradingStruture(syllabus_id);
                 var response = _mapper.Map<List<GradingStrutureResponse>>(rs);
+
                 return Ok(new BaseResponse(false, "Successfully!", response));
+
             }
             catch (Exception ex)
             {
@@ -50,7 +52,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = gradingStrutureRepository.GetGradingStrutureById(id);
                 var response = _mapper.Map<GradingStrutureResponse>(rs);
+
                 return Ok(new BaseResponse(false, "Successfully!", response));
+
             }
             catch (Exception ex)
             {
@@ -154,7 +158,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 string ressult = gradingStrutureRepository.UpdateGradingStruture(rs, gra.gradingCLORequest.CLO_id);
+
                 return Ok(new BaseResponse(false, "Successfully!", ressult));
+
             }
             catch (Exception ex)
             {
@@ -170,6 +176,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 rs = gradingStrutureRepository.DeleteGradingStruture(id);
                 return Ok(new BaseResponse(false, "Successfully!", true));
+
             }
             catch (Exception ex)
             {

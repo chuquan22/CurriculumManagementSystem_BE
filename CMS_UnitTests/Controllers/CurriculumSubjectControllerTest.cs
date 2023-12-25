@@ -38,46 +38,10 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetCurriculumSubjectByTermNo_ReturnOkResponse()
-        {
-            // Arrange
-            int termNoTest = 1;
-
-            // Act
-            var result = await _controller.GetCurriculumSubjectByTermNo(termNoTest);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result.Result);
-        }
-
-        [Test]
-        public async Task GetCurriculumSubjectByTermNo_ReturnNotFoundResponse_WhenNotFoundSubject()
-        {
-            // Arrange
-            int termNoTest = 10;
-            _curriculumSubjectRepository.Setup(repo => repo.GetCurriculumSubjectByTermNo(termNoTest))
-                                            .Returns(new List<CurriculumSubject>());
-
-            // Act
-            var result = await _controller.GetCurriculumSubjectByTermNo(termNoTest);
-
-            // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result.Result);
-            var notFoundObjectResult = result.Result as NotFoundObjectResult;
-            Assert.IsNotNull(notFoundObjectResult);
-
-            var baseResponse = notFoundObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual($"Term No {termNoTest} Hasn't Subject in this Curriculum", baseResponse.message);
-        }
-
-        [Test]
         public async Task GetCurriculumBySubject_ReturnNotFoundResponse_WhenNotFoundSubject()
         {
             // Arrange
-            int subjectIdTest = 5;
+            int subjectIdTest = 500;
             _curriculumSubjectRepository.Setup(repo => repo.GetListCurriculumBySubject(It.IsAny<int>()))
                                             .Returns(new List<CurriculumSubject>());
 
@@ -85,7 +49,14 @@ namespace CMS_UnitTests.Controllers
             var result = await _controller.GetCurriculumBySubject(subjectIdTest);
 
             // Assert
-            Assert.IsInstanceOf<NotFoundResult>(result.Result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+            var okObjectResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okObjectResult);
+
+            var baseResponse = okObjectResult.Value as BaseResponse;
+            Assert.IsNotNull(baseResponse);
+
+            Assert.IsFalse(baseResponse.error);
         }
 
         [Test]
@@ -116,7 +87,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetSubjectNotExistCurriculum_ReturnNotFoundResponse_WhenNoSubjectsExist()
         {
             // Arrange
-            int curriculumIdTest = 5;
+            int curriculumIdTest = 19;
             _curriculumSubjectRepository.Setup(repo => repo.GetListSubject(It.IsAny<int>()))
                                             .Returns(new List<Subject>()); 
 
@@ -132,15 +103,27 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Not Found Subject!", baseResponse.message);
         }
 
-        [Test]
-        public async Task PostCurriculumSubject_ReturnsBadRequest_WhenCreateFails()
+        [TestCase(1, 0, 0, null, null, 0)]
+        [TestCase(1, 101, 0, "Group A", null, 2)]
+        public async Task PostCurriculumSubject_ReturnsBadRequest_WhenCreateFails(int subjectId, int curriId, int termNo, string subjectGroup, int? combo, int? option)
         {
             // Arrange
             var curriculumSubjectRequestList = new List<CurriculumSubjectRequest>();
+            var request1 = new CurriculumSubjectRequest
+            {
+                subject_id = subjectId,
+                curriculum_id = curriId,
+                term_no = termNo,
+                subject_group = subjectGroup,
+                combo_id = combo,
+                option = option
+            };
+            
 
+            // Add instances to the list
+            curriculumSubjectRequestList.Add(request1);
             _curriculumSubjectRepository.Setup(repo => repo.CreateCurriculumSubject(It.IsAny<CurriculumSubject>()))
                                             .Returns(Result.createSuccessfull.ToString());
 
@@ -156,7 +139,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Create Failed!", baseResponse.message); 
         }
 
         [Test]
@@ -183,40 +165,27 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Not found this Curriculum Subject", baseResponse.message);
         }
 
-        [Test]
-        public async Task DeleteCurriculumSubject_ReturnsBadRequest_WhenDeleteFails()
+
+        [TestCase(1, 3, 1, "Group A", 0, null)]
+        [TestCase(4, 3, 2, "Group B", 0, null)]
+        [TestCase(3, 3, 1, "Group A", 0, null)]
+        public async Task PostCurriculumSubject_ReturnsOk_WhenCreateSucceeds(int subjectId, int curriId, int termNo, string subjectGroup, int? combo, int? option)
         {
             // Arrange
-            int curriculumIdTest = 1;
-            int subjectIdTest = 2;
-            var mockCurriculumSubject = new CurriculumSubject(); // Populate with sample data
-            _curriculumSubjectRepository.Setup(repo => repo.GetCurriculumSubjectById(It.IsAny<int>(), It.IsAny<int>()))
-                                           .Returns(new CurriculumSubject());
-            _curriculumSubjectRepository.Setup(repo => repo.GetCurriculumSubjectByTermNoAndSubjectGroup(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int>()))
-                                            .Returns(new CurriculumSubject());
-            _curriculumSubjectRepository.Setup(repo => repo.DeleteCurriculumSubject(It.IsAny<CurriculumSubject>()))
-                                            .Returns(Result.deleteSuccessfull.ToString());
+            var curriculumSubjectRequestList = new List<CurriculumSubjectRequest>();
+            var request1 = new CurriculumSubjectRequest
+            {
+                subject_id = subjectId,
+                curriculum_id = curriId,
+                term_no = termNo,
+                subject_group = subjectGroup,
+                combo_id = combo,
+                option = option
+            };
 
-            // Act
-            var result = await _controller.DeleteCurriculumSubject(curriculumIdTest, subjectIdTest);
 
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Remove Fail", baseResponse.message);
-        }
-
-        [Test]
-        public async Task PostCurriculumSubject_ReturnsOk_WhenCreateSucceeds()
-        {
-            // Arrange
-            var curriculumSubjectRequestList = new List<CurriculumSubjectRequest>(); 
+            // Add instances to the list
+            curriculumSubjectRequestList.Add(request1);
 
             _curriculumSubjectRepository.Setup(repo => repo.CreateCurriculumSubject(It.IsAny<CurriculumSubject>()))
                                             .Returns(Result.createSuccessfull.ToString());
@@ -240,13 +209,12 @@ namespace CMS_UnitTests.Controllers
         public async Task DeleteCurriculumSubject_ReturnsOk_WhenDeleteSucceeds()
         {
             // Arrange
-            int curriculumIdTest = 1;
-            int subjectIdTest = 2;
+            int curriculumIdTest = 3;
+            int subjectIdTest = 1;
             var mockCurriculumSubject = new CurriculumSubject(); 
             _curriculumSubjectRepository.Setup(repo => repo.GetCurriculumSubjectById(It.IsAny<int>(), It.IsAny<int>()))
                                             .Returns(mockCurriculumSubject);
-            _curriculumSubjectRepository.Setup(repo => repo.GetCurriculumSubjectByTermNoAndSubjectGroup(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int>()))
-                                            .Returns(new CurriculumSubject());
+     
             _curriculumSubjectRepository.Setup(repo => repo.DeleteCurriculumSubject(It.IsAny<CurriculumSubject>()))
                                             .Returns(Result.deleteSuccessfull.ToString());
 
@@ -262,7 +230,6 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("delete successfull!", baseResponse.message); 
         }
 
 

@@ -36,6 +36,7 @@ namespace CMS_UnitTests.Controllers
             fixture = new Fixture();
             syllabusRepositoryMock = fixture.Freeze<Mock<ISyllabusRepository>>();
             var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+
             var configurationMock = new Mock<IConfiguration>();
             _mapper = config.CreateMapper();
             mapperMock = new Mock<IMapper>();
@@ -62,7 +63,6 @@ namespace CMS_UnitTests.Controllers
             mapperMock.Setup(mapper => mapper.Map<List<SyllabusResponse>>(listSyllabus)).Returns(listSyllabusResponse);
             // Act
             var result = syllabusController.GetListSyllabus(page, limit, txtSearch, subjectCode);
-
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result.Result);
 
@@ -122,12 +122,14 @@ namespace CMS_UnitTests.Controllers
             var syllabusRequest = new SyllabusRequest();
 
             // Act
+
             var result =  syllabusController.CreateSyllabus(syllabusRequest);
 
             // Assert
             Assert.IsInstanceOf<BadRequestObjectResult>(result.Result);
 
             var badRequestObjectResult = result.Result as BadRequestObjectResult;
+
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;

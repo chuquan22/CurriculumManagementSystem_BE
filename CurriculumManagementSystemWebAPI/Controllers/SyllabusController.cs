@@ -69,6 +69,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
         [HttpGet]
         public async Task<ActionResult> GetListSyllabus(int page, int limit, string? txtSearch, string? subjectCode)
+
         {
             List<Syllabus> rs = new List<Syllabus>();
             try
@@ -114,7 +115,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 Syllabus rs1 = syllabusRepository.GetSyllabusById(syllabus_id);
+
                 if (rs1 == null)
+
                 {
                     return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
 
@@ -176,6 +179,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             catch (Exception)
                             {
                                 return BadRequest("Import false at sheet Syllabus!");
+
                             }
                             rs.Add(value);
                         }
@@ -230,7 +234,9 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                         addRs.syllabus_id = syllabusId;
                                         int idClo = 0;
                                         var rsClo = cLOsController.CreateCLOs(addRs);
+
                                         var okRsClo = rsClo as OkObjectResult;
+
                                         var baseResponseRsClo = okRsClo.Value as BaseResponse;
                                         var closRsResponse = baseResponseRsClo.data as CLO;
                                         idClo = closRsResponse.CLO_id;
@@ -275,21 +281,25 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
                                 List<int> lst = new List<int>();
                                 foreach (var it in cloId)
+
                                 {
                                     string name = "null";
                                     if (cloRepository.GetCLOsById(it) != null)
                                     {
                                         name = cloRepository.GetCLOsById(it).CLO_name;
                                         if (item.CLO_name.ToLower().Trim().Contains(name.ToLower().Trim()))
+
                                         {
                                             lst.Add(it);
                                         }
+
                                     }
                                     if (item.CLO_name.ToLower().Trim().Contains("All CLOs".ToLower().Trim()))
                                     {
                                         lst = new List<int>();
                                         lst.AddRange(cloId);
                                     }
+
                                 }
                                 foreach (var idClo in lst)
                                 {
@@ -647,6 +657,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                         {
                             syllabus.min_GPA_to_pass = int.Parse(r.Details);
                             if (syllabus.min_GPA_to_pass < 0)
+
                             {
                                 throw new Exception("Please check MinGPAtopass >= 0.");
 
@@ -819,8 +830,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         {
             try
             {
+
                 var existSyllabus = syllabusRepository.GetSyllabusById(id);
                 if (existSyllabus == null)
+
                 {
                     return NotFound(new BaseResponse(true, "Not Found Syllabus!", null));
                 }

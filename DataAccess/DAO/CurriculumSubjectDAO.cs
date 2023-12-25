@@ -23,6 +23,11 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
+        public bool CurriculumSubjectExist(int curriId, int subId)
+        {
+            return (_context.CurriculumSubject?.Any(e => e.curriculum_id == curriId && e.subject_id == subId)).GetValueOrDefault();
+        }
+
         public List<CurriculumSubject> GetListSubjectByCurriculum(int curriculumId)
         {
             var listCurriculumSubject = _context.CurriculumSubject
@@ -64,24 +69,38 @@ namespace DataAccess.DAO
             return listCurriculumSubject;
         }
 
+        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int credit, int term_no, int? option, int? combo)
+        {
+            if (option.HasValue && _context.CurriculumSubject.Where(x => x.option.HasValue) != null)
+            {
+                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.option.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+            }
+            else if (combo.HasValue && _context.CurriculumSubject.Where(x => x.combo_id.HasValue) != null)
+            {
+                return (_context.CurriculumSubject.Include(x => x.Subject).Where(x => x.combo_id.HasValue && x.term_no == term_no && x.Subject.credit == credit).FirstOrDefault() == null) ? true : false;
+            }
+            return false;
+        }
+
         public CurriculumSubject GetCurriculumSubjectById(int curriculumId, int subjectId)
         {
             var curriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Curriculum)
-                .Include(x =>x.Subject)
+                .Include(x => x.Subject)
                 .FirstOrDefault(x => x.curriculum_id == curriculumId && x.subject_id == subjectId);
             return curriculumSubject;
         }
 
-        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId)
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int curriId, int term_no, int subject_id, int option)
         {
             var curriculumSubject = _context.CurriculumSubject
                 .Include(x => x.Curriculum)
                 .Include(x => x.Subject)
-                .FirstOrDefault(x => x.term_no == term_no 
-                && x.subject_group.Equals(subjectGroup) 
-                && x.subject_id != subjectId
-                && x.option == true);
+                .FirstOrDefault(x => x.curriculum_id == curriId
+                && x.term_no == term_no
+                && x.option == option
+                && x.subject_id != subject_id);
+
             return curriculumSubject;
         }
 
@@ -99,18 +118,20 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumSubject.Add(curriculumSubject);
-                int number = _context.SaveChanges();
-                if (number > 0)
-                {
+                //_context.CurriculumSubject.Add(curriculumSubject);
+                //int number = _context.SaveChanges();
+                //if (number > 0)
+                //{
+                //    DeleteCurriculumSubject(curriculumSubject);
                     return Result.createSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Create Curriculum Fail";
-                }
-                
-            }catch (Exception ex)
+                //}
+                //else
+                //{
+                //    return "Create Curriculum Fail";
+                //}
+
+            }
+            catch (Exception ex)
             {
                 return ex.InnerException.Message;
             }
@@ -141,16 +162,11 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.CurriculumSubject.Remove(curriculumSubject);
-                int number = _context.SaveChanges();
-                if (number > 0)
-                {
-                    return Result.deleteSuccessfull.ToString();
-                }
-                else
-                {
-                    return "Delete Curriculum Fail";
-                }
+                //_context.CurriculumSubject.Remove(curriculumSubject);
+                //int number = _context.SaveChanges();
+
+                return Result.deleteSuccessfull.ToString();
+
             }
             catch (Exception ex)
             {

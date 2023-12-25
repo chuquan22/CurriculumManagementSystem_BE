@@ -56,9 +56,11 @@ namespace CMS_UnitTests.Controllers
             var result = majorController.GetAllMajor();
 
             // Assert
+
             Assert.IsInstanceOf<OkObjectResult>(result);
 
             var okObjectResult = result as OkObjectResult;
+
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -73,7 +75,7 @@ namespace CMS_UnitTests.Controllers
         public async Task GetMajor_ReturnsOkResult()
         {
             // Arrange
-            int batchId = 2;
+           int batchId = 2;
             var listMajor = new List<Major>();
             var listMajorResponse = new List<MajorSpeResponse>();
 
@@ -86,9 +88,11 @@ namespace CMS_UnitTests.Controllers
             var result = majorController.GetMajor(batchId);
 
             // Assert
+
             Assert.IsInstanceOf<OkObjectResult>(result);
 
             var okObjectResult = result as OkObjectResult;
+
             Assert.IsNotNull(okObjectResult);
 
             var baseResponse = okObjectResult.Value as BaseResponse;
@@ -101,25 +105,31 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
+
         public async Task GetMajor_ReturnsBadRequestResult()
         {
             // Arrange
             var batchId = 999;
 
+
             // Act
             var result = majorController.GetMajor(batchId);
 
             // Assert
+<
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
 
             var ObjectResult = result as BadRequestObjectResult;
+
             Assert.IsNotNull(ObjectResult);
 
             var baseResponse = ObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
+
             Assert.IsTrue(baseResponse.message.Contains("Error: "));
+
 
 
         }
@@ -149,7 +159,9 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse);
 
             Assert.IsFalse(baseResponse.error);
+
             Assert.AreEqual("Add Major " + majorRequest.major_name + " Successfully!", baseResponse.message);
+
         }
         [Test]
         public void CreateMajor_ReturnsBadRequest_DuplicateCode()
@@ -224,7 +236,9 @@ namespace CMS_UnitTests.Controllers
             Assert.IsNotNull(baseResponse2);
 
             Assert.IsFalse(baseResponse2.error);
+
             Assert.AreEqual("Delete major sucessfully!", baseResponse2.message);
+
         }
 
 

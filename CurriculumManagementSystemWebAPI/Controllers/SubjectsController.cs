@@ -16,6 +16,10 @@ using Repositories.PreRequisites;
 using DataAccess.Models.Enums;
 using Repositories.CurriculumSubjects;
 using Microsoft.AspNetCore.Authorization;
+using DataAccess.Models.DTO.Excel;
+using Repositories.LearningResources;
+using Repositories.LearningMethods;
+using Repositories.AssessmentMethods;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
@@ -24,13 +28,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly CMSDbContext _context = new CMSDbContext();
         private readonly IMapper _mapper;
         private readonly ISubjectRepository _subjectRepository = new SubjectRepository();
         private readonly ICurriculumSubjectRepository _curriSubjectRepository = new CurriculumSubjectRepository();
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
+        private readonly ILearnningMethodRepository _learningMethodRepository = new LearningMethodRepository();
+        private readonly IAssessmentMethodRepository _assessmentMethodRepository = new AssessmentMethodRepository();
+        public SubjectsController(IMapper mapper)
 
-        public SubjectsController( IMapper mapper)
         {
             _mapper = mapper;
         }
@@ -40,12 +45,8 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetAllSubject")]
         public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubject([FromQuery] string? txtSearch)
         {
-            if (_context.Subject == null)
-            {
-                return NotFound();
-            }
             var subject = _subjectRepository.GetAllSubject(txtSearch);
-            if (subject == null)
+            if (subject.Count == 0)
             {
                 return BadRequest(new BaseResponse(true, "List Subject is Empty. Please create new subject!"));
             }
@@ -56,20 +57,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("Pagination/{page}/{limit}")]
         public async Task<IActionResult> PaginationSubject(int page, int limit, [FromQuery] string? txtSearch)
         {
-            IQueryable<Subject> subjectQuery = _context.Subject;
-
-            if (!string.IsNullOrWhiteSpace(txtSearch))
-            {
-                subjectQuery = subjectQuery.Where(x => x.subject_code.ToLower().Contains(txtSearch.ToLower()) || x.subject_name.ToLower().Contains(txtSearch.ToLower()) || x.english_subject_name.ToLower().Contains(txtSearch.ToLower()));
-            }
-
-            var totalElements = subjectQuery.Count();
-            var subject = subjectQuery.Skip((page - 1) * limit).Take(limit)
-                .Include(x => x.PreRequisite)
-                .Include(x => x.AssessmentMethod.AssessmentType)
-                .Include(x => x.LearningMethod)
-                .ToList();
-
+            List<Subject> subject = _subjectRepository.PaginationSubject(page, limit, txtSearch);
 
             var subjectResponse = _mapper.Map<List<SubjectResponse>>(subject);
             foreach (var subjectRespones in subjectResponse)
@@ -82,7 +70,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             {
                 Page = page,
                 Limit = limit,
-                TotalElements = totalElements,
+                TotalElements = _subjectRepository.GetTotalSubject(txtSearch),
                 Data = subjectResponse
             };
 
@@ -91,7 +79,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
         // GET: api/Subjects/5
         [HttpGet("GetSubjectById/{id}")]
-        public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
+        public async Task<ActionResult<SubjectResponse>> GetSubjectById(int id)
         {
             var subject = _subjectRepository.GetSubjectById(id);
 
@@ -163,6 +151,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
 
             var subject = _subjectRepository.GetSubjectById(id);
             _mapper.Map(subjectPreRequisitesRequest.SubjectRequest, subject);
+            
+            if(_subjectRepository.CheckSubjectCodeUpdateDuplicate(subject.subject_id, subject.subject_code))
+            {
+                return BadRequest(new BaseResponse(true, $"Subject Code {subject.subject_code} is Duplicate!"));
+            }
 
             string updateResult = _subjectRepository.UpdateSubject(subject);
             if (!updateResult.Equals("OK"))
@@ -212,7 +205,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                 return BadRequest(new BaseResponse(true, "Subject used by curriculum. Can't Delete!"));
             }
 
-            if(CheckIdExistInSyllabus(id))
+            if (CheckIdExistInSyllabus(id))
             {
                 return BadRequest(new BaseResponse(true, "Subject used by Syllabus. Can't Delete!"));
             }
@@ -242,34 +235,94 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             return Ok(new BaseResponse(false, $"Delete Subject {subjectRespone.subject_code} successfull!", subjectRespone));
         }
 
+        //Import Subject by Excel
+        [HttpPost("ImportSubject")]
+        public async Task<IActionResult> ImportSubject(IFormFile fileSubject)
+        {
+            string error = "";
+            try
+            {
+                var filePath = Path.GetTempFileName();
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await fileSubject.CopyToAsync(stream);
+                    //Get SheetName
+                    var sheetNames = MiniExcel.GetSheetNames(filePath);
+                    var row = MiniExcel.Query<SubjectImportExcel>(filePath, sheetName: sheetNames[0], excelType: ExcelType.XLSX);
+                    foreach (var subject in row)
+                    {
+                        subject.credit = string.IsNullOrEmpty(subject.credit) ? "0" : subject.credit;
+                        error = $"Error in Subject {subject.subject_code}: ";
+                        var learningMethod = _learningMethodRepository.GetLearningMethodByName(subject.learning_method);
+                        if(learningMethod == null)
+                        {
+                            return BadRequest(new BaseResponse(true, error + $"Learning Method '{subject.learning_method}' Not Found"));
+                        }
+                        var assessmentMethod = _assessmentMethodRepository.GetAsssentMethodByName(subject.assessment_method);
+                        if (assessmentMethod == null)
+                        {
+                            return BadRequest(new BaseResponse(true, error + $"Assessment Method '{subject.assessment_method}' Not Found"));
+                        }
+                        var s = new Subject
+                        {
+                            subject_code = subject.subject_code,
+                            credit = int.Parse(subject.credit),
+                            exam_total = float.Parse(subject.exam_time),
+                            total_time = float.Parse(subject.total_time),
+                            total_time_class = float.Parse(subject.class_time),
+                            is_active = true,
+                            subject_name = subject.subject_name,
+                            english_subject_name = subject.english_subject_name,
+                            learning_method_id = learningMethod.learning_method_id,
+                            assessment_method_id = assessmentMethod.assessment_method_id
+                        };
+                        if(s.total_time < s.total_time_class + s.exam_total)
+                        {
+                            return BadRequest(new BaseResponse(true, error + "Total Time must greater or equal than sum of Class Time and Exam Time"));
+                        }
+                        if(!CheckCodeExist(subject.subject_code))
+                        {
+                            string createResult = _subjectRepository.CreateNewSubject(s);
+
+                            if (!createResult.Equals("OK"))
+                            {
+                                return BadRequest(new BaseResponse(true, createResult));
+                            }
+                        }
+                    }
+                }
+
+                return Ok(new BaseResponse(false, "Import Subject Successfull!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse(true, error + ex.Message + " or check table name match in Sample File!"));
+            }
+        }
+
         private bool CheckIdExistInSyllabus(int id)
         {
-            if (_context.Syllabus.FirstOrDefault(x => x.subject_id == id) == null) return false;
-            return true;
+            return _subjectRepository.CheckIdExistInSyllabus(id);
         }
 
         [NonAction]
         public bool CheckIdExist(int id)
         {
-            if (_context.Subject.FirstOrDefault(x => x.subject_id == id) == null) return false;
-            return true;
+            return _subjectRepository.CheckIdExist(id);
+
         }
 
         [NonAction]
         public bool CheckCodeExist(string code)
         {
-            var subject = _context.Subject.FirstOrDefault(x => x.subject_code.Equals(code));
-            var subject2 = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.Subject.subject_code.Equals(code));
-            if (subject == null && subject2 == null) return false;
-            return true;
+            return _subjectRepository.CheckCodeExist(code);
+
         }
 
         [NonAction]
         public bool CheckSubjectExist(int subject_id)
         {
-            var subject = _context.Syllabus.Include(x => x.Subject).FirstOrDefault(x => x.subject_id == subject_id);
-            if (subject == null ) return false;
-            return true;
+            return _subjectRepository.CheckSubjectExist(subject_id);
         }
     }
 }

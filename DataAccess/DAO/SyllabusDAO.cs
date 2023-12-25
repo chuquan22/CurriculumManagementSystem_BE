@@ -55,7 +55,8 @@ namespace DataAccess.DAO
         }
 
         public Syllabus CreateSyllabus(Syllabus rs)
-        {
+        {       
+
             using (var context = new CMSDbContext())
             {
                 rs.syllabus_status = true;
@@ -79,9 +80,16 @@ namespace DataAccess.DAO
                 {
                     throw new Exception("Min GPA to pass must be > 0 and <= 10.");
                 }
-                
-                context.Syllabus.Add(rs);
-                context.SaveChanges();
+                try
+                {
+                    context.Syllabus.Add(rs);
+                    context.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    throw new Exception("Create Syllabus False!");
+                }
             }
             return rs;
         }

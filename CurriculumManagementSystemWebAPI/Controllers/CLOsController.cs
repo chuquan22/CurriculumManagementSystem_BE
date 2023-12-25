@@ -39,14 +39,14 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCLOs(CLOsRequest clo)
+        public ActionResult<CLO> CreateCLOs(CLOsRequest clo)
         {
 
             try
             {
                 CLO rs = _mapper.Map<CLO>(clo);
                 rs = cloRepository.CreateCLOs(rs);
-                return Ok(new BaseResponse(false, "Sucessfully", rs));
+                return Ok(new BaseResponse(false, "Sucessfully!", rs));
             }
             catch (Exception ex)
             {

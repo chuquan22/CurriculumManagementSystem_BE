@@ -31,12 +31,12 @@ namespace DataAccess.Specialization
             }
             return list;
         }
-        public List<BusinessObject.Specialization> GetSpecByPagging(int page, int limit, string txtSearch, string majorId)
+        public List<BusinessObject.Specialization> GetSpecByPagging(int degree_id, int page, int limit, string txtSearch, string majorId)
         {
             List<BusinessObject.Specialization> rs = new List<BusinessObject.Specialization>();
             try
             {
-                rs = db.Specialization.ToList();
+                rs = db.Specialization.Include(x => x.Major).ThenInclude(x => x.DegreeLevel).Where(x => x.Major.degree_level_id == degree_id).ToList();
                 if (!string.IsNullOrEmpty(txtSearch))
                 {
                     rs = rs.Where(sy => sy.specialization_name.Contains(txtSearch)
@@ -122,12 +122,12 @@ namespace DataAccess.Specialization
             return false;
         }
 
-        public int GetTotalSpecialization(string txtSearch, string majorId)
+        public int GetTotalSpecialization(int degree_id, string txtSearch, string majorId)
         {
             int rs = 0;
             using (var context = new CMSDbContext())
             {
-                var query = context.Specialization.AsQueryable(); 
+                var query = context.Specialization.Include(x => x.Major).Where(x => x.Major.degree_level_id == degree_id).AsQueryable(); 
 
                 if (!string.IsNullOrEmpty(txtSearch))
                 {

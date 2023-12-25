@@ -18,7 +18,7 @@ namespace DataAccess.Combos
             List<Combo> rs = new List<Combo>();
             try
             {
-                rs = db.Combo.Where(x => x.specialization_id == specId).ToList();
+                rs = db.Combo.Include(x => x.Specialization).Where(x => x.specialization_id == specId).ToList();
             }
             catch (Exception)
             {
@@ -96,7 +96,7 @@ namespace DataAccess.Combos
             var combo = new Combo();
             try
             {
-                 combo = db.Combo.Where(x => x.combo_id == id).FirstOrDefault();
+                 combo = db.Combo.Include(x => x.Specialization).Where(x => x.combo_id == id).FirstOrDefault();
                 
             }
             catch (Exception)
@@ -112,7 +112,7 @@ namespace DataAccess.Combos
             var combo = new Combo();
             try
             {
-                combo = db.Combo.Where(x => x.combo_code == comboCode).FirstOrDefault();
+                combo = db.Combo.Include(x => x.Specialization).Where(x => x.combo_code == comboCode).FirstOrDefault();
 
             }
             catch (Exception)

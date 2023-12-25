@@ -72,6 +72,12 @@ namespace DataAccess.DAO
             return rs;
         }
 
+        public AssessmentMethod GetAsssentMethodByName(string name)
+        {
+            var rs = _context.AssessmentMethod.Include(a => a.AssessmentType).Where(x => x.assessment_method_component.ToLower().Equals(name.Trim().ToLower())).FirstOrDefault();
+            return rs;
+        }
+
         public bool CheckAssmentMethodDuplicate(int id,string name, int type)
         {
             return (_context.AssessmentMethod?.Any(x => x.assessment_method_component.ToLower().Equals(name.ToLower()) && x.assessment_type_id == type && x.assessment_method_id != id)).GetValueOrDefault();
@@ -93,8 +99,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentMethod.Add(method);
-                _context.SaveChanges();
+                //_context.AssessmentMethod.Add(method);
+                //_context.SaveChanges();
                 return Result.createSuccessfull.ToString();
             }catch (Exception ex)
             {
@@ -120,8 +126,8 @@ namespace DataAccess.DAO
         {
             try
             {
-                _context.AssessmentMethod.Remove(method);
-                _context.SaveChanges();
+                //_context.AssessmentMethod.Remove(method);
+                //_context.SaveChanges();
                 return Result.deleteSuccessfull.ToString();
             }
             catch (Exception ex)

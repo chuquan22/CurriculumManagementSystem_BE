@@ -38,6 +38,27 @@ namespace DataAccess.DAO
             return curriculumList;
         }
 
+        public bool CheckCurriculumCanDelete(int id)
+        {
+            var haveSubject = _cmsDbContext.CurriculumSubject?.FirstOrDefault(e => e.curriculum_id == id);
+            var haveBatch = _cmsDbContext.CurriculumBatch?.FirstOrDefault(e => e.curriculum_id == id);
+            if (haveSubject == null && haveBatch == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool CheckCurriculumExists(string code)
+        {
+            return (_cmsDbContext.Curriculum?.Any(e => e.curriculum_code.Equals(code))).GetValueOrDefault();
+        }
+
+        public bool CurriculumExists(int id)
+        {
+            return (_cmsDbContext.Curriculum?.Any(e => e.curriculum_id == id)).GetValueOrDefault();
+        }
+
         public List<Curriculum> PanigationCurriculum(int page, int limit, int degree_level_id, string? txtSearch, int? majorId)
         {
             IQueryable<Curriculum> query = _cmsDbContext.Curriculum
@@ -96,10 +117,6 @@ namespace DataAccess.DAO
             else if (spe.Major.DegreeLevel.degree_level_english_name.Equals("Vocational Secondary"))
             {
                 totalSemester = int.Parse(batch.batch_name) >= 19 ? 6 : 8;
-            }
-            else
-            {
-
             }
             return totalSemester;
         }
@@ -263,7 +280,7 @@ namespace DataAccess.DAO
             try
             {
                 curriculum.curriculum_name = curriculum.curriculum_name.Trim();
-                // _cmsDbContext.Curriculum.Add(curriculum);
+                //_cmsDbContext.Curriculum.Add(curriculum);
                 //int number = _cmsDbContext.SaveChanges();
                 return "OK";
 

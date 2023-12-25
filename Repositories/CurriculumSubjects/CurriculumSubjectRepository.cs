@@ -11,9 +11,20 @@ namespace Repositories.CurriculumSubjects
     public class CurriculumSubjectRepository : ICurriculumSubjectRepository
     {
         private readonly CurriculumSubjectDAO curriculumDAO = new CurriculumSubjectDAO();
+
+        public bool CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(int credit, int term_no, int? option, int? combo)
+        {
+            return curriculumDAO.CheckCreditComboSubjectOrOptionSubjectMustEqualInTermNo(credit, term_no, option, combo);
+        }
+
         public string CreateCurriculumSubject(CurriculumSubject curriculumSubject)
         {
             return curriculumDAO.CreateCurriculumSubject(curriculumSubject);
+        }
+
+        public bool CurriculumSubjectExist(int curriId, int subId)
+        {
+            return curriculumDAO.CurriculumSubjectExist(curriId, subId);
         }
 
         public string DeleteCurriculumSubject(CurriculumSubject curriculumSubject)
@@ -31,9 +42,10 @@ namespace Repositories.CurriculumSubjects
             return curriculumDAO.GetCurriculumSubjectByTermNo(term_no);
         }
 
-        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int term_no, string subjectGroup, int subjectId)
+        public CurriculumSubject GetCurriculumSubjectByTermNoAndSubjectGroup(int curriId, int term_no, int subject_id, int option)
         {
-            return curriculumDAO.GetCurriculumSubjectByTermNoAndSubjectGroup(term_no, subjectGroup, subjectId);
+            return curriculumDAO.GetCurriculumSubjectByTermNoAndSubjectGroup( curriId,term_no, subject_id, option);
+
         }
 
         public List<CurriculumSubject> GetListCurriculumBySubject(int subjectId)

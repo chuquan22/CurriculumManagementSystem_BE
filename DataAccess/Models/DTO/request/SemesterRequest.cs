@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace DataAccess.Models.DTO.request
 {
@@ -20,6 +21,8 @@ namespace DataAccess.Models.DTO.request
         public int school_year { get; set; }
         [Required]
         public int start_batch_id { get; set; }
+        [AllowNull]
+        public int? no { get; set; }
       
     }
 }

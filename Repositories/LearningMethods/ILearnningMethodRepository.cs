@@ -13,6 +13,7 @@ namespace Repositories.LearningMethods
         List<LearningMethod> PaginationLearningMethod(int page, int limit, string? txtSearch);
         int GetTotalLearningMethod(string? txtSearch);
         LearningMethod GetLearningMethodById(int id);
+        LearningMethod GetLearningMethodByName(string name);
         bool CheckLearningMethodDuplicate(int id, string learning_method_name);
         bool CheckLearningMethodExsit(int id);
         string CreateLearningMethod(LearningMethod learningMethod);

@@ -23,5 +23,9 @@ namespace Repositories.Curriculums
         string CreateCurriculum(Curriculum curriculum);
         string UpdateCurriculum(Curriculum curriculum);
         string RemoveCurriculum(Curriculum curriculum);
+        bool CurriculumExists(int id);
+
+        bool CheckCurriculumExists(string code);
+        bool CheckCurriculumCanDelete(int id);
     }
 }

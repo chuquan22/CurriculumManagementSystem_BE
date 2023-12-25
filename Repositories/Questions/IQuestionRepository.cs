@@ -12,6 +12,7 @@ namespace Repositories.Questions
         List<Question> GetQuestionByQuiz(int quizId);
         Question GetQuestionById(int id);
         bool CheckQuestionDuplicate(int id, string questionName, int quizId);
+        bool CheckAnswerDuplicate(string answerA, string answerB, string answerC, string answerD);
         string CreateQuestion(Question question);
         string UpdateQuestion(Question question);
         string DeleteQuestion(Question question);

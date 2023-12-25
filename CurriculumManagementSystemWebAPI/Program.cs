@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin",
         builder =>
         {
-            builder.WithOrigins("https://cmsfpoly.azurewebsites.net")
+            builder.WithOrigins("https://cmsfpoly.azurewebsites.net", "https://cmsfpoly-be.azurewebsites.net")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });

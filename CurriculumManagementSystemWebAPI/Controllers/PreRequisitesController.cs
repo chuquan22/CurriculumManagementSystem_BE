@@ -10,20 +10,20 @@ using Repositories.PreRequisites;
 using DataAccess.Models.DTO.response;
 using AutoMapper;
 using DataAccess.Models.DTO.request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CurriculumManagementSystemWebAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class PreRequisitesController : ControllerBase
     {
-        private readonly CMSDbContext _context;
         private readonly IMapper _mapper;
         private readonly IPreRequisiteRepository _preRequisiteRepository = new PreRequisiteRepository();
 
-        public PreRequisitesController(CMSDbContext context, IMapper mapper)
+        public PreRequisitesController(IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
         }
 
@@ -46,10 +46,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         [HttpGet("GetPreRequisite/{subjectId}/{preSubjectId}")]
         public async Task<ActionResult<PreRequisite>> GetPreRequisite(int subjectId, int preSubjectId)
         {
-            if (_context.PreRequisite == null)
-            {
-                return NotFound();
-            }
+            
             var preRequisite = _preRequisiteRepository.GetPreRequisite(subjectId, preSubjectId);
 
             if (preRequisite == null)

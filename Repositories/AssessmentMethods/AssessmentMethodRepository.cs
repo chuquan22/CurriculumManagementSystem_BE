@@ -50,6 +50,11 @@ namespace Repositories.AssessmentMethods
             return assessmentMethodDAO.GetAsssentMethodById(id);
         }
 
+        public AssessmentMethod GetAsssentMethodByName(string name)
+        {
+            return assessmentMethodDAO.GetAsssentMethodByName(name);
+        }
+
         public int GetTotalAssessmentMethod(string? txtSearch)
         {
             return assessmentMethodDAO.GetTotalAssessmentMethod(txtSearch);
