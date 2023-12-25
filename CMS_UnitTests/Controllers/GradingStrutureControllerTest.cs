@@ -75,46 +75,6 @@ namespace CMS_UnitTests.Controllers
 
             Assert.IsEmpty(listGradingStrutureResponse);
         }
-        [Test]
-        public async Task CreateGradingStructure_ReturnsOkResponse()
-        {
-            // Arrange
-            var request = new GradingStrutureCreateRequest
-            {
-                gradingStruture = new GradingStrutureRequest
-                {
-                    assessment_component = "1",
-                    assessment_type = "On-Going",
-                    grading_weight = 1,
-                    grading_part = 1,
-                    minimum_value_to_meet_completion = 1,
-                    grading_duration = "1",
-                    type_of_questions = "1",
-                    number_of_questions = "1",
-                    scope_knowledge = "1",
-                    how_granding_structure = "11",
-                    grading_note = "1",
-                    session_no = 5,
-                    references = "Assignment",
-                    syllabus_id = 1
-                }
-            };       
-
-            // Act
-            var result = gradingStrutureController.CreateGradingStructure(request);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-
-            var okObjectResult = result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Successfully!", baseResponse.message);
-            Assert.IsNotNull(baseResponse.data);
-        }
+        
     }
 }

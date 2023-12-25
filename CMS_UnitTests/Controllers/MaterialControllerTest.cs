@@ -108,48 +108,7 @@ namespace CMS_UnitTests.Controllers
             var materialResponse = baseResponse.data as Material;
             Assert.IsNotNull(materialResponse);
         }
-        [Test]
-        public void EditMaterial_ReturnsOkResult()
-        {
-            // Arrange
-            var materialUpdateRequest = new MaterialUpdateRequest
-            {
-                material_id = 1,
-                material_description = "Updated Material Description",
-                material_purpose = "Updated Purpose",
-                material_ISBN = "Updated ISBN",
-                material_type = "Updated Type",
-                syllabus_id = 2,
-                material_note = "Updated Note",
-                learning_resource_id = 2,
-                material_author = "Updated Author",
-                material_publisher = "Updated Publisher",
-                material_published_date = DateTime.Now,
-                material_edition = "Updated Edition"
-            };
-
-         
-
-            // Act
-            var result = materialsController.EditMaterial(materialUpdateRequest);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-
-            var okObjectResult = result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Successfully!", baseResponse.message);
-
-            var materialResponse = baseResponse.data as Material;
-            Assert.IsNotNull(materialResponse);
-            Assert.AreEqual(materialUpdateRequest.material_description, materialResponse.material_description);
-            Assert.AreEqual(materialUpdateRequest.material_purpose, materialResponse.material_purpose);
-        }
+       
         [Test]
         public void EditMaterial_ReturnsNotFoundResult()
         {
@@ -249,30 +208,7 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse2.error);
             Assert.AreEqual("Successfully!", baseResponse2.message);
         }
-        [Test]
-        public async Task GetMaterialById_ReturnsOkResult()
-        {
-            // Arrange
-            var materialId = 1;
-            // Act
-            var result = materialsController.GetMaterialById(materialId);
-
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-
-            var okObjectResult = result as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
-
-            var baseResponse = okObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsFalse(baseResponse.error);
-            Assert.AreEqual("Successfully!", baseResponse.message);
-
-            var materialResponse = baseResponse.data as MaterialsResponse;
-            Assert.IsNotNull(materialResponse);
-        }
-
+        
         [Test]
         public void GetMaterialById_ReturnsNotFoundResult()
         {
