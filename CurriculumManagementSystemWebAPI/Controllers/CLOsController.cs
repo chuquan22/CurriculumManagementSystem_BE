@@ -81,6 +81,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             CLO rs = new CLO();
             try
             {
+                rs = cloRepository.GetCLOsById(id);
+                if(rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found CLOs", rs));
+                }
                 rs = cloRepository.DeleteCLOs(id);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
@@ -99,6 +104,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 rs = cloRepository.GetCLOsById(id);
+                if (rs == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found CLOs", rs));
+                }
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }
             catch (Exception)

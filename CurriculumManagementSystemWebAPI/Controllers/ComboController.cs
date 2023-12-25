@@ -51,6 +51,11 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             try
             {
                 var result = comboRepository.FindComboById(id);
+                if(result == null)
+                {
+                    return NotFound(new BaseResponse(true, "Not Found Combo", null));
+
+                }
                 rs = _mapper.Map<ComboResponse>(result);
                 return Ok(new BaseResponse(false, "Sucessfully", rs));
             }

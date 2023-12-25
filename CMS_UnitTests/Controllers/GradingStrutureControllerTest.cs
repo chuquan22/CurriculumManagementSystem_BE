@@ -98,12 +98,7 @@ namespace CMS_UnitTests.Controllers
                     references = "Assignment",
                     syllabus_id = 1
                 }
-            };
-            gradingStrutureRepositoryMock.Setup(repo => repo.CreateGradingStruture(It.IsAny<GradingStruture>()))
-                                        .Returns(new GradingStruture()); // Assume successful grading structure creation
-
-            gradingCLOsRepositoryMock.Setup(repo => repo.CreateGradingCLO(It.IsAny<GradingCLO>()))
-                                    .Returns(new GradingCLO());
+            };       
 
             // Act
             var result = gradingStrutureController.CreateGradingStructure(request);

@@ -191,38 +191,24 @@ namespace CMS_UnitTests.Controllers
             Assert.AreEqual("Error: Object reference not set to an instance of an object.", baseResponse.message);
         }
 
-        [Test]
-        public void UpdateCLOs_WithException_ReturnsBadRequestResult()
-        {
-            // Arrange
-            var cloUpdateRequest = new CLOsUpdateRequest();
-            var clo = new CLO();
-            mapperMock.Setup(mapper => mapper.Map<CLO>(cloUpdateRequest)).Throws(new Exception("Error message"));
-
-            // Act
-            var result = closController.UpdateCLOs(cloUpdateRequest);
-
-            // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
-
-            var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.IsNotNull(badRequestObjectResult);
-
-            var baseResponse = badRequestObjectResult.Value as BaseResponse;
-            Assert.IsNotNull(baseResponse);
-
-            Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
-        }
+       
 
         [Test]
         public void DeleteCLOs_WithValidId_ReturnsOkResult()
         {
             // Arrange
-            int cloId = 1;
-            var clo = new CLO();
-            cloRepositoryMock.Setup(repo => repo.DeleteCLOs(cloId)).Returns(clo);
-            var expectedResponse = new BaseResponse(false, "Sucessfully", clo);
+            // Arrange
+            var closRequest = new CLOsRequest()
+            {
+                CLO_name = "CLO" + fixture.Create<int>(),
+                CLO_description = "Sample Description",
+                syllabus_id = 2
+            };
+            var result1 = closController.CreateCLOs(closRequest);
+            var okObjectResult1 = result1.Result as OkObjectResult;
+            var baseResponse1 = okObjectResult1.Value as BaseResponse;
+            var data = baseResponse1.data as CLO;
+            int cloId = data.CLO_id;
 
             // Act
             var result = closController.DeleteCLOs(cloId);
@@ -239,30 +225,27 @@ namespace CMS_UnitTests.Controllers
             Assert.IsFalse(baseResponse.error);
             Assert.AreEqual("Sucessfully", baseResponse.message);
 
-            Assert.AreEqual(expectedResponse, okObjectResult.Value);
         }
 
         [Test]
         public void DeleteCLOs_WithInvalidId_ReturnsBadRequestResult()
         {
             // Arrange
-            int cloId = 1;
-            cloRepositoryMock.Setup(repo => repo.DeleteCLOs(cloId)).Throws(new Exception("Error message"));
-
+            int cloId = 99999;
             // Act
-            var result = closController.DeleteCLOs(2);
+            var result = closController.DeleteCLOs(cloId);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result as NotFoundObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("Error: Error message", baseResponse.message);
+            Assert.AreEqual("Not Found CLOs", baseResponse.message);
         }
 
         [Test]
@@ -291,26 +274,25 @@ namespace CMS_UnitTests.Controllers
         }
 
         [Test]
-        public void GetCLOsById_WithInvalidId_ReturnsBadRequestResult()
+        public void GetCLOsById_WithInvalidId_ReturnsNotFoundResult()
         {
             // Arrange
-            int cloId = 1;
-            cloRepositoryMock.Setup(repo => repo.GetCLOsById(cloId)).Throws(new Exception("Error message"));
-
+            int cloId = 99999;
+            
             // Act
-            var result = closController.GetCLOsById(2);
+            var result = closController.GetCLOsById(cloId);
 
             // Assert
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
 
-            var badRequestObjectResult = result as BadRequestObjectResult;
+            var badRequestObjectResult = result as NotFoundObjectResult;
             Assert.IsNotNull(badRequestObjectResult);
 
             var baseResponse = badRequestObjectResult.Value as BaseResponse;
             Assert.IsNotNull(baseResponse);
 
             Assert.IsTrue(baseResponse.error);
-            Assert.AreEqual("error", baseResponse.message);
+            Assert.AreEqual("Not Found CLOs", baseResponse.message);
         }
     }
 

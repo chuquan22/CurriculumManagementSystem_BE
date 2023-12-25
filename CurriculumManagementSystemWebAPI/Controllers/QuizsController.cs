@@ -125,14 +125,15 @@ namespace CurriculumManagementSystemWebAPI.Controllers
         public IActionResult GetListQuestionByQuiz(int quizId)
         {
             var listQuestion = _questionRepository.GetQuestionByQuiz(quizId);
+            if (listQuestion.Count == 0)
+            {
+                return NotFound(new BaseResponse(false, "Not Found Question In Quiz", null));
+            }
             var quiz = _quizRepository.GetQuizById(quizId);
             var questionResponse = new QuestionDTOResponse();
             questionResponse.subject_id = quiz.subject_id;
             questionResponse.major_id = _majorRepository.GetMajorBySubjectId(questionResponse.subject_id).major_id;
-            if (listQuestion.Count == 0)
-            {
-                return Ok(new BaseResponse(false, "Not Found Question In Quiz", questionResponse));
-            }
+            
             var listQuestionResponse = _mapper.Map<List<QuestionResponse>>(listQuestion);
             questionResponse.questionResponses = listQuestionResponse;
             return Ok(new BaseResponse(false, "List Question", questionResponse));
@@ -144,7 +145,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
             var question = _questionRepository.GetQuestionById(Id);
             if (question == null)
             {
-                return Ok(new BaseResponse(true, "Not Found Question"));
+                return NotFound(new BaseResponse(true, "Not Found Question",null));
             }
 
             return Ok(new BaseResponse(false, "Question", question));
