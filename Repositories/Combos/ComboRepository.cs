@@ -27,9 +27,9 @@ namespace Repositories.Combos
             return db.DisableCombo(id);
         }
 
-        public Combo FindComboByCode(string comboCode)
+        public Combo FindComboByCode(string comboCode, int speId)
         {
-            return db.FindComboByCode(comboCode);
+            return db.FindComboByCode(comboCode, speId);
         }
 
         public Combo FindComboById(int comboId)
