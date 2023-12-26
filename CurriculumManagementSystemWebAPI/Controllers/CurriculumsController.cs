@@ -421,7 +421,7 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                                     item.combo_code = string.IsNullOrEmpty(item.combo_code) ? null : item.combo_code;
                                     if (item.combo_code != null)
                                     {
-                                        var combo = _comboRepository.FindComboByCode(item.combo_code);
+                                        var combo = _comboRepository.FindComboByCode(item.combo_code, curriculum.specialization_id);
                                         curriculumSubject.combo_id = combo.combo_id;
                                     }
                                     
@@ -763,14 +763,10 @@ namespace CurriculumManagementSystemWebAPI.Controllers
                             string combo_code = item.combo_code;
                             if (!string.IsNullOrEmpty(item.combo_code))
                             {
-                                var combo = _comboRepository.FindComboByCode(item.combo_code.Trim());
+                                var combo = _comboRepository.FindComboByCode(item.combo_code.Trim(), spe.specialization_id);
                                 if (combo == null)
                                 {
-                                    return error + $"Combo {item.combo_code} Not Found. Please Create Combo";
-                                }
-                                if (combo.specialization_id != spe.specialization_id)
-                                {
-                                    return error + $"Combo {item.combo_code} Not Exsit in Specialization {spe.specialization_english_name}!";
+                                    return error + $"Combo {item.combo_code} Not Found in Specialization {spe.specialization_english_name}";
                                 }
                             }
 

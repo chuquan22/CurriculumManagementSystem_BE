@@ -107,12 +107,12 @@ namespace DataAccess.Combos
             return combo;
         }
 
-        public Combo FindComboByCode(string comboCode)
+        public Combo FindComboByCode(string comboCode, int speId)
         {
             var combo = new Combo();
             try
             {
-                combo = db.Combo.Include(x => x.Specialization).Where(x => x.combo_code == comboCode).FirstOrDefault();
+                combo = db.Combo.Include(x => x.Specialization).Where(x => x.combo_code == comboCode && x.specialization_id == speId).FirstOrDefault();
 
             }
             catch (Exception)
